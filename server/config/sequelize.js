@@ -25,7 +25,6 @@ module.exports = {
   },
   production: {
     use_env_variable: 'DATABASE_URL',
-    database: Config.get('db:database'),
     dialect: Config.get('db:dialect'),
   },
 };
