@@ -7,7 +7,7 @@ module.exports = {
     es6: true,
     node: true,
   },
-  extends: ['eslint:recommended'],
+  extends: ['eslint:recommended', 'plugin:react/recommended'],
   plugins: ['security'],
   parserOptions: {
     sourceType: 'module',
@@ -15,7 +15,7 @@ module.exports = {
   },
   rules: {
     indent: ['error', 2],
-    'linebreak-style': ['error', 'windows'],
+    'linebreak-style': ['off', 'windows'],
     quotes: ['error', 'single'],
     semi: ['error', 'always'],
     'no-console': 0,
