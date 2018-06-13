@@ -1,0 +1,13 @@
+{
+  "db": {
+    "dialect": "postgres"
+  },
+  "encryption": {
+    "saltRounds": 10
+  },
+  "http": {
+    "request": {
+      "limit": "100kb"
+    }
+  }
+}

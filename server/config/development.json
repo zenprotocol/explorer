@@ -1,0 +1,23 @@
+{
+  "db": {
+    "username": "postgres",
+    "password": "123456",
+    "database": "zen_explorer_development",
+    "host": "db",
+    "dialect": "postgres"
+  },
+  "encryption": {
+    "saltRounds": 5
+  },
+  "jwt": {
+    "secret": "DevelopmentSecret15003"
+  },
+  "server": {
+    "port": 3000
+  },
+  "http": {
+    "request": {
+      "limit": "10mb"
+    }
+  }
+}

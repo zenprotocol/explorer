@@ -2,9 +2,17 @@
   "name": "explorer",
   "version": "1.0.0",
   "description": "Zen Protocol block explorer",
-  "main": "src/index.js",
+  "main": "server/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node server/index.js",
+    "setup": "node build_scripts/setup.js",
+    "dev": "nodemon --inspect=0.0.0.0:5858 -w ./server --legacy-watch server/index.js",
+    "setup:db": "npm run setup:db:test && npm run setup:db:development",
+    "setup:db:test": "cross-env NODE_ENV=test npx sequelize db:create",
+    "setup:db:development": "npx sequelize db:create && npx sequelize db:migrate && npx sequelize db:seed:all",
+    "pretest": "cross-env NODE_ENV=test npx sequelize db:migrate",
+    "test": "cross-env NODE_ENV=test tape server/**/*.test.js | tap-bail | tap-spec",
+    "coverage": "cross-env NODE_ENV=test nyc tape server/**/*.test.js"
   },
   "repository": {
     "type": "git",
@@ -46,7 +54,7 @@
   },
   "nyc": {
     "include": [
-      "src/**"
+      "server/**"
     ]
   }
 }
