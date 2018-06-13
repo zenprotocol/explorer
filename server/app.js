@@ -24,7 +24,7 @@ app.use(logger('dev'));
 app.use(bodyParser.json({ limit: config.get('http:request:limit') }));
 app.use(bodyParser.urlencoded({ extended: false, limit: config.get('http:request:limit') }));
 app.use(helmet());
-app.use(express.static(path.join(__dirname, '..', 'client', 'build')));
+app.use(express.static(path.join(__dirname, '..', 'client', 'build'), { maxAge: '30d' }));
 console.log(path.join(__dirname, '..', 'client', 'build'));
 // routes
 app.use('/', clientRouter);
