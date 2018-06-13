@@ -13,7 +13,10 @@ function init() {
 const Config = {
   get: function(param) {
     return nconf.get(param);
-  }
+  },
+  any: function(keys) {
+    return nconf.any(keys);
+  },
 };
 
 init();

@@ -4,7 +4,7 @@ const app = require('./app');
 const config = require('./config/Config');
 
 const start = () => {
-  const port = config.get('server:port');
+  const port = config.any(['PORT', 'server:port']);
   app.listen(port, () => {
     console.log(`Server running on port ${port}`);
   });
