@@ -10,11 +10,7 @@ const config = require('./config/Config');
 const errorHandlers = require('./errorHandlers');
 
 // routers
-const clientRouter = express.Router();
-clientRouter.route('/')
-  .get((req, res) => {
-    res.sendFile(path.join(__dirname, '..', 'client', 'build', 'index.html'));
-  });
+const clientRouter = require('./components/client/clientRouter');
 
 const app = express();
 
@@ -24,8 +20,7 @@ app.use(logger('dev'));
 app.use(bodyParser.json({ limit: config.get('http:request:limit') }));
 app.use(bodyParser.urlencoded({ extended: false, limit: config.get('http:request:limit') }));
 app.use(helmet());
-app.use(express.static(path.join(__dirname, '..', 'client', 'build'), { maxAge: '30d' }));
-console.log(path.join(__dirname, '..', 'client', 'build'));
+
 // routes
 app.use('/', clientRouter);
 
