@@ -7,13 +7,13 @@
 # Development
 
 ## Docker
-1. run `npm run setup` to create an env file
+1. **first time** - run `npm run setup` to create an env file
 2. `docker-compose up` in the root directory
 3. in another shell, `docker-compose exec web sh` to connect to the web container.  
 From there you can use `npm`
 
 ## First time
-1. log in to the docker web container
+1. log in to the docker web container as explained in [docker](#docker) 
 2. run `npm run setup:db`
 3. outside of the container, to get linting in your editor, also run `npm install`
 4. working with npm should be done from inside of the container (the node_modules folder that is actually used is the one inside of the container)
