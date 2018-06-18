@@ -5,7 +5,7 @@ const wrapAsync = require('../common/wrapAsyncForExpressErrors');
 const clientRenderer = require('./clientRenderer');
 
 router.get('/', clientRenderer);
-router.use(
+router.use('/public',
   express.static(path.join(__dirname, '..', '..', '..', 'client', 'build'), { maxAge: '30d', index: false })
 );
 
