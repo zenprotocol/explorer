@@ -5,6 +5,7 @@
   "main": "server/index.js",
   "scripts": {
     "start": "node server/index.js",
+    "heroku-postbuild": "cd client && npm install && npm run build",
     "setup": "node build_scripts/setup.js",
     "dev": "nodemon --inspect=0.0.0.0:5858 -w ./server --legacy-watch server/index.js",
     "setup:db": "npm run setup:db:test && npm run setup:db:development",
