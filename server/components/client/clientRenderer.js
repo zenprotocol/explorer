@@ -14,7 +14,7 @@ module.exports = (req, res, next) => {
     const html = ReactDOMServer.renderToString(<App />);
 
     // inject the rendered app into our html and send it
-    return res.send(htmlData.replace('<div id="root"></div>', `<div id="root">${html}</div>`));
+    res.send(htmlData.replace('<div id="root"></div>', `<div id="root">${html}</div>`));
   } catch (err) {
     next(err);
   }
