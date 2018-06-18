@@ -19,4 +19,4 @@ yarn-error.log*
 
 # generated
 bootstrap.css
-# build/
+build/
