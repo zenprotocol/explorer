@@ -21,16 +21,16 @@ module.exports = {
         type: Sequelize.STRING
       },
       timestamp: {
-        type: Sequelize.INTEGER
+        type: Sequelize.BIGINT
       },
       difficulty: {
-        type: Sequelize.INTEGER
+        type: Sequelize.BIGINT
       },
       nonce1: {
-        type: Sequelize.INTEGER
+        type: Sequelize.BIGINT
       },
       nonce2: {
-        type: Sequelize.INTEGER
+        type: Sequelize.BIGINT
       },
       createdAt: {
         allowNull: false,

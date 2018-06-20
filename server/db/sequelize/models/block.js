@@ -5,10 +5,10 @@ module.exports = (sequelize, DataTypes) => {
     parent: DataTypes.STRING,
     blockNumber: DataTypes.INTEGER,
     commitments: DataTypes.STRING,
-    timestamp: DataTypes.INTEGER,
-    difficulty: DataTypes.INTEGER,
-    nonce1: DataTypes.INTEGER,
-    nonce2: DataTypes.INTEGER
+    timestamp: DataTypes.BIGINT,
+    difficulty: DataTypes.BIGINT,
+    nonce1: DataTypes.BIGINT,
+    nonce2: DataTypes.BIGINT
   }, {});
   Block.associate = function(models) {
     // associations can be defined here
