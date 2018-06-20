@@ -7,10 +7,10 @@ const createDAL = modelName => {
   return {
     model: modelName,
     db: db,
-    async findAll() {
+    async findAll(options) {
       return new Promise((resolve, reject) => {
         this.db[this.model]
-          .findAll()
+          .findAll(options)
           .then(resolve)
           .catch(error => {
             reject(wrapORMErrors(error));
