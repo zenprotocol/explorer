@@ -1,9 +1,16 @@
 'use strict';
 
 const path = require('path');
+const dotenv = require('dotenv');
 const nconf = require('nconf');
 
+function loadEnvironmentVarsFromEnvFile() {
+  // does not override vars that are already in the environment
+  dotenv.config();
+}
+
 function init() {
+  loadEnvironmentVarsFromEnvFile();
   nconf.argv().env('__'); // use __ for nested environment variables
   const environment = nconf.get('NODE_ENV') || 'development';
   // make sure NODE_ENV is not undefined
