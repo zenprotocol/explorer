@@ -29,16 +29,21 @@ module.exports = async function() {
     for (let blockNumber = latestBlockNumberInDB + 1; blockNumber <= latestBlockNumberInNode; blockNumber++) {
       const newBlock = await service.blocks.getBlock(blockNumber);
 
-      await blocksDAL.create({
-        version: newBlock.header.version,
-        parent: newBlock.header.parent,
-        blockNumber: newBlock.header.blockNumber,
-        commitments: newBlock.header.commitments,
-        timestamp: newBlock.header.timestamp,
-        difficulty: newBlock.header.difficulty,
-        nonce1: newBlock.header.nonce[0],
-        nonce2: newBlock.header.nonce[1],
-      });
+      try {
+        await blocksDAL.create({
+          version: newBlock.header.version,
+          parent: newBlock.header.parent,
+          blockNumber: newBlock.header.blockNumber,
+          commitments: newBlock.header.commitments,
+          timestamp: newBlock.header.timestamp,
+          difficulty: newBlock.header.difficulty,
+          nonce1: newBlock.header.nonce[0],
+          nonce2: newBlock.header.nonce[1],
+        });
+      } catch (error) {
+        // do not skip a block
+        break;
+      }
       numberOfBlocksAdded++;
     }
   }
