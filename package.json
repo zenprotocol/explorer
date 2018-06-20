@@ -27,6 +27,7 @@
   "homepage": "https://github.com/zenprotocol/explorer#readme",
   "dependencies": {
     "asset-require-hook": "^1.2.0",
+    "axios": "^0.18.0",
     "babel-preset-env": "^1.7.0",
     "babel-preset-react-app": "^3.1.1",
     "babel-register": "^6.26.0",
