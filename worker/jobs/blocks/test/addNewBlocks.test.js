@@ -50,10 +50,10 @@ test('Add New Blocks When some already in DB', async function(t) {
   // add demo first block in DB
   await blocksDAL.create({
     version: 0,
-    parent: '9f139787dd7252fc73d2b9e82185ef84a7f695e96a959774a32cef3c7a64d82a',
+    parent: 'test parent',
     blockNumber: 1,
-    commitments: 'e32aa20428865456f5865b4e503605ea5726d6fbdf802a3ce6ff16264299ff0f',
-    timestamp: 1529480669021,
+    commitments: 'test commitments',
+    timestamp: 123456789,
     difficulty: 486539008,
     nonce1: -8412464686019857620,
     nonce2: 25078183,
