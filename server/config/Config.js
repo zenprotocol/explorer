@@ -23,6 +23,11 @@ const Config = {
   get: function(param) {
     return nconf.get(param);
   },
+  /**
+   * Get any of the supplied keys by order
+   *
+   * @param {string[]} keys
+   */
   any: function(keys) {
     return nconf.any(keys);
   },

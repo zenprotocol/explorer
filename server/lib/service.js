@@ -20,7 +20,6 @@ function sendHttpRequest(config) {
   if(globalMute) {
     return Promise.resolve({data: {}});
   }
-
   return request.request(config).catch((error) => {
     throw new NetworkError(error);
   });
