@@ -1,6 +1,6 @@
 const router = require('express').Router();
 const controller = require('./blocksController');
-const wrapAsync = require('../common/wrapAsyncForExpressErrors');
+const wrapAsync = require('../../../lib/wrapAsyncForExpressErrors');
 
 router.route('/')
   .get(wrapAsync(controller.index))

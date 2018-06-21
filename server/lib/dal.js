@@ -1,6 +1,6 @@
 'use strict';
 
-const db = require('../../db/sequelize/models');
+const db = require('../db/sequelize/models');
 const wrapORMErrors = require('./wrapORMErrors');
 
 const createDAL = modelName => {

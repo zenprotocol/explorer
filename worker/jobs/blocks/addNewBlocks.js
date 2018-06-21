@@ -1,7 +1,7 @@
 'use strict';
 
 const service = require('../../../server/lib/service');
-const blocksDAL = require('../../../server/components/blocks/blocksDAL');
+const blocksDAL = require('../../../server/components/api/blocks/blocksDAL');
 const logger = require('../../lib/logger');
 
 async function getLatestBlockNumberFromNode() {

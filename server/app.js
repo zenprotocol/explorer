@@ -13,7 +13,7 @@ const errorHandlers = require('./errorHandlers');
 
 // routers
 const clientRouter = require('./components/client/clientRouter');
-const blocksRouter = require('./components/blocks/blocksRoutes');
+const blocksRouter = require('./components/api/blocks/blocksRoutes');
 
 const app = express();
 

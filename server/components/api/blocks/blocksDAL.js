@@ -1,6 +1,6 @@
 'use strict';
 
-const dal = require('../common/dal');
+const dal = require('../../../lib/dal');
 
 const blocksDAL = dal.createDAL('Block');
 

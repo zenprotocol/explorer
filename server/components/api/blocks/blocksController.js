@@ -2,8 +2,8 @@
 
 const httpStatus = require('http-status');
 const blocksDAL = require('./blocksDAL');
-const jsonResponse = require('../common/jsonResponse');
-const HttpError = require('../common/HttpError');
+const jsonResponse = require('../../../lib/jsonResponse');
+const HttpError = require('../../../lib/HttpError');
 
 module.exports = {
   index: async function(req, res) {

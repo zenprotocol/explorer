@@ -1,6 +1,6 @@
 'use strict';
 
-const jsonResponse = require('./components/common/jsonResponse');
+const jsonResponse = require('./lib/jsonResponse');
 
 const register = app => {
   app.use(function(req, res, next) {
