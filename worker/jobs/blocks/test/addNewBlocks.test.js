@@ -17,7 +17,7 @@ test('Add New Blocks When 0 in DB', async function(t) {
   // get latest block number from zp node
   const info = await service.blocks.getChainInfo();
   t.assert(info.blocks, 'chain info should contain a "blocks" attribute');
-  t.assert(typeof info.blocks === 'number', '"blocks" attribute attribute should be a number');
+  t.assert(typeof info.blocks === 'number', '"blocks" attribute should be a number');
   // compare and set a bool indicating if should add
   let shouldAddBlocks = false;
   if (info.blocks > 0) {
@@ -39,8 +39,7 @@ test('Add New Blocks When 0 in DB', async function(t) {
       );
     }
   } catch (error) {
-    // todo - maybe later add errors management
-    t.fail('addNewBlocks should not throw an error');
+    t.equals(error.name, 'NetworkError', 'Should throw a custom NetworkError');
   }
 });
 
@@ -89,7 +88,43 @@ test('Add New Blocks When some already in DB', async function(t) {
       );
     }
   } catch (error) {
-    // todo - maybe later add errors management
-    t.fail('addNewBlocks should not throw an error');
+    t.equals(error.name, 'NetworkError', 'Should throw a custom NetworkError');
   }
+});
+
+test('Add New Blocks - Empty response from chain node', async function(t) {
+  await truncate();
+
+  // mute the service to get empty responses
+  service.config.mute(true);
+
+  // get latest block number from zp node
+  const info = await service.blocks.getChainInfo();
+  t.assert(!info.blocks, 'chain info "blocks" attribute should be empty');
+
+  try {
+    const numOfBlocksAdded = await addNewBlocks();
+    t.equals(numOfBlocksAdded, 0, 'Should not have added new blocks');
+  } catch (error) {
+    t.fail('should not throw an error');
+  }
+
+  service.config.mute(false);
+});
+
+test('Add New Blocks - Network error when getting blocks info from node', async function(t) {
+  await truncate();
+
+  // mute the service to get empty responses
+  service.config.setBaseUrl('http://1.1.1.1:8080');
+  service.config.setTimeout(500);
+  try {
+    const numOfBlocksAdded = await addNewBlocks();
+    t.fail('Should throw an error');
+  } catch (error) {
+    t.equals(error.name, 'NetworkError', 'Should throw a custom NetworkError');
+  }
+  
+  service.config.setBaseUrl(Config.get('zp:node'));
+  service.config.setTimeout(0);
 });
