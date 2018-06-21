@@ -6,6 +6,7 @@
     "host": "db",
     "dialect": "postgres"
   },
+  "redis": "redis://redis:6379",
   "encryption": {
     "saltRounds": 2
   },

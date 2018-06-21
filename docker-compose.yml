@@ -11,7 +11,15 @@ services:
       - 5858:5858
     depends_on:
       - db
+      - redis
   db:
     image: postgres:10.4-alpine
     environment:
       - POSTGRES_PASSWORD=${db__password}
+  redis:
+    image: redis:4.0-alpine
+    command: ["redis-server", "--appendonly", "yes"]
+    volumes:
+      - './data/redis:/data'
+    ports:
+      - '6379:6379'

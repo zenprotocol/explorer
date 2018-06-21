@@ -13,3 +13,9 @@ coverage
 *.env
 *.dev
 .DS_Store
+
+# containers volumes
+/data
+
+# logs
+/logs

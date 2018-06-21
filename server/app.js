@@ -13,6 +13,7 @@ const errorHandlers = require('./errorHandlers');
 
 // routers
 const clientRouter = require('./components/client/clientRouter');
+const blocksRouter = require('./components/blocks/blocksRoutes');
 
 const app = express();
 
@@ -25,6 +26,7 @@ app.use(helmet());
 
 // routes
 app.use('/', clientRouter);
+app.use('/blocks', blocksRouter);
 
 // errors
 errorHandlers.register(app);
