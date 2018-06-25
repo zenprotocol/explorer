@@ -1,11 +1,11 @@
 'use strict';
 
-const service = require('../../../server/lib/service');
+const Service = require('../../../server/lib/Service');
 const blocksDAL = require('../../../server/components/api/blocks/blocksDAL');
 const logger = require('../../lib/logger');
 
 async function getLatestBlockNumberFromNode() {
-  const info = await service.blocks.getChainInfo();
+  const info = await Service.blocks.getChainInfo();
   return info.blocks;
 }
 
@@ -34,7 +34,7 @@ module.exports = async function addNewBlocks() {
     // add the block synced to have the right incrementing ids
     for (let blockNumber = latestBlockNumberInDB + 1; blockNumber <= latestBlockNumberInNode; blockNumber++) {
       logger.info(`Getting block #${blockNumber} from NODE...`);
-      const newBlock = await service.blocks.getBlock(blockNumber);
+      const newBlock = await Service.blocks.getBlock(blockNumber);
       logger.info(`Got block #${newBlock.header.blockNumber} from NODE...`);
 
       try {

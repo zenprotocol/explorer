@@ -1,7 +1,7 @@
 'use strict';
 
 const test = require('blue-tape');
-const service = require('../../../../server/lib/service');
+const Service = require('../../../../server/lib/Service');
 const truncate = require('../../../../test/truncate');
 const blocksDAL = require('../../../../server/components/api/blocks/blocksDAL');
 const addNewBlocks = require('../addNewBlocks');
@@ -15,7 +15,7 @@ test('Add New Blocks When 0 in DB', async function(t) {
   await truncate();
 
   // get latest block number from zp node
-  const info = await service.blocks.getChainInfo();
+  const info = await Service.blocks.getChainInfo();
   t.assert(info.blocks, 'chain info should contain a "blocks" attribute');
   t.assert(typeof info.blocks === 'number', '"blocks" attribute should be a number');
   // compare and set a bool indicating if should add
@@ -64,7 +64,7 @@ test('Add New Blocks When some already in DB', async function(t) {
   const latestBlock = latestBlocks[0];
 
   // get latest block number from zp node
-  const info = await service.blocks.getChainInfo();
+  const info = await Service.blocks.getChainInfo();
   t.assert(info.blocks, 'chain info should contain a "blocks" attribute');
   t.assert(typeof info.blocks === 'number', '"blocks" attribute should be a number');
   // compare and set a bool indicating if should add
@@ -96,10 +96,10 @@ test('Add New Blocks - Empty response from chain node', async function(t) {
   await truncate();
 
   // mute the service to get empty responses
-  service.config.mute(true);
+  Service.config.mute(true);
 
   // get latest block number from zp node
-  const info = await service.blocks.getChainInfo();
+  const info = await Service.blocks.getChainInfo();
   t.assert(!info.blocks, 'chain info "blocks" attribute should be empty');
 
   try {
@@ -109,15 +109,15 @@ test('Add New Blocks - Empty response from chain node', async function(t) {
     t.fail('should not throw an error');
   }
 
-  service.config.mute(false);
+  Service.config.mute(false);
 });
 
 test('Add New Blocks - Network error when getting blocks info from node', async function(t) {
   await truncate();
 
   // mute the service to get empty responses
-  service.config.setBaseUrl('http://1.1.1.1:8080');
-  service.config.setTimeout(500);
+  Service.config.setBaseUrl('http://1.1.1.1:8080');
+  Service.config.setTimeout(500);
   try {
     const numOfBlocksAdded = await addNewBlocks();
     t.fail('Should throw an error');
@@ -125,6 +125,6 @@ test('Add New Blocks - Network error when getting blocks info from node', async 
     t.equals(error.name, 'NetworkError', 'Should throw a custom NetworkError');
   }
   
-  service.config.setBaseUrl(Config.get('zp:node'));
-  service.config.setTimeout(0);
+  Service.config.setBaseUrl(Config.get('zp:node'));
+  Service.config.setTimeout(0);
 });
