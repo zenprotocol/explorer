@@ -7,7 +7,11 @@ const HttpError = require('../../../lib/HttpError');
 
 module.exports = {
   index: async function(req, res) {
-    const allBlocks = await blocksDAL.findAll();
+    const allBlocks = await blocksDAL.findAll({
+      order: [
+        ['blockNumber', 'DESC']
+      ]
+    });
     res.status(httpStatus.OK).json(jsonResponse.create(httpStatus.OK, allBlocks));
   },
   show: async function(req, res) {
