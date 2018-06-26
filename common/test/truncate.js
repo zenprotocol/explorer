@@ -1,4 +1,4 @@
-const db = require('../server/db/sequelize/models');
+const db = require('../../server/db/sequelize/models');
 
 module.exports = async () => {
   return await Promise.all(

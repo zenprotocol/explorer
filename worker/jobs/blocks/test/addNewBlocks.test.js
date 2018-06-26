@@ -2,7 +2,7 @@
 
 const test = require('blue-tape');
 const Service = require('../../../../server/lib/Service');
-const truncate = require('../../../../test/truncate');
+const truncate = require('../../../../common/test/truncate');
 const blocksDAL = require('../../../../server/components/api/blocks/blocksDAL');
 const addNewBlocks = require('../addNewBlocks');
 const Config = require('../../../../server/config/Config');
