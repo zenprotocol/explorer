@@ -5,7 +5,6 @@ import './BlocksTable.css';
 import PaginationComponent from './Pagination';
 
 const PAGE_SIZES = [5, 10, 20, 50, 100];
-const MAX_PAGINATION_BUTTONS = 5;
 
 export default class BlocksTable extends Component {
   constructor(props) {

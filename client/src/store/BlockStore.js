@@ -1,13 +1,7 @@
-import {observable, decorate, action, autorun} from 'mobx';
+import {observable, decorate, action} from 'mobx';
 
 class BlockStore {
   blocks = [];
-
-  // constructor() {
-  //   autorun(() => {
-  //     console.log('Blocks were changed', this.blocks);
-  //   });
-  // }
 
   setBlocks(blocks) {
     this.blocks = blocks;
