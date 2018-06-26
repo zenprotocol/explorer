@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import classnames from 'classnames';
 
+const PAGES_TO_SHOW = 4;
+
 export default class ReactTablePagination extends Component {
   constructor(props) {
     super();
@@ -60,7 +62,7 @@ export default class ReactTablePagination extends Component {
     return (
       <div className={classnames(className, '-pagination')} style={this.props.style}>
         <nav aria-label="Page navigation">
-          <ul className="pagination">
+          <ul className="pagination pagination-sm">
             <li className="page-item">
               <a
                 className="page-link"
@@ -143,9 +145,9 @@ export default class ReactTablePagination extends Component {
     for (let i = 0; i < pages; i++) {
       if (
         i === 0 ||
-        (i < 5 && page < 2) ||
-        (Math.abs(page - i) < 3 && page >= 2) ||
-        (i >= pages - 5 && page >= pages - 2) ||
+        (i < PAGES_TO_SHOW && page < 2) ||
+        (Math.abs(page - i) < PAGES_TO_SHOW - 2 && page >= 2) ||
+        (i >= pages - PAGES_TO_SHOW && page >= pages - 2) ||
         i === pages - 1
       ) {
         pageButtonsNumbers.push(i);
