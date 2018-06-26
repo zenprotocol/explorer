@@ -12,10 +12,32 @@
   letter-spacing: -0.5px;
 }
 
+.ReactTable .pagination-bottom {
+  margin-top: 30px;
+}
 .ReactTable .-pagination {
   justify-content: flex-end;
 }
 
 .BlocksTable h1 {
   color: #ffffff;
+}
+
+.BlocksTable .page-link {
+  background-color: transparent;
+  border-color: #303030;
+  user-select: none;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+}
+
+.BlocksTable .page-item.active .page-link {
+  z-index: 1;
+  color: #fff;
+  background-color: #84D1ED;
+  border-color: #303030;
+}
+
+.BlocksTable .pagination {
+  margin-bottom: 0;
 }
