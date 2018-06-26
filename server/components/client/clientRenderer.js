@@ -4,9 +4,9 @@ const path = require('path');
 const fs = require('fs');
 
 // import our main App component
-import App from '../../../client/src/App';
+import App from '../../../src/App';
 module.exports = (req, res, next) => {
-  const filePath = path.resolve(__dirname, '..', '..', '..', 'client', 'build', 'index.html');
+  const filePath = path.resolve(__dirname, '..', '..', '..', 'build', 'index.html');
 
   try {
     const htmlData = fs.readFileSync(filePath, { encoding: 'utf8' });

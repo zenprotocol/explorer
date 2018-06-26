@@ -6,7 +6,7 @@ const clientRenderer = require('./clientRenderer');
 
 router.get('/', clientRenderer);
 router.use('/public',
-  express.static(path.join(__dirname, '..', '..', '..', 'client', 'build'), { maxAge: '30d', index: false })
+  express.static(path.join(__dirname, '..', '..', '..', 'build'), { maxAge: '30d', index: false })
 );
 
 module.exports = router;
