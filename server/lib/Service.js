@@ -2,7 +2,7 @@
 
 const axios = require('axios');
 const Config = require('../config/Config');
-const NetworkError = require('../lib/NetworkError');
+const NetworkError = require('./NetworkError');
 const request = axios.create({
   baseURL: Config.get('zp:node'),
 });
