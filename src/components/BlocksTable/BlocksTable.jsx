@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import ReactTable from 'react-table';
 import 'react-table/react-table.css';
 import './BlocksTable.css';
-import PaginationComponent from './Pagination';
+import PaginationComponent from './Pagination.jsx';
 
 const PAGE_SIZES = [5, 10, 20, 50, 100];
 

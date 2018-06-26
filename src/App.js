@@ -4,7 +4,7 @@ import Service from './lib/Service';
 import BlocksStore from './store/BlockStore';
 import logo from './logo_big.png';
 import './App.css';
-import BlocksTable from './components/BlocksTable/BlocksTable';
+import BlocksTable from './components/BlocksTable/BlocksTable.jsx';
 
 class App extends Component {
   constructor(props) {
