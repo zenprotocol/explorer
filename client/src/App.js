@@ -4,7 +4,7 @@ import Service from './lib/Service';
 import BlocksStore from './store/BlockStore';
 import logo from './logo_big.png';
 import './App.css';
-import BlocksTable from './components/BlocksTable';
+import BlocksTable from './components/BlocksTable/BlocksTable';
 
 class App extends Component {
   constructor(props) {
@@ -28,8 +28,9 @@ class App extends Component {
           </header>
         </div>
         <div className="container">
-          <h1>LATEST BLOCKS</h1>
-          <BlocksTable blocks={this.blocksStore.blocks} />
+          <div className="App-table-container border-left border-primary pl-lg-4 position-relative">
+            <BlocksTable blocks={this.blocksStore.blocks} title="LATEST BLOCKS" />
+          </div>
         </div>
       </div>
     );

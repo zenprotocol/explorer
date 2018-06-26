@@ -1,5 +1,8 @@
+@import url('https://fonts.googleapis.com/css?family=Roboto:400,500');
+
 .App {
   color: #999999;
+  font-family: 'Roboto', sans-serif;
 }
 
 .App-header {
@@ -9,4 +12,16 @@
 .App-logo {
   height: 100%;
   width: auto;
+}
+
+@media (max-width: 991.98px) {
+  .App-table-container {
+    border: none !important;
+  }
+}
+
+select, input {
+  background-color: transparent !important;
+  color: #999999 !important;
+  border-color: #303030 !important;
 }
