@@ -1,7 +1,9 @@
 import {observable, decorate, action} from 'mobx';
 
 class BlockStore {
-  blocks = [];
+  constructor() {
+    this.blocks = [];
+  }
 
   setBlocks(blocks) {
     this.blocks = blocks;
