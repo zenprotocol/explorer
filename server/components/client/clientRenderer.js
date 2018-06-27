@@ -24,7 +24,6 @@ module.exports = (req, res, next) => {
       </Router>)
     );
 
-    console.log(html);
     if (context.url) {
       res.redirect(301, context.url);
     } else {
