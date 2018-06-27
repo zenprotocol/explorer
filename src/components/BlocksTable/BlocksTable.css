@@ -1,15 +1,30 @@
-.ReactTable .rt-th {
+.ReactTable .rt-thead .rt-th {
   font-weight: 500;
-  font-size: 1rem;
+  font-size: 0.9rem;
   text-transform: uppercase;
   color: #f2f2f2;
   text-align: left;
+  padding: 16px 12px;
+}
+.ReactTable .rt-thead .rt-th:first-child {
+  padding-left: 0 !important;
+}
+.ReactTable .rt-thead .rt-th:last-child {
+  padding-right: 0 !important;
 }
 
 .ReactTable .rt-td {
   font-weight: 400;
-  font-size: 0.9rem;
+  font-size: 0.8rem;
   letter-spacing: -0.5px;
+  padding: 12px 12px;
+}
+
+.ReactTable .rt-td:first-child {
+  padding-left: 0 !important;
+}
+.ReactTable .rt-td:last-child {
+  padding-right: 0 !important;
 }
 
 .ReactTable .pagination-bottom {
@@ -19,13 +34,16 @@
   justify-content: flex-end;
 }
 
-.BlocksTable h1 {
-  color: #ffffff;
+
+
+.BlocksTable .medianTime {
+  font-size: 0.8rem;
 }
 
 .BlocksTable .page-link {
   background-color: transparent;
   border-color: #303030;
+  color: #a6a6a6 !important;
   user-select: none;
   font-size: 0.9rem;
   text-transform: uppercase;
@@ -33,11 +51,20 @@
 
 .BlocksTable .page-item.active .page-link {
   z-index: 1;
-  color: #fff;
-  background-color: #84D1ED;
+  color: #f2f2f2 !important;
+  background-color: #a6a6a6;
   border-color: #303030;
 }
 
 .BlocksTable .pagination {
   margin-bottom: 0;
+}
+
+.BlocksTable .BlocksTable-pageSizes {
+  font-size: 0.8rem;
+  color: #a6a6a6;
+}
+
+.BlocksTable .BlocksTable-pageSizes .form-control {
+  font-size: 0.8rem;
 }

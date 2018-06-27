@@ -1,17 +1,12 @@
 @import url('https://fonts.googleapis.com/css?family=Roboto:400,500');
 
 .App {
-  color: #999999;
+  color: #bfbfbf;
   font-family: 'Roboto', sans-serif;
 }
 
-.App-header {
-  height: 30px;
-}
-
-.App-logo {
-  height: 100%;
-  width: auto;
+.App-separator {
+  border-bottom: 1px solid #303030;
 }
 
 @media (max-width: 991.98px) {

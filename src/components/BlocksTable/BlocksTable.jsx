@@ -5,6 +5,7 @@ import './BlocksTable.css';
 import PaginationComponent from './Pagination.jsx';
 
 const PAGE_SIZES = [5, 10, 20, 50, 100];
+const MIN_COL_WIDTH = 140;
 
 export default class BlocksTable extends Component {
   constructor(props) {
@@ -20,14 +21,24 @@ export default class BlocksTable extends Component {
   getTableColumns() {
     return [
       {
+        Header: 'Timestamp',
+        accessor: 'timestamp',
+        minWidth: MIN_COL_WIDTH,
+        Cell: function(data) {
+          const date = new Date(Number(data.value));
+          return date.toUTCString();
+        },
+      },
+      {
         Header: 'Block number',
         accessor: 'blockNumber',
         className: 'text-primary',
+        width: MIN_COL_WIDTH,
       },
       {
         Header: 'Version',
         accessor: 'version',
-        width: 80,
+        width: 100,
       },
       {
         Header: 'Parent',
@@ -38,14 +49,12 @@ export default class BlocksTable extends Component {
         Header: 'Commitments',
         accessor: 'commitments',
         className: 'text-primary',
-      },
-      {
-        Header: 'Timestamp',
-        accessor: 'timestamp',
+        minWidth: MIN_COL_WIDTH,
       },
       {
         Header: 'Difficulty',
         accessor: 'difficulty',
+        minWidth: MIN_COL_WIDTH,
       },
       {
         Header: 'Nonce1',
@@ -54,6 +63,7 @@ export default class BlocksTable extends Component {
       {
         Header: 'Nonce2',
         accessor: 'nonce2',
+        minWidth: 80,
       },
     ];
   }
@@ -75,10 +85,18 @@ export default class BlocksTable extends Component {
     return (
       <div className="BlocksTable">
         <div className="clearfix">
-          {this.props.blocks.length ? <div>{this.getLatestBlockDateString()}</div> : ''}
-          {this.props.title && <h1 className="d-block d-sm-inline-block">{this.props.title}</h1>}
+          {this.props.blocks.length ? (
+            <div className="medianTime mb-1 mb-lg-2">{this.getLatestBlockDateString()}</div>
+          ) : (
+            ''
+          )}
+          {this.props.title && (
+            <h1 className="d-block d-sm-inline-block text-white mb-3 mb-lg-5">
+              {this.props.title}
+            </h1>
+          )}
           <div className="BlocksTable-pageSizes form-inline float-sm-right">
-            <span className="mr-1 d-none d-md-inline-block">SHOW</span>
+            <span className="mr-2 d-none d-md-inline-block">SHOW</span>
             <select
               value={this.state.pageSize}
               onChange={this.setPageSize}
@@ -92,7 +110,7 @@ export default class BlocksTable extends Component {
                 );
               })}
             </select>
-            <span className="ml-1 d-none d-md-inline-block">ENTRIES</span>
+            <span className="ml-2 d-none d-md-inline-block">ENTRIES</span>
           </div>
         </div>
         <ReactTable
