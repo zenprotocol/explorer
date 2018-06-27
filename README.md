@@ -21,3 +21,11 @@ From there you can use `npm`
 ## Sequelize (ORM)
 we use sequelize to talk to the database  
 in the docker web container, run `npx sequelize` to see all cli options.
+
+## Folder Structure
+The project contain both the client and the server:
+- **common** - common code that can be used between processes
+- **public** - client public source files
+- **server** - server code
+- **src** - client source
+- **worker** - server worker jobs & scheduler
