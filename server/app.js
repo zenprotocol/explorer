@@ -28,8 +28,8 @@ app.use(bodyParser.urlencoded({ extended: false, limit: config.get('http:request
 app.use(helmet());
 
 // routes
-app.use('/', clientRouter);
 app.use('/api', apiRouter);
+app.use('/', clientRouter);
 
 // errors
 errorHandlers.register(app);

@@ -9,12 +9,6 @@
   border-bottom: 1px solid #303030;
 }
 
-@media (max-width: 991.98px) {
-  .App-table-container {
-    border: none !important;
-  }
-}
-
 select, input {
   background-color: transparent !important;
   color: #999999 !important;
