@@ -75,11 +75,7 @@ export default class BlocksTable extends Component {
     return (
       <div className="BlocksTable">
         <div className="clearfix">
-          {this.props.blocks.length && (
-            <div>
-              {this.getLatestBlockDateString()}
-            </div>
-          )}
+          {this.props.blocks.length ? <div>{this.getLatestBlockDateString()}</div> : ''}
           {this.props.title && <h1 className="d-block d-sm-inline-block">{this.props.title}</h1>}
           <div className="BlocksTable-pageSizes form-inline float-sm-right">
             <span className="mr-1 d-none d-md-inline-block">SHOW</span>
