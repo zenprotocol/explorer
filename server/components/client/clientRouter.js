@@ -1,7 +1,6 @@
 const path = require('path');
 const express = require('express');
 const router = express.Router();
-const wrapAsync = require('../../lib/wrapAsyncForExpressErrors');
 const clientRenderer = require('./clientRenderer');
 
 router.use('/public',
