@@ -7,19 +7,37 @@ const HttpError = require('../../../lib/HttpError');
 
 module.exports = {
   index: async function(req, res) {
-    const allBlocks = await blocksDAL.findAll({
-      order: [
-        ['blockNumber', 'DESC']
-      ]
-    });
-    res.status(httpStatus.OK).json(jsonResponse.create(httpStatus.OK, allBlocks));
+    const page = req.query.page || 0;
+    const pageSize = req.query.pageSize;
+    const filtered = req.query.filtered || []; // TODO not yet in use!
+    const sorted =
+      req.query.sorted && req.query.sorted != '[]'
+        ? JSON.parse(req.query.sorted)
+        : [{ id: 'blockNumber', desc: true }];
+
+    let query = {
+      order: sorted.map(item => {
+        return [item.id, item.desc ? 'DESC' : 'ASC'];
+      }),
+    };
+    if (pageSize) {
+      query.limit = pageSize;
+      query.offset = page * pageSize;
+    }
+    const [count, allBlocks] = await Promise.all([blocksDAL.count(), blocksDAL.findAll(query)]);
+
+    res.status(httpStatus.OK).json(
+      jsonResponse.create(httpStatus.OK, {
+        items: allBlocks,
+        total: count,
+      })
+    );
   },
   show: async function(req, res) {
     const block = await blocksDAL.findById(req.params.id);
-    if(block) {
+    if (block) {
       res.status(httpStatus.OK).json(jsonResponse.create(httpStatus.OK, block));
-    }
-    else {
+    } else {
       throw new HttpError(httpStatus.NOT_FOUND);
     }
   },

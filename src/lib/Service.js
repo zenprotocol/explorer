@@ -32,10 +32,11 @@ export default {
     },
   },
   blocks: {
-    async find() {
+    async find(params) {
       return sendHttpRequest({
         url: Endpoints.blocks,
         method: 'get',
+        params: params,
       }).then(response => response.data);
     },
   },

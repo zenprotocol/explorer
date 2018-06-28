@@ -4,8 +4,8 @@ import { observer } from 'mobx-react';
 import 'react-table/react-table.css';
 import './BlocksTable.css';
 import PaginationComponent from './Pagination.jsx';
+import PropTypes from 'prop-types';
 
-const PAGE_SIZES = [5, 10, 20, 50, 100];
 const MIN_COL_WIDTH = 140;
 
 class BlocksTable extends Component {
@@ -13,12 +13,14 @@ class BlocksTable extends Component {
     super(props);
 
     this.state = {
-      pageSize: 10,
+      pageSize: props.pageSize,
       page: 0,
     };
 
     this.setPageSize = this.setPageSize.bind(this);
+    this.fetchData = this.fetchData.bind(this);
   }
+  
   getTableColumns() {
     return [
       {
@@ -73,21 +75,25 @@ class BlocksTable extends Component {
     this.setState({ pageSize: Number(event.target.value) });
   }
 
-  getLatestBlockDateString() {
-    if (this.props.store.blocks.length) {
-      return new Date(
-        Number(this.props.store.blocks[this.props.store.blocks.length - 1].timestamp)
-      ).toUTCString();
+  getMedianTimeString() {
+    if (this.props.store.medianTime) {
+      return this.props.store.medianTime.toUTCString();
     }
     return null;
   }
 
+  fetchData(state) {
+    this.props.store.fetchBlocks({pageSize: state.pageSize,page: state.page, sorted: state.sorted});
+  }
+
   render() {
+    const store = this.props.store;
+    const numOfPages = Math.ceil(store.totalBlocks / this.state.pageSize);
     return (
       <div className="BlocksTable">
         <div className="clearfix">
           {this.props.store.blocks.length ? (
-            <div className="medianTime mb-1 mb-lg-2">{this.getLatestBlockDateString()}</div>
+            <div className="medianTime mb-1 mb-lg-2">{this.getMedianTimeString()}</div>
           ) : (
             ''
           )}
@@ -103,7 +109,7 @@ class BlocksTable extends Component {
               onChange={this.setPageSize}
               className="form-control d-block d-md-inline-block"
             >
-              {PAGE_SIZES.map(pageSize => {
+              {this.props.pageSizes.map(pageSize => {
                 return (
                   <option key={pageSize} value={pageSize}>
                     {pageSize}
@@ -115,11 +121,14 @@ class BlocksTable extends Component {
           </div>
         </div>
         <ReactTable
-          data={this.props.store.blocks}
+          manual
+          onFetchData={this.fetchData}
+          data={store.blocks}
           columns={this.getTableColumns()}
           showPaginationBottom={true}
           defaultPageSize={10}
-          pageSizeOptions={PAGE_SIZES}
+          pageSizeOptions={this.props.pageSizes}
+          pages={numOfPages}
           pageSize={this.state.pageSize}
           PaginationComponent={PaginationComponent}
           previousText="<"
@@ -129,5 +138,15 @@ class BlocksTable extends Component {
     );
   }
 }
+
+BlocksTable.defaultProps = {
+  pageSizes: [5, 10, 20, 50, 100]
+};
+
+BlocksTable.propTypes = {
+  pageSize: PropTypes.number,
+  pageSizes: PropTypes.array,
+  store: PropTypes.object,
+};
 
 export default observer(BlocksTable);

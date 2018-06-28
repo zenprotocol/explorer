@@ -37,6 +37,16 @@ const createDAL = modelName => {
           });
       });
     },
+    async count(where = {}) {
+      return new Promise((resolve, reject) => {
+        this.db[this.model]
+          .count(where)
+          .then(resolve)
+          .catch(error => {
+            reject(wrapORMErrors(error));
+          });
+      });
+    },
     async create(values = {}) {
       return new Promise((resolve, reject) => {
         this.db[this.model]
