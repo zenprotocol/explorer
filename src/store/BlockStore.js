@@ -15,4 +15,4 @@ decorate(BlockStore, {
   setBlocks: action,
 });
 
-export default BlockStore;
+export default new BlockStore();

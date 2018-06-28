@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import ReactTable from 'react-table';
+import { observer } from 'mobx-react';
 import 'react-table/react-table.css';
 import './BlocksTable.css';
 import PaginationComponent from './Pagination.jsx';
@@ -7,7 +8,7 @@ import PaginationComponent from './Pagination.jsx';
 const PAGE_SIZES = [5, 10, 20, 50, 100];
 const MIN_COL_WIDTH = 140;
 
-export default class BlocksTable extends Component {
+class BlocksTable extends Component {
   constructor(props) {
     super(props);
 
@@ -73,9 +74,9 @@ export default class BlocksTable extends Component {
   }
 
   getLatestBlockDateString() {
-    if (this.props.blocks.length) {
+    if (this.props.store.blocks.length) {
       return new Date(
-        Number(this.props.blocks[this.props.blocks.length - 1].timestamp)
+        Number(this.props.store.blocks[this.props.store.blocks.length - 1].timestamp)
       ).toUTCString();
     }
     return null;
@@ -85,7 +86,7 @@ export default class BlocksTable extends Component {
     return (
       <div className="BlocksTable">
         <div className="clearfix">
-          {this.props.blocks.length ? (
+          {this.props.store.blocks.length ? (
             <div className="medianTime mb-1 mb-lg-2">{this.getLatestBlockDateString()}</div>
           ) : (
             ''
@@ -114,7 +115,7 @@ export default class BlocksTable extends Component {
           </div>
         </div>
         <ReactTable
-          data={this.props.blocks}
+          data={this.props.store.blocks}
           columns={this.getTableColumns()}
           showPaginationBottom={true}
           defaultPageSize={10}
@@ -128,3 +129,5 @@ export default class BlocksTable extends Component {
     );
   }
 }
+
+export default observer(BlocksTable);
