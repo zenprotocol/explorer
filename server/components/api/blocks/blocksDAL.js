@@ -14,4 +14,9 @@ blocksDAL.findLatest = function (amount = 1) {
 };
 blocksDAL.findLatest = blocksDAL.findLatest.bind(blocksDAL);
 
+blocksDAL.addTransaction = async function(block, transaction) {
+  return block.addTransaction(transaction);
+};
+blocksDAL.addTransaction = blocksDAL.addTransaction.bind(blocksDAL);
+
 module.exports = blocksDAL;

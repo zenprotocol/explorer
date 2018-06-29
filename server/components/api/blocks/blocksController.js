@@ -4,26 +4,18 @@ const httpStatus = require('http-status');
 const blocksDAL = require('./blocksDAL');
 const jsonResponse = require('../../../lib/jsonResponse');
 const HttpError = require('../../../lib/HttpError');
+const createQueryObject = require('../../../lib/createQueryObject');
 
 module.exports = {
   index: async function(req, res) {
     const page = req.query.page || 0;
     const pageSize = req.query.pageSize;
-    const filtered = req.query.filtered || []; // TODO not yet in use!
     const sorted =
       req.query.sorted && req.query.sorted != '[]'
         ? JSON.parse(req.query.sorted)
         : [{ id: 'blockNumber', desc: true }];
 
-    let query = {
-      order: sorted.map(item => {
-        return [item.id, item.desc ? 'DESC' : 'ASC'];
-      }),
-    };
-    if (pageSize) {
-      query.limit = pageSize;
-      query.offset = page * pageSize;
-    }
+    const query = createQueryObject({page, pageSize, sorted});
     const [count, allBlocks] = await Promise.all([blocksDAL.count(), blocksDAL.findAll(query)]);
 
     res.status(httpStatus.OK).json(
