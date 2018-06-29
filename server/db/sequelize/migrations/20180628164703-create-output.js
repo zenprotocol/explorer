@@ -20,9 +20,9 @@ module.exports = {
       asset: {
         type: Sequelize.STRING,
       },
-      value: {
+      amount: {
         allowNull: false,
-        type: Sequelize.INTEGER,
+        type: Sequelize.BIGINT,
       },
       index: {
         allowNull: false,

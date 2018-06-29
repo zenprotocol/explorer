@@ -20,8 +20,8 @@ module.exports = {
         allowNull: false,
         type: Sequelize.INTEGER,
       },
-      value: {
-        type: Sequelize.INTEGER,
+      amount: {
+        type: Sequelize.BIGINT,
       },
       createdAt: {
         allowNull: false,

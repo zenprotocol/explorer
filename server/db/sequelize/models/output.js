@@ -7,7 +7,7 @@ module.exports = (sequelize, DataTypes) => {
       contractLockVersion: DataTypes.INTEGER,
       address: DataTypes.STRING,
       asset: DataTypes.STRING,
-      value: DataTypes.INTEGER,
+      amount: DataTypes.BIGINT,
       index: DataTypes.INTEGER,
     },
     {}
