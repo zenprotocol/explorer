@@ -18,7 +18,7 @@ services:
       - POSTGRES_PASSWORD=${db__password}
   redis:
     image: redis:4.0-alpine
-    command: ["redis-server", "--appendonly", "yes"]
+    # command: ["redis-server", "--appendonly", "yes"]
     volumes:
       - './data/redis:/data'
     ports:
