@@ -12,27 +12,35 @@ async function getLatestBlockNumberFromNode() {
 async function getLatestBlockNumberInDB() {
   let blockNumber = 0;
   const latestBlocksInDB = await blocksDAL.findLatest();
-  if(latestBlocksInDB.length) {
+  if (latestBlocksInDB.length) {
     const latestBlockInDB = latestBlocksInDB[0];
     blockNumber = latestBlockInDB.blockNumber;
   }
   return blockNumber;
 }
 
-module.exports = async function addNewBlocks() {
+module.exports = async function addNewBlocks(job) {
   let numberOfBlocksAdded = 0;
   let latestBlockNumberInDB = await getLatestBlockNumberInDB();
   const latestBlockNumberInNode = await getLatestBlockNumberFromNode();
+  const latestBlockNumberToAdd =
+    job && job.data && job.data.limit
+      ? latestBlockNumberInDB + Number(job.data.limit)
+      : latestBlockNumberInNode;
 
   logger.info('Block numbers:\n', {
     latestBlockNumberInDB,
     latestBlockNumberInNode,
-    needsUpdate: latestBlockNumberInNode > latestBlockNumberInDB
+    needsUpdate: latestBlockNumberInNode > latestBlockNumberInDB,
   });
-  
+
   if (latestBlockNumberInNode > latestBlockNumberInDB) {
     // add the block synced to have the right incrementing ids
-    for (let blockNumber = latestBlockNumberInDB + 1; blockNumber <= latestBlockNumberInNode; blockNumber++) {
+    for (
+      let blockNumber = latestBlockNumberInDB + 1;
+      blockNumber <= latestBlockNumberToAdd;
+      blockNumber++
+    ) {
       logger.info(`Getting block #${blockNumber} from NODE...`);
       const newBlock = await Service.blocks.getBlock(blockNumber);
       logger.info(`Got block #${newBlock.header.blockNumber} from NODE...`);

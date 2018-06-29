@@ -7,6 +7,8 @@ const blocksDAL = require('../../../../server/components/api/blocks/blocksDAL');
 const addNewBlocks = require('../addNewBlocks');
 const Config = require('../../../../server/config/Config');
 
+const ADD_BLOCKS_LIMIT = 1;
+
 test.onFinish(() => {
   blocksDAL.db.sequelize.close();
 });
@@ -25,7 +27,7 @@ test('Add New Blocks When 0 in DB', async function(t) {
   }
 
   try {
-    const numOfBlocksAdded = await addNewBlocks();
+    const numOfBlocksAdded = await addNewBlocks({ data: { limit: ADD_BLOCKS_LIMIT } });
 
     if (shouldAddBlocks) {
       t.assert(numOfBlocksAdded > 0, 'Should have added new blocks');
@@ -34,7 +36,7 @@ test('Add New Blocks When 0 in DB', async function(t) {
       t.assert(latestBlocksAfterAdd.length > 0, 'There should be new blocks in the db');
       t.equals(
         latestBlocksAfterAdd[0].blockNumber,
-        info.blocks,
+        ADD_BLOCKS_LIMIT,
         'The block numbers should be equal'
       );
     }
@@ -74,18 +76,14 @@ test('Add New Blocks When some already in DB', async function(t) {
   }
 
   try {
-    const numOfBlocksAdded = await addNewBlocks();
+    const numOfBlocksAdded = await addNewBlocks({ data: { limit: ADD_BLOCKS_LIMIT } });
 
     if (shouldAddBlocks) {
       t.assert(numOfBlocksAdded > 0, 'Should have added new blocks');
 
       const latestBlocksAfterAdd = await blocksDAL.findLatest();
       const latestBlockAfterAdd = latestBlocksAfterAdd[0];
-      t.equals(
-        latestBlockAfterAdd.blockNumber,
-        info.blocks,
-        'The block numbers should be equal'
-      );
+      t.equals(latestBlockAfterAdd.blockNumber, 1 + ADD_BLOCKS_LIMIT, 'The block numbers should be equal');
     }
   } catch (error) {
     t.equals(error.name, 'NetworkError', 'Should throw a custom NetworkError');
@@ -103,7 +101,7 @@ test('Add New Blocks - Empty response from chain node', async function(t) {
   t.assert(!info.blocks, 'chain info "blocks" attribute should be empty');
 
   try {
-    const numOfBlocksAdded = await addNewBlocks();
+    const numOfBlocksAdded = await addNewBlocks({ data: { limit: ADD_BLOCKS_LIMIT } });
     t.equals(numOfBlocksAdded, 0, 'Should not have added new blocks');
   } catch (error) {
     t.fail('should not throw an error');
@@ -119,12 +117,12 @@ test('Add New Blocks - Network error when getting blocks info from node', async 
   Service.config.setBaseUrl('http://1.1.1.1:8080');
   Service.config.setTimeout(500);
   try {
-    const numOfBlocksAdded = await addNewBlocks();
+    const numOfBlocksAdded = await addNewBlocks({ data: { limit: ADD_BLOCKS_LIMIT } });
     t.fail('Should throw an error');
   } catch (error) {
     t.equals(error.name, 'NetworkError', 'Should throw a custom NetworkError');
   }
-  
+
   Service.config.setBaseUrl(Config.get('zp:node'));
   Service.config.setTimeout(0);
 });

@@ -16,7 +16,7 @@ const addBlocksQueue = new Queue(
 );
 
 // process ---
-addBlocksQueue.process(path.join(__dirname, 'jobs/blocks/addNewBlocksJobHandler.js'));
+addBlocksQueue.process(path.join(__dirname, 'jobs/blocks/addNewBlocks.js'));
 
 // events
 addBlocksQueue.on('error', function(error) {
