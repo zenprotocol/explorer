@@ -11,7 +11,7 @@ module.exports = (sequelize, DataTypes) => {
     nonce2: DataTypes.BIGINT
   }, {});
   Block.associate = function(models) {
-    // associations can be defined here
+    Block.hasMany(models.Transaction);
   };
   return Block;
 };
