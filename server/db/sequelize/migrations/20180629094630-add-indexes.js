@@ -4,11 +4,6 @@ module.exports = {
   up: (queryInterface, Sequelize) => {
     return Promise.all([
       queryInterface.addIndex('Blocks', {
-        fields: ['parent'],
-        unique: true,
-        name: 'Blocks_parent_index',
-      }),
-      queryInterface.addIndex('Blocks', {
         fields: ['blockNumber'],
         unique: true,
         name: 'Blocks_blockNumber_index',
