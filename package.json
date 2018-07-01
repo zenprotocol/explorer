@@ -14,7 +14,7 @@
     "setup:db:test": "cross-env NODE_ENV=test npx sequelize db:create",
     "setup:db:development": "npx sequelize db:create && npx sequelize db:migrate && npx sequelize db:seed:all",
     "pretest": "cross-env NODE_ENV=test npx sequelize db:migrate",
-    "test": "cross-env NODE_ENV=test tape server/**/*.test.js | tap-bail | tap-spec",
+    "test": "cross-env NODE_ENV=test tape server/**/**/*.test.js | tap-bail | tap-spec",
     "coverage": "cross-env NODE_ENV=test nyc tape server/**/*.test.js",
     "client:build:css": "node-sass-chokidar src/ -o src/",
     "client:watch:css": "npm run client:build:css && node-sass-chokidar src/ -o src/ --watch --recursive",
