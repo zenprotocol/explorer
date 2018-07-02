@@ -69,15 +69,16 @@ class BlocksAdder {
     logger.info(`Creating a new output for transaction #${transaction.id}...`);
     let lockType = null;
     let address = null;
-    if (Object.keys(nodeOutput.lock).length) {
+    if (nodeOutput.lock && Object.keys(nodeOutput.lock).length) {
       lockType = Object.keys(nodeOutput.lock)[0];
-      if(Object.keys(nodeOutput.lock[lockType]).length) {
-        address = Object.keys(nodeOutput.lock[lockType])[0];
+      if(Object.values(nodeOutput.lock[lockType]).length) {
+        address = Object.values(nodeOutput.lock[lockType])[0];
       }
     }
     const output = await outputsDAL.create({
       lockType,
       address,
+      contractLockVersion: 0,
       asset: (nodeOutput.spend)? nodeOutput.spend.asset: null,
       amount: (nodeOutput.spend)? nodeOutput.spend.amount: null,
       index: outputIndex,
