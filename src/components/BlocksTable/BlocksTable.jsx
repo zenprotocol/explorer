@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import ReactTable from 'react-table';
 import { observer } from 'mobx-react';
+import {Link} from 'react-router-dom';
 import 'react-table/react-table.css';
 import './BlocksTable.css';
 import PaginationComponent from './Pagination.jsx';
@@ -35,8 +36,10 @@ class BlocksTable extends Component {
       {
         Header: 'Block number',
         accessor: 'blockNumber',
-        className: 'text-primary',
         width: MIN_COL_WIDTH,
+        Cell: row => (
+          <Link to={`/blocks/${row.value}`}>{row.value}</Link>
+        ),
       },
       {
         Header: 'Version',
@@ -46,12 +49,10 @@ class BlocksTable extends Component {
       {
         Header: 'Parent',
         accessor: 'parent',
-        className: 'text-primary',
       },
       {
         Header: 'Commitments',
         accessor: 'commitments',
-        className: 'text-primary',
         minWidth: MIN_COL_WIDTH,
       },
       {
