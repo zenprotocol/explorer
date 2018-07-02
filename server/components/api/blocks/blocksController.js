@@ -28,7 +28,13 @@ module.exports = {
   show: async function(req, res) {
     const block = await blocksDAL.findByIdWithFK(req.params.id, [{
       model: blocksDAL.db.Transaction,
-      include: ['Outputs', 'Inputs']
+      include: [
+        'Outputs', 
+        {
+          model: blocksDAL.db.Input,
+          include: ['Output']
+        }
+      ]
     }]);
     if (block) {
       res.status(httpStatus.OK).json(jsonResponse.create(httpStatus.OK, block));
