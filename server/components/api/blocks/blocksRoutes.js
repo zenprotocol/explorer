@@ -6,6 +6,6 @@ router.route('/')
   .get(wrapAsync(controller.index));
 
 router.route('/:id')
-  .get(wrapAsync(controller.show));
+  .get(wrapAsync(controller.findByBlockNumber));
 
 module.exports = router;

@@ -14,6 +14,25 @@ blocksDAL.findLatest = function (amount = 1) {
 };
 blocksDAL.findLatest = blocksDAL.findLatest.bind(blocksDAL);
 
+blocksDAL.findByBlockNumber = function (blockNumber) {
+  return this.findOne({
+    where: {
+      blockNumber
+    },
+    include: [{
+      model: this.db.Transaction,
+      include: [
+        'Outputs', 
+        {
+          model: this.db.Input,
+          include: ['Output']
+        }
+      ]
+    }]
+  });
+};
+blocksDAL.findLatest = blocksDAL.findLatest.bind(blocksDAL);
+
 blocksDAL.addTransaction = async function(block, transaction) {
   return block.addTransaction(transaction);
 };
