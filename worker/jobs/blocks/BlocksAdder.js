@@ -2,7 +2,7 @@
 
 const blocksDAL = require('../../../server/components/api/blocks/blocksDAL');
 const transactionsDAL = require('../../../server/components/api/transactions/transactionsDAL');
-const outputDAL = require('../../../server/components/api/outputs/outputsDAL');
+const outputsDAL = require('../../../server/components/api/outputs/outputsDAL');
 const inputsDAL = require('../../../server/components/api/inputs/inputsDAL');
 const logger = require('../../lib/logger');
 
@@ -79,7 +79,7 @@ class BlocksAdder {
         }
       }
     }
-    const output = await outputDAL.create({
+    const output = await outputsDAL.create({
       lockType,
       address,
       asset: nodeOutput.spend.asset,
@@ -95,12 +95,58 @@ class BlocksAdder {
     return output;
   }
 
+  async addInputToTransaction(transaction, nodeInput, inputIndex) {
+    let amount = null;
+    let output = null;
+
+    logger.info(
+      `Searching for the relevant output with hash=${nodeInput.outpoint.txHash} and index=${
+        nodeInput.outpoint.index
+      }...`
+    );
+    const outputs = await outputsDAL.findAll({
+      where: {
+        address: nodeInput.outpoint.txHash,
+        index: nodeInput.outpoint.index,
+      },
+    });
+    if (outputs.length === 1) {
+      logger.info('Found output');
+      output = outputs[0];
+      amount = output.amount;
+    } else {
+      outputs.length > 0
+        ? logger.warn('Found more than 1 related output!')
+        : logger.warn('Did not find an output');
+    }
+
+    logger.info(`Creating a new input for transaction #${transaction.id}...`);
+    const input = await inputsDAL.create({
+      index: inputIndex,
+      outpointTXHash: nodeInput.outpoint.txHash,
+      outpointIndex: Number(nodeInput.outpoint.index),
+      amount,
+    });
+    logger.info('Input created.');
+
+    logger.info(`Adding the new input to transaction #${transaction.id}...`);
+    await transactionsDAL.addInput(transaction, input);
+    logger.info('Input added to transaction');
+
+    if (output) {
+      logger.info('Setting the found output on the input...');
+      await inputsDAL.setOutput(input, output);
+      logger.info('Output was set...');
+    }
+    return input;
+  }
+
   async addNewBlocks(job) {
     let numberOfBlocksAdded = 0;
     let latestBlockNumberInDB = await this.getLatestBlockNumberInDB();
     const latestBlockNumberInNode = await this.networkHelper.getLatestBlockNumberFromNode();
-    const latestBlockNumberToAdd = getJobData(job, 'limit')
-      ? latestBlockNumberInDB + Number(getJobData(job, 'limit'))
+    const latestBlockNumberToAdd = getJobData(job, 'limitBlocks')
+      ? Math.min(latestBlockNumberInDB + Number(getJobData(job, 'limitBlocks')), latestBlockNumberInNode)
       : latestBlockNumberInNode;
 
     logger.info('Block numbers:\n', {
@@ -120,46 +166,43 @@ class BlocksAdder {
         const newBlock = await this.networkHelper.getBlockFromNode(blockNumber);
         logger.info(`Got block #${newBlock.header.blockNumber} from NODE...`);
 
+        let block;
         try {
-          const block = await this.createBlock(newBlock);
-
-          // TODO - if something inside fail, delete the block from DB!
-
+          block = await this.createBlock(newBlock);
           const skipTransactions = getJobData(job, 'skipTransactions');
 
           if (!skipTransactions) {
             // transactions
             const transactionHashes = Object.keys(newBlock.transactions);
             const transactionsToAdd = getJobData(job, 'limitTransactions')
-              ? getJobData(job, 'limitTransactions')
+              ? Math.min(getJobData(job, 'limitTransactions'), transactionHashes.length)
               : transactionHashes.length;
-            for (
-              let transactionIndex = 0;
-              transactionIndex < transactionsToAdd;
-              transactionIndex++
-            ) {
+            logger.info(`${transactionsToAdd} transactions to add`);
+            for (let transactionIndex = 0; transactionIndex < transactionsToAdd; transactionIndex++) {
               const hash = transactionHashes[transactionIndex];
               const nodeTransaction = newBlock.transactions[hash];
               const transaction = await this.addTransactionToBlock(block, nodeTransaction, hash);
 
               // add outputs
-              for (
-                let outputIndex = 0;
-                outputIndex < nodeTransaction.outputs.length;
-                outputIndex++
-              ) {
+              for (let outputIndex = 0; outputIndex < nodeTransaction.outputs.length; outputIndex++) {
                 const nodeOutput = nodeTransaction.outputs[outputIndex];
 
                 await this.addOutputToTransaction(transaction, nodeOutput, outputIndex);
               }
 
               // add inputs
+              for (let inputIndex = 0; inputIndex < nodeTransaction.inputs.length; inputIndex++) {
+                const nodeInput = nodeTransaction.inputs[inputIndex];
+
+                await this.addInputToTransaction(transaction, nodeInput, inputIndex);
+              }
             }
           }
         } catch (error) {
           logger.error(`Error creating #${newBlock.header.blockNumber}`, error);
-          // do not skip a block
-          // TODO remove last block if was created!
+          if (block && block.id) {
+            await blocksDAL.delete(block.id);
+          }
           throw error;
         }
         numberOfBlocksAdded++;

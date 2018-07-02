@@ -1,6 +1,6 @@
-module.exports = function(blockNumber) {
+module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyInput, falsyOutput} = {}) {
   return {
-    header: {
+    [falsyBlock? 'wrongKey' : 'header']: {
       version: 0,
       parent: '0000002863af18b0e69d66b1412c283b782435a7734611086d4b1167d8d98b2b',
       blockNumber: blockNumber,
@@ -29,10 +29,10 @@ module.exports = function(blockNumber) {
         ],
       },
       '0c8f6252e2b6a5e7646977c9dc03586f0e46143adaaa6e08b616ce996157e369': {
-        version: 0,
+        [falsyTransaction? 'wrongKey' : 'version']: 0,
         inputs: [
           {
-            outpoint: {
+            [falsyInput? 'wrongKey' : 'outpoint']: {
               txHash: '1f6172b8f507e41dfb72d4a4f31076700a5f5ada9feb1ac3a009138d3fb21f3d',
               index: 1,
             },
@@ -40,12 +40,12 @@ module.exports = function(blockNumber) {
         ],
         outputs: [
           {
-            lock: {
+            [falsyOutput? 'wrongKey' : 'lock']: {
               PK: {
-                hash: '4903fb981f797ec622916991e5fbcbb58d78063fd00e6948323d2ec07dcf5ac1',
+                [falsyOutput? 'wrongKey' : 'hash']: '4903fb981f797ec622916991e5fbcbb58d78063fd00e6948323d2ec07dcf5ac1',
               },
             },
-            spend: {
+            [falsyOutput? 'wrongKey' : 'spend']: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
               amount: 3340,
             },

@@ -6,7 +6,7 @@ const NetworkHelper = require('./NetworkHelper');
 const Config = require('../../server/config/Config');
 
 test('Get number of blocks from chain', async function(t) {
-  Service.config.setTimeout(1000);
+  Service.config.setTimeout(2000);
   try {
     const info = await Service.blocks.getChainInfo();
     t.assert(info.blocks, 'chain info should contain a "blocks" attribute');
