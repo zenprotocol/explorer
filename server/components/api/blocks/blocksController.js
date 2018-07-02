@@ -26,7 +26,10 @@ module.exports = {
     );
   },
   show: async function(req, res) {
-    const block = await blocksDAL.findById(req.params.id);
+    const block = await blocksDAL.findByIdWithFK(req.params.id, [{
+      model: blocksDAL.db.Transaction,
+      include: ['Outputs', 'Inputs']
+    }]);
     if (block) {
       res.status(httpStatus.OK).json(jsonResponse.create(httpStatus.OK, block));
     } else {

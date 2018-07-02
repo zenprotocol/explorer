@@ -37,6 +37,16 @@ const createDAL = modelName => {
           });
       });
     },
+    async findByIdWithFK(id, foreignKeys = []) {
+      return new Promise((resolve, reject) => {
+        this.db[this.model]
+          .findById(id, { include: foreignKeys })
+          .then(resolve)
+          .catch(error => {
+            reject(wrapORMErrors(error));
+          });
+      });
+    },
     async count(where = {}) {
       return new Promise((resolve, reject) => {
         this.db[this.model]
