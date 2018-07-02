@@ -69,21 +69,17 @@ class BlocksAdder {
     logger.info(`Creating a new output for transaction #${transaction.id}...`);
     let lockType = null;
     let address = null;
-    const lockAddressKeys = ['hash', 'pkHash'];
-    if (Object.keys(nodeOutput.lock) > 0) {
+    if (Object.keys(nodeOutput.lock).length) {
       lockType = Object.keys(nodeOutput.lock)[0];
-      for (let i = 0; i < lockAddressKeys.length; i++) {
-        const key = lockAddressKeys[i];
-        if (nodeOutput.lock[lockType][key]) {
-          address = nodeOutput.lock[lockType][key];
-        }
+      if(Object.keys(nodeOutput.lock[lockType]).length) {
+        address = Object.keys(nodeOutput.lock[lockType])[0];
       }
     }
     const output = await outputsDAL.create({
       lockType,
       address,
-      asset: nodeOutput.spend.asset,
-      amount: nodeOutput.spend.amount,
+      asset: (nodeOutput.spend)? nodeOutput.spend.asset: null,
+      amount: (nodeOutput.spend)? nodeOutput.spend.amount: null,
       index: outputIndex,
     });
     logger.info('Output created.');
@@ -99,26 +95,43 @@ class BlocksAdder {
     let amount = null;
     let output = null;
 
+    if(!nodeInput.outpoint) {
+      return null;
+    }
+
     logger.info(
       `Searching for the relevant output with hash=${nodeInput.outpoint.txHash} and index=${
         nodeInput.outpoint.index
       }...`
     );
-    const outputs = await outputsDAL.findAll({
+    const transactionsWithRelevantHash = await transactionsDAL.findAll({
       where: {
-        address: nodeInput.outpoint.txHash,
-        index: nodeInput.outpoint.index,
-      },
+        hash: nodeInput.outpoint.txHash
+      }
     });
-    if (outputs.length === 1) {
-      logger.info('Found output');
-      output = outputs[0];
-      amount = output.amount;
-    } else {
-      outputs.length > 0
-        ? logger.warn('Found more than 1 related output!')
-        : logger.warn('Did not find an output');
+    if(transactionsWithRelevantHash.length === 1) {
+      const outputs = await outputsDAL.findAll({
+        where: {
+          index: nodeInput.outpoint.index,
+          TransactionId: transactionsWithRelevantHash[0].id
+        },
+      });
+      if (outputs.length === 1) {
+        logger.info('Found output');
+        output = outputs[0];
+        amount = output.amount;
+      } else {
+        outputs.length > 0
+          ? logger.warn('Found more than 1 related output!')
+          : logger.warn('Did not find an output');
+      }
     }
+    else {
+      transactionsWithRelevantHash.length > 0
+        ? logger.warn(`Found more than 1 transactions with hash=${nodeInput.outpoint.txHash} !`)
+        : logger.warn(`Could not find a transaction with hash=${nodeInput.outpoint.txHash}`);
+    }
+    
 
     logger.info(`Creating a new input for transaction #${transaction.id}...`);
     const input = await inputsDAL.create({
@@ -181,6 +194,7 @@ class BlocksAdder {
             for (let transactionIndex = 0; transactionIndex < transactionsToAdd; transactionIndex++) {
               const hash = transactionHashes[transactionIndex];
               const nodeTransaction = newBlock.transactions[hash];
+              logger.info(`Transaction #${transactionIndex}`);
               const transaction = await this.addTransactionToBlock(block, nodeTransaction, hash);
 
               // add outputs
@@ -199,7 +213,7 @@ class BlocksAdder {
             }
           }
         } catch (error) {
-          logger.error(`Error creating #${newBlock.header.blockNumber}`, error);
+          logger.error(`Error creating #${newBlock.header.blockNumber} - ${error.message}`);
           if (block && block.id) {
             await blocksDAL.delete(block.id);
           }

@@ -32,8 +32,8 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
         [falsyTransaction? 'wrongKey' : 'version']: 0,
         inputs: [
           {
-            [falsyInput? 'wrongKey' : 'outpoint']: {
-              txHash: '1f6172b8f507e41dfb72d4a4f31076700a5f5ada9feb1ac3a009138d3fb21f3d',
+            outpoint: {
+              [falsyInput? 'wrongKey' : 'txHash']: '1f6172b8f507e41dfb72d4a4f31076700a5f5ada9feb1ac3a009138d3fb21f3d',
               index: 1,
             },
           },

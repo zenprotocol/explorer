@@ -108,7 +108,7 @@ if (Config.get('RUN_REAL_DATA_TESTS')) {
     const blocksAdder = new BlocksAdder(networkHelper);
   
     try {
-      const numOfBlocksAdded = await blocksAdder.addNewBlocks();
+      const numOfBlocksAdded = await blocksAdder.addNewBlocks({ data: { limitBlocks: 200 } });
       t.assert(numOfBlocksAdded > 0, 'Should have added new blocks');
   
       const latestBlocksAfterAdd = await blocksDAL.findLatest();
