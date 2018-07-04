@@ -5,11 +5,17 @@ import './App.css';
 import Navbar from './components/Navbar/Navbar.jsx';
 import Blocks from './routes/blocks/Blocks.jsx';
 import Block from './routes/block/Block.jsx';
+import blockStore from './store/BlockStore';
 // import Transactions from './routes/transactions/Transactions.jsx';
 
 class App extends Component {
   constructor(props) {
     super(props);
+  }
+
+  componentDidMount() {
+    blockStore.fetchMedianTime();
+    blockStore.fetchBlocks();
   }
 
   render() {

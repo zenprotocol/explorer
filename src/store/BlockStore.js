@@ -8,9 +8,6 @@ class BlockStore {
     this.totalBlocks = 0;
     this.medianTime = null;
     this.loading = false;
-
-    this.fetchMedianTime();
-    this.fetchBlocks();
   }
 
   setBlocks(blocks) {
