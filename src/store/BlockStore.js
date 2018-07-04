@@ -1,12 +1,16 @@
-import { observable, decorate, action } from 'mobx';
+import { observable, decorate, action, computed } from 'mobx';
 import Service from '../lib/Service';
 
 class BlockStore {
   constructor() {
     this.blocks = [];
+    this.block = {};
     this.totalBlocks = 0;
     this.medianTime = null;
     this.loading = false;
+
+    this.fetchMedianTime();
+    this.fetchBlocks();
   }
 
   setBlocks(blocks) {
@@ -23,6 +27,15 @@ class BlockStore {
     });
   }
 
+  fetchBlock(id) {
+    this.loading = true;
+
+    Service.blocks.findById(id).then(response => {
+      this.block = response.data;
+      this.loading = false;
+    });
+  }
+
   fetchMedianTime() {
     this.loading = true;
     Service.blocks.find({ pageSize: 1 }).then(response => {
@@ -32,14 +45,30 @@ class BlockStore {
       }
     });
   }
+
+  get medianTimeString() {
+    if (this.medianTime) {
+      return this.medianTime.toUTCString();
+    }
+    return null;
+  }
+
+  get numberOfTransactions() {
+    if(this.block.Transactions) {
+      return this.block.Transactions.length;
+    }
+  }
 }
 
 decorate(BlockStore, {
   blocks: observable,
+  block: observable,
   loading: observable,
   medianTime: observable,
   setBlocks: action,
   totalBlocks: observable,
+  medianTimeString: computed,
+  numberOfTransactions: computed,
 });
 
 export default new BlockStore();

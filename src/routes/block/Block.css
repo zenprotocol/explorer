@@ -1,0 +1,7 @@
+.Block {
+  text-transform: uppercase;
+}
+
+.Block .table td {
+  border-color: #303030 !important;
+}

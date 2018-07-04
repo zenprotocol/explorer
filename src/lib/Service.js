@@ -39,5 +39,11 @@ export default {
         params: params,
       }).then(response => response.data);
     },
+    async findById(id) {
+      return sendHttpRequest({
+        url: `${Endpoints.blocks}/${id}`,
+        method: 'get',
+      }).then(response => response.data);
+    }
   },
 };

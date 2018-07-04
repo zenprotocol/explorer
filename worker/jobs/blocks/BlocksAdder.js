@@ -67,20 +67,13 @@ class BlocksAdder {
 
   async addOutputToTransaction(transaction, nodeOutput, outputIndex) {
     logger.info(`Creating a new output for transaction #${transaction.id}...`);
-    let lockType = null;
-    let address = null;
-    if (nodeOutput.lock && Object.keys(nodeOutput.lock).length) {
-      lockType = Object.keys(nodeOutput.lock)[0];
-      if(Object.values(nodeOutput.lock[lockType]).length) {
-        address = Object.values(nodeOutput.lock[lockType])[0];
-      }
-    }
+    const {lockType, address} = this.getLockValuesFromOutput(nodeOutput);
     const output = await outputsDAL.create({
       lockType,
       address,
       contractLockVersion: 0,
-      asset: (nodeOutput.spend)? nodeOutput.spend.asset: null,
-      amount: (nodeOutput.spend)? nodeOutput.spend.amount: null,
+      asset: nodeOutput.spend ? nodeOutput.spend.asset : null,
+      amount: nodeOutput.spend ? nodeOutput.spend.amount : null,
       index: outputIndex,
     });
     logger.info('Output created.');
@@ -92,11 +85,40 @@ class BlocksAdder {
     return output;
   }
 
+  getLockValuesFromOutput(nodeOutput) {
+    let lockType = null;
+    let address = null;
+    if (nodeOutput.lock && typeof nodeOutput.lock !== 'object') {
+      lockType = nodeOutput.lock;
+    }
+    else if (nodeOutput.lock && Object.keys(nodeOutput.lock).length) {
+      lockType = Object.keys(nodeOutput.lock)[0];
+      const lockTypeValues = Object.values(nodeOutput.lock[lockType]);
+      if (lockTypeValues.length) {
+        if (lockTypeValues.length === 1) {
+          address = Object.values(nodeOutput.lock[lockType])[0];
+        } else {
+          const addressKeyOptions = ['hash', 'pkHash', 'id', 'data'];
+          const lockTypeKeys = Object.keys(nodeOutput.lock[lockType]);
+          for (let i = 0; i < lockTypeKeys.length; i++) {
+            const key = lockTypeKeys[i];
+            if (addressKeyOptions.includes(key)) {
+              address = nodeOutput.lock[lockType][key];
+              break;
+            }
+          }
+        }
+      }
+    }
+
+    return {lockType, address};
+  }
+
   async addInputToTransaction(transaction, nodeInput, inputIndex) {
     let amount = null;
     let output = null;
 
-    if(!nodeInput.outpoint) {
+    if (!nodeInput.outpoint) {
       return null;
     }
 
@@ -107,14 +129,14 @@ class BlocksAdder {
     );
     const transactionsWithRelevantHash = await transactionsDAL.findAll({
       where: {
-        hash: nodeInput.outpoint.txHash
-      }
+        hash: nodeInput.outpoint.txHash,
+      },
     });
-    if(transactionsWithRelevantHash.length === 1) {
+    if (transactionsWithRelevantHash.length === 1) {
       const outputs = await outputsDAL.findAll({
         where: {
           index: nodeInput.outpoint.index,
-          TransactionId: transactionsWithRelevantHash[0].id
+          TransactionId: transactionsWithRelevantHash[0].id,
         },
       });
       if (outputs.length === 1) {
@@ -126,13 +148,11 @@ class BlocksAdder {
           ? logger.warn('Found more than 1 related output!')
           : logger.warn('Did not find an output');
       }
-    }
-    else {
+    } else {
       transactionsWithRelevantHash.length > 0
         ? logger.warn(`Found more than 1 transactions with hash=${nodeInput.outpoint.txHash} !`)
         : logger.warn(`Could not find a transaction with hash=${nodeInput.outpoint.txHash}`);
     }
-    
 
     logger.info(`Creating a new input for transaction #${transaction.id}...`);
     const input = await inputsDAL.create({

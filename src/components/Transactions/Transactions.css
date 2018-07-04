@@ -1,0 +1,23 @@
+.Transaction {
+  margin-bottom: 40px;
+  
+}
+
+.Transaction .hash,
+.Transaction .address {
+  text-transform: initial;
+}
+
+.Transaction div[class^="col"],
+.Transaction .address {
+  padding: 0.75rem;
+  border-color: #303030 !important;
+}
+
+.Transaction .arrow {
+  position: absolute;
+  top: 0;
+  right: 0;
+  padding: 0.75rem;
+  background-color: #010203;
+}

@@ -76,13 +76,6 @@ class BlocksTable extends Component {
     this.setState({ pageSize: Number(event.target.value) });
   }
 
-  getMedianTimeString() {
-    if (this.props.store.medianTime) {
-      return this.props.store.medianTime.toUTCString();
-    }
-    return null;
-  }
-
   fetchData(state) {
     this.props.store.fetchBlocks({pageSize: state.pageSize,page: state.page, sorted: state.sorted});
   }
@@ -93,8 +86,8 @@ class BlocksTable extends Component {
     return (
       <div className="BlocksTable">
         <div className="clearfix">
-          {this.props.store.blocks.length ? (
-            <div className="medianTime mb-1 mb-lg-2">{this.getMedianTimeString()}</div>
+          {store.medianTime ? (
+            <div className="medianTime mb-1 mb-lg-2">{store.medianTimeString}</div>
           ) : (
             ''
           )}
