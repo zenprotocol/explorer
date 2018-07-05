@@ -27,7 +27,7 @@ class BlocksTable extends Component {
       {
         Header: 'Timestamp',
         accessor: 'timestamp',
-        minWidth: MIN_COL_WIDTH,
+        width: 190,
         Cell: function(data) {
           const date = new Date(Number(data.value));
           return date.toUTCString();
@@ -51,23 +51,11 @@ class BlocksTable extends Component {
         accessor: 'parent',
       },
       {
-        Header: 'Commitments',
-        accessor: 'commitments',
-        minWidth: MIN_COL_WIDTH,
-      },
-      {
         Header: 'Difficulty',
         accessor: 'difficulty',
-        minWidth: MIN_COL_WIDTH,
-      },
-      {
-        Header: 'Nonce1',
-        accessor: 'nonce1',
-      },
-      {
-        Header: 'Nonce2',
-        accessor: 'nonce2',
-        minWidth: 80,
+        Cell: function(data) {
+          return Number(data.value).toString(16);
+        },
       },
     ];
   }
