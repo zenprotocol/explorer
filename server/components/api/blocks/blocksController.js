@@ -16,7 +16,7 @@ module.exports = {
         : [{ id: 'blockNumber', desc: true }];
 
     const query = createQueryObject({page, pageSize, sorted});
-    const [count, allBlocks] = await Promise.all([blocksDAL.count(), blocksDAL.findAll(query)]);
+    const [count, allBlocks] = await Promise.all([blocksDAL.count(), blocksDAL.findAllCountTransactions(query)]);
 
     res.status(httpStatus.OK).json(
       jsonResponse.create(httpStatus.OK, {

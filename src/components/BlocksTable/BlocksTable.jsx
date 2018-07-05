@@ -57,6 +57,10 @@ class BlocksTable extends Component {
           return Number(data.value).toString(16);
         },
       },
+      {
+        Header: '#Transactions',
+        accessor: 'transactionsCount',
+      },
     ];
   }
 
