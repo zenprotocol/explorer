@@ -14,7 +14,6 @@ class Transactions extends Component {
       <section className="bordered border-left border-primary pl-lg-4">
         <h1 className="d-block d-sm-inline-block text-white mb-3 mb-lg-5">Transactions</h1>
         {transactions.map(transaction => {
-          const numOfRows = Math.max(transaction.Inputs.length, transaction.Outputs.length);
           return (
             <div className="Transaction" key={transaction.id}>
               <div className="hash mb-4 text-truncate">
@@ -31,10 +30,10 @@ class Transactions extends Component {
               </div>
               <div className="row mx-0">
                 <div className="col-6 py-0">
-                  <div className="inputs">{this.renderInputs(transaction, numOfRows)}</div>
+                  <div className="inputs">{this.renderInputs(transaction)}</div>
                   <div className="arrow">{'->'}</div>
                 </div>
-                <div className="col-6 py-0">{this.renderOutputs(transaction, numOfRows)}</div>
+                <div className="col-6 py-0">{this.renderOutputs(transaction)}</div>
               </div>
             </div>
           );
@@ -43,9 +42,13 @@ class Transactions extends Component {
     );
   }
 
-  renderInputs(transaction, numOfRows) {
+  renderInputs(transaction) {
     let rowsToRender = [];
     let key = 0;
+    const numOfRows =
+      transaction.Outputs.length > transaction.Inputs.length
+        ? transaction.Outputs.length + 1
+        : transaction.Inputs.length;
     if (!transaction.Inputs || !transaction.Inputs.length) {
       const title = this.isCoinbase(transaction) ? 'Mining Reward' : 'No Inputs';
       rowsToRender.push(this.renderInputOutputItem(key, title));
@@ -58,7 +61,7 @@ class Transactions extends Component {
         return this.renderInputOutputItem(key, input.Output.address, '#');
       });
     }
-    const emptyRows = this.getEmptyRows(rowsToRender, numOfRows + 1, key);
+    const emptyRows = this.getEmptyRows(rowsToRender, numOfRows, key);
     rowsToRender = rowsToRender.concat(emptyRows);
 
     return rowsToRender;
@@ -73,9 +76,10 @@ class Transactions extends Component {
     );
   }
 
-  renderOutputs(transaction, numOfRows) {
+  renderOutputs(transaction) {
     let rowsToRender = [];
     let key = 0;
+    const numOfRows = Math.max(transaction.Outputs.length, transaction.Inputs.length);
     if (!transaction.Outputs || !transaction.Outputs.length) {
       rowsToRender.push(this.renderInputOutputItem(key, 'No Outputs'));
     } else {
@@ -89,12 +93,10 @@ class Transactions extends Component {
       return total + Number(current.amount);
     }, 0);
 
-    const emptyRows = this.getEmptyRows(rowsToRender, numOfRows, key);
-    rowsToRender = rowsToRender.concat(emptyRows);
-    key += emptyRows.length;
-
     key++;
     rowsToRender.push(this.renderInputOutputItem(key, '', null, totalAmount, true));
+    const emptyRows = this.getEmptyRows(rowsToRender, numOfRows, key);
+    rowsToRender = rowsToRender.concat(emptyRows);
 
     return rowsToRender;
   }
