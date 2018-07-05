@@ -47,7 +47,8 @@ class Transactions extends Component {
     let rowsToRender = [];
     let key = 0;
     if (!transaction.Inputs || !transaction.Inputs.length) {
-      rowsToRender.push(this.renderInputOutputItem(key, 'No Inputs'));
+      const title = this.isCoinbase(transaction) ? 'Mining Reward' : 'No Inputs';
+      rowsToRender.push(this.renderInputOutputItem(key, title));
     } else {
       rowsToRender = transaction.Inputs.map(input => {
         if (!input.Output) {
@@ -60,6 +61,15 @@ class Transactions extends Component {
     this.addEmptyRows(rowsToRender, numOfRows + 1, key); // add the totals row
 
     return rowsToRender;
+  }
+
+  isCoinbase(transaction) {
+    return (
+      transaction.Outputs &&
+      transaction.Outputs.length &&
+      transaction.Outputs[0].lockType &&
+      transaction.Outputs[0].lockType.toLowerCase() === 'coinbase'
+    );
   }
 
   renderOutputs(transaction, numOfRows) {
