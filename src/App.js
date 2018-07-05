@@ -21,11 +21,11 @@ class App extends Component {
   render() {
     return (
       <div className="App">
-        <div className="container-fluid px-lg-5">
+        <div className="container px-lg-5">
           <Navbar />
         </div>
         <div className="App-separator mb-3 mb-sm-4 mb-lg-5" />
-        <div className="container-fluid px-lg-5">
+        <div className="container px-lg-5">
           <Route exact path="/(|blocks)" component={Blocks} />
           <Route path="/blocks/:id" component={Block} />
           {/* <Route path="/transactions" component={Transactions} /> */}
