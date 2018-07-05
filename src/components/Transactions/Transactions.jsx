@@ -58,7 +58,8 @@ class Transactions extends Component {
         return this.renderInputOutputItem(key, input.Output.address, '#');
       });
     }
-    this.addEmptyRows(rowsToRender, numOfRows + 1, key); // add the totals row
+    const emptyRows = this.getEmptyRows(rowsToRender, numOfRows + 1, key);
+    rowsToRender = rowsToRender.concat(emptyRows);
 
     return rowsToRender;
   }
@@ -88,7 +89,9 @@ class Transactions extends Component {
       return total + Number(current.amount);
     }, 0);
 
-    key += this.addEmptyRows(rowsToRender, numOfRows, key);
+    const emptyRows = this.getEmptyRows(rowsToRender, numOfRows, key);
+    rowsToRender = rowsToRender.concat(emptyRows);
+    key += emptyRows.length;
 
     key++;
     rowsToRender.push(this.renderInputOutputItem(key, '', null, totalAmount, true));
@@ -96,17 +99,16 @@ class Transactions extends Component {
     return rowsToRender;
   }
 
-  addEmptyRows(array, numOfRows, lastIndexForKey) {
-    let numOfRowsAdded = 0;
+  getEmptyRows(array, numOfRows, lastIndexForKey) {
     let key = lastIndexForKey;
+    let addedRowsArray = [];
     if (array.length < numOfRows) {
-      for (let i = 0; i <= numOfRows - array.length; i++) {
+      for (let i = 0; i < numOfRows - array.length; i++) {
         key++;
-        array.push(this.renderInputOutputItem(key, ''));
-        numOfRowsAdded++;
+        addedRowsArray.push(this.renderInputOutputItem(key, ''));
       }
     }
-    return numOfRowsAdded;
+    return addedRowsArray;
   }
 
   renderInputOutputItem(key, title, url, amount, isTotal) {
