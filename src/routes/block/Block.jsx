@@ -122,6 +122,10 @@ class Block extends Component {
                     <td className="no-text-transform">{Number(block.difficulty).toString(16)}</td>
                   </tr>
                   <tr>
+                    <td>Confirmations</td>
+                    <td className="no-text-transform">{blockStore.confirmations(block.blockNumber)}</td>
+                  </tr>
+                  <tr>
                     <td>Parent</td>
                     <td>
                       <div className="address no-text-transform">

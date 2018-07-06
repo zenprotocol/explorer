@@ -56,6 +56,10 @@ class BlockStore {
       return this.block.Transactions.length;
     }
   }
+
+  confirmations(blockNumber) {
+    return this.totalBlocks - blockNumber + 1;
+  }
 }
 
 decorate(BlockStore, {
