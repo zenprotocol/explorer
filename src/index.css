@@ -7,3 +7,6 @@ body {
   font-family: sans-serif;
   background-color: #010203;
 }
+.no-text-transform {
+  text-transform: initial !important;
+}

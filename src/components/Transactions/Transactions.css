@@ -1,11 +1,5 @@
 .Transaction {
   margin-bottom: 40px;
-  
-}
-
-.Transaction .hash,
-.Transaction .address {
-  text-transform: initial;
 }
 
 .Transaction div[class^="col"],

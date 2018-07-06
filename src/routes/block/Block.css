@@ -2,6 +2,14 @@
   text-transform: uppercase;
 }
 
+.Block .address {
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+
+  word-break: break-all;
+  word-break: break-word;
+}
+
 .Block .table td {
   border-color: #303030 !important;
 }

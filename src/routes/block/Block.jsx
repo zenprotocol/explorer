@@ -94,7 +94,7 @@ class Block extends Component {
             <div className="col-sm">{this.renderPagination()}</div>
           </div>
           <div className="row">
-            <div className="col-lg-6">
+            <div className="col">
               <table className="table">
                 <thead>
                   <tr>
@@ -105,7 +105,7 @@ class Block extends Component {
                 </thead>
                 <tbody>
                   <tr>
-                    <td>Number of transactions</td>
+                    <td>transactions</td>
                     <td>{blockStore.numberOfTransactions}</td>
                   </tr>
                   <tr>
@@ -118,25 +118,12 @@ class Block extends Component {
                   </tr>
                   <tr>
                     <td>Difficulty</td>
-                    <td>{block.difficulty}</td>
+                    <td className="no-text-transform">{Number(block.difficulty).toString(16)}</td>
                   </tr>
-                </tbody>
-              </table>
-            </div>
-            <div className="col-lg-6">
-              <table className="table">
-                <thead>
-                  <tr>
-                    <th scope="col" colSpan="2" className="text-white border-0">
-                      Hashes
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
                   <tr>
                     <td>Parent</td>
                     <td>
-                      <div className="text-truncate" style={{ maxWidth: '150px' }}>
+                      <div className="address no-text-transform">
                         {block.parent}
                       </div>
                     </td>

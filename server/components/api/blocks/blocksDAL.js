@@ -32,10 +32,11 @@ blocksDAL.findByBlockNumber = function (blockNumber) {
         'Outputs', 
         {
           model: this.db.Input,
-          include: ['Output']
+          include: ['Output'],
         }
       ]
-    }]
+    }],
+    
   });
 };
 blocksDAL.findLatest = blocksDAL.findLatest.bind(blocksDAL);

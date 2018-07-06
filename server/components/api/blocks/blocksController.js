@@ -27,6 +27,15 @@ module.exports = {
   },
   findByBlockNumber: async function(req, res) {
     const block = await blocksDAL.findByBlockNumber(req.params.id);
+    // make sure the order is right
+    block.Transactions.forEach((transaction) => {
+      transaction.Outputs.sort((a, b) => {
+        return Number(b.index) < Number(a.index);
+      });
+      transaction.Inputs.sort((a, b) => {
+        return Number(b.index) < Number(a.index);
+      });
+    });
     if (block) {
       res.status(httpStatus.OK).json(jsonResponse.create(httpStatus.OK, block));
     } else {

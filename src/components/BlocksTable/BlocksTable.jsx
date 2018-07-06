@@ -49,6 +49,7 @@ class BlocksTable extends Component {
       {
         Header: 'Parent',
         accessor: 'parent',
+        minWidth: 450,
       },
       {
         Header: 'Difficulty',
@@ -108,6 +109,7 @@ class BlocksTable extends Component {
         </div>
         <ReactTable
           manual
+          sortable={false}
           onFetchData={this.fetchData}
           data={store.blocks}
           columns={this.getTableColumns()}

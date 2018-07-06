@@ -13,10 +13,11 @@ class Transactions extends Component {
     return (
       <section className="bordered border-left border-primary pl-lg-4">
         <h1 className="d-block d-sm-inline-block text-white mb-3 mb-lg-5">Transactions</h1>
-        {transactions.map(transaction => {
+        {transactions.map((transaction, index) => {
           return (
             <div className="Transaction" key={transaction.id}>
-              <div className="hash mb-4 text-truncate">
+              <div className="hash mb-4 text-truncate no-text-transform">
+                {(index === 0)? (<h5 className="coinbase d-inline-block mr-1 text-white">Coinbase - </h5>) : null}
                 <a href="#">{transaction.hash}</a>
               </div>
               <div className="row mx-0">
@@ -117,14 +118,14 @@ class Transactions extends Component {
     title = title || '\u00a0';
     return (
       <div className="row" key={key}>
-        <div className="address text-truncate border-bottom col-9" title={title}>
+        <div className="address text-truncate no-text-transform border-bottom col-9" title={title}>
           {url ? <a href={url}>{title}</a> : title}
         </div>
         <div
           className={classNames('col-3 address text-truncate border-bottom', { 'font-weight-bold': isTotal })}
-          title={amount ? amount + ' ZENP' : ''}
+          title={amount ? amount + ' ZP' : ''}
         >
-          {amount ? amount + ' ZENP' : ''}
+          {amount ? amount + ' ZP' : ''}
         </div>
       </div>
     );
