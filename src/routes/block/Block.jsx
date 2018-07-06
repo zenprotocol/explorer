@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import blockStore from '../../store/BlockStore';
+import TextUtils from '../../lib/TextUtils';
 import Transactions from '../../components/Transactions/Transactions.jsx';
 import './Block.css';
 
@@ -110,7 +111,7 @@ class Block extends Component {
                   </tr>
                   <tr>
                     <td>Timestamp</td>
-                    <td>{new Date(Number(block.timestamp)).toUTCString()}</td>
+                    <td>{TextUtils.getDateString(new Date(Number(block.timestamp)))}</td>
                   </tr>
                   <tr>
                     <td>Version</td>

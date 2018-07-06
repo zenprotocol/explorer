@@ -3,9 +3,10 @@ import ReactTable from 'react-table';
 import { observer } from 'mobx-react';
 import {Link} from 'react-router-dom';
 import 'react-table/react-table.css';
+import PropTypes from 'prop-types';
+import TextUtils from '../../lib/TextUtils';
 import './BlocksTable.css';
 import PaginationComponent from './Pagination.jsx';
-import PropTypes from 'prop-types';
 
 const MIN_COL_WIDTH = 140;
 
@@ -27,24 +28,18 @@ class BlocksTable extends Component {
       {
         Header: 'Timestamp',
         accessor: 'timestamp',
-        width: 190,
         Cell: function(data) {
           const date = new Date(Number(data.value));
-          return date.toUTCString();
+          return TextUtils.getDateString(date);
         },
       },
       {
-        Header: 'Block number',
+        Header: 'Block',
         accessor: 'blockNumber',
-        width: MIN_COL_WIDTH,
+        width: 80,
         Cell: row => (
           <Link to={`/blocks/${row.value}`}>{row.value}</Link>
         ),
-      },
-      {
-        Header: 'Version',
-        accessor: 'version',
-        width: 100,
       },
       {
         Header: 'Parent',
@@ -59,7 +54,7 @@ class BlocksTable extends Component {
         },
       },
       {
-        Header: '#Transactions',
+        Header: 'Transactions',
         accessor: 'transactionsCount',
       },
     ];

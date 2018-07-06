@@ -1,5 +1,6 @@
 import { observable, decorate, action, computed } from 'mobx';
 import Service from '../lib/Service';
+import TextUtils from '../lib/TextUtils';
 
 class BlockStore {
   constructor() {
@@ -45,7 +46,7 @@ class BlockStore {
 
   get medianTimeString() {
     if (this.medianTime) {
-      return this.medianTime.toUTCString();
+      return TextUtils.getDateString(this.medianTime);
     }
     return null;
   }
