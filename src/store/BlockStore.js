@@ -58,7 +58,11 @@ class BlockStore {
   }
 
   confirmations(blockNumber) {
-    return this.totalBlocks - blockNumber + 1;
+    if(isNaN(blockNumber)) {
+      return 0;
+    }
+    
+    return Number(this.totalBlocks) - Number(blockNumber) + 1;
   }
 }
 
