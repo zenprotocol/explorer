@@ -4,8 +4,6 @@ import blockStore from '../../store/BlockStore';
 import '../page.css';
 import './Blocks.css';
 
-const DEFAULT_PAGE_SIZE = 10;
-
 class Blocks extends Component {
   render() {
     return (
@@ -13,7 +11,6 @@ class Blocks extends Component {
         <BlocksTable
           store={blockStore}
           title="LATEST BLOCKS"
-          pageSize={DEFAULT_PAGE_SIZE}
         />
       </section>
     );

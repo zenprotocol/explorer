@@ -1,28 +1,22 @@
 import React, { Component } from 'react';
 import ReactTable from 'react-table';
 import { observer } from 'mobx-react';
-import {Link} from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import 'react-table/react-table.css';
 import PropTypes from 'prop-types';
 import TextUtils from '../../lib/TextUtils';
 import './BlocksTable.css';
 import PaginationComponent from './Pagination.jsx';
-
-const MIN_COL_WIDTH = 140;
+import uiStore from '../../store/UIStore';
 
 class BlocksTable extends Component {
   constructor(props) {
     super(props);
 
-    this.state = {
-      pageSize: props.pageSize,
-      page: 0,
-    };
-
     this.setPageSize = this.setPageSize.bind(this);
     this.fetchData = this.fetchData.bind(this);
   }
-  
+
   getTableColumns() {
     return [
       {
@@ -37,9 +31,7 @@ class BlocksTable extends Component {
         Header: 'Block',
         accessor: 'blockNumber',
         width: 80,
-        Cell: row => (
-          <Link to={`/blocks/${row.value}`}>{row.value}</Link>
-        ),
+        Cell: row => <Link to={`/blocks/${row.value}`}>{row.value}</Link>,
       },
       {
         Header: 'Parent',
@@ -61,33 +53,31 @@ class BlocksTable extends Component {
   }
 
   setPageSize(event) {
-    this.setState({ pageSize: Number(event.target.value) });
+    uiStore.setBlocksTablePageSize(Number(event.target.value));
   }
 
   fetchData(state) {
-    this.props.store.fetchBlocks({pageSize: state.pageSize,page: state.page, sorted: state.sorted});
+    this.props.store.fetchBlocks({
+      pageSize: uiStore.blocksTablePageSize,
+      page: state.page,
+      sorted: state.sorted,
+    });
   }
 
   render() {
     const store = this.props.store;
-    const numOfPages = Math.ceil(store.totalBlocks / this.state.pageSize);
+    const numOfPages = Math.ceil(store.totalBlocks / uiStore.blocksTablePageSize);
     return (
       <div className="BlocksTable">
         <div className="clearfix">
-          {store.medianTime ? (
-            <div className="medianTime mb-1 mb-lg-2">{store.medianTimeString}</div>
-          ) : (
-            ''
-          )}
+          {store.medianTime ? <div className="medianTime mb-1 mb-lg-2">{store.medianTimeString}</div> : ''}
           {this.props.title && (
-            <h1 className="d-block d-sm-inline-block text-white mb-3 mb-lg-5">
-              {this.props.title}
-            </h1>
+            <h1 className="d-block d-sm-inline-block text-white mb-3 mb-lg-5">{this.props.title}</h1>
           )}
           <div className="BlocksTable-pageSizes form-inline float-sm-right">
             <span className="mr-2 d-none d-md-inline-block">SHOW</span>
             <select
-              value={this.state.pageSize}
+              value={uiStore.blocksTablePageSize}
               onChange={this.setPageSize}
               className="form-control d-block d-md-inline-block"
             >
@@ -109,10 +99,14 @@ class BlocksTable extends Component {
           data={store.blocks}
           columns={this.getTableColumns()}
           showPaginationBottom={true}
-          defaultPageSize={10}
+          defaultPageSize={uiStore.blocksTablePageSize}
           pageSizeOptions={this.props.pageSizes}
           pages={numOfPages}
-          pageSize={this.state.pageSize}
+          page={uiStore.blocksTableCurPage}
+          onPageChange={page => {
+            uiStore.setBlocksTableCurPage(page);
+          }}
+          pageSize={uiStore.blocksTablePageSize}
           PaginationComponent={PaginationComponent}
           previousText="<"
           nextText=">"
@@ -123,11 +117,10 @@ class BlocksTable extends Component {
 }
 
 BlocksTable.defaultProps = {
-  pageSizes: [5, 10, 20, 50, 100]
+  pageSizes: [5, 10, 20, 50, 100],
 };
 
 BlocksTable.propTypes = {
-  pageSize: PropTypes.number,
   pageSizes: PropTypes.array,
   store: PropTypes.object,
 };
