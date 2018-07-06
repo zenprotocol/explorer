@@ -8,7 +8,7 @@ import './Navbar.css';
 export default function Navbar(props) {
   return (
     <div className={classnames(props.className, 'Navbar')}>
-      <nav className="navbar navbar-expand-lg py-1 py-lg-3 px-0">
+      <nav className="navbar navbar-dark navbar-expand-lg py-1 py-lg-3 px-0">
         <Link className="navbar-brand" to="/">
           <img src={logo} className="logo d-inline-block align-middle" alt="" />
           <img src={zenLogo} className="zen d-inline-block align-middle" alt="" />
