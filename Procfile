@@ -1,2 +1,2 @@
-web: pm2 start server/index.js
-worker: pm2 start worker/worker.js
+web: node server/index.js
+worker: node worker/worker.js
