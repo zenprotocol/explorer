@@ -6,6 +6,7 @@ class BlockStore {
   constructor() {
     this.blocks = [];
     this.block = {};
+    this.transaction = null;
     this.totalBlocks = 0;
     this.medianTime = null;
     this.loading = false;
@@ -30,6 +31,15 @@ class BlockStore {
 
     Service.blocks.findById(id).then(response => {
       this.block = response.data;
+      this.loading = false;
+    });
+  }
+
+  fetchTransaction(hash) {
+    this.loading = true;
+
+    Service.transactions.findByHash(hash).then(response => {
+      this.transaction = response.data;
       this.loading = false;
     });
   }
@@ -69,6 +79,7 @@ class BlockStore {
 decorate(BlockStore, {
   blocks: observable,
   block: observable,
+  transaction: observable,
   loading: observable,
   medianTime: observable,
   setBlocks: action,

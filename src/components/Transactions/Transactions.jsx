@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import {Link} from 'react-router-dom'
 import PropTypes from 'prop-types';
 import './Transactions.css';
 import TransactionAsset from './Asset/TransactionAsset';
@@ -9,10 +10,8 @@ class Transactions extends Component {
     if (!transactions || !transactions.length) {
       return null;
     }
-
     return (
-      <section className="bordered border-left border-primary pl-lg-4">
-        <h1 className="d-block d-sm-inline-block text-white mb-3 mb-lg-5">Transactions</h1>
+      <div className="Transactions">
         {transactions.map((transaction, index) => {
           return (
             <div className="Transaction" key={transaction.id}>
@@ -20,15 +19,17 @@ class Transactions extends Component {
                 {index === 0 ? (
                   <h5 className="coinbase d-inline-block mr-1 text-white">Coinbase - </h5>
                 ) : null}
-                <a href="">{transaction.hash}</a>
+                <Link to={`/tx/${transaction.hash}`} >{transaction.hash}</Link>
               </div>
-              {transaction.assets.map((asset, assetIndex) => {
-                return <TransactionAsset asset={asset} key={assetIndex} />;
-              })}
+              <div className="assets">
+                {transaction.assets && transaction.assets.length && transaction.assets.map((asset, assetIndex) => {
+                  return <TransactionAsset asset={asset} key={assetIndex} />;
+                })}
+              </div>
             </div>
           );
         })}
-      </section>
+      </div>
     );
   }
 }

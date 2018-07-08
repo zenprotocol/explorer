@@ -6,7 +6,7 @@ import Navbar from './components/Navbar/Navbar.jsx';
 import Blocks from './routes/blocks/Blocks.jsx';
 import Block from './routes/block/Block.jsx';
 import blockStore from './store/BlockStore';
-// import Transactions from './routes/transactions/Transactions.jsx';
+import Transaction from './routes/transaction/Transaction.jsx';
 
 class App extends Component {
   componentDidMount() {
@@ -24,7 +24,7 @@ class App extends Component {
         <div className="container px-lg-5">
           <Route exact path="/(|blocks)" component={Blocks} />
           <Route path="/blocks/:id" component={Block} />
-          {/* <Route path="/transactions" component={Transactions} /> */}
+          <Route path="/tx/:hash" component={Transaction} />
         </div>
       </div>
     );

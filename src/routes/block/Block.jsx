@@ -139,7 +139,11 @@ class Block extends Component {
           </div>
         </section>
 
-        <Transactions transactions={transactions} />
+        <section className="bordered border-left border-primary pl-lg-4">
+          <h1 className="d-block d-sm-inline-block text-white mb-3 mb-lg-5">Transactions</h1>
+          <Transactions transactions={transactions} />
+        </section>
+        
       </div>
     );
   }

@@ -1,5 +1,5 @@
 import React from 'react';
-import {Link} from 'react-router-dom';
+import {Link ,NavLink} from 'react-router-dom';
 import logo from '../../logo_big.png';
 import zenLogo from '../../zen.png';
 import classnames from 'classnames';
@@ -21,10 +21,10 @@ export default function Navbar(props) {
         <div className="collapse navbar-collapse" id="navbarSupportedContent">
           <ul className="navbar-nav mr-auto">
             <li className="nav-item active">
-              <Link className="nav-link" to="/blocks">Blocks</Link>
+              <NavLink className="nav-link" to="/blocks">Blocks</NavLink>
             </li>
             {/* <li className="nav-item">
-              <Link className="nav-link" to="/transactions">Transactions</Link>
+              <NavLink className="nav-link" to="/tx">Transactions</NavLink>
             </li> */}
           </ul>
           {/* <form className="form-inline my-2 my-lg-0">
