@@ -28,7 +28,7 @@ class Transaction extends Component {
     if(!transaction) {
       return null;
     }
-    
+
     return (
       <div className="Transaction">
         <section className="bordered border-left border-primary pl-lg-4">
@@ -40,7 +40,7 @@ class Transaction extends Component {
               </h1>
             </div>
           </div>
-          <Transactions transactions={[transaction]} />
+          <Transactions transactions={[transaction]} disableTXLinks={true} />
         </section>
       </div>
     );
