@@ -46,7 +46,8 @@ class TransactionAsset extends Component {
         if (!input.Output) {
           return null;
         }
-        return this.renderInputOutputItem(input.id, input.Output.address, '');
+        const title = input.Output.address? input.Output.address : getTextByLockType(input.Output.lockType);
+        return this.renderInputOutputItem(input.id, title, '');
       });
     }
 
@@ -63,9 +64,10 @@ class TransactionAsset extends Component {
     } else {
       rowsToRender = asset.outputs.map(output => {
         key++;
-        let amount = showAmount? output.amount : null;
-        amount = isZP? amount / 100000000 : amount;
-        return this.renderInputOutputItem(key, output.address, '', amount);
+        let amount = showAmount ? output.amount : null;
+        amount = isZP ? amount / 100000000 : amount;
+        const title = output.address? output.address : getTextByLockType(output.lockType);
+        return this.renderInputOutputItem(key, title, '', amount);
       });
     }
 
@@ -73,8 +75,8 @@ class TransactionAsset extends Component {
       let totalAmount = asset.outputs.reduce((total, current) => {
         return total + Number(current.amount);
       }, 0);
-      totalAmount = isZP? totalAmount / 100000000 : totalAmount;
-  
+      totalAmount = isZP ? totalAmount / 100000000 : totalAmount;
+
       key++;
       rowsToRender.push(this.renderInputOutputItem(key, '', null, totalAmount, true));
     }
@@ -124,5 +126,14 @@ class TransactionAsset extends Component {
 TransactionAsset.propTypes = {
   asset: PropTypes.object.isRequired,
 };
+
+function getTextByLockType(lockType) {
+  switch (lockType.toLowerCase()) {
+    case 'destroy':
+      return 'Destroyed';
+    default:
+      return lockType;
+  }
+}
 
 export default TransactionAsset;
