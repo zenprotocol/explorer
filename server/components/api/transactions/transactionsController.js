@@ -5,6 +5,7 @@ const transactionsDAL = require('./transactionsDAL');
 const jsonResponse = require('../../../lib/jsonResponse');
 const HttpError = require('../../../lib/HttpError');
 const createQueryObject = require('../../../lib/createQueryObject');
+const getTransactionAssets = require('./getTransactionAssets');
 
 module.exports = {
   index: async function(req, res) {
@@ -24,9 +25,13 @@ module.exports = {
     );
   },
   show: async function(req, res) {
-    const transaction = await transactionsDAL.findById(req.params.id);
-    if (transaction) {
-      res.status(httpStatus.OK).json(jsonResponse.create(httpStatus.OK, transaction));
+    const transaction = await transactionsDAL.findByHash(req.params.hash);
+    const customTX = transactionsDAL.toJSON(transaction);
+    customTX['assets'] = getTransactionAssets(customTX);
+    delete customTX.Inputs;
+    delete customTX.Outputs;
+    if (customTX) {
+      res.status(httpStatus.OK).json(jsonResponse.create(httpStatus.OK, customTX));
     } else {
       throw new HttpError(httpStatus.NOT_FOUND);
     }

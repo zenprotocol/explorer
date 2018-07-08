@@ -5,44 +5,7 @@ const blocksDAL = require('./blocksDAL');
 const jsonResponse = require('../../../lib/jsonResponse');
 const HttpError = require('../../../lib/HttpError');
 const createQueryObject = require('../../../lib/createQueryObject');
-
-function sortTransactionInsAndOutsByAssets (transaction) {
-  const assets = {};
-  if(transaction.Outputs && transaction.Outputs.length) {
-    transaction.Outputs.forEach((output) => {
-      if(!assets[output.asset]) {
-        assets[output.asset] = {
-          inputs: [],
-          outputs: [],
-        };
-      }
-
-      assets[output.asset].outputs.push(output);
-    });
-  }
-
-  if(transaction.Inputs && transaction.Inputs.length) {
-    transaction.Inputs.forEach((input) => {
-      if (input.Output) {
-        if(!assets[input.Output.asset]) {
-          assets[input.Output.asset] = {
-            inputs: [],
-            outputs: [],
-          };
-        }
-        assets[input.Output.asset].inputs.push(input);
-      }
-    });
-  }
-
-  return Object.keys(assets).map((asset) => {
-    return {
-      asset: asset,
-      inputs: assets[asset].inputs,
-      outputs: assets[asset].outputs,
-    };
-  }).sort((a, b) => b.asset < a.asset);
-}
+const getTransactionAssets = require('../transactions/getTransactionAssets');
 
 module.exports = {
   index: async function(req, res) {
@@ -65,8 +28,7 @@ module.exports = {
   },
   findByBlockNumber: async function(req, res) {
     const block = await blocksDAL.findByBlockNumber(req.params.id);
-    const customBlock = block.toJSON();
-    console.log(customBlock);
+    const customBlock = blocksDAL.toJSON(block);
     customBlock.Transactions.forEach((transaction) => {
       // make sure the order is right
       transaction.Outputs.sort((a, b) => {
@@ -76,7 +38,7 @@ module.exports = {
         return Number(b.index) < Number(a.index);
       });
 
-      transaction['assets'] = sortTransactionInsAndOutsByAssets(transaction);
+      transaction['assets'] = getTransactionAssets(transaction);
       delete transaction.Inputs;
       delete transaction.Outputs;
     });

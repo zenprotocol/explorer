@@ -8,6 +8,6 @@ const transactionsRouter = require('./transactions/transactionsRoutes');
 router.use('/blocks', blocksRouter);
 router.use('/inputs', inputsRouter);
 router.use('/outputs', outputsRouter);
-router.use('/transactions', transactionsRouter);
+router.use('/tx', transactionsRouter);
 
 module.exports = router;

@@ -100,6 +100,9 @@ const createDAL = modelName => {
           });
       });
     },
+    toJSON(model) {
+      return model.toJSON();
+    },
   };
 };
 
