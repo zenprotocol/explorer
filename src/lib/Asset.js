@@ -10,6 +10,14 @@ export default {
     if(!amount) {
       return '';
     }
-    return this.isZP(asset)? (amount / 100000000) + ' ZP' : String(amount);
+
+    if(this.isZP(asset)) {
+      let parsedAmount = String(amount / 100000000);
+      if (amount <= 100) {
+        parsedAmount = (amount / 100000000).toFixed(8);
+      }
+      return `${parsedAmount} ZP`;
+    }
+    return String(amount);
   }
 };
