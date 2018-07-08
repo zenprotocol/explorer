@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
+import Asset from '../../../lib/Asset';
 
 class TransactionAsset extends Component {
   render() {
@@ -57,15 +58,14 @@ class TransactionAsset extends Component {
   renderOutputs(asset) {
     let rowsToRender = [];
     let key = 0;
-    const isZP = asset.asset === '00'; // ZP
-    const showAmount = isZP;
+    const isZP = Asset.isZP(asset);
+    const showAmount = Asset.showAmount(asset);
     if (!asset.outputs || !asset.outputs.length) {
       rowsToRender.push(this.renderInputOutputItem(key, 'No Outputs'));
     } else {
       rowsToRender = asset.outputs.map(output => {
         key++;
-        let amount = showAmount ? output.amount : null;
-        amount = isZP ? amount / 100000000 : amount;
+        let amount = showAmount ? Asset.getAmountString(asset, output.amount) : null;
         const title = output.address? output.address : getTextByLockType(output.lockType);
         return this.renderInputOutputItem(key, title, '', amount);
       });
@@ -75,7 +75,7 @@ class TransactionAsset extends Component {
       let totalAmount = asset.outputs.reduce((total, current) => {
         return total + Number(current.amount);
       }, 0);
-      totalAmount = isZP ? totalAmount / 100000000 : totalAmount;
+      totalAmount = Asset.getAmountString(asset, totalAmount);
 
       key++;
       rowsToRender.push(this.renderInputOutputItem(key, '', null, totalAmount, true));
@@ -114,9 +114,9 @@ class TransactionAsset extends Component {
         </div>
         <div
           className={classNames('col-3 address break-word', { 'font-weight-bold': isTotal })}
-          title={amount ? amount + ' ZP' : ''}
+          title={amount}
         >
-          {amount ? amount + ' ZP' : ''}
+          {amount}
         </div>
       </div>
     );
