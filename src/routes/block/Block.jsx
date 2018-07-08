@@ -128,7 +128,7 @@ class Block extends Component {
                   <tr>
                     <td>Parent</td>
                     <td>
-                      <div className="address no-text-transform">
+                      <div className="address no-text-transform break-word">
                         {block.parent}
                       </div>
                     </td>
