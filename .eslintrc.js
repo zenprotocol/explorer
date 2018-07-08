@@ -14,7 +14,7 @@ module.exports = {
     ecmaVersion: 8,
   },
   rules: {
-    indent: ['error', 2],
+    indent: [2, 2, {"SwitchCase": 1}],
     'linebreak-style': ['off', 'windows'],
     quotes: ['error', 'single'],
     semi: ['error', 'always'],
