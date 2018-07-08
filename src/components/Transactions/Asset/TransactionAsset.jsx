@@ -40,7 +40,7 @@ class TransactionAsset extends Component {
     let rowsToRender = [];
 
     if (!asset.inputs || !asset.inputs.length) {
-      const title = this.isCoinbase(asset) ? 'Mining Reward' : 'No Inputs';
+      const title = 'No Inputs';
       rowsToRender.push(this.renderInputOutputItem('1', title));
     } else {
       rowsToRender = asset.inputs.map(input => {
@@ -58,7 +58,6 @@ class TransactionAsset extends Component {
   renderOutputs(asset) {
     let rowsToRender = [];
     let key = 0;
-    const isZP = Asset.isZP(asset);
     const showAmount = Asset.showAmount(asset);
     if (!asset.outputs || !asset.outputs.length) {
       rowsToRender.push(this.renderInputOutputItem(key, 'No Outputs'));
@@ -71,15 +70,16 @@ class TransactionAsset extends Component {
       });
     }
 
-    if (showAmount) {
-      let totalAmount = asset.outputs.reduce((total, current) => {
-        return total + Number(current.amount);
-      }, 0);
-      totalAmount = Asset.getAmountString(asset, totalAmount);
+    // total amount
+    // if (showAmount) {
+    //   let totalAmount = asset.outputs.reduce((total, current) => {
+    //     return total + Number(current.amount);
+    //   }, 0);
+    //   totalAmount = Asset.getAmountString(asset, totalAmount);
 
-      key++;
-      rowsToRender.push(this.renderInputOutputItem(key, '', null, totalAmount, true));
-    }
+    //   key++;
+    //   rowsToRender.push(this.renderInputOutputItem(key, '', null, totalAmount, true));
+    // }
 
     return rowsToRender;
   }
