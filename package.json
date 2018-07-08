@@ -5,7 +5,7 @@
   "main": "server/index.js",
   "scripts": {
     "start": "node server/index.js",
-    "heroku-postbuild": "npm run heroku:client:build",
+    "heroku-postbuild": "npm i -g pm2 && npm run heroku:client:build",
     "heroku:db:migrate": "NODE_ENV=production npx sequelize db:migrate",
     "heroku:client:build": "npm run client:build",
     "setup": "node build_scripts/setup.js",
