@@ -15,4 +15,18 @@ outputsDAL.findByTransaction = function(transactionId) {
   });
 };
 
+outputsDAL.findAllByAddress = function(address) {
+  return this.findAll({
+    where: {
+      address
+    },
+    include: [
+      'Transaction'
+    ],
+    order: [
+      ['createdAt', 'DESC']
+    ]
+  });
+};
+
 module.exports = outputsDAL;
