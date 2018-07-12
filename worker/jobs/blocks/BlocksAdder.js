@@ -1,6 +1,6 @@
 'use strict';
 
-const zenJs = require('@zen/zenjs');
+const bech32 = require('bech32');
 const blocksDAL = require('../../../server/components/api/blocks/blocksDAL');
 const transactionsDAL = require('../../../server/components/api/transactions/transactionsDAL');
 const outputsDAL = require('../../../server/components/api/outputs/outputsDAL');
@@ -99,11 +99,15 @@ class BlocksAdder {
   }
 
   getAddressFromBCAddress(addressBC) {
-    // mute inner console.logs
-    let log = console.log;
-    console.log = () => {};
-    let address = zenJs.Address.getPublicKeyHashAddress('main', addressBC);
-    console.log = log;
+    let pkHash = Buffer.from(addressBC,'hex');
+
+    const words = bech32.toWords(pkHash);
+    const wordsBuffer = Buffer.from(words);
+    const withVersion = Buffer.alloc(words.length + 1);
+    withVersion.writeInt8(0,0);
+    wordsBuffer.copy(withVersion,1);
+
+    const address = bech32.encode('zen', withVersion);
     return address;
   }
 
