@@ -38,6 +38,14 @@ module.exports = {
       throw new HttpError(httpStatus.NOT_FOUND);
     }
   },
+  getById: async function(req, res) {
+    const transaction = await transactionsDAL.findById(req.params.id);
+    if (transaction) {
+      res.status(httpStatus.OK).json(jsonResponse.create(httpStatus.OK, transaction));
+    } else {
+      throw new HttpError(httpStatus.NOT_FOUND);
+    }
+  },
   create: async function(req, res) {
     const transaction = await transactionsDAL.create(req.body);
     res.status(httpStatus.CREATED).json(jsonResponse.create(httpStatus.CREATED, transaction));

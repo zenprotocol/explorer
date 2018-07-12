@@ -31,7 +31,7 @@ module.exports = {
     );
   },
   findByBlockNumber: async function(req, res) {
-    const block = await blocksDAL.findByBlockNumber(req.params.id);
+    const block = await blocksDAL.findByBlockNumber(req.params.blockNumber);
     const customBlock = blocksDAL.toJSON(block);
 
     customBlock.Transactions.forEach(transaction => {
@@ -51,6 +51,14 @@ module.exports = {
     });
     if (customBlock) {
       res.status(httpStatus.OK).json(jsonResponse.create(httpStatus.OK, customBlock));
+    } else {
+      throw new HttpError(httpStatus.NOT_FOUND);
+    }
+  },
+  getById: async function(req, res) {
+    const block = await blocksDAL.findById(req.params.id);
+    if (block) {
+      res.status(httpStatus.OK).json(jsonResponse.create(httpStatus.OK, block));
     } else {
       throw new HttpError(httpStatus.NOT_FOUND);
     }
