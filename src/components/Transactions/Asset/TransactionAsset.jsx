@@ -45,13 +45,25 @@ class TransactionAsset extends Component {
       const title = 'No Inputs';
       rowsToRender.push(this.renderInputOutputItem('1', title));
     } else {
-      rowsToRender = asset.inputs.map(input => {
-        if (!input.Output) {
-          return null;
+      const addedInputAddresses = [];
+      rowsToRender = asset.inputs.reduce((all, input) => {
+        if(!input.Output) {
+          return all;
         }
-        const title = input.Output.address? input.Output.address : Output.getTextByLockType(input.Output.lockType);
-        return this.renderInputOutputItem(input.id, title, '');
-      });
+
+        if(input.Output.address) {
+          if(!addedInputAddresses.includes(input.Output.address)){
+            addedInputAddresses.push(input.Output.address);
+            all.push(this.renderInputOutputItem(input.id, input.Output.address, ''));
+          }
+        }
+        else {
+          const title = Output.getTextByLockType(input.Output.lockType);
+          all.push(this.renderInputOutputItem(input.id, title, ''));
+        }
+
+        return all;
+      }, []);
     }
 
     return rowsToRender;
