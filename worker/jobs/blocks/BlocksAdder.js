@@ -1,5 +1,6 @@
 'use strict';
 
+const zenJs = require('@zen/zenjs');
 const blocksDAL = require('../../../server/components/api/blocks/blocksDAL');
 const transactionsDAL = require('../../../server/components/api/transactions/transactionsDAL');
 const outputsDAL = require('../../../server/components/api/outputs/outputsDAL');
@@ -23,6 +24,87 @@ function getJobData(job, key) {
 class BlocksAdder {
   constructor(networkHelper) {
     this.networkHelper = networkHelper;
+  }
+
+  async addNewBlocks(job) {
+    let numberOfBlocksAdded = 0;
+    let latestBlockNumberInDB = await this.getLatestBlockNumberInDB();
+    const latestBlockNumberInNode = await this.networkHelper.getLatestBlockNumberFromNode();
+    const latestBlockNumberToAdd = getJobData(job, 'limitBlocks')
+      ? Math.min(latestBlockNumberInDB + Number(getJobData(job, 'limitBlocks')), latestBlockNumberInNode)
+      : latestBlockNumberInNode;
+
+    logger.info('Block numbers:\n', {
+      latestBlockNumberInDB,
+      latestBlockNumberToAdd,
+      needsUpdate: latestBlockNumberToAdd > latestBlockNumberInDB,
+    });
+
+    if (latestBlockNumberToAdd > latestBlockNumberInDB) {
+      // add the block synced to have the right incrementing ids
+      for (
+        let blockNumber = latestBlockNumberInDB + 1;
+        blockNumber <= latestBlockNumberToAdd;
+        blockNumber++
+      ) {
+        logger.info(`Getting block #${blockNumber} from NODE...`);
+        const newBlock = await this.networkHelper.getBlockFromNode(blockNumber);
+        logger.info(`Got block #${newBlock.header.blockNumber} from NODE...`);
+
+        let block;
+        try {
+          block = await this.createBlock(newBlock);
+          const skipTransactions = getJobData(job, 'skipTransactions');
+
+          if (!skipTransactions) {
+            // transactions
+            const transactionHashes = Object.keys(newBlock.transactions);
+            const transactionsToAdd = getJobData(job, 'limitTransactions')
+              ? Math.min(getJobData(job, 'limitTransactions'), transactionHashes.length)
+              : transactionHashes.length;
+            logger.info(`${transactionsToAdd} transactions to add`);
+            for (let transactionIndex = 0; transactionIndex < transactionsToAdd; transactionIndex++) {
+              const hash = transactionHashes[transactionIndex];
+              const nodeTransaction = newBlock.transactions[hash];
+              logger.info(`Transaction #${transactionIndex}`);
+              const transaction = await this.addTransactionToBlock(block, nodeTransaction, hash);
+
+              // add outputs
+              for (let outputIndex = 0; outputIndex < nodeTransaction.outputs.length; outputIndex++) {
+                const nodeOutput = nodeTransaction.outputs[outputIndex];
+
+                await this.addOutputToTransaction(transaction, nodeOutput, outputIndex);
+              }
+
+              // add inputs
+              for (let inputIndex = 0; inputIndex < nodeTransaction.inputs.length; inputIndex++) {
+                const nodeInput = nodeTransaction.inputs[inputIndex];
+
+                await this.addInputToTransaction(transaction, nodeInput, inputIndex);
+              }
+            }
+          }
+        } catch (error) {
+          logger.error(`Error creating #${newBlock.header.blockNumber} - ${error.message}`);
+          if (block && block.id) {
+            await blocksDAL.delete(block.id);
+          }
+          throw error;
+        }
+        numberOfBlocksAdded++;
+      }
+    }
+
+    return numberOfBlocksAdded;
+  }
+
+  getAddressFromBCAddress(addressBC) {
+    // mute inner console.logs
+    let log = console.log;
+    console.log = () => {};
+    let address = zenJs.Address.getPublicKeyHashAddress('main', addressBC);
+    console.log = log;
+    return address;
   }
 
   async getLatestBlockNumberInDB() {
@@ -68,9 +150,15 @@ class BlocksAdder {
   async addOutputToTransaction(transaction, nodeOutput, outputIndex) {
     logger.info(`Creating a new output for transaction #${transaction.id}...`);
     const {lockType, address} = this.getLockValuesFromOutput(nodeOutput);
+    const addressBC = address;
+    let addressWallet = null;
+    if(addressBC) {
+      addressWallet = this.getAddressFromBCAddress(addressBC);
+    }
     const output = await outputsDAL.create({
       lockType,
-      address,
+      addressBC,
+      address: addressWallet,
       contractLockVersion: 0,
       asset: nodeOutput.spend ? nodeOutput.spend.asset : null,
       amount: nodeOutput.spend ? nodeOutput.spend.amount : null,
@@ -173,78 +261,6 @@ class BlocksAdder {
       logger.info('Output was set...');
     }
     return input;
-  }
-
-  async addNewBlocks(job) {
-    let numberOfBlocksAdded = 0;
-    let latestBlockNumberInDB = await this.getLatestBlockNumberInDB();
-    const latestBlockNumberInNode = await this.networkHelper.getLatestBlockNumberFromNode();
-    const latestBlockNumberToAdd = getJobData(job, 'limitBlocks')
-      ? Math.min(latestBlockNumberInDB + Number(getJobData(job, 'limitBlocks')), latestBlockNumberInNode)
-      : latestBlockNumberInNode;
-
-    logger.info('Block numbers:\n', {
-      latestBlockNumberInDB,
-      latestBlockNumberToAdd,
-      needsUpdate: latestBlockNumberToAdd > latestBlockNumberInDB,
-    });
-
-    if (latestBlockNumberToAdd > latestBlockNumberInDB) {
-      // add the block synced to have the right incrementing ids
-      for (
-        let blockNumber = latestBlockNumberInDB + 1;
-        blockNumber <= latestBlockNumberToAdd;
-        blockNumber++
-      ) {
-        logger.info(`Getting block #${blockNumber} from NODE...`);
-        const newBlock = await this.networkHelper.getBlockFromNode(blockNumber);
-        logger.info(`Got block #${newBlock.header.blockNumber} from NODE...`);
-
-        let block;
-        try {
-          block = await this.createBlock(newBlock);
-          const skipTransactions = getJobData(job, 'skipTransactions');
-
-          if (!skipTransactions) {
-            // transactions
-            const transactionHashes = Object.keys(newBlock.transactions);
-            const transactionsToAdd = getJobData(job, 'limitTransactions')
-              ? Math.min(getJobData(job, 'limitTransactions'), transactionHashes.length)
-              : transactionHashes.length;
-            logger.info(`${transactionsToAdd} transactions to add`);
-            for (let transactionIndex = 0; transactionIndex < transactionsToAdd; transactionIndex++) {
-              const hash = transactionHashes[transactionIndex];
-              const nodeTransaction = newBlock.transactions[hash];
-              logger.info(`Transaction #${transactionIndex}`);
-              const transaction = await this.addTransactionToBlock(block, nodeTransaction, hash);
-
-              // add outputs
-              for (let outputIndex = 0; outputIndex < nodeTransaction.outputs.length; outputIndex++) {
-                const nodeOutput = nodeTransaction.outputs[outputIndex];
-
-                await this.addOutputToTransaction(transaction, nodeOutput, outputIndex);
-              }
-
-              // add inputs
-              for (let inputIndex = 0; inputIndex < nodeTransaction.inputs.length; inputIndex++) {
-                const nodeInput = nodeTransaction.inputs[inputIndex];
-
-                await this.addInputToTransaction(transaction, nodeInput, inputIndex);
-              }
-            }
-          }
-        } catch (error) {
-          logger.error(`Error creating #${newBlock.header.blockNumber} - ${error.message}`);
-          if (block && block.id) {
-            await blocksDAL.delete(block.id);
-          }
-          throw error;
-        }
-        numberOfBlocksAdded++;
-      }
-    }
-
-    return numberOfBlocksAdded;
   }
 }
 

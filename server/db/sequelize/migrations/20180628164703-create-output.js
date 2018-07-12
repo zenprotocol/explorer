@@ -17,6 +17,9 @@ module.exports = {
       address: {
         type: Sequelize.STRING,
       },
+      addressBC: {
+        type: Sequelize.STRING,
+      },
       asset: {
         type: Sequelize.STRING,
       },
