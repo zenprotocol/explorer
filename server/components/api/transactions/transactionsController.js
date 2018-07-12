@@ -6,6 +6,7 @@ const jsonResponse = require('../../../lib/jsonResponse');
 const HttpError = require('../../../lib/HttpError');
 const createQueryObject = require('../../../lib/createQueryObject');
 const getTransactionAssets = require('./getTransactionAssets');
+const isCoinbaseTX = require('./isCoinbaseTX');
 
 module.exports = {
   index: async function(req, res) {
@@ -27,6 +28,7 @@ module.exports = {
   show: async function(req, res) {
     const transaction = await transactionsDAL.findByHash(req.params.hash);
     const customTX = transactionsDAL.toJSON(transaction);
+    customTX.isCoinbase = isCoinbaseTX(transaction);
     customTX['assets'] = getTransactionAssets(customTX);
     delete customTX.Inputs;
     delete customTX.Outputs;

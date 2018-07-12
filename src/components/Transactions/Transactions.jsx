@@ -6,8 +6,7 @@ import TransactionAsset from './Asset/TransactionAsset';
 
 class Transactions extends Component {
   render() {
-    const transactions = this.props.transactions;
-    const disableTXLinks = this.props.disableTXLinks;
+    const { transactions, disableTXLinks } = this.props;
 
     if (!transactions || !transactions.length) {
       return null;
@@ -18,7 +17,7 @@ class Transactions extends Component {
           return (
             <div className="Transaction" key={transaction.id}>
               <div className="hash mb-4 text-truncate no-text-transform">
-                {index === 0 ? (
+                {transaction.isCoinbase ? (
                   <h5 className="coinbase d-inline-block mr-1 text-white">Coinbase - </h5>
                 ) : null}
                 {disableTXLinks ? (
@@ -45,6 +44,7 @@ class Transactions extends Component {
 Transactions.propTypes = {
   transactions: PropTypes.array,
   disableTXLinks: PropTypes.bool,
+  isCoinbase: PropTypes.bool,
 };
 
 export default Transactions;

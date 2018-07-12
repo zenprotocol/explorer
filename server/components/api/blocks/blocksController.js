@@ -6,6 +6,7 @@ const jsonResponse = require('../../../lib/jsonResponse');
 const HttpError = require('../../../lib/HttpError');
 const createQueryObject = require('../../../lib/createQueryObject');
 const getTransactionAssets = require('../transactions/getTransactionAssets');
+const isCoinbaseTX = require('../transactions/isCoinbaseTX');
 
 module.exports = {
   index: async function(req, res) {
@@ -16,8 +17,11 @@ module.exports = {
         ? JSON.parse(req.query.sorted)
         : [{ id: 'blockNumber', desc: true }];
 
-    const query = createQueryObject({page, pageSize, sorted});
-    const [count, allBlocks] = await Promise.all([blocksDAL.count(), blocksDAL.findAllCountTransactions(query)]);
+    const query = createQueryObject({ page, pageSize, sorted });
+    const [count, allBlocks] = await Promise.all([
+      blocksDAL.count(),
+      blocksDAL.findAllCountTransactions(query),
+    ]);
 
     res.status(httpStatus.OK).json(
       jsonResponse.create(httpStatus.OK, {
@@ -29,7 +33,10 @@ module.exports = {
   findByBlockNumber: async function(req, res) {
     const block = await blocksDAL.findByBlockNumber(req.params.id);
     const customBlock = blocksDAL.toJSON(block);
-    customBlock.Transactions.forEach((transaction) => {
+
+    customBlock.Transactions.forEach(transaction => {
+      transaction.isCoinbase = isCoinbaseTX(transaction);
+
       // make sure the order is right
       transaction.Outputs.sort((a, b) => {
         return Number(b.index) < Number(a.index);
@@ -60,5 +67,4 @@ module.exports = {
     await blocksDAL.delete(req.params.id);
     res.status(httpStatus.OK).json(jsonResponse.create(httpStatus.OK));
   },
-  
 };
