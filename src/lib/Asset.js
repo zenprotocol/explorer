@@ -7,11 +7,11 @@ export default {
     return true;
   },
   getAmountString(asset, amount) {
-    if(!amount) {
+    if (!amount) {
       return '';
     }
 
-    if(this.isZP(asset)) {
+    if (this.isZP(asset)) {
       let parsedAmount = String(amount / 100000000);
       if (amount <= 100) {
         parsedAmount = (amount / 100000000).toFixed(8);
@@ -19,5 +19,13 @@ export default {
       return `${parsedAmount} ZP`;
     }
     return String(amount);
-  }
+  },
+  getTypeFromCode(code) {
+    switch (code) {
+      case '00':
+        return 'ZP';
+      default:
+        return code;
+    }
+  },
 };

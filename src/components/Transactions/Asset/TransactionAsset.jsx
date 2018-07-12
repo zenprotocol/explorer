@@ -25,7 +25,7 @@ class TransactionAsset extends Component {
           </div>
         </div>
         <div className="row mx-0">
-          <div className="col-2 break-word">{asset.asset}</div>
+          <div className="col-2 break-word">{Asset.getTypeFromCode(asset.asset)}</div>
           <div className="col-4 py-0">
             <div className="inputs">{this.renderInputs(asset)}</div>
             <div className="arrow">{'->'}</div>
