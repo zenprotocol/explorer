@@ -5,9 +5,11 @@
   "main": "server/index.js",
   "scripts": {
     "start": "node server/index.js",
+    "heroku-prebuild": "npm run zen:registry",
     "heroku-postbuild": "npm run heroku:client:build",
     "heroku:db:migrate": "NODE_ENV=production npx sequelize db:migrate",
     "heroku:client:build": "npm run client:build",
+    "zen:registry": "npm config set @zen:registry https://www.myget.org/F/zenprotocol/npm/",
     "setup": "node build_scripts/setup.js",
     "dev": "nodemon --inspect=0.0.0.0:5858 -w ./server --legacy-watch server/index.js",
     "setup:db": "npm run setup:db:test && npm run setup:db:development",
