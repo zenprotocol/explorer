@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
+import {Link} from 'react-router-dom';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import Asset from '../../../lib/Asset';
+import Output from '../../../lib/Output';
 
 class TransactionAsset extends Component {
   render() {
@@ -47,7 +49,7 @@ class TransactionAsset extends Component {
         if (!input.Output) {
           return null;
         }
-        const title = input.Output.address? input.Output.address : getTextByLockType(input.Output.lockType);
+        const title = input.Output.address? input.Output.address : Output.getTextByLockType(input.Output.lockType);
         return this.renderInputOutputItem(input.id, title, '');
       });
     }
@@ -65,7 +67,7 @@ class TransactionAsset extends Component {
       rowsToRender = asset.outputs.map(output => {
         key++;
         let amount = showAmount ? Asset.getAmountString(asset, output.amount) : null;
-        const title = output.address? output.address : getTextByLockType(output.lockType);
+        const title = output.address? output.address : Output.getTextByLockType(output.lockType);
         return this.renderInputOutputItem(key, title, '', amount);
       });
     }
@@ -105,12 +107,12 @@ class TransactionAsset extends Component {
     return addedRowsArray;
   }
 
-  renderInputOutputItem(key, title, url, amount, isTotal) {
+  renderInputOutputItem(key, title, address, amount, isTotal) {
     title = title || '\u00a0';
     return (
       <div className="row" key={key}>
         <div className="address break-word no-text-transform col-9" title={title}>
-          {url ? <a href={url}>{title}</a> : title}
+          {address ? <Link to={`/address/${address}`}>{title}</Link> : title}
         </div>
         <div
           className={classNames('col-3 address break-word', { 'font-weight-bold': isTotal })}
@@ -126,14 +128,5 @@ class TransactionAsset extends Component {
 TransactionAsset.propTypes = {
   asset: PropTypes.object.isRequired,
 };
-
-function getTextByLockType(lockType) {
-  switch (lockType.toLowerCase()) {
-    case 'destroy':
-      return 'Destroyed';
-    default:
-      return lockType;
-  }
-}
 
 export default TransactionAsset;

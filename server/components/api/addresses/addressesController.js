@@ -16,7 +16,7 @@ module.exports = {
         ? JSON.parse(req.query.sorted)
         : [{ id: 'createdAt', desc: true }];
 
-    const query = createQueryObject({sorted});
+    const query = createQueryObject({ sorted });
     const [count, allItems] = await Promise.all([transactionsDAL.count(), transactionsDAL.findAll(query)]);
 
     res.status(httpStatus.OK).json(
@@ -27,20 +27,91 @@ module.exports = {
     );
   },
   show: async function(req, res) {
-    // const transactions = await transactionsDAL.findAllByAddress(req.params.hash);
-    // const returnTXs = [];
-    // transactions.forEach(transaction => {
-    //   const customTX = transactionsDAL.toJSON(transaction);
-    //   customTX['assets'] = getTransactionAssets(customTX);
-    //   delete customTX.Inputs;
-    //   delete customTX.Outputs;
-    //   returnTXs.push(customTX);
-    // });
+    const asset = req.params.asset || '00';
+    const [outputs, inputs] = await Promise.all([
+      await outputsDAL.findAllByAddress(req.params.address, asset),
+      await inputsDAL.findAllByAddress(req.params.address, asset),
+    ]);
 
-    const outputs = await outputsDAL.findAllByAddress(req.params.hash);
-    const inputs = await inputsDAL.findAllByAddress(req.params.hash);
-    if (outputs.length) {
-      res.status(httpStatus.OK).json(jsonResponse.create(httpStatus.OK, {inputs, outputs}));
+    // inputs
+    const inputTXs = inputs.map(input => {
+      return {
+        type: 'input',
+        hash: input.Transaction.hash,
+        timestamp: input.Transaction.Block.timestamp,
+        inputs: [
+          {
+            id: input.id,
+            address: input.Output.address,
+            amount: input.Output.amount,
+          },
+        ],
+        outputs: input.Transaction.Outputs.map(output => {
+          return {
+            id: output.id,
+            asset: output.asset,
+            address: output.address,
+            amount: output.amount,
+            lockType: output.lockType,
+          };
+        }),
+      };
+    });
+    // outputs
+    const outputTXs = outputs.map(output => {
+      return {
+        type: 'output',
+        hash: output.Transaction.hash,
+        timestamp: output.Transaction.Block.timestamp,
+        inputs: output.Transaction.Inputs.map(input => {
+          return {
+            id: input.id,
+            address: input.Output.address,
+            amount: input.Output.amount,
+          };
+        }),
+        outputs: [
+          {
+            id: output.id,
+            asset: output.asset,
+            address: output.address,
+            amount: output.amount,
+            lockType: output.lockType,
+          },
+        ],
+      };
+    });
+    // combine
+    const combinedTXs = inputTXs.concat(outputTXs);
+    combinedTXs.sort((a, b) => {
+      return Number(b.timestamp) > Number(a.timestamp);
+    });
+
+    const totalReceived = outputs.reduce((prev, cur) => {
+      return prev + Number(cur.amount);
+    }, 0);
+    const totalSent = inputs.reduce((prev, cur) => {
+      return prev + Number(cur.amount);
+    }, 0);
+
+    const balance = totalReceived - totalSent;
+
+    if (combinedTXs.length) {
+      res.status(httpStatus.OK).json(jsonResponse.create(httpStatus.OK, {
+        totalReceived,
+        totalSent,
+        balance,
+        transactions: combinedTXs,
+      }));
+    } else {
+      throw new HttpError(httpStatus.NOT_FOUND);
+    }
+  },
+  findAllAssets: async function(req, res) {
+    const assets = await outputsDAL.findAllAddressAssets(req.params.address);
+
+    if (assets.length) {
+      res.status(httpStatus.OK).json(jsonResponse.create(httpStatus.OK, assets));
     } else {
       throw new HttpError(httpStatus.NOT_FOUND);
     }

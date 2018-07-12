@@ -6,6 +6,7 @@ const request = axios.create({
 const Endpoints = {
   blocks: '/api/blocks',
   transactions: '/api/tx',
+  addresses: '/api/address/',
 };
 
 let globalMute = false;
@@ -51,6 +52,15 @@ export default {
     async findByHash(hash) {
       return sendHttpRequest({
         url: `${Endpoints.transactions}/${hash}`,
+        method: 'get',
+      }).then(response => response.data);
+    }
+  },
+  addresses: {
+    async findTXs(address, asset) {
+      const assetOrDefault = asset || '00';
+      return sendHttpRequest({
+        url: `${Endpoints.addresses}/${address}/${assetOrDefault}`,
         method: 'get',
       }).then(response => response.data);
     }

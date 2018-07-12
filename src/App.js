@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Route } from 'react-router-dom';
+import { Route, Switch } from 'react-router-dom';
 
 import './App.css';
 import Navbar from './components/Navbar/Navbar.jsx';
@@ -7,6 +7,7 @@ import Blocks from './routes/blocks/Blocks.jsx';
 import Block from './routes/block/Block.jsx';
 import blockStore from './store/BlockStore';
 import Transaction from './routes/transaction/Transaction.jsx';
+import Address from './routes/address/Address.jsx';
 
 class App extends Component {
   componentDidMount() {
@@ -25,6 +26,7 @@ class App extends Component {
           <Route exact path="/(|blocks)" component={Blocks} />
           <Route path="/blocks/:id" component={Block} />
           <Route path="/tx/:hash" component={Transaction} />
+          <Route path="/address/:address/:asset?" component={Address} />
         </div>
       </div>
     );

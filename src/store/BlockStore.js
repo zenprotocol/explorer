@@ -10,6 +10,7 @@ class BlockStore {
     this.totalBlocks = 0;
     this.medianTime = null;
     this.loading = false;
+    this.addressTXs = null;
   }
 
   setBlocks(blocks) {
@@ -40,6 +41,15 @@ class BlockStore {
 
     Service.transactions.findByHash(hash).then(response => {
       this.transaction = response.data;
+      this.loading = false;
+    });
+  }
+
+  fetchAddressTXs(address, asset) {
+    this.loading = true;
+
+    Service.addresses.findTXs(address, asset).then(response => {
+      this.addressTXs = response.data;
       this.loading = false;
     });
   }
@@ -80,6 +90,7 @@ decorate(BlockStore, {
   blocks: observable,
   block: observable,
   transaction: observable,
+  addressTXs: observable,
   loading: observable,
   medianTime: observable,
   setBlocks: action,
