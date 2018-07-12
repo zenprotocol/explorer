@@ -10,6 +10,9 @@ transactionsDAL.findByHash = async function(hash) {
       hash,
     },
     include: [
+      {
+        model: this.db.Block
+      },
       'Outputs',
       {
         model: this.db.Input,
@@ -20,7 +23,7 @@ transactionsDAL.findByHash = async function(hash) {
   });
 };
 
-transactionsDAL.findAllByAddress = async function(address) {
+transactionsDAL.findAllByAddress = async function(address, asset) {
   return new Promise((resolve, reject) => {
     Promise.all([
       transactionsDAL.findAll({
@@ -29,6 +32,7 @@ transactionsDAL.findAllByAddress = async function(address) {
             model: this.db.Output,
             where: {
               address,
+              asset,
             },
           },
         ],
@@ -43,6 +47,7 @@ transactionsDAL.findAllByAddress = async function(address) {
                 model: this.db.Output,
                 where: {
                   address,
+                  asset,
                 },
               },
             ],

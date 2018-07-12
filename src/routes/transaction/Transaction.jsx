@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
+import {Link} from 'react-router-dom';
 import PropTypes from 'prop-types';
 import blockStore from '../../store/BlockStore';
 import Transactions from '../../components/Transactions/Transactions.jsx';
@@ -25,7 +26,7 @@ class Transaction extends Component {
     const transaction = blockStore.transaction;
     const medianTime = blockStore.medianTimeString;
 
-    if(!transaction) {
+    if (!transaction) {
       return null;
     }
 
@@ -35,9 +36,30 @@ class Transaction extends Component {
           <div className="row">
             <div className="col-sm">
               <div className="medianTime mb-1 mb-lg-2">{medianTime}</div>
-              <h1 className="d-block d-sm-inline-block text-white mb-3 mb-lg-5">
-                Transaction
-              </h1>
+              <h1 className="d-block d-sm-inline-block text-white mb-3 mb-lg-5">Transaction</h1>
+            </div>
+          </div>
+          <div className="row">
+            <div className="col">
+              <table className="table">
+                <thead>
+                  <tr>
+                    <th scope="col" colSpan="2" className="text-white border-0">
+                      SUMMARY
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>Block</td>
+                    <td><Link to={`/blocks/${transaction.Block.blockNumber}`}>{transaction.Block.blockNumber}</Link></td>
+                  </tr>
+                  <tr>
+                    <td>Confirmations</td>
+                    <td className="no-text-transform">{blockStore.confirmations(transaction.Block.blockNumber)}</td>
+                  </tr>
+                </tbody>
+              </table>
             </div>
           </div>
           <Transactions transactions={[transaction]} disableTXLinks={true} />
