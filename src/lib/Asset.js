@@ -16,7 +16,7 @@ export default {
       if (amount <= 100) {
         parsedAmount = (amount / 100000000).toFixed(8);
       }
-      return `${parsedAmount} ZP`;
+      return `${parsedAmount} ${this.getTypeFromCode(asset.asset)}`;
     }
     return String(amount);
   },
