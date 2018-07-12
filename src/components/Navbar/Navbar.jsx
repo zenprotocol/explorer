@@ -12,7 +12,7 @@ export default function Navbar(props) {
         <Link className="navbar-brand text-primary" to="/">
           <img src={logo} className="logo d-inline-block align-middle" alt="" />
           <img src={zenLogo} className="zen d-inline-block align-middle" alt="" />
-          <div className="subtitle d-inline-block">/ BLOCK EXPLORER</div>
+          <div className="subtitle d-none d-sm-inline-block">/ BLOCK EXPLORER</div>
         </Link>
         <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
           <span className="navbar-toggler-icon"></span>
