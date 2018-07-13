@@ -11,6 +11,9 @@ module.exports = {
       version: {
         type: Sequelize.INTEGER
       },
+      hash: {
+        type: Sequelize.STRING
+      },
       parent: {
         type: Sequelize.STRING
       },

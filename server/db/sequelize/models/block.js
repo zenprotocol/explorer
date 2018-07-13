@@ -2,6 +2,7 @@
 module.exports = (sequelize, DataTypes) => {
   var Block = sequelize.define('Block', {
     version: DataTypes.INTEGER,
+    hash: DataTypes.STRING,
     parent: DataTypes.STRING,
     blockNumber: DataTypes.INTEGER,
     commitments: DataTypes.STRING,
