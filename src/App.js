@@ -3,6 +3,7 @@ import { Route, Switch } from 'react-router-dom';
 
 import './App.css';
 import Navbar from './components/Navbar/Navbar.jsx';
+import Footer from './components/Footer/Footer.jsx';
 import Blocks from './routes/blocks/Blocks.jsx';
 import Block from './routes/block/Block.jsx';
 import blockStore from './store/BlockStore';
@@ -28,6 +29,9 @@ class App extends Component {
           <Route path="/tx/:hash" component={Transaction} />
           <Route path="/address/:address/:asset?" component={Address} />
         </div>
+        {/* <div className="container px-lg-5">
+          <Footer />
+        </div> */}
       </div>
     );
   }
