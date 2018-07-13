@@ -2,8 +2,9 @@ import React, { Component } from 'react';
 import ReactTable from 'react-table';
 import { observer } from 'mobx-react';
 import { Link } from 'react-router-dom';
-import 'react-table/react-table.css';
 import PropTypes from 'prop-types';
+import debounce from 'lodash.debounce';
+import 'react-table/react-table.css';
 import TextUtils from '../../lib/TextUtils';
 import './BlocksTable.css';
 import PaginationComponent from './Pagination.jsx';
@@ -13,8 +14,26 @@ class BlocksTable extends Component {
   constructor(props) {
     super(props);
 
+    this.state = {
+      windowWidth: 0
+    };
+
     this.setPageSize = this.setPageSize.bind(this);
     this.fetchData = this.fetchData.bind(this);
+    this.setWindowWidth = debounce(this.setWindowWidth, 200).bind(this);
+  }
+
+  componentDidMount() {
+    this.setWindowWidth();
+    window.addEventListener('resize', this.setWindowWidth);
+  }
+
+  componentWillUnmount(){
+    window.removeEventListener('resize', this.setWindowWidth);
+  }
+
+  setWindowWidth() {
+    this.setState({windowWidth: window.innerWidth});
   }
 
   getTableColumns() {
@@ -22,6 +41,7 @@ class BlocksTable extends Component {
       {
         Header: 'Timestamp',
         accessor: 'timestamp',
+        maxWidth: 120,
         Cell: function(data) {
           const date = new Date(Number(data.value));
           return TextUtils.getDateString(date);
@@ -37,6 +57,7 @@ class BlocksTable extends Component {
         Header: 'Parent',
         accessor: 'parent',
         minWidth: 450,
+        show: this.state.windowWidth > 767
       },
       {
         Header: 'Difficulty',
