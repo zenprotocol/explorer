@@ -6,6 +6,7 @@ import PropTypes from 'prop-types';
 import blockStore from '../../store/BlockStore';
 import TextUtils from '../../lib/TextUtils';
 import Transactions from '../../components/Transactions/Transactions.jsx';
+import BlockUtils from '../../lib/BlockUtils';
 import './Block.css';
 
 class Block extends Component {
@@ -125,7 +126,7 @@ class Block extends Component {
                   </tr>
                   <tr>
                     <td>Difficulty</td>
-                    <td className="no-text-transform">{Number(block.difficulty).toString(16)}</td>
+                    <td className="no-text-transform">{BlockUtils.formatDifficulty(block.difficulty)}</td>
                   </tr>
                   <tr>
                     <td>Confirmations</td>

@@ -9,6 +9,7 @@ import TextUtils from '../../lib/TextUtils';
 import './BlocksTable.css';
 import PaginationComponent from './Pagination.jsx';
 import uiStore from '../../store/UIStore';
+import BlockUtils from '../../lib/BlockUtils';
 
 class BlocksTable extends Component {
   constructor(props) {
@@ -63,7 +64,7 @@ class BlocksTable extends Component {
         Header: 'Difficulty',
         accessor: 'difficulty',
         Cell: function(data) {
-          return Number(data.value).toString(16);
+          return BlockUtils.formatDifficulty(data.value);
         },
       },
       {
