@@ -105,6 +105,12 @@ class Block extends Component {
                   </tr>
                 </thead>
                 <tbody>
+                  {block.hash? (
+                    <tr>
+                      <td>hash</td>
+                      <td className="no-text-transform">{block.hash}</td>
+                    </tr>
+                  ) : null}
                   <tr>
                     <td>transactions</td>
                     <td>{blockStore.numberOfTransactions}</td>
