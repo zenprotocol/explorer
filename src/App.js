@@ -29,9 +29,9 @@ class App extends Component {
           <Route path="/tx/:hash" component={Transaction} />
           <Route path="/address/:address/:asset?" component={Address} />
         </div>
-        {/* <div className="container px-lg-5">
+        <div className="container px-lg-5">
           <Footer />
-        </div> */}
+        </div>
       </div>
     );
   }
