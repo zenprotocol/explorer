@@ -3,8 +3,8 @@ import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import '../Transactions/Transactions.css';
-import Asset from '../../lib/Asset';
-import Output from '../../lib/Output';
+import Asset from '../../lib/AssetUtils';
+import Output from '../../lib/OutputUtils';
 
 class Transactions extends Component {
   render() {

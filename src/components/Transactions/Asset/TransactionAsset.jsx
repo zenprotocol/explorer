@@ -2,8 +2,8 @@ import React, { Component } from 'react';
 import {Link} from 'react-router-dom';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
-import Asset from '../../../lib/Asset';
-import Output from '../../../lib/Output';
+import Asset from '../../../lib/AssetUtils';
+import Output from '../../../lib/OutputUtils';
 
 class TransactionAsset extends Component {
   render() {
