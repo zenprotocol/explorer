@@ -28,7 +28,7 @@ class TransactionAsset extends Component {
           <div className="col-2 break-word">{Asset.getTypeFromCode(asset.asset)}</div>
           <div className="col-4 py-0">
             <div className="inputs">{this.renderInputs(asset)}</div>
-            <div className="arrow">{'->'}</div>
+            <div className="arrow"><i className="fas fa-arrow-right"></i></div>
           </div>
           <div className="col-6 py-0">
             <div className="outputs">{this.renderOutputs(asset)}</div>
@@ -80,6 +80,7 @@ class TransactionAsset extends Component {
         key++;
         let amount = showAmount ? Asset.getAmountString(asset, output.amount) : null;
         const title = output.address? output.address : Output.getTextByLockType(output.lockType);
+        const address =  output.address? output.address : '';
         return this.renderInputOutputItem(key, title, '', amount);
       });
     }

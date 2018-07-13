@@ -131,8 +131,8 @@ class BlocksTable extends Component {
           }}
           pageSize={uiStore.blocksTablePageSize}
           PaginationComponent={PaginationComponent}
-          previousText="<"
-          nextText=">"
+          previousText={<i className="fas fa-angle-double-left"></i>}
+          nextText={<i className="fas fa-angle-double-right"></i>}
         />
       </div>
     );
