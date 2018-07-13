@@ -1,13 +1,12 @@
 .Footer {
   color: #808080;
   font-size: 0.9rem;
+  margin-bottom: 10px;
 }
 .Footer img.logo {
   height: 40px;
   width: auto;
 }
-
-
 
 .FooterLinks a {
   color: #808080;
@@ -31,7 +30,7 @@
   .logo-padding {
     padding-left: 30px;
   }
-  
+
   .separator {
     border-bottom-width: 0;
     border-right-width: 1px;
