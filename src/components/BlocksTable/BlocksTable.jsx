@@ -42,6 +42,7 @@ class BlocksTable extends Component {
       {
         Header: 'Timestamp',
         accessor: 'timestamp',
+        minWidth: 120,
         maxWidth: 120,
         Cell: function(data) {
           const date = new Date(Number(data.value));
