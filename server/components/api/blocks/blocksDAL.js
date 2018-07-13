@@ -1,6 +1,7 @@
 'use strict';
 
 const dal = require('../../../lib/dal');
+const wrapORMErrors = require('../../../lib/wrapORMErrors');
 
 const blocksDAL = dal.createDAL('Block');
 
@@ -46,4 +47,17 @@ blocksDAL.addTransaction = async function(block, transaction) {
 };
 blocksDAL.addTransaction = blocksDAL.addTransaction.bind(blocksDAL);
 
+blocksDAL.updateByBlockNumber = async function (blockNumber, values = {}) {
+  return new Promise((resolve, reject) => {
+    this.db[this.model]
+      .findOne({where: {blockNumber}})
+      .then((model) => {
+        return model.update(values, {individualHooks: true });
+      })
+      .then(resolve)
+      .catch(error => {
+        reject(wrapORMErrors(error));
+      });
+  });
+},
 module.exports = blocksDAL;
