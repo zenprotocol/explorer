@@ -34,29 +34,36 @@ module.exports = {
     ]);
 
     // inputs
-    const inputTXs = inputs.map(input => {
-      return {
-        type: 'input',
-        hash: input.Transaction.hash,
-        timestamp: input.Transaction.Block.timestamp,
-        inputs: [
-          {
-            id: input.id,
-            address: input.Output.address,
-            amount: input.Output.amount,
-          },
-        ],
-        outputs: input.Transaction.Outputs.map(output => {
-          return {
-            id: output.id,
-            asset: output.asset,
-            address: output.address,
-            amount: output.amount,
-            lockType: output.lockType,
-          };
-        }),
-      };
-    });
+    const inputTransactionIds = [];
+    // reduce to have unique transactions
+    const inputTXs = inputs.reduce((all, input) => {
+      if(!inputTransactionIds.includes(input.Transaction.id)) {
+        inputTransactionIds.push(input.Transaction.id);
+        all.push({
+          type: 'input',
+          hash: input.Transaction.hash,
+          timestamp: input.Transaction.Block.timestamp,
+          inputs: [
+            {
+              id: input.id,
+              address: input.Output.address,
+              amount: input.Output.amount,
+            },
+          ],
+          outputs: input.Transaction.Outputs.map(output => {
+            return {
+              id: output.id,
+              asset: output.asset,
+              address: output.address,
+              amount: output.amount,
+              lockType: output.lockType,
+            };
+          }),
+        });
+      }
+
+      return all;
+    }, []);
     // outputs
     const outputTXs = outputs.map(output => {
       return {
