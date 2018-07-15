@@ -8,6 +8,10 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.BIGINT,
       },
+      index: {
+        allowNull: false,
+        type: Sequelize.INTEGER,
+      },
       version: {
         allowNull: false,
         type: Sequelize.INTEGER,
@@ -15,6 +19,14 @@ module.exports = {
       hash: {
         allowNull: false,
         type: Sequelize.STRING,
+      },
+      inputCount: {
+        allowNull: false,
+        type: Sequelize.INTEGER,
+      },
+      outputCount: {
+        allowNull: false,
+        type: Sequelize.INTEGER,
       },
       createdAt: {
         allowNull: false,

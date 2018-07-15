@@ -9,7 +9,8 @@ module.exports = (sequelize, DataTypes) => {
     timestamp: DataTypes.BIGINT,
     difficulty: DataTypes.BIGINT,
     nonce1: DataTypes.BIGINT,
-    nonce2: DataTypes.BIGINT
+    nonce2: DataTypes.BIGINT,
+    transactionCount: DataTypes.BIGINT,
   }, {});
   Block.associate = function(models) {
     Block.hasMany(models.Transaction);

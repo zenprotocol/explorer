@@ -64,10 +64,10 @@ class BlocksAdder {
               : transactionHashes.length;
             logger.info(`${transactionsToAdd} transactions to add`);
             for (let transactionIndex = 0; transactionIndex < transactionsToAdd; transactionIndex++) {
-              const hash = transactionHashes[transactionIndex];
-              const nodeTransaction = newBlock.transactions[hash];
+              const transactionHash = transactionHashes[transactionIndex];
+              const nodeTransaction = newBlock.transactions[transactionHash];
               logger.info(`Transaction #${transactionIndex}`);
-              const transaction = await this.addTransactionToBlock(block, nodeTransaction, hash);
+              const transaction = await this.addTransactionToBlock({block, nodeTransaction, transactionHash, transactionIndex});
 
               // add outputs
               for (let outputIndex = 0; outputIndex < nodeTransaction.outputs.length; outputIndex++) {
@@ -125,6 +125,7 @@ class BlocksAdder {
     logger.info(`Creating a new block with blockNumber ${nodeBlock.header.blockNumber}  ...`);
     const block = await blocksDAL.create({
       version: nodeBlock.header.version,
+      hash: '', //nodeBlock.header.hash,
       parent: nodeBlock.header.parent,
       blockNumber: nodeBlock.header.blockNumber,
       commitments: nodeBlock.header.commitments,
@@ -132,16 +133,20 @@ class BlocksAdder {
       difficulty: nodeBlock.header.difficulty,
       nonce1: nodeBlock.header.nonce[0],
       nonce2: nodeBlock.header.nonce[1],
+      transactionCount: Object.keys(nodeBlock.transactions).length
     });
     logger.info(`Block #${nodeBlock.header.blockNumber} created.`);
     return block;
   }
 
-  async addTransactionToBlock(block, nodeTransaction, transactionHash) {
+  async addTransactionToBlock({block, nodeTransaction, transactionHash, transactionIndex} = {}) {
     logger.info(`Creating a new transaction for block #${block.blockNumber}...`);
     const transaction = await transactionsDAL.create({
       version: nodeTransaction.version,
       hash: transactionHash,
+      index: transactionIndex,
+      inputCount: (nodeTransaction.inputs)? nodeTransaction.inputs.length : 0,
+      outputCount: (nodeTransaction.outputs)? nodeTransaction.outputs.length : 0,
     });
     logger.info('Transaction created.');
 

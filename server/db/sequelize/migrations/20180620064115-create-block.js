@@ -6,46 +6,49 @@ module.exports = {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
       },
       version: {
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
       },
       hash: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
       },
       parent: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
       },
       blockNumber: {
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
       },
       commitments: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
       },
       timestamp: {
-        type: Sequelize.BIGINT
+        type: Sequelize.BIGINT,
       },
       difficulty: {
-        type: Sequelize.BIGINT
+        type: Sequelize.BIGINT,
       },
       nonce1: {
-        type: Sequelize.BIGINT
+        type: Sequelize.BIGINT,
       },
       nonce2: {
-        type: Sequelize.BIGINT
+        type: Sequelize.BIGINT,
+      },
+      transactionCount: {
+        type: Sequelize.BIGINT,
       },
       createdAt: {
         allowNull: false,
-        type: Sequelize.DATE
+        type: Sequelize.DATE,
       },
       updatedAt: {
         allowNull: false,
-        type: Sequelize.DATE
-      }
+        type: Sequelize.DATE,
+      },
     });
   },
   down: (queryInterface, Sequelize) => {
     return queryInterface.dropTable('Blocks');
-  }
+  },
 };

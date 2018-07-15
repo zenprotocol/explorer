@@ -5,6 +5,9 @@ module.exports = (sequelize, DataTypes) => {
     {
       version: DataTypes.INTEGER,
       hash: DataTypes.STRING,
+      index: DataTypes.INTEGER,
+      inputCount: DataTypes.INTEGER,
+      outputCount: DataTypes.INTEGER,
     },
     {}
   );
