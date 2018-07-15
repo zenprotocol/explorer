@@ -64,13 +64,13 @@ transactionsDAL.findAllByAddress = async function(address, asset) {
   });
 };
 
-transactionsDAL.addInput = async function(transaction, input) {
-  return transaction.addInput(input);
+transactionsDAL.addInput = async function(transaction, input, options = {}) {
+  return transaction.addInput(input, options);
 };
 transactionsDAL.addInput = transactionsDAL.addInput.bind(transactionsDAL);
 
-transactionsDAL.addOutput = async function(transaction, output) {
-  return transaction.addOutput(output);
+transactionsDAL.addOutput = async function(transaction, output, options = {}) {
+  return transaction.addOutput(output, options);
 };
 transactionsDAL.addOutput = transactionsDAL.addOutput.bind(transactionsDAL);
 

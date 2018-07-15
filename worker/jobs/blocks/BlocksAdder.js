@@ -48,47 +48,51 @@ class BlocksAdder {
         blockNumber++
       ) {
         logger.info(`Getting block #${blockNumber} from NODE...`);
-        const newBlock = await this.networkHelper.getBlockFromNode(blockNumber);
-        logger.info(`Got block #${newBlock.header.blockNumber} from NODE...`);
+        const nodeBlock = await this.networkHelper.getBlockFromNode(blockNumber);
+        logger.info(`Got block #${nodeBlock.header.blockNumber} from NODE...`);
 
         let block;
+        logger.info('Creating a database transaction for the current block');
+        const dbTransaction = await blocksDAL.db.sequelize.transaction();
         try {
-          block = await this.createBlock(newBlock);
+          block = await this.createBlock({nodeBlock, dbTransaction});
           const skipTransactions = getJobData(job, 'skipTransactions');
 
           if (!skipTransactions) {
             // transactions
-            const transactionHashes = Object.keys(newBlock.transactions);
+            const transactionHashes = Object.keys(nodeBlock.transactions);
             const transactionsToAdd = getJobData(job, 'limitTransactions')
               ? Math.min(getJobData(job, 'limitTransactions'), transactionHashes.length)
               : transactionHashes.length;
             logger.info(`${transactionsToAdd} transactions to add`);
             for (let transactionIndex = 0; transactionIndex < transactionsToAdd; transactionIndex++) {
               const transactionHash = transactionHashes[transactionIndex];
-              const nodeTransaction = newBlock.transactions[transactionHash];
+              const nodeTransaction = nodeBlock.transactions[transactionHash];
               logger.info(`Transaction #${transactionIndex}`);
-              const transaction = await this.addTransactionToBlock({block, nodeTransaction, transactionHash, transactionIndex});
+              const transaction = await this.addTransactionToBlock({block, nodeTransaction, transactionHash, transactionIndex, dbTransaction});
 
               // add outputs
               for (let outputIndex = 0; outputIndex < nodeTransaction.outputs.length; outputIndex++) {
                 const nodeOutput = nodeTransaction.outputs[outputIndex];
 
-                await this.addOutputToTransaction(transaction, nodeOutput, outputIndex);
+                await this.addOutputToTransaction({transaction, nodeOutput, outputIndex, dbTransaction});
               }
 
               // add inputs
               for (let inputIndex = 0; inputIndex < nodeTransaction.inputs.length; inputIndex++) {
                 const nodeInput = nodeTransaction.inputs[inputIndex];
 
-                await this.addInputToTransaction(transaction, nodeInput, inputIndex);
+                await this.addInputToTransaction({transaction, nodeInput, inputIndex, dbTransaction});
               }
             }
           }
+
+          logger.info('Commit the database transaction');
+          await dbTransaction.commit();
         } catch (error) {
-          logger.error(`Error creating #${newBlock.header.blockNumber} - ${error.message}`);
-          if (block && block.id) {
-            await blocksDAL.delete(block.id);
-          }
+          logger.error(`Error creating #${nodeBlock.header.blockNumber} - ${error.message}`);
+          logger.info('Rollback the database transaction');
+          await dbTransaction.rollback();
           throw error;
         }
         numberOfBlocksAdded++;
@@ -121,7 +125,7 @@ class BlocksAdder {
     return blockNumber;
   }
 
-  async createBlock(nodeBlock) {
+  async createBlock({nodeBlock, dbTransaction} = {}) {
     logger.info(`Creating a new block with blockNumber ${nodeBlock.header.blockNumber}  ...`);
     const block = await blocksDAL.create({
       version: nodeBlock.header.version,
@@ -134,12 +138,12 @@ class BlocksAdder {
       nonce1: nodeBlock.header.nonce[0],
       nonce2: nodeBlock.header.nonce[1],
       transactionCount: Object.keys(nodeBlock.transactions).length
-    });
+    }, {transaction: dbTransaction});
     logger.info(`Block #${nodeBlock.header.blockNumber} created.`);
     return block;
   }
 
-  async addTransactionToBlock({block, nodeTransaction, transactionHash, transactionIndex} = {}) {
+  async addTransactionToBlock({block, nodeTransaction, transactionHash, transactionIndex, dbTransaction} = {}) {
     logger.info(`Creating a new transaction for block #${block.blockNumber}...`);
     const transaction = await transactionsDAL.create({
       version: nodeTransaction.version,
@@ -147,16 +151,16 @@ class BlocksAdder {
       index: transactionIndex,
       inputCount: (nodeTransaction.inputs)? nodeTransaction.inputs.length : 0,
       outputCount: (nodeTransaction.outputs)? nodeTransaction.outputs.length : 0,
-    });
+    }, {transaction: dbTransaction});
     logger.info('Transaction created.');
 
     logger.info(`Adding the new transaction to block #${block.blockNumber}...`);
-    await blocksDAL.addTransaction(block, transaction);
+    await blocksDAL.addTransaction(block, transaction, {transaction: dbTransaction});
     logger.info('Transaction added to block');
     return transaction;
   }
 
-  async addOutputToTransaction(transaction, nodeOutput, outputIndex) {
+  async addOutputToTransaction({transaction, nodeOutput, outputIndex, dbTransaction}) {
     logger.info(`Creating a new output for transaction #${transaction.id}...`);
     const {lockType, address} = this.getLockValuesFromOutput(nodeOutput);
     const addressBC = address;
@@ -172,11 +176,11 @@ class BlocksAdder {
       asset: nodeOutput.spend ? nodeOutput.spend.asset : null,
       amount: nodeOutput.spend ? nodeOutput.spend.amount : null,
       index: outputIndex,
-    });
+    }, {transaction: dbTransaction});
     logger.info('Output created.');
 
     logger.info(`Adding the new output to transaction #${transaction.id}...`);
-    await transactionsDAL.addOutput(transaction, output);
+    await transactionsDAL.addOutput(transaction, output, {transaction: dbTransaction});
     logger.info('Output added to transaction');
 
     return output;
@@ -211,7 +215,7 @@ class BlocksAdder {
     return {lockType, address};
   }
 
-  async addInputToTransaction(transaction, nodeInput, inputIndex) {
+  async addInputToTransaction({transaction, nodeInput, inputIndex, dbTransaction}) {
     let amount = null;
     let output = null;
 
@@ -257,16 +261,16 @@ class BlocksAdder {
       outpointTXHash: nodeInput.outpoint.txHash,
       outpointIndex: Number(nodeInput.outpoint.index),
       amount,
-    });
+    }, {transaction: dbTransaction});
     logger.info('Input created.');
 
     logger.info(`Adding the new input to transaction #${transaction.id}...`);
-    await transactionsDAL.addInput(transaction, input);
+    await transactionsDAL.addInput(transaction, input, {transaction: dbTransaction});
     logger.info('Input added to transaction');
 
     if (output) {
       logger.info('Setting the found output on the input...');
-      await inputsDAL.setOutput(input, output);
+      await inputsDAL.setOutput(input, output, {transaction: dbTransaction});
       logger.info('Output was set...');
     }
     return input;

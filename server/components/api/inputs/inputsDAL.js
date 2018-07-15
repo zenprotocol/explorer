@@ -34,8 +34,8 @@ inputsDAL.findAllByAddress = function(address, asset) {
   });
 };
 
-inputsDAL.setOutput = async function(input, output) {
-  return input.setOutput(output);
+inputsDAL.setOutput = async function(input, output, options = {}) {
+  return input.setOutput(output, options);
 };
 inputsDAL.setOutput = inputsDAL.setOutput.bind(inputsDAL);
 

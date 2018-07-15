@@ -67,22 +67,22 @@ const createDAL = modelName => {
           });
       });
     },
-    async create(values = {}) {
+    async create(values = {}, options = {}) {
       return new Promise((resolve, reject) => {
         this.db[this.model]
-          .create(values)
+          .create(values, options)
           .then(resolve)
           .catch(error => {
             reject(wrapORMErrors(error));
           });
       });
     },
-    async update(id, values = {}) {
+    async update(id, values = {}, options = {}) {
       return new Promise((resolve, reject) => {
         this.db[this.model]
           .findById(id)
           .then((model) => {
-            return model.update(values, {individualHooks: true });
+            return model.update(values, Object.assign({individualHooks: true }, options));
           })
           .then(resolve)
           .catch(error => {

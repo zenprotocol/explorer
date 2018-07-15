@@ -42,17 +42,17 @@ blocksDAL.findByBlockNumber = function (blockNumber) {
 };
 blocksDAL.findLatest = blocksDAL.findLatest.bind(blocksDAL);
 
-blocksDAL.addTransaction = async function(block, transaction) {
-  return block.addTransaction(transaction);
+blocksDAL.addTransaction = async function(block, transaction, options = {}) {
+  return block.addTransaction(transaction, options);
 };
 blocksDAL.addTransaction = blocksDAL.addTransaction.bind(blocksDAL);
 
-blocksDAL.updateByBlockNumber = async function (blockNumber, values = {}) {
+blocksDAL.updateByBlockNumber = async function (blockNumber, values = {}, options = {}) {
   return new Promise((resolve, reject) => {
     this.db[this.model]
       .findOne({where: {blockNumber}})
       .then((model) => {
-        return model.update(values, {individualHooks: true });
+        return model.update(values, Object.assign({individualHooks: true }, options));
       })
       .then(resolve)
       .catch(error => {
