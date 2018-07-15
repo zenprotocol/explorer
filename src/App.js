@@ -24,10 +24,12 @@ class App extends Component {
         </div>
         <div className="App-separator mb-3 mb-sm-4 mb-lg-5" />
         <div className="container px-lg-5">
-          <Route exact path="/(|blocks)" component={Blocks} />
-          <Route path="/blocks/:id" component={Block} />
-          <Route path="/tx/:hash" component={Transaction} />
-          <Route path="/address/:address/:asset?" component={Address} />
+          <Switch>
+            <Route exact path="/(|blocks)" component={Blocks} />
+            <Route path="/blocks/:id" component={Block} />
+            <Route path="/tx/:hash" component={Transaction} />
+            <Route path="/address/:address/:asset?" component={Address} />
+          </Switch>
         </div>
         <div className="container px-lg-5">
           <Footer />
