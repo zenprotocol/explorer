@@ -83,6 +83,7 @@ class Block extends Component {
     const block = blockStore.block;
     const transactions = block.Transactions;
     const medianTime = blockStore.medianTimeString;
+
     return (
       <div className="Block">
         <section className="bordered border-left border-primary pl-lg-4">
@@ -118,7 +119,7 @@ class Block extends Component {
                   </tr>
                   <tr>
                     <td>Timestamp</td>
-                    <td>{TextUtils.getDateString(new Date(Number(block.timestamp)))}</td>
+                    <td>{block.timestamp? TextUtils.getDateString(new Date(Number(block.timestamp))) : null}</td>
                   </tr>
                   <tr>
                     <td>Version</td>
