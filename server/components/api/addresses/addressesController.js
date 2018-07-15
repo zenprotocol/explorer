@@ -7,7 +7,6 @@ const inputsDAL = require('../inputs/inputsDAL');
 const jsonResponse = require('../../../lib/jsonResponse');
 const HttpError = require('../../../lib/HttpError');
 const createQueryObject = require('../../../lib/createQueryObject');
-const getTransactionAssets = require('../transactions/getTransactionAssets');
 
 module.exports = {
   index: async function(req, res) {
