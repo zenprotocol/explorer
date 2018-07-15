@@ -80,7 +80,7 @@ class TransactionAsset extends Component {
         key++;
         let amount = showAmount ? Asset.getAmountString(asset, output.amount) : null;
         const title = output.address? output.address : Output.getTextByLockType(output.lockType);
-        const address =  output.address? output.address : '';
+        // const address =  output.address? output.address : '';
         return this.renderInputOutputItem(key, title, '', amount);
       });
     }
