@@ -20,7 +20,7 @@ module.exports = {
     const query = createQueryObject({ page, pageSize, sorted });
     const [count, allBlocks] = await Promise.all([
       blocksDAL.count(),
-      blocksDAL.findAllCountTransactions(query),
+      blocksDAL.findAll(query),
     ]);
 
     res.status(httpStatus.OK).json(

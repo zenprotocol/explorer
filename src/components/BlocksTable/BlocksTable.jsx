@@ -70,7 +70,7 @@ class BlocksTable extends Component {
       },
       {
         Header: 'Transactions',
-        accessor: 'transactionsCount',
+        accessor: 'transactionCount',
       },
     ];
   }
