@@ -129,7 +129,7 @@ class BlocksAdder {
     logger.info(`Creating a new block with blockNumber ${nodeBlock.header.blockNumber}  ...`);
     const block = await blocksDAL.create({
       version: nodeBlock.header.version,
-      hash: '', //nodeBlock.header.hash,
+      hash: nodeBlock.hash,
       parent: nodeBlock.header.parent,
       blockNumber: nodeBlock.header.blockNumber,
       commitments: nodeBlock.header.commitments,
