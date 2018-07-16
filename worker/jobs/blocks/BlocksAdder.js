@@ -183,6 +183,12 @@ class BlocksAdder {
     await transactionsDAL.addOutput(transaction, output, {transaction: dbTransaction});
     logger.info('Output added to transaction');
 
+    if (addressWallet) {
+      logger.info(`Adding address to transaction #${transaction.id}...`);
+      await transactionsDAL.addAddress(transaction, addressWallet, 'output', output.asset, {transaction: dbTransaction});
+      logger.info('Address added to transaction');
+    }
+
     return output;
   }
 
@@ -272,7 +278,14 @@ class BlocksAdder {
       logger.info('Setting the found output on the input...');
       await inputsDAL.setOutput(input, output, {transaction: dbTransaction});
       logger.info('Output was set...');
+
+      if(output.address) {
+        logger.info(`Adding address to transaction #${transaction.id}...`);
+        await transactionsDAL.addAddress(transaction, output.address, 'input', output.asset, {transaction: dbTransaction});
+        logger.info('Address added to transaction');
+      }
     }
+    
     return input;
   }
 }
