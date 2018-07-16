@@ -18,6 +18,7 @@ module.exports = {
         : [{ id: 'blockNumber', desc: true }];
 
     const query = createQueryObject({ page, pageSize, sorted });
+    query.attributes = {include: [[blocksDAL.db.Sequelize.literal('(SELECT "Blocks"."blockNumber" FROM "Blocks" WHERE "Blocks"."hash" = "Block"."parent" LIMIT 1)'), 'parentBlockNumber']]};
     const [count, allBlocks] = await Promise.all([
       blocksDAL.count(),
       blocksDAL.findAll(query),
@@ -49,6 +50,7 @@ module.exports = {
       delete transaction.Inputs;
       delete transaction.Outputs;
     });
+
     if (customBlock) {
       res.status(httpStatus.OK).json(jsonResponse.create(httpStatus.OK, customBlock));
     } else {

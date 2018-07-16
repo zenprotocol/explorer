@@ -53,13 +53,16 @@ class BlocksTable extends Component {
         Header: 'Block',
         accessor: 'blockNumber',
         width: 80,
-        Cell: row => <Link to={`/blocks/${row.value}`}>{row.value}</Link>,
+        Cell: data => <Link to={`/blocks/${data.value}`}>{data.value}</Link>,
       },
       {
         Header: 'Parent',
         accessor: 'parent',
         minWidth: 450,
-        show: this.state.windowWidth > 767
+        show: this.state.windowWidth > 767,
+        Cell: data => {
+          return <Link to={`/blocks/${data.original.parentBlockNumber}`}>{data.value}</Link>;
+        },
       },
       {
         Header: 'Difficulty',

@@ -5,52 +5,68 @@ const wrapORMErrors = require('../../../lib/wrapORMErrors');
 
 const blocksDAL = dal.createDAL('Block');
 
-blocksDAL.findLatest = function (amount = 1) {
+blocksDAL.findLatest = function(amount = 1) {
   return this.findAll({
-    order: [
-      ['createdAt', 'DESC']
-    ],
-    limit: amount
+    order: [['createdAt', 'DESC']],
+    limit: amount,
   });
 };
 blocksDAL.findLatest = blocksDAL.findLatest.bind(blocksDAL);
 
-blocksDAL.findByBlockNumber = function (blockNumber) {
+blocksDAL.findByBlockNumber = function(blockNumber) {
   return this.findOne({
     where: {
-      blockNumber
+      blockNumber,
     },
-    include: [{
-      model: this.db.Transaction,
+    attributes: {
       include: [
-        'Outputs', 
-        {
-          model: this.db.Input,
-          include: ['Output'],
-        }
-      ]
-    }],
-    
+        [
+          this.db.Sequelize.literal(
+            '(SELECT "Blocks"."blockNumber" FROM "Blocks" WHERE "Blocks"."hash" = "Block"."parent" LIMIT 1)'
+          ),
+          'parentBlockNumber',
+        ],
+      ],
+    },
+    include: [
+      {
+        model: this.db.Transaction,
+        include: [
+          'Outputs',
+          {
+            model: this.db.Input,
+            include: ['Output'],
+          },
+        ],
+      },
+    ],
   });
 };
-blocksDAL.findLatest = blocksDAL.findLatest.bind(blocksDAL);
+
+blocksDAL.findByHash = function(hash) {
+  return this.findOne({
+    where: {
+      hash,
+    },
+  });
+};
 
 blocksDAL.addTransaction = async function(block, transaction, options = {}) {
   return block.addTransaction(transaction, options);
 };
 blocksDAL.addTransaction = blocksDAL.addTransaction.bind(blocksDAL);
 
-blocksDAL.updateByBlockNumber = async function (blockNumber, values = {}, options = {}) {
+(blocksDAL.updateByBlockNumber = async function(blockNumber, values = {}, options = {}) {
   return new Promise((resolve, reject) => {
     this.db[this.model]
-      .findOne({where: {blockNumber}})
-      .then((model) => {
-        return model.update(values, Object.assign({individualHooks: true }, options));
+      .findOne({ where: { blockNumber } })
+      .then(model => {
+        return model.update(values, Object.assign({ individualHooks: true }, options));
       })
       .then(resolve)
       .catch(error => {
         reject(wrapORMErrors(error));
       });
   });
-},
-module.exports = blocksDAL;
+}),
+  (module.exports = blocksDAL);

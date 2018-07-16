@@ -107,7 +107,7 @@ class Block extends Component {
                   </tr>
                 </thead>
                 <tbody>
-                  {block.hash? (
+                  {block.hash ? (
                     <tr>
                       <td>hash</td>
                       <td className="no-text-transform">{block.hash}</td>
@@ -119,7 +119,9 @@ class Block extends Component {
                   </tr>
                   <tr>
                     <td>Timestamp</td>
-                    <td>{block.timestamp? TextUtils.getDateString(new Date(Number(block.timestamp))) : null}</td>
+                    <td>
+                      {block.timestamp ? TextUtils.getDateString(new Date(Number(block.timestamp))) : null}
+                    </td>
                   </tr>
                   <tr>
                     <td>Version</td>
@@ -137,7 +139,14 @@ class Block extends Component {
                     <td>Parent</td>
                     <td>
                       <div className="address no-text-transform break-word">
-                        {block.parent}
+                        <Link
+                          onClick={() => {
+                            this.switchBlock(block.parentBlockNumber);
+                          }}
+                          to={`/blocks/${block.parentBlockNumber}`}
+                        >
+                          {block.parent}
+                        </Link>
                       </div>
                     </td>
                   </tr>
@@ -151,7 +160,6 @@ class Block extends Component {
           <h1 className="d-block d-sm-inline-block text-white mb-3 mb-lg-5">Transactions</h1>
           <Transactions transactions={transactions} />
         </section>
-        
       </div>
     );
   }
