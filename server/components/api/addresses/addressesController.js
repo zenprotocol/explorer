@@ -27,87 +27,90 @@ module.exports = {
   },
   show: async function(req, res) {
     const asset = req.params.asset || '00';
-    const [outputs, inputs] = await Promise.all([
-      await outputsDAL.findAllByAddress(req.params.address, asset),
-      await inputsDAL.findAllByAddress(req.params.address, asset),
-    ]);
+    // const [outputs, inputs] = await Promise.all([
+    //   await outputsDAL.findAllByAddress(req.params.address, asset),
+    //   await inputsDAL.findAllByAddress(req.params.address, asset),
+    // ]);
 
-    // inputs
-    const inputTransactionIds = [];
-    // reduce to have unique transactions
-    const inputTXs = inputs.reduce((all, input) => {
-      if(!inputTransactionIds.includes(input.Transaction.id)) {
-        inputTransactionIds.push(input.Transaction.id);
-        all.push({
-          type: 'input',
-          hash: input.Transaction.hash,
-          timestamp: input.Transaction.Block.timestamp,
-          inputs: [
-            {
-              id: input.id,
-              address: input.Output.address,
-              amount: input.Output.amount,
-            },
-          ],
-          outputs: input.Transaction.Outputs.map(output => {
-            return {
-              id: output.id,
-              asset: output.asset,
-              address: output.address,
-              amount: output.amount,
-              lockType: output.lockType,
-            };
-          }),
-        });
-      }
+    // // inputs
+    // const inputTransactionIds = [];
+    // // reduce to have unique transactions
+    // const inputTXs = inputs.reduce((all, input) => {
+    //   if(!inputTransactionIds.includes(input.Transaction.id)) {
+    //     inputTransactionIds.push(input.Transaction.id);
+    //     all.push({
+    //       type: 'input',
+    //       hash: input.Transaction.hash,
+    //       timestamp: input.Transaction.Block.timestamp,
+    //       inputs: [
+    //         {
+    //           id: input.id,
+    //           address: input.Output.address,
+    //           amount: input.Output.amount,
+    //         },
+    //       ],
+    //       outputs: input.Transaction.Outputs.map(output => {
+    //         return {
+    //           id: output.id,
+    //           asset: output.asset,
+    //           address: output.address,
+    //           amount: output.amount,
+    //           lockType: output.lockType,
+    //         };
+    //       }),
+    //     });
+    //   }
 
-      return all;
-    }, []);
-    // outputs
-    const outputTXs = outputs.map(output => {
-      return {
-        type: 'output',
-        hash: output.Transaction.hash,
-        timestamp: output.Transaction.Block.timestamp,
-        inputs: output.Transaction.Inputs.map(input => {
-          return {
-            id: input.id,
-            address: input.Output.address,
-            amount: input.Output.amount,
-          };
-        }),
-        outputs: [
-          {
-            id: output.id,
-            asset: output.asset,
-            address: output.address,
-            amount: output.amount,
-            lockType: output.lockType,
-          },
-        ],
-      };
-    });
-    // combine
-    const combinedTXs = inputTXs.concat(outputTXs);
-    combinedTXs.sort((a, b) => {
-      return Number(b.timestamp) > Number(a.timestamp);
-    });
+    //   return all;
+    // }, []);
+    // // outputs
+    // const outputTXs = outputs.map(output => {
+    //   return {
+    //     type: 'output',
+    //     hash: output.Transaction.hash,
+    //     timestamp: output.Transaction.Block.timestamp,
+    //     inputs: output.Transaction.Inputs.map(input => {
+    //       return {
+    //         id: input.id,
+    //         address: input.Output.address,
+    //         amount: input.Output.amount,
+    //       };
+    //     }),
+    //     outputs: [
+    //       {
+    //         id: output.id,
+    //         asset: output.asset,
+    //         address: output.address,
+    //         amount: output.amount,
+    //         lockType: output.lockType,
+    //       },
+    //     ],
+    //   };
+    // });
+    // // combine
+    // const combinedTXs = inputTXs.concat(outputTXs);
+    // combinedTXs.sort((a, b) => {
+    //   return Number(b.timestamp) > Number(a.timestamp);
+    // });
 
-    const totalReceived = outputs.reduce((prev, cur) => {
-      return prev + Number(cur.amount);
-    }, 0);
-    const totalSent = inputs.reduce((prev, cur) => {
-      return prev + Number(cur.amount);
-    }, 0);
+    // const totalReceived = outputs.reduce((prev, cur) => {
+    //   return prev + Number(cur.amount);
+    // }, 0);
+    // const totalSent = inputs.reduce((prev, cur) => {
+    //   return prev + Number(cur.amount);
+    // }, 0);
 
-    const balance = totalReceived - totalSent;
+    // const balance = totalReceived - totalSent;
 
-    if (combinedTXs.length) {
+    const transactions = await transactionsDAL.findAllByAddress(req.params.address, asset);
+    console.log(transactions);
+    if (transactions.length) {
       res.status(httpStatus.OK).json(jsonResponse.create(httpStatus.OK, {
-        totalReceived,
-        totalSent,
-        balance,
-        transactions: combinedTXs,
+        // totalReceived,
+        // totalSent,
+        // balance,
+        // transactions: combinedTXs,
+        transactions
       }));
     } else {
       throw new HttpError(httpStatus.NOT_FOUND);
