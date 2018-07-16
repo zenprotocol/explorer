@@ -7,6 +7,7 @@ const Endpoints = {
   blocks: '/api/blocks',
   transactions: '/api/tx',
   addresses: '/api/address/',
+  info: '/api/infos',
 };
 
 let globalMute = false;
@@ -32,6 +33,14 @@ export default {
     setTimeout(timeout) {
       request.defaults.timeout = timeout;
     },
+  },
+  infos: {
+    async findByName(name) {
+      return sendHttpRequest({
+        url: `${Endpoints.info}/${name}`,
+        method: 'get',
+      }).then(response => response.data);
+    }
   },
   blocks: {
     async find(params) {

@@ -56,9 +56,9 @@ class BlockStore {
 
   fetchMedianTime() {
     this.loading = true;
-    Service.blocks.find({ pageSize: 1 }).then(response => {
-      if (response.success && response.data.items.length) {
-        this.medianTime = new Date(Number(response.data.items[0].timestamp));
+    Service.infos.findByName('medianTime').then(response => {
+      if (response.success) {
+        this.medianTime = new Date(Number(response.data.value));
         this.loading = false;
       }
     });
