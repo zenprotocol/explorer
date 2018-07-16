@@ -8,7 +8,7 @@ module.exports = (sequelize, DataTypes) => {
     {}
   );
   Address.associate = function(models) {
-    Address.belongsToMany(models.Transaction, {through: models.AddressTransaction});
+    Address.belongsToMany(models.Transaction, {through: 'AddressTransactions'});
   };
   return Address;
 };

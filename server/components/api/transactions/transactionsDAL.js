@@ -23,7 +23,7 @@ transactionsDAL.findByHash = async function(hash) {
   });
 };
 
-transactionsDAL.findAllByAddress = async function(address, asset) {
+transactionsDAL.findAllByAddress = async function(address) {
   return this.findAll({
     include: [
       {
@@ -39,16 +39,26 @@ transactionsDAL.findAllByAddress = async function(address, asset) {
         where: {
           address
         },
-        through: {
-          where: {asset}
-        }
       },
     ],
-    // limit: 10,
+    limit: 10,
     // order: [
     //   [this.db.Sequelize.col('Block.timestamp'), 'DESC'],
     //   [this.db.Input, 'index'], [this.db.Output, 'index']
     // ],
+  });
+};
+
+transactionsDAL.countByAddress = async function(address) {
+  return this.count({
+    include: [
+      {
+        model: this.db.Address,
+        where: {
+          address
+        },
+      },
+    ],
   });
 };
 
@@ -67,10 +77,9 @@ transactionsDAL.addOutput = transactionsDAL.addOutput.bind(transactionsDAL);
  *
  * @param {Object} transaction
  * @param {Object|string} address
- * @param {string} type input/output
  * @param {Object} [options={}]
  */
-transactionsDAL.addAddress = async function(transaction, address, type, asset, options = {}) {
+transactionsDAL.addAddress = async function(transaction, address, options = {}) {
   let addressDB = null;
   if (typeof address === 'string') {
     addressDB = await addressesDAL.findByAddress(address);
@@ -81,29 +90,17 @@ transactionsDAL.addAddress = async function(transaction, address, type, asset, o
     addressDB = address;
   }
 
-  // allow only one combination of transactionId|addressId|type
+  // allow only one relation
   const addresses = await transaction.getAddresses({
     where: {
       id: addressDB.id,
     },
-    through: {
-      where: {
-        type,
-        asset,
-      },
-    },
   });
-  if (addresses.length > 0) {
-    console.log(
-      'THIS TRANSACTION HAS THE ADDRESS ALREADY!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!',
-      { transactionId: transaction.id, addressId: addressDB.id, type }
-    );
+  if(addresses.length >= 2) {
+    throw new Error('MORE THAN ONE ADDRESS PER TRANSACTION!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
   }
-  if (!addresses.length) {
-    return transaction.addAddress(addressDB, Object.assign({ through: { type, asset } }, options));
-  }
-
-  return Promise.resolve(0);
+  
+  return transaction.addAddress(addressDB, options);
 };
 
 module.exports = transactionsDAL;

@@ -7,19 +7,23 @@ module.exports = {
         allowNull: false,
         primaryKey: true,
         type: Sequelize.BIGINT,
+        references: {
+          model: 'Addresses',
+          key: 'id',
+        },
+        onUpdate: 'CASCADE',
+        onDelete: 'CASCADE',
       },
       TransactionId: {
         allowNull: false,
         primaryKey: true,
         type: Sequelize.BIGINT,
-      },
-      type: {
-        allowNull: false,
-        type: Sequelize.ENUM('input', 'output'),
-      },
-      asset: {
-        allowNull: false,
-        type: Sequelize.STRING,
+        references: {
+          model: 'Transactions',
+          key: 'id',
+        },
+        onUpdate: 'CASCADE',
+        onDelete: 'CASCADE',
       },
       createdAt: {
         allowNull: false,

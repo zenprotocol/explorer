@@ -8,7 +8,7 @@ const wrapAsync = require('../../../lib/wrapAsyncForExpressErrors');
 router.route('/:address/assets')
   .get(wrapAsync(controller.findAllAssets));
 
-router.route('/:address/:asset*?')
+router.route('/:address')
   .get(wrapAsync(controller.show));
 
 module.exports = router;

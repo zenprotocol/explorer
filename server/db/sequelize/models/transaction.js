@@ -15,7 +15,7 @@ module.exports = (sequelize, DataTypes) => {
     Transaction.hasMany(models.Output);
     Transaction.hasMany(models.Input);
     Transaction.belongsTo(models.Block);
-    Transaction.belongsToMany(models.Address, {through: models.AddressTransaction});
+    Transaction.belongsToMany(models.Address, {through: 'AddressTransactions'});
   };
   return Transaction;
 };
