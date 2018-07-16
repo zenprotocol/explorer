@@ -42,7 +42,8 @@ class BlocksAdder {
     });
 
     if (latestBlockNumberToAdd > latestBlockNumberInDB) {
-      this.updateInfos();
+      await this.setSyncingStatus({syncing: true});
+      await this.updateInfos();
       // add the block synced to have the right incrementing ids
       for (
         let blockNumber = latestBlockNumberInDB + 1;
@@ -99,6 +100,7 @@ class BlocksAdder {
         }
         numberOfBlocksAdded++;
       }
+      await this.setSyncingStatus({syncing: false});
     }
 
     return numberOfBlocksAdded;
@@ -127,7 +129,7 @@ class BlocksAdder {
     return blockNumber;
   }
 
-  async updateInfos(dbTransaction) {
+  async updateInfos() {
     const infos = await this.networkHelper.getBlockchainInfo();
     const infoKeys = Object.keys(infos);
     const promises = [];
@@ -139,17 +141,34 @@ class BlocksAdder {
           await infosDAL.update(info.id, {
             name,
             value,
-          }, {transaction: dbTransaction});
+          });
         }
         else {
           await infosDAL.create({
             name,
             value,
-          }, {transaction: dbTransaction});
+          });
         }
       })());
     });
     await Promise.all(promises);
+  }
+
+  async setSyncingStatus({syncing = false} = {}) {
+    const name = 'syncing';
+    const info = await infosDAL.findByName(name);
+    if(info) {
+      await infosDAL.update(info.id, {
+        name,
+        value: syncing,
+      });
+    }
+    else {
+      await infosDAL.create({
+        name,
+        value: syncing,
+      });
+    }
   }
 
   async createBlock({nodeBlock, dbTransaction} = {}) {

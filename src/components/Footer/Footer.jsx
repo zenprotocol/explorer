@@ -1,4 +1,6 @@
 import React from 'react';
+import {observer} from 'mobx-react';
+import blockStore from '../../store/BlockStore';
 import Logo from '../Logo/Logo.jsx';
 import './Footer.css';
 
@@ -8,6 +10,7 @@ export default function Footer(props) {
       <div className="row">
         <div className="col-12">
           <Logo hideSubtitle={true} />
+          <SyncNotification />
         </div>
       </div>
       <div className="row logo-padding">
@@ -23,6 +26,25 @@ export default function Footer(props) {
     </footer>
   );
 }
+
+const SyncNotification = observer(function () {
+  return (
+    <div className="SyncNotification">
+      {blockStore.syncing? (
+        <span className="syncing">
+          <i className="icon fa fa-spinner fa-spin"></i>{' '}
+          Syncing...
+        </span>
+      ) : (
+        <span className="synced">
+          <i className="icon fas fa-circle"></i>{' '}
+          Synced.
+        </span>
+      )}
+      
+    </div>
+  );
+});
 
 function FooterLinks() {
   return (

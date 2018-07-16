@@ -11,6 +11,7 @@ class BlockStore {
     this.medianTime = null;
     this.loading = false;
     this.addressTXs = null;
+    this.syncing = false;
   }
 
   setBlocks(blocks) {
@@ -64,6 +65,17 @@ class BlockStore {
     });
   }
 
+  fetchSyncing() {
+    Service.infos.findByName('syncing').then(response => {
+      if (response.success) {
+        this.syncing = response.data.value === 'true';
+      }
+      else {
+        this.syncing = false;
+      }
+    });
+  }
+
   get medianTimeString() {
     if (this.medianTime) {
       return TextUtils.getDateString(this.medianTime);
@@ -93,6 +105,7 @@ decorate(BlockStore, {
   addressTXs: observable,
   loading: observable,
   medianTime: observable,
+  syncing: observable,
   setBlocks: action,
   totalBlocks: observable,
   medianTimeString: computed,

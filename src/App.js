@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Route, Switch } from 'react-router-dom';
 
+import config from './lib/Config';
 import './App.css';
 import Navbar from './components/Navbar/Navbar.jsx';
 import Footer from './components/Footer/Footer.jsx';
@@ -14,6 +15,14 @@ class App extends Component {
   componentDidMount() {
     blockStore.fetchMedianTime();
     blockStore.fetchBlocks();
+    blockStore.fetchSyncing();
+    this.syncingTimer = setInterval(() => {
+      blockStore.fetchSyncing();
+    }, config.time.intervals.syncing);
+  }
+
+  componentWillUnmount() {
+    clearInterval(this.syncingTimer);
   }
 
   render() {
