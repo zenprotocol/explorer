@@ -5,6 +5,7 @@ const blocksDAL = require('../../../server/components/api/blocks/blocksDAL');
 const transactionsDAL = require('../../../server/components/api/transactions/transactionsDAL');
 const outputsDAL = require('../../../server/components/api/outputs/outputsDAL');
 const inputsDAL = require('../../../server/components/api/inputs/inputsDAL');
+const infosDAL = require('../../../server/components/api/infos/infosDAL');
 const logger = require('../../lib/logger');
 
 /**
@@ -41,6 +42,7 @@ class BlocksAdder {
     });
 
     if (latestBlockNumberToAdd > latestBlockNumberInDB) {
+      this.updateInfos();
       // add the block synced to have the right incrementing ids
       for (
         let blockNumber = latestBlockNumberInDB + 1;
@@ -123,6 +125,31 @@ class BlocksAdder {
       blockNumber = latestBlockInDB.blockNumber;
     }
     return blockNumber;
+  }
+
+  async updateInfos(dbTransaction) {
+    const infos = await this.networkHelper.getBlockchainInfo();
+    const infoKeys = Object.keys(infos);
+    const promises = [];
+    infoKeys.forEach((name) => {
+      const value = infos[name];
+      promises.push((async () => {
+        const info = await infosDAL.findByName(name);
+        if(info) {
+          await infosDAL.update(info.id, {
+            name,
+            value,
+          }, {transaction: dbTransaction});
+        }
+        else {
+          await infosDAL.create({
+            name,
+            value,
+          }, {transaction: dbTransaction});
+        }
+      })());
+    });
+    await Promise.all(promises);
   }
 
   async createBlock({nodeBlock, dbTransaction} = {}) {

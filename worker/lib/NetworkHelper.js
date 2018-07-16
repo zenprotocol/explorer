@@ -13,5 +13,9 @@ class NetworkHelper {
   async getBlockFromNode(blockNumber) {
     return await Service.blocks.getBlock(blockNumber);
   }
+
+  async getBlockchainInfo() {
+    return await Service.blocks.getChainInfo();
+  }
 }
 module.exports = NetworkHelper;
