@@ -2,20 +2,17 @@ import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import PropTypes from 'prop-types';
 import blockStore from '../../store/BlockStore';
-import Transactions from '../../components/TransactionsFlat/Transactions.jsx';
+import RouterUtils from '../../lib/RouterUtils';
+import Transactions from '../../components/Transactions/Transactions.jsx';
 
 class Address extends Component {
   componentDidMount() {
-    const {
-      match: { params },
-    } = this.props;
-    blockStore.fetchAddressTXs(params.address, params.asset);
+    const params = RouterUtils.getRouteParams(this.props);
+    blockStore.fetchAddressTXs(params.address);
   }
 
   render() {
-    const {
-      match: { params },
-    } = this.props;
+    const params = RouterUtils.getRouteParams(this.props);
     const addressTXs = blockStore.addressTXs;
     if (!addressTXs) return null;
 
@@ -63,7 +60,7 @@ class Address extends Component {
               <h1 className="d-block d-sm-inline-block text-white mb-3 mb-lg-5">Transactions</h1>
             </div>
           </div>
-          <Transactions transactions={transactions} />
+          <Transactions transactions={transactions} address={params.address} />
         </section>
       </div>
     );

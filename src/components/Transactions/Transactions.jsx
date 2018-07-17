@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import './Transactions.css';
 import TransactionAsset from './Asset/TransactionAsset';
+import Transaction from '../../routes/transaction/Transaction';
 
 class Transactions extends Component {
   render() {
@@ -30,7 +31,7 @@ class Transactions extends Component {
                 {transaction.assets &&
                   transaction.assets.length &&
                   transaction.assets.map((asset, assetIndex) => {
-                    return <TransactionAsset asset={asset} key={assetIndex} />;
+                    return <TransactionAsset asset={asset} key={assetIndex} address={this.props.address} />;
                   })}
               </div>
             </div>
@@ -45,6 +46,10 @@ Transactions.propTypes = {
   transactions: PropTypes.array,
   disableTXLinks: PropTypes.bool,
   isCoinbase: PropTypes.bool,
+  address: PropTypes.string,
+};
+Transaction.defaultProps = {
+  address: '',
 };
 
 export default Transactions;

@@ -54,7 +54,7 @@ class TransactionAsset extends Component {
         if(input.Output.address) {
           if(!addedInputAddresses.includes(input.Output.address)){
             addedInputAddresses.push(input.Output.address);
-            all.push(this.renderInputOutputItem(input.id, input.Output.address, ''));
+            all.push(this.renderInputOutputItem(input.id, input.Output.address, input.Output.address));
           }
         }
         else {
@@ -80,8 +80,8 @@ class TransactionAsset extends Component {
         key++;
         let amount = showAmount ? Asset.getAmountString(asset, output.amount) : null;
         const title = output.address? output.address : Output.getTextByLockType(output.lockType);
-        // const address =  output.address? output.address : '';
-        return this.renderInputOutputItem(key, title, '', amount);
+        const address =  output.address? output.address : '';
+        return this.renderInputOutputItem(key, title, address, amount);
       });
     }
 
@@ -125,7 +125,7 @@ class TransactionAsset extends Component {
     return (
       <div className="row" key={key}>
         <div className="address break-word no-text-transform col-9" title={title}>
-          {address ? <Link to={`/address/${address}`}>{title}</Link> : title}
+          {address && address !== this.props.address ? <Link to={`/address/${address}`}>{title}</Link> : title}
         </div>
         <div
           className={classNames('col-3 address break-word', { 'font-weight-bold': isTotal })}
@@ -140,6 +140,10 @@ class TransactionAsset extends Component {
 
 TransactionAsset.propTypes = {
   asset: PropTypes.object.isRequired,
+  address: PropTypes.string,
+};
+TransactionAsset.defaultProps = {
+  address: '',
 };
 
 export default TransactionAsset;
