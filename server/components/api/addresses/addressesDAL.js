@@ -7,9 +7,29 @@ const addressesDAL = dal.createDAL('Address');
 addressesDAL.findByAddress = function(address) {
   return this.findOne({
     where: {
-      address
+      address,
     },
   });
+};
+
+addressesDAL.findAllTransactions = async function(address, options = {limit: 10}) {
+  const addressDB = await this.findByAddress(address);
+  return addressDB.getTransactions(
+    Object.assign(
+      {
+        include: [
+          'Block',
+          'Outputs',
+          {
+            model: this.db.Input,
+            include: ['Output'],
+          },
+        ],
+        order: [['createdAt', 'DESC'], [this.db.Input, 'index'], [this.db.Output, 'index']],
+      },
+      options
+    )
+  );
 };
 
 /**

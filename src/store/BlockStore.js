@@ -46,10 +46,10 @@ class BlockStore {
     });
   }
 
-  fetchAddressTXs(address, asset) {
+  fetchAddressTXs(address) {
     this.loading = true;
 
-    Service.addresses.findTXs(address, asset).then(response => {
+    Service.addresses.findTXs(address).then(response => {
       this.addressTXs = response.data;
       this.loading = false;
     });

@@ -66,10 +66,9 @@ export default {
     }
   },
   addresses: {
-    async findTXs(address, asset) {
-      const assetOrDefault = asset || '00';
+    async findTXs(address) {
       return sendHttpRequest({
-        url: `${Endpoints.addresses}/${address}/${assetOrDefault}`,
+        url: `${Endpoints.addresses}/${address}`,
         method: 'get',
       }).then(response => response.data);
     }

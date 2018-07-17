@@ -8,6 +8,8 @@ const inputsDAL = require('../inputs/inputsDAL');
 const jsonResponse = require('../../../lib/jsonResponse');
 const HttpError = require('../../../lib/HttpError');
 const createQueryObject = require('../../../lib/createQueryObject');
+const isCoinbaseTX = require('../transactions/isCoinbaseTX');
+const getTransactionAssets = require('../transactions/getTransactionAssets');
 
 module.exports = {
   index: async function(req, res) {
@@ -28,9 +30,24 @@ module.exports = {
   },
   show: async function(req, res) {
     const [transactions, count] = await Promise.all([
-      transactionsDAL.findAllByAddress(req.params.address),
+      // transactionsDAL.findAllByAddress(req.params.address),
+      addressesDAL.findAllTransactions(req.params.address),
       transactionsDAL.countByAddress(req.params.address)
     ]);
+    const customTXs = [];
+
+    transactions.forEach(transaction => {
+      const customTX = transactionsDAL.toJSON(transaction);
+      customTX.isCoinbase = isCoinbaseTX(transaction);
+
+      customTX['assets'] = getTransactionAssets(transaction);
+      delete customTX.Inputs;
+      delete customTX.Outputs;
+      delete customTX.AddressTransactions;
+
+      customTXs.push(customTX);
+    });
+
     // const totalReceived = outputs.reduce((prev, cur) => {
     //   return prev + Number(cur.amount);
     // }, 0);
@@ -46,7 +63,7 @@ module.exports = {
         // balance,
         // transactions: combinedTXs,
         count,
-        transactions
+        transactions: customTXs
       }));
     } else {
       throw new HttpError(httpStatus.NOT_FOUND);

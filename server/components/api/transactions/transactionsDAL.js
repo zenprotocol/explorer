@@ -23,30 +23,33 @@ transactionsDAL.findByHash = async function(hash) {
   });
 };
 
-transactionsDAL.findAllByAddress = async function(address) {
-  return this.findAll({
-    include: [
+// Slow - use addressesDAL findAllTransactions
+transactionsDAL.findAllByAddress = async function(address, options = {}) {
+  return this.findAll(
+    Object.assign(
       {
-        model: this.db.Block,
+        include: [
+          {
+            model: this.db.Block,
+          },
+          'Outputs',
+          {
+            model: this.db.Input,
+            include: ['Output'],
+          },
+          {
+            model: this.db.Address,
+            where: {
+              address,
+            },
+          },
+        ],
+        order: [['createdAt', 'DESC'], [this.db.Input, 'index'], [this.db.Output, 'index']],
+        limit: 2,
       },
-      'Outputs',
-      {
-        model: this.db.Input,
-        include: ['Output'],
-      },
-      {
-        model: this.db.Address,
-        where: {
-          address
-        },
-      },
-    ],
-    limit: 10,
-    // order: [
-    //   [this.db.Sequelize.col('Block.timestamp'), 'DESC'],
-    //   [this.db.Input, 'index'], [this.db.Output, 'index']
-    // ],
-  });
+      options
+    )
+  );
 };
 
 transactionsDAL.countByAddress = async function(address) {
@@ -55,7 +58,7 @@ transactionsDAL.countByAddress = async function(address) {
       {
         model: this.db.Address,
         where: {
-          address
+          address,
         },
       },
     ],
@@ -96,10 +99,7 @@ transactionsDAL.addAddress = async function(transaction, address, options = {}) 
       id: addressDB.id,
     },
   });
-  if(addresses.length >= 2) {
-    throw new Error('MORE THAN ONE ADDRESS PER TRANSACTION!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
-  }
-  
+
   return transaction.addAddress(addressDB, options);
 };
 
