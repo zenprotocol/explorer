@@ -117,7 +117,7 @@ class BlockPage extends Component {
                   ) : null}
                   <tr>
                     <td>transactions</td>
-                    <td>{blockStore.numberOfTransactions}</td>
+                    <td>{blockStore.transactionsCount}</td>
                   </tr>
                   <tr>
                     <td>Timestamp</td>
