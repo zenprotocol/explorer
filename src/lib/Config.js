@@ -1,7 +1,7 @@
 export default {
   time: {
     intervals: {
-      syncing: 10000
+      syncing: 60000
     }
   }
 };
