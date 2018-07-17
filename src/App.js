@@ -17,7 +17,7 @@ class App extends Component {
     blockStore.fetchBlocks();
     blockStore.fetchSyncing();
     this.syncingTimer = setInterval(() => {
-      blockStore.fetchSyncing();
+      //blockStore.fetchSyncing();
     }, config.time.intervals.syncing);
   }
 

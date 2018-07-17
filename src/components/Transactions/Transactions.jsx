@@ -6,31 +6,29 @@ import PropTypes from 'prop-types';
 import InfiniteScroll from 'react-infinite-scroller';
 import './Transactions.css';
 import Transaction from './Transaction.jsx';
+import Loading from '../Loading/Loading';
 
 class Transactions extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
+      transactions: [],
       hasMoreItems: true,
+      page: 0,
     };
+
+    this.loadItems = this.loadItems.bind(this);
   }
 
   componentDidMount() {
-    const { blockNumber, address } = this.props;
-    let params = { blockNumber, address };
-    blockStore.fetchTransactions(params);
+    this.loadItems(0);
   }
 
   render() {
     const { address, disableTXLinks } = this.props;
-
-    if (!blockStore.transactions.length) {
-      return null;
-    }
-    const loader = <div className="loader">Loading ...</div>;
-
-    const items = blockStore.transactions.map((transaction, index) => {
+    
+    const items = this.state.transactions.map((transaction, index) => {
       return (
         <Transaction
           key={transaction.id}
@@ -40,8 +38,32 @@ class Transactions extends Component {
         />
       );
     });
+    
+    if(!items.length) return null;
 
-    return <div className="Transactions">{items}</div>;
+    const loader = <Loading key={15003} />;
+    return (
+      <InfiniteScroll
+        pageStart={2}
+        loadMore={this.loadItems}
+        hasMore={items.length < blockStore.transactionsCount}
+        initialLoad={false}
+        loader={loader}
+        threshold={250}
+      >
+        <div className="Transactions">{items}</div>
+      </InfiniteScroll>
+    );
+  }
+
+  loadItems() {
+    const page = this.state.page;
+    const { blockNumber, address } = this.props;
+    let params = { blockNumber, address, page };
+    blockStore.fetchTransactions(params).then(() => {
+      const transactions = this.state.transactions.concat(blockStore.transactions);
+      this.setState({transactions, page: page + 1});
+    });
   }
 }
 

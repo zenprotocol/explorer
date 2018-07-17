@@ -55,8 +55,7 @@ class BlockStore {
 
   fetchTransactions(params = {}) {
     this.loading.transactions = true;
-
-    Service.transactions.find(params).then(response => {
+    return Service.transactions.find(params).then(response => {
       this.transactions = response.data.items;
       this.transactionsCount = response.data.total;
       this.loading.transactions = false;

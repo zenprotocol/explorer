@@ -23,9 +23,9 @@ module.exports = {
 
     let countPromise;
     let findPromise;
-    if (blockNumber) {
-      findPromise = transactionsDAL.findAllByBlockNumber(blockNumber, query);
-      countPromise = transactionsDAL.countByBlockNumber(blockNumber);
+    if (blockNumber && !isNaN(blockNumber)) {
+      findPromise = transactionsDAL.findAllByBlockNumber(Number(blockNumber), query);
+      countPromise = transactionsDAL.countByBlockNumber(Number(blockNumber));
     }
     else if (address) {
       findPromise = transactionsDAL.findAllByAddress(address, query);
