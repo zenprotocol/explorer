@@ -10,18 +10,52 @@ const isCoinbaseTX = require('./isCoinbaseTX');
 
 module.exports = {
   index: async function(req, res) {
+    // find by blockNumber or address
+    const { blockNumber, address } = req.query;
+    const page = req.query.page || 0;
+    const pageSize = req.query.pageSize || 10;
     const sorted =
       req.query.sorted && req.query.sorted != '[]'
         ? JSON.parse(req.query.sorted)
         : [{ id: 'createdAt', desc: true }];
 
-    const query = createQueryObject({sorted});
-    const [count, allItems] = await Promise.all([transactionsDAL.count(), transactionsDAL.findAll(query)]);
+    const query = createQueryObject({ page, pageSize, sorted });
+
+    let countPromise;
+    let findPromise;
+    if (blockNumber) {
+      findPromise = transactionsDAL.findAllByBlockNumber(blockNumber, query);
+      countPromise = transactionsDAL.countByBlockNumber(blockNumber);
+    }
+    else if (address) {
+      findPromise = transactionsDAL.findAllByAddress(address, query);
+      countPromise = transactionsDAL.countByAddress(address);
+    }
+    else {
+      findPromise = transactionsDAL.findAll(query);
+      countPromise = transactionsDAL.count();
+    }
+
+    const [count, transactions] = await Promise.all([countPromise, findPromise]);
+
+    const customTXs = [];
+
+    transactions.forEach(transaction => {
+      const customTX = transactionsDAL.toJSON(transaction);
+      customTX.isCoinbase = isCoinbaseTX(transaction);
+
+      customTX['assets'] = getTransactionAssets(transaction);
+      delete customTX.Inputs;
+      delete customTX.Outputs;
+      delete customTX.AddressTransactions;
+
+      customTXs.push(customTX);
+    });
 
     res.status(httpStatus.OK).json(
       jsonResponse.create(httpStatus.OK, {
-        items: allItems,
         total: count,
+        items: customTXs,
       })
     );
   },

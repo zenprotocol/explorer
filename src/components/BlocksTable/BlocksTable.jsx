@@ -92,7 +92,7 @@ class BlocksTable extends Component {
 
   render() {
     const store = this.props.store;
-    const numOfPages = Math.ceil(store.totalBlocks / uiStore.blocksTablePageSize);
+    const numOfPages = Math.ceil(store.blocksCount / uiStore.blocksTablePageSize);
     return (
       <div className="BlocksTable">
         <div className="clearfix">

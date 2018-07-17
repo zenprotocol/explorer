@@ -4,7 +4,7 @@ import blockStore from '../../store/BlockStore';
 import '../page.css';
 import './Blocks.css';
 
-class Blocks extends Component {
+class BlocksPage extends Component {
   render() {
     return (
       <section className="bordered border-left border-primary pl-lg-4">
@@ -17,4 +17,4 @@ class Blocks extends Component {
   }
 }
 
-export default Blocks;
+export default BlocksPage;

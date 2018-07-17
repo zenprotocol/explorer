@@ -1,55 +1,54 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
+import { observer } from 'mobx-react';
+import blockStore from '../../store/BlockStore';
 import PropTypes from 'prop-types';
+import InfiniteScroll from 'react-infinite-scroller';
 import './Transactions.css';
-import TransactionAsset from './Asset/TransactionAsset';
-import Transaction from '../../routes/transaction/Transaction';
+import Transaction from './Transaction.jsx';
 
 class Transactions extends Component {
-  render() {
-    const { transactions, disableTXLinks } = this.props;
+  constructor(props) {
+    super(props);
 
-    if (!transactions || !transactions.length) {
+    this.state = {
+      hasMoreItems: true,
+    };
+  }
+
+  componentDidMount() {
+    const { blockNumber, address } = this.props;
+    let params = { blockNumber, address };
+    blockStore.fetchTransactions(params);
+  }
+
+  render() {
+    const { address, disableTXLinks } = this.props;
+
+    if (!blockStore.transactions.length) {
       return null;
     }
-    return (
-      <div className="Transactions">
-        {transactions.map((transaction, index) => {
-          return (
-            <div className="Transaction" key={transaction.id}>
-              <div className="hash mb-4 text-truncate no-text-transform">
-                {transaction.isCoinbase ? (
-                  <h5 className="coinbase d-inline-block mr-1 text-white">Coinbase - </h5>
-                ) : null}
-                {disableTXLinks ? (
-                  transaction.hash
-                ) : (
-                  <Link to={`/tx/${transaction.hash}`}>{transaction.hash}</Link>
-                )}
-              </div>
-              <div className="assets">
-                {transaction.assets &&
-                  transaction.assets.length &&
-                  transaction.assets.map((asset, assetIndex) => {
-                    return <TransactionAsset asset={asset} key={assetIndex} address={this.props.address} />;
-                  })}
-              </div>
-            </div>
-          );
-        })}
-      </div>
-    );
+    const loader = <div className="loader">Loading ...</div>;
+
+    const items = blockStore.transactions.map((transaction, index) => {
+      return (
+        <Transaction
+          key={transaction.id}
+          transaction={transaction}
+          disableTXLinks={disableTXLinks}
+          address={address}
+        />
+      );
+    });
+
+    return <div className="Transactions">{items}</div>;
   }
 }
 
 Transactions.propTypes = {
-  transactions: PropTypes.array,
   disableTXLinks: PropTypes.bool,
-  isCoinbase: PropTypes.bool,
+  blockNumber: PropTypes.number,
   address: PropTypes.string,
 };
-Transaction.defaultProps = {
-  address: '',
-};
 
-export default Transactions;
+export default observer(Transactions);

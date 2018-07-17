@@ -2,16 +2,23 @@ import { observable, decorate, action, computed } from 'mobx';
 import Service from '../lib/Service';
 import TextUtils from '../lib/TextUtils';
 
+// TODO split to several stores - blocks, transactions
 class BlockStore {
   constructor() {
     this.blocks = [];
+    this.blocksCount = 0;
     this.block = {};
     this.transaction = null;
-    this.totalBlocks = 0;
+    this.transactions = [];
+    this.transactionsCount = 0;
     this.medianTime = null;
-    this.loading = false;
-    this.addressTXs = null;
     this.syncing = false;
+    this.loading = {
+      blocks: false,
+      block: false,
+      transaction: false,
+      transactions: false,
+    };
   }
 
   setBlocks(blocks) {
@@ -19,48 +26,47 @@ class BlockStore {
   }
 
   fetchBlocks({ pageSize = 10, page = 0, sorted = [], filtered = [] } = {}) {
-    this.loading = true;
-    
+    this.loading.blocks = true;
+
     Service.blocks.find({ pageSize, page, sorted: JSON.stringify(sorted), filtered }).then(response => {
       this.setBlocks(response.data.items);
-      this.totalBlocks = response.data.total;
-      this.loading = false;
+      this.blocksCount = response.data.total;
+      this.loading.blocks = false;
     });
   }
 
   fetchBlock(id) {
-    this.loading = true;
+    this.loading.block = true;
 
     Service.blocks.findById(id).then(response => {
       this.block = response.data;
-      this.loading = false;
+      this.loading.block = false;
     });
   }
 
   fetchTransaction(hash) {
-    this.loading = true;
+    this.loading.transaction = true;
 
     Service.transactions.findByHash(hash).then(response => {
       this.transaction = response.data;
-      this.loading = false;
+      this.loading.transaction = false;
     });
   }
 
-  fetchAddressTXs(address) {
-    this.loading = true;
+  fetchTransactions(params = {}) {
+    this.loading.transactions = true;
 
-    Service.addresses.findTXs(address).then(response => {
-      this.addressTXs = response.data;
-      this.loading = false;
+    Service.transactions.find(params).then(response => {
+      this.transactions = response.data.items;
+      this.transactionsCount = response.data.total;
+      this.loading.transactions = false;
     });
   }
 
   fetchMedianTime() {
-    this.loading = true;
     Service.infos.findByName('medianTime').then(response => {
       if (response.success) {
         this.medianTime = new Date(Number(response.data.value));
-        this.loading = false;
       }
     });
   }
@@ -94,20 +100,21 @@ class BlockStore {
       return 0;
     }
     
-    return Number(this.totalBlocks) - Number(blockNumber) + 1;
+    return Number(this.blocksCount) - Number(blockNumber) + 1;
   }
 }
 
 decorate(BlockStore, {
   blocks: observable,
+  blocksCount: observable,
   block: observable,
   transaction: observable,
-  addressTXs: observable,
+  transactions: observable,
+  transactionsCount: observable,
   loading: observable,
   medianTime: observable,
   syncing: observable,
   setBlocks: action,
-  totalBlocks: observable,
   medianTimeString: computed,
   numberOfTransactions: computed,
 });

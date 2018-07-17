@@ -5,23 +5,17 @@ import blockStore from '../../store/BlockStore';
 import RouterUtils from '../../lib/RouterUtils';
 import Transactions from '../../components/Transactions/Transactions.jsx';
 
-class Address extends Component {
+class AddressPage extends Component {
   componentDidMount() {
     const params = RouterUtils.getRouteParams(this.props);
-    blockStore.fetchAddressTXs(params.address);
+    // TODO - get some info about the address
   }
 
   render() {
     const params = RouterUtils.getRouteParams(this.props);
-    const addressTXs = blockStore.addressTXs;
-    if (!addressTXs) return null;
-
-    const transactions = addressTXs.transactions;
-    if (!transactions) return null;
-
     const medianTime = blockStore.medianTimeString;
     return (
-      <div className="Transaction">
+      <div className="Address">
         <section className="bordered border-left border-primary pl-lg-4">
           <div className="row">
             <div className="col-sm">
@@ -46,7 +40,7 @@ class Address extends Component {
                   </tr>
                   <tr>
                     <td>transactions</td>
-                    <td>{transactions.length}</td>
+                    <td>{blockStore.transactionsCount}</td>
                   </tr>
                 </tbody>
               </table>
@@ -60,15 +54,15 @@ class Address extends Component {
               <h1 className="d-block d-sm-inline-block text-white mb-3 mb-lg-5">Transactions</h1>
             </div>
           </div>
-          <Transactions transactions={transactions} address={params.address} />
+          <Transactions address={params.address} />
         </section>
       </div>
     );
   }
 }
 
-Address.propTypes = {
+AddressPage.propTypes = {
   match: PropTypes.object,
 };
 
-export default observer(Address);
+export default observer(AddressPage);

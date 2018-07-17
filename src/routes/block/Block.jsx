@@ -7,9 +7,10 @@ import blockStore from '../../store/BlockStore';
 import TextUtils from '../../lib/TextUtils';
 import Transactions from '../../components/Transactions/Transactions.jsx';
 import BlockUtils from '../../lib/BlockUtils';
+import Loading from '../../components/Loading/Loading.jsx';
 import './Block.css';
 
-class Block extends Component {
+class BlockPage extends Component {
   constructor(props) {
     super(props);
 
@@ -38,7 +39,7 @@ class Block extends Component {
     if (blockNumber <= 1) {
       prevDisabled = true;
     }
-    if (blockNumber >= blockStore.totalBlocks) {
+    if (blockNumber >= blockStore.blocksCount) {
       nextDisabled = true;
     }
 
@@ -81,8 +82,9 @@ class Block extends Component {
 
   render() {
     const block = blockStore.block;
-    const transactions = block.Transactions;
     const medianTime = blockStore.medianTimeString;
+
+    if(!block.id) return <Loading />;
 
     return (
       <div className="Block">
@@ -158,15 +160,15 @@ class Block extends Component {
 
         <section className="bordered border-left border-primary pl-lg-4">
           <h1 className="d-block d-sm-inline-block text-white mb-3 mb-lg-5">Transactions</h1>
-          <Transactions transactions={transactions} />
+          <Transactions blockNumber={block.blockNumber} />
         </section>
       </div>
     );
   }
 }
 
-Block.propTypes = {
+BlockPage.propTypes = {
   match: PropTypes.object,
 };
 
-export default observer(Block);
+export default observer(BlockPage);

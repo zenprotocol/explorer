@@ -3,6 +3,7 @@
 const dal = require('../../../lib/dal');
 const transactionsDAL = dal.createDAL('Transaction');
 const addressesDAL = require('../addresses/addressesDAL');
+const blocksDAL = require('../blocks/blocksDAL');
 
 transactionsDAL.findByHash = async function(hash) {
   return transactionsDAL.findOne({
@@ -23,29 +24,38 @@ transactionsDAL.findByHash = async function(hash) {
   });
 };
 
-// Slow - use addressesDAL findAllTransactions
-transactionsDAL.findAllByAddress = async function(address, options = {}) {
-  return this.findAll(
+transactionsDAL.findAllByAddress = async function(address, options = {limit: 10}) {
+  const addressDB = await addressesDAL.findByAddress(address);
+  return addressDB.getTransactions(
     Object.assign(
       {
         include: [
-          {
-            model: this.db.Block,
-          },
           'Outputs',
           {
             model: this.db.Input,
             include: ['Output'],
           },
+        ],
+        order: [['createdAt', 'DESC'], [this.db.Input, 'index'], [this.db.Output, 'index']],
+      },
+      options
+    )
+  );
+};
+
+transactionsDAL.findAllByBlockNumber = async function(blockNumber, options = {limit: 10}) {
+  const blockDB = await blocksDAL.findByBlockNumber(blockNumber);
+  return blockDB.getTransactions(
+    Object.assign(
+      {
+        include: [
+          'Outputs',
           {
-            model: this.db.Address,
-            where: {
-              address,
-            },
+            model: this.db.Input,
+            include: ['Output'],
           },
         ],
         order: [['createdAt', 'DESC'], [this.db.Input, 'index'], [this.db.Output, 'index']],
-        limit: 2,
       },
       options
     )
@@ -59,6 +69,19 @@ transactionsDAL.countByAddress = async function(address) {
         model: this.db.Address,
         where: {
           address,
+        },
+      },
+    ],
+  });
+};
+
+transactionsDAL.countByBlockNumber = async function(blockNumber) {
+  return this.count({
+    include: [
+      {
+        model: this.db.Block,
+        where: {
+          blockNumber,
         },
       },
     ],
@@ -92,13 +115,6 @@ transactionsDAL.addAddress = async function(transaction, address, options = {}) 
   } else {
     addressDB = address;
   }
-
-  // allow only one relation
-  const addresses = await transaction.getAddresses({
-    where: {
-      id: addressDB.id,
-    },
-  });
 
   return transaction.addAddress(addressDB, options);
 };

@@ -28,18 +28,6 @@ blocksDAL.findByBlockNumber = function(blockNumber) {
         ],
       ],
     },
-    include: [
-      {
-        model: this.db.Transaction,
-        include: [
-          'Outputs',
-          {
-            model: this.db.Input,
-            include: ['Output'],
-          },
-        ],
-      },
-    ],
   });
 };
 

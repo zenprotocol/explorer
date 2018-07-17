@@ -33,26 +33,9 @@ module.exports = {
   },
   findByBlockNumber: async function(req, res) {
     const block = await blocksDAL.findByBlockNumber(req.params.blockNumber);
-    const customBlock = blocksDAL.toJSON(block);
 
-    customBlock.Transactions.forEach(transaction => {
-      transaction.isCoinbase = isCoinbaseTX(transaction);
-
-      // make sure the order is right
-      transaction.Outputs.sort((a, b) => {
-        return Number(b.index) < Number(a.index);
-      });
-      transaction.Inputs.sort((a, b) => {
-        return Number(b.index) < Number(a.index);
-      });
-
-      transaction['assets'] = getTransactionAssets(transaction);
-      delete transaction.Inputs;
-      delete transaction.Outputs;
-    });
-
-    if (customBlock) {
-      res.status(httpStatus.OK).json(jsonResponse.create(httpStatus.OK, customBlock));
+    if (block) {
+      res.status(httpStatus.OK).json(jsonResponse.create(httpStatus.OK, block));
     } else {
       throw new HttpError(httpStatus.NOT_FOUND);
     }

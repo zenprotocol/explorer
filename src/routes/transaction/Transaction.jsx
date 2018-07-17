@@ -3,10 +3,10 @@ import { observer } from 'mobx-react';
 import {Link} from 'react-router-dom';
 import PropTypes from 'prop-types';
 import blockStore from '../../store/BlockStore';
-import Transactions from '../../components/Transactions/Transactions.jsx';
+import Transaction from '../../components/Transactions/Transaction.jsx';
 import './Transaction.css';
 
-class Transaction extends Component {
+class TransactionPage extends Component {
   constructor(props) {
     super(props);
 
@@ -62,15 +62,15 @@ class Transaction extends Component {
               </table>
             </div>
           </div>
-          <Transactions transactions={[transaction]} disableTXLinks={true} />
+          <Transaction transaction={transaction} disableTXLinks={true} />
         </section>
       </div>
     );
   }
 }
 
-Transaction.propTypes = {
+TransactionPage.propTypes = {
   match: PropTypes.object,
 };
 
-export default observer(Transaction);
+export default observer(TransactionPage);

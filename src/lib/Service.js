@@ -58,6 +58,13 @@ export default {
     }
   },
   transactions: {
+    async find(params) {
+      return sendHttpRequest({
+        url: Endpoints.transactions,
+        method: 'get',
+        params: params,
+      }).then(response => response.data);
+    },
     async findByHash(hash) {
       return sendHttpRequest({
         url: `${Endpoints.transactions}/${hash}`,
