@@ -82,16 +82,16 @@ class BlockPage extends Component {
 
   render() {
     const block = blockStore.block;
-    const medianTime = blockStore.medianTimeString;
+    const blockDateStr = block.timestamp ? TextUtils.getDateString(new Date(Number(block.timestamp))) : '';
 
-    if(!block.id) return <Loading />;
+    if (!block.id) return <Loading />;
 
     return (
       <div className="Block">
         <section className="bordered border-left border-primary pl-lg-4">
           <div className="row">
             <div className="col-sm">
-              <div className="medianTime mb-1 mb-lg-2">{medianTime}</div>
+              <div className="medianTime mb-1 mb-lg-2">{blockDateStr}</div>
               <h1 className="d-block d-sm-inline-block text-white mb-3 mb-lg-5">
                 BLOCK #{block.blockNumber}
               </h1>
@@ -121,9 +121,7 @@ class BlockPage extends Component {
                   </tr>
                   <tr>
                     <td>Timestamp</td>
-                    <td>
-                      {block.timestamp ? TextUtils.getDateString(new Date(Number(block.timestamp))) : null}
-                    </td>
+                    <td>{blockDateStr}</td>
                   </tr>
                   <tr>
                     <td>Version</td>
