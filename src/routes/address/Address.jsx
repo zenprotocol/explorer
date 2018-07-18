@@ -13,13 +13,12 @@ class AddressPage extends Component {
 
   render() {
     const params = RouterUtils.getRouteParams(this.props);
-    const medianTime = blockStore.medianTimeString;
     return (
       <div className="Address">
         <section className="bordered border-left border-primary pl-lg-4">
           <div className="row">
             <div className="col-sm">
-              <div className="medianTime mb-1 mb-lg-2">{medianTime}</div>
+              <div className="medianTime mb-1 mb-lg-2"></div>
               <h1 className="d-block d-sm-inline-block text-white mb-3 mb-lg-5">ADDRESS</h1>
             </div>
           </div>
