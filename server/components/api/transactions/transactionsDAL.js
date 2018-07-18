@@ -24,8 +24,9 @@ transactionsDAL.findByHash = async function(hash) {
   });
 };
 
-transactionsDAL.findAllByAddress = async function(address, options = {limit: 10}) {
+transactionsDAL.findAllByAddress = async function(address, firstTransactionId, options = { limit: 10 }) {
   const addressDB = await addressesDAL.findByAddress(address);
+  const whereOption = getFirstTransactionIdWhereOption(firstTransactionId);
   return addressDB.getTransactions(
     Object.assign(
       {
@@ -38,12 +39,15 @@ transactionsDAL.findAllByAddress = async function(address, options = {limit: 10}
         ],
         order: [['createdAt', 'DESC'], [this.db.Input, 'index'], [this.db.Output, 'index']],
       },
-      options
+      options,
+      {
+        where: whereOption,
+      }
     )
   );
 };
 
-transactionsDAL.findAllByBlockNumber = async function(blockNumber, options = {limit: 10}) {
+transactionsDAL.findAllByBlockNumber = async function(blockNumber, options = { limit: 10 }) {
   const blockDB = await blocksDAL.findByBlockNumber(blockNumber);
   return blockDB.getTransactions(
     Object.assign(
@@ -62,14 +66,18 @@ transactionsDAL.findAllByBlockNumber = async function(blockNumber, options = {li
   );
 };
 
-transactionsDAL.countByAddress = async function(address) {
+transactionsDAL.countByAddress = async function(address, firstTransactionId) {
+  const whereOption = getFirstTransactionIdWhereOption(firstTransactionId);
   return this.count({
     include: [
       {
         model: this.db.Address,
-        where: {
-          address,
-        },
+        where: Object.assign(
+          {
+            address,
+          },
+          whereOption
+        ),
       },
     ],
   });
@@ -118,5 +126,15 @@ transactionsDAL.addAddress = async function(transaction, address, options = {}) 
 
   return transaction.addAddress(addressDB, options);
 };
+
+function getFirstTransactionIdWhereOption(firstTransactionId) {
+  return firstTransactionId && Number(firstTransactionId) > 0
+    ? {
+        id: {
+          [transactionsDAL.db.Sequelize.Op.lte]: Number(firstTransactionId),
+        },
+      }
+    : {};
+}
 
 module.exports = transactionsDAL;

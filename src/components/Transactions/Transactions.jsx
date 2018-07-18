@@ -27,7 +27,7 @@ class Transactions extends Component {
 
   render() {
     const { address, disableTXLinks } = this.props;
-    
+
     const items = this.state.transactions.map((transaction, index) => {
       return (
         <Transaction
@@ -38,13 +38,13 @@ class Transactions extends Component {
         />
       );
     });
-    
-    if(!items.length) return null;
+
+    if (!items.length) return null;
 
     const loader = <Loading key={15003} />;
     return (
       <InfiniteScroll
-        pageStart={2}
+        pageStart={0}
         loadMore={this.loadItems}
         hasMore={items.length < blockStore.transactionsCount}
         initialLoad={false}
@@ -56,13 +56,15 @@ class Transactions extends Component {
     );
   }
 
-  loadItems() {
-    const page = this.state.page;
+  loadItems(page) {
     const { blockNumber, address } = this.props;
-    let params = { blockNumber, address, page };
+    const firstTransactionId = this.state.transactions.length
+      ? this.state.transactions[0].id
+      : 0;
+    let params = { blockNumber, address, page, firstTransactionId };
     blockStore.fetchTransactions(params).then(() => {
       const transactions = this.state.transactions.concat(blockStore.transactions);
-      this.setState({transactions, page: page + 1});
+      this.setState({ transactions });
     });
   }
 }

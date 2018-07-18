@@ -14,13 +14,14 @@ module.exports = {
     const { blockNumber, address } = req.query;
     const page = req.query.page || 0;
     const pageSize = req.query.pageSize || 10;
+    const firstTransactionId = req.query.firstTransactionId || 0;
     const sorted =
       req.query.sorted && req.query.sorted != '[]'
         ? JSON.parse(req.query.sorted)
         : [{ id: 'createdAt', desc: true }];
 
     const query = createQueryObject({ page, pageSize, sorted });
-
+    
     let countPromise;
     let findPromise;
     if (blockNumber && !isNaN(blockNumber)) {
@@ -28,8 +29,8 @@ module.exports = {
       countPromise = transactionsDAL.countByBlockNumber(Number(blockNumber));
     }
     else if (address) {
-      findPromise = transactionsDAL.findAllByAddress(address, query);
-      countPromise = transactionsDAL.countByAddress(address);
+      findPromise = transactionsDAL.findAllByAddress(address, firstTransactionId, query);
+      countPromise = transactionsDAL.countByAddress(address, firstTransactionId);
     }
     else {
       findPromise = transactionsDAL.findAll(query);
