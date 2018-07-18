@@ -15,7 +15,6 @@ class Transactions extends Component {
     this.state = {
       transactions: [],
       hasMoreItems: true,
-      page: 0,
     };
 
     this.loadItems = this.loadItems.bind(this);
@@ -25,7 +24,18 @@ class Transactions extends Component {
     this.loadItems(0);
   }
 
+  componentDidUpdate(prevProps) {
+    const { blockNumber, address, order } = this.props;
+    if (blockNumber != prevProps.blockNumber || address != prevProps.address || order != prevProps.order) {
+      this.setState({ transactions: [] });
+      this.loadItems(0);
+    }
+  }
+
   render() {
+    if (!this.state.transactions.length) {
+      return <Loading />;
+    }
     const { address, disableTXLinks } = this.props;
 
     const items = this.state.transactions.map((transaction, index) => {
@@ -38,8 +48,6 @@ class Transactions extends Component {
         />
       );
     });
-
-    if (!items.length) return null;
 
     const loader = <Loading key={15003} />;
     return (
@@ -66,7 +74,8 @@ class Transactions extends Component {
 
     let params = { blockNumber, address, page, order, firstTransactionId };
     blockStore.fetchTransactions(params).then(() => {
-      const transactions = this.state.transactions.concat(blockStore.transactions);
+      const transactions =
+        page > 0 ? this.state.transactions.concat(blockStore.transactions) : blockStore.transactions;
       this.setState({ transactions });
     });
   }
