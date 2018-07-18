@@ -158,7 +158,7 @@ class BlockPage extends Component {
 
         <section className="bordered border-left border-primary pl-lg-4">
           <h1 className="d-block d-sm-inline-block text-white mb-3 mb-lg-5">Transactions</h1>
-          <Transactions blockNumber={block.blockNumber} />
+          <Transactions blockNumber={block.blockNumber} order="asc" />
         </section>
       </div>
     );

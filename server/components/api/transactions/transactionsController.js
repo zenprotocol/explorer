@@ -15,10 +15,11 @@ module.exports = {
     const page = req.query.page || 0;
     const pageSize = req.query.pageSize || 10;
     const firstTransactionId = req.query.firstTransactionId || 0;
+    const ascending = req.query.order === 'asc'; // descending by default
     const sorted =
       req.query.sorted && req.query.sorted != '[]'
         ? JSON.parse(req.query.sorted)
-        : [{ id: 'createdAt', desc: true }];
+        : [{ id: 'createdAt', desc: !ascending }];
 
     const query = createQueryObject({ page, pageSize, sorted });
     
@@ -29,8 +30,8 @@ module.exports = {
       countPromise = transactionsDAL.countByBlockNumber(Number(blockNumber));
     }
     else if (address) {
-      findPromise = transactionsDAL.findAllByAddress(address, firstTransactionId, query);
-      countPromise = transactionsDAL.countByAddress(address, firstTransactionId);
+      findPromise = transactionsDAL.findAllByAddress(address, firstTransactionId, ascending, query);
+      countPromise = transactionsDAL.countByAddress(address, firstTransactionId, ascending);
     }
     else {
       findPromise = transactionsDAL.findAll(query);

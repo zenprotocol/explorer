@@ -24,9 +24,14 @@ transactionsDAL.findByHash = async function(hash) {
   });
 };
 
-transactionsDAL.findAllByAddress = async function(address, firstTransactionId, options = { limit: 10 }) {
+transactionsDAL.findAllByAddress = async function(
+  address,
+  firstTransactionId,
+  ascending,
+  options = { limit: 10 }
+) {
   const addressDB = await addressesDAL.findByAddress(address);
-  const whereOption = getFirstTransactionIdWhereOption(firstTransactionId);
+  const whereOption = getFirstTransactionIdWhereOption(firstTransactionId, ascending);
   return addressDB.getTransactions(
     Object.assign(
       {
@@ -66,9 +71,10 @@ transactionsDAL.findAllByBlockNumber = async function(blockNumber, options = { l
   );
 };
 
-transactionsDAL.countByAddress = async function(address, firstTransactionId) {
-  const whereOption = getFirstTransactionIdWhereOption(firstTransactionId);
+transactionsDAL.countByAddress = async function(address, firstTransactionId, ascending) {
+  const whereOption = getFirstTransactionIdWhereOption(firstTransactionId, ascending);
   return this.count({
+    where: whereOption,
     include: [
       {
         model: this.db.Address,
@@ -76,7 +82,6 @@ transactionsDAL.countByAddress = async function(address, firstTransactionId) {
           {
             address,
           },
-          whereOption
         ),
       },
     ],
@@ -127,11 +132,13 @@ transactionsDAL.addAddress = async function(transaction, address, options = {}) 
   return transaction.addAddress(addressDB, options);
 };
 
-function getFirstTransactionIdWhereOption(firstTransactionId) {
+function getFirstTransactionIdWhereOption(firstTransactionId, ascending) {
+  const operator =
+    ascending ? transactionsDAL.db.Sequelize.Op.gte : transactionsDAL.db.Sequelize.Op.lte;
   return firstTransactionId && Number(firstTransactionId) > 0
     ? {
         id: {
-          [transactionsDAL.db.Sequelize.Op.lte]: Number(firstTransactionId),
+          [operator]: Number(firstTransactionId),
         },
       }
     : {};

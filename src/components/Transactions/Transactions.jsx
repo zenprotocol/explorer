@@ -57,11 +57,14 @@ class Transactions extends Component {
   }
 
   loadItems(page) {
-    const { blockNumber, address } = this.props;
+    const { blockNumber, address, order } = this.props;
     const firstTransactionId = this.state.transactions.length
-      ? this.state.transactions[0].id
+      ? order === 'asc'
+        ? this.state.transactions[this.state.transactions.length - 1].id
+        : this.state.transactions[0].id
       : 0;
-    let params = { blockNumber, address, page, firstTransactionId };
+
+    let params = { blockNumber, address, page, order, firstTransactionId };
     blockStore.fetchTransactions(params).then(() => {
       const transactions = this.state.transactions.concat(blockStore.transactions);
       this.setState({ transactions });
@@ -73,6 +76,7 @@ Transactions.propTypes = {
   disableTXLinks: PropTypes.bool,
   blockNumber: PropTypes.number,
   address: PropTypes.string,
+  order: PropTypes.oneOf(['asc', 'desc']),
 };
 
 export default observer(Transactions);
