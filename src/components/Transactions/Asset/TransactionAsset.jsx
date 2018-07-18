@@ -7,7 +7,7 @@ import Output from '../../../lib/OutputUtils';
 
 class TransactionAsset extends Component {
   render() {
-    const asset = this.props.asset;
+    const {asset, showHeader} = this.props;
     if (!asset) {
       return null;
     }
@@ -15,17 +15,21 @@ class TransactionAsset extends Component {
     return (
       <div className="TransactionAsset">
         <div className="row mx-0">
-          <div className="col-2 border-bottom">ASSET</div>
-          <div className="col-4 border-bottom">INPUT</div>
+          <div className="col-12 border-bottom">ASSET</div>
+        </div>
+        <div className="row mx-0">
+          <div className="col-2 border-bottom">{Asset.getTypeFromCode(asset.asset)}</div>
+          <div className="col-4 border-bottom">{showHeader? 'INPUT' : ''}</div>
           <div className="col-6 border-bottom">
             <div className="row">
-              <div className="col-9 py-0">OUTPUT</div>
-              <div className="col-3 py-0">TOTAL</div>
+              <div className="col-9 py-0">{showHeader? 'OUTPUT' : ''}</div>
+              <div className="col-3 py-0">{showHeader? 'TOTAL' : ''}</div>
             </div>
           </div>
         </div>
+        
         <div className="row mx-0">
-          <div className="col-2 break-word">{Asset.getTypeFromCode(asset.asset)}</div>
+          <div className="col-2 break-word"></div>
           <div className="col-4 py-0">
             <div className="inputs">{this.renderInputs(asset)}</div>
             <div className="arrow"><i className="fas fa-arrow-right"></i></div>
@@ -141,6 +145,7 @@ class TransactionAsset extends Component {
 TransactionAsset.propTypes = {
   asset: PropTypes.object.isRequired,
   address: PropTypes.string,
+  showHeader: PropTypes.bool,
 };
 TransactionAsset.defaultProps = {
   address: '',

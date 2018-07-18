@@ -17,7 +17,7 @@ export default function Transaction(props) {
         {transaction.assets &&
           transaction.assets.length &&
           transaction.assets.map((asset, assetIndex) => {
-            return <TransactionAsset asset={asset} key={assetIndex} address={address} />;
+            return <TransactionAsset asset={asset} key={assetIndex} showHeader={assetIndex === 0} address={address} />;
           })}
       </div>
     </div>
