@@ -3,6 +3,7 @@ import { observer } from 'mobx-react';
 import {Link} from 'react-router-dom';
 import PropTypes from 'prop-types';
 import blockStore from '../../store/BlockStore';
+import TextUtils from '../../lib/TextUtils';
 import Transaction from '../../components/Transactions/Transaction.jsx';
 import './Transaction.css';
 
@@ -24,18 +25,18 @@ class TransactionPage extends Component {
 
   render() {
     const transaction = blockStore.transaction;
-    const medianTime = blockStore.medianTimeString;
-
     if (!transaction) {
       return null;
     }
+    
+    const blockDateStr = transaction.Block.timestamp ? TextUtils.getDateString(new Date(Number(transaction.Block.timestamp))) : '';
 
     return (
       <div className="Transaction">
         <section className="bordered border-left border-primary pl-lg-4">
           <div className="row">
             <div className="col-sm">
-              <div className="medianTime mb-1 mb-lg-2">{medianTime}</div>
+              <div className="medianTime mb-1 mb-lg-2">{blockDateStr}</div>
               <h1 className="d-block d-sm-inline-block text-white mb-3 mb-lg-5">Transaction</h1>
             </div>
           </div>
