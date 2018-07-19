@@ -30,11 +30,11 @@ module.exports = {
   },
   show: async function(req, res) {
     const address = req.params.address;
-    const [sent, received] = await Promise.all([
-      addressesDAL.getSentSums(req.params.address),
-      addressesDAL.getReceivedSums(req.params.address),
+    const [sent, received, assets] = await Promise.all([
+      addressesDAL.getSentSums(address),
+      addressesDAL.getReceivedSums(address),
+      outputsDAL.findAllAddressAssets(address)
     ]);
-    console.time('calc');
     const alreadyAddedAssets = [];
     const balance = received.map((item) => {
       alreadyAddedAssets.push(item.asset);
@@ -60,10 +60,10 @@ module.exports = {
         });
       }
     });
-    console.timeEnd('calc');
     if (address) {
       res.status(httpStatus.OK).json(jsonResponse.create(httpStatus.OK, {
         address,
+        assets,
         received,
         sent,
         balance,
