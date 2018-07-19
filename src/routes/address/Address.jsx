@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import blockStore from '../../store/BlockStore';
 import RouterUtils from '../../lib/RouterUtils';
 import Transactions from '../../components/Transactions/Transactions.jsx';
-import Loading from '../../components/Loading/Loading';
+import Loading from '../../components/Loading/Loading.jsx';
 import AssetUtils from '../../lib/AssetUtils';
 import './Address.css';
 

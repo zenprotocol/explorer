@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 import InfiniteScroll from 'react-infinite-scroller';
 import './Transactions.css';
 import Transaction from './Transaction.jsx';
-import Loading from '../Loading/Loading';
+import Loading from '../Loading/Loading.jsx';
 
 class Transactions extends Component {
   constructor(props) {
