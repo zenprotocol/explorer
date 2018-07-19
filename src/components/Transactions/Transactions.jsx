@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
 import { observer } from 'mobx-react';
 import blockStore from '../../store/BlockStore';
 import PropTypes from 'prop-types';
@@ -26,7 +25,7 @@ class Transactions extends Component {
 
   componentDidUpdate(prevProps) {
     const { blockNumber, address, order } = this.props;
-    if (blockNumber != prevProps.blockNumber || address != prevProps.address || order != prevProps.order) {
+    if (blockNumber !== prevProps.blockNumber || address !== prevProps.address || order !== prevProps.order) {
       this.setState({ transactions: [] });
       this.loadItems(0);
     }
