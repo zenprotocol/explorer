@@ -11,6 +11,7 @@ class BlockStore {
     this.transaction = null;
     this.transactions = [];
     this.transactionsCount = 0;
+    this.address = {};
     this.medianTime = null;
     this.syncing = false;
     this.loading = {
@@ -18,6 +19,7 @@ class BlockStore {
       block: false,
       transaction: false,
       transactions: false,
+      address: false,
     };
   }
 
@@ -59,6 +61,15 @@ class BlockStore {
       this.transactions = response.data.items;
       this.transactionsCount = response.data.total;
       this.loading.transactions = false;
+    });
+  }
+
+  fetchAddress(address) {
+    this.loading.address = true;
+
+    Service.addresses.findByAddress(address).then(response => {
+      this.address = response.data;
+      this.loading.address = false;
     });
   }
 
@@ -110,6 +121,7 @@ decorate(BlockStore, {
   transaction: observable,
   transactions: observable,
   transactionsCount: observable,
+  address: observable,
   loading: observable,
   medianTime: observable,
   syncing: observable,

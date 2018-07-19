@@ -73,11 +73,11 @@ export default {
     }
   },
   addresses: {
-    async findTXs(address) {
+    async findByAddress(address) {
       return sendHttpRequest({
         url: `${Endpoints.addresses}/${address}`,
         method: 'get',
       }).then(response => response.data);
-    }
+    },
   }
 };
