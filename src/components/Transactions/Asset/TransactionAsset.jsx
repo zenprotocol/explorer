@@ -15,6 +15,8 @@ class TransactionAsset extends Component {
     const outputs = this.getOutputs(asset);
     const inputs = this.getInputs(asset);
 
+    if(this.props.address && !outputs.addressFound && !inputs.addressFound) return null;
+
     return (
       <div className={classNames('TransactionAsset', {'input': inputs.addressFound}, {'output': outputs.addressFound})}>
         <div className="row mx-0">
