@@ -4,6 +4,15 @@
 .TransactionAsset {
   margin-bottom: 40px;
 }
+.TransactionAsset.output .arrow {
+  color: #fd3a3a;
+}
+.TransactionAsset.input .arrow {
+  color: #7bcc3a;
+}
+.TransactionAsset.input.output .arrow {
+  color: #7bcc3a;
+}
 
 .Transaction div[class^="col"],
 .Transaction .address {
