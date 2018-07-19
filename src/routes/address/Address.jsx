@@ -41,7 +41,7 @@ class AddressPage extends Component {
             <div className="col-sm">
               <h1 className="d-block d-sm-inline-block text-white mb-3 mb-lg-5">
                 ADDRESS
-                <div className="address">{params.address}</div>
+                <div className="address break-word">{params.address}</div>
               </h1>
             </div>
           </div>
