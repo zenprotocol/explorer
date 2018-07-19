@@ -31,16 +31,42 @@ module.exports = {
   show: async function(req, res) {
     const address = req.params.address;
     const [sent, received] = await Promise.all([
-      addressesDAL.getSentSum(req.params.address),
-      addressesDAL.getReceivedSum(req.params.address),
+      addressesDAL.getSentSums(req.params.address),
+      addressesDAL.getReceivedSums(req.params.address),
     ]);
+    console.time('calc');
+    const alreadyAddedAssets = [];
+    const balance = received.map((item) => {
+      alreadyAddedAssets.push(item.asset);
+      return {
+        asset: item.asset,
+        total: item.total,
+      };
+    });
 
+    sent.forEach((sentItem) => {
+      if(alreadyAddedAssets.includes(sentItem.asset)) {
+        for (let i = 0; i < balance.length; i++) {
+          const balanceItem = balance[i];
+          if (balanceItem.asset === sentItem.asset) {
+            balanceItem.total = Number(balanceItem.total) - Number(sentItem.total);
+          }
+        }
+      }
+      else {
+        balance.push({
+          asset: sent.asset,
+          total: -1 * sent.total,
+        });
+      }
+    });
+    console.timeEnd('calc');
     if (address) {
       res.status(httpStatus.OK).json(jsonResponse.create(httpStatus.OK, {
         address,
         received,
         sent,
-        balance: (Number(received) - Number(sent))
+        balance,
       }));
     } else {
       throw new HttpError(httpStatus.NOT_FOUND);

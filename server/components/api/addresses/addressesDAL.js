@@ -32,9 +32,11 @@ addressesDAL.findAllTransactions = async function(address, options = { limit: 10
   );
 };
 
-addressesDAL.getSentSum = async function(address) {
+addressesDAL.getSentSums = async function(address) {
   const db = this.db;
-  return db.Input.sum('Input.amount', {
+  const Sequelize = db.Sequelize;
+  return db.Input.findAll({
+    attributes: ['Output.asset', [Sequelize.fn('sum', Sequelize.col('Output.amount')), 'total']],
     include: [
       {
         model: db.Output,
@@ -44,14 +46,20 @@ addressesDAL.getSentSum = async function(address) {
         attributes: [],
       },
     ],
+    group: Sequelize.col('Output.asset'),
+    raw: true,
   });
 };
-addressesDAL.getReceivedSum = async function(address) {
+addressesDAL.getReceivedSums = async function(address) {
   const db = this.db;
-  return db.Output.sum('amount', {
+  const Sequelize = db.Sequelize;
+  return db.Output.findAll({
+    attributes: ['asset', [Sequelize.fn('sum', Sequelize.col('amount')), 'total']],
     where: {
       address,
     },
+    group: 'asset',
+    raw: true,
   });
 };
 
