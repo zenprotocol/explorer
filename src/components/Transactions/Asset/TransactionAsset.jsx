@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import Asset from '../../../lib/AssetUtils';
 import Output from '../../../lib/OutputUtils';
+import AssetUtils from '../../../lib/AssetUtils';
 
 class TransactionAsset extends Component {
   render() {
@@ -42,7 +43,10 @@ class TransactionAsset extends Component {
             </div>
           </div>
           <div className="col-6 py-0">
-            <div className="outputs">{outputs.rowsToRender}</div>
+            <div className="outputs">
+              {outputs.rowsToRender}
+              {this.renderTotal(asset, outputs.total)}
+            </div>
           </div>
         </div>
       </div>
@@ -86,6 +90,7 @@ class TransactionAsset extends Component {
   getOutputs(asset) {
     let rowsToRender = [];
     let addressFound = false;
+    let total = 0;
     let key = 0;
     const showAmount = Asset.showAmount(asset);
     if (!asset.outputs || !asset.outputs.length) {
@@ -96,6 +101,7 @@ class TransactionAsset extends Component {
         let amount = showAmount ? Asset.getAmountString(asset, output.amount) : null;
         const title = output.address ? output.address : Output.getTextByLockType(output.lockType);
         const address = output.address ? output.address : '';
+        total += Number(output.amount);
         if (address) {
           if (this.props.address === address) {
             addressFound = true;
@@ -105,7 +111,7 @@ class TransactionAsset extends Component {
       });
     }
 
-    // total amount
+    // // total amount
     // if (showAmount) {
     //   let totalAmount = asset.outputs.reduce((total, current) => {
     //     return total + Number(current.amount);
@@ -116,7 +122,17 @@ class TransactionAsset extends Component {
     //   rowsToRender.push(this.renderInputOutputItem(key, '', null, totalAmount, true));
     // }
 
-    return { rowsToRender, addressFound };
+    return { rowsToRender, addressFound, total };
+  }
+
+  renderTotal(asset, total) {
+    return (
+      <div className="row">
+        <div className="col d-flex justify-content-end">
+          <div className="total rounded">{AssetUtils.getAmountString(asset, total)}</div>
+        </div>
+      </div>
+    );
   }
 
   isCoinbase(asset) {
