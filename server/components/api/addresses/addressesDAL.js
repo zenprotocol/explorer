@@ -12,7 +12,7 @@ addressesDAL.findByAddress = function(address) {
   });
 };
 
-addressesDAL.findAllTransactions = async function(address, options = {limit: 10}) {
+addressesDAL.findAllTransactions = async function(address, options = { limit: 10 }) {
   const addressDB = await this.findByAddress(address);
   return addressDB.getTransactions(
     Object.assign(
@@ -30,6 +30,29 @@ addressesDAL.findAllTransactions = async function(address, options = {limit: 10}
       options
     )
   );
+};
+
+addressesDAL.getSentSum = async function(address) {
+  const db = this.db;
+  return db.Input.sum('Input.amount', {
+    include: [
+      {
+        model: db.Output,
+        where: {
+          address,
+        },
+        attributes: [],
+      },
+    ],
+  });
+};
+addressesDAL.getReceivedSum = async function(address) {
+  const db = this.db;
+  return db.Output.sum('amount', {
+    where: {
+      address,
+    },
+  });
 };
 
 /**

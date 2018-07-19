@@ -29,41 +29,18 @@ module.exports = {
     );
   },
   show: async function(req, res) {
-    const [transactions, count] = await Promise.all([
-      // transactionsDAL.findAllByAddress(req.params.address),
-      addressesDAL.findAllTransactions(req.params.address),
-      transactionsDAL.countByAddress(req.params.address)
+    const address = req.params.address;
+    const [sent, received] = await Promise.all([
+      addressesDAL.getSentSum(req.params.address),
+      addressesDAL.getReceivedSum(req.params.address),
     ]);
-    const customTXs = [];
 
-    transactions.forEach(transaction => {
-      const customTX = transactionsDAL.toJSON(transaction);
-      customTX.isCoinbase = isCoinbaseTX(transaction);
-
-      customTX['assets'] = getTransactionAssets(transaction);
-      delete customTX.Inputs;
-      delete customTX.Outputs;
-      delete customTX.AddressTransactions;
-
-      customTXs.push(customTX);
-    });
-
-    // const totalReceived = outputs.reduce((prev, cur) => {
-    //   return prev + Number(cur.amount);
-    // }, 0);
-    // const totalSent = inputs.reduce((prev, cur) => {
-    //   return prev + Number(cur.amount);
-    // }, 0);
-
-    // const balance = totalReceived - totalSent;
-    if (transactions.length) {
+    if (address) {
       res.status(httpStatus.OK).json(jsonResponse.create(httpStatus.OK, {
-        // totalReceived,
-        // totalSent,
-        // balance,
-        // transactions: combinedTXs,
-        count,
-        transactions: customTXs
+        address,
+        received,
+        sent,
+        balance: (Number(received) - Number(sent))
       }));
     } else {
       throw new HttpError(httpStatus.NOT_FOUND);
