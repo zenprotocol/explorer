@@ -1,10 +1,8 @@
 import { observable, decorate, action} from 'mobx';
 
 class UIStore {
-  constructor() {
-    this.blocksTablePageSize = 10;
-    this.blocksTableCurPage = 0;
-  }
+  blocksTablePageSize = 10;
+  blocksTableCurPage = 0;
 
   setBlocksTablePageSize(size) {
     this.blocksTablePageSize = size;
@@ -14,6 +12,7 @@ class UIStore {
   }
 }
 
+// why this syntax?
 decorate(UIStore, {
   blocksTablePageSize: observable,
   setBlocksTablePageSize: action,

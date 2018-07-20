@@ -1,6 +1,8 @@
+const ZEN_ASSET_HASH = '00'
+const ZEN_ASSET_NAME = 'ZP'
 export default {
   isZP(asset) {
-    return asset.asset === '00';
+    return asset.asset === ZEN_ASSET_HASH;
   },
   showAmount(asset) {
     // maybe later change conditions
@@ -10,22 +12,16 @@ export default {
     if (!amount) {
       return '';
     }
+    if (!this.isZP(asset)) {
+      return String(amount);
+    }
 
-    if (this.isZP(asset)) {
-      let parsedAmount = String(amount / 100000000);
-      if (amount <= 100) {
-        parsedAmount = (amount / 100000000).toFixed(8);
-      }
-      return `${parsedAmount} ${this.getTypeFromCode(asset.asset)}`;
-    }
-    return String(amount);
+    const parsedAmount = amount <= 100
+      ? String(amount / 100000000);
+      : (amount / 100000000).toFixed(8);
+    return `${parsedAmount} ${this.assetHash(asset)}`;
   },
-  getTypeFromCode(code) {
-    switch (code) {
-      case '00':
-        return 'ZP';
-      default:
-        return code;
-    }
+  assetHash(asset) {
+    return this.isZP(asset) ? ZEN_ASSET_NAME : asset.asset
   },
 };

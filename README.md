@@ -5,8 +5,11 @@
 2. nodejs + npm - https://nodejs.org
 
 # Development
+This project was bootstraped with ...
 
 ## Docker
+// developer who only wants to contribute without deploying need docker as well?
+// why use docker?
 1. **first time** - run `npm run setup` to create an env file
 2. `docker-compose up` in the root directory
 3. in another shell, `docker-compose exec web sh` to connect to the web container.  
@@ -22,9 +25,11 @@ From there you can use `npm`
 we use sequelize to talk to the database  
 in the docker web container, run `npx sequelize` to see all cli options.
 
+## Deploy
+??
+
 ## Folder Structure
-The project contain both the client and the server:
-- **common** - common code that can be used between processes
+- **common** - common code that can be used in both client and server
 - **public** - client public source files
 - **server** - server code
 - **src** - client source

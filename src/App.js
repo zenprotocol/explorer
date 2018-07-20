@@ -17,7 +17,12 @@ class App extends Component {
     blockStore.fetchBlocks();
     blockStore.fetchSyncing();
     this.syncingTimer = setInterval(() => {
+      // I prefer to do async polling with setTimeout callback,
+      // so if one call gets longer to process, or the server is swamped,
+      // we are not firing any more requests until we get an answer,
+      // so w eguarantee there's always one request active at a time
       blockStore.fetchSyncing();
+      // I would hradcode the time right here, this is unlikely to be used anywhere else
     }, config.time.intervals.syncing);
   }
 

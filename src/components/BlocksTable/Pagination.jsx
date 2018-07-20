@@ -16,6 +16,8 @@ export default class ReactTablePagination extends Component {
     };
   }
 
+  // change to getDerivedStateFromProps (componentWillReceiveProps is depracated)
+  // https://reactjs.org/docs/react-component.html#static-getderivedstatefromprops
   componentWillReceiveProps(nextProps) {
     this.setState({ page: nextProps.page });
   }

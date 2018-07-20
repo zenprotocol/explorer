@@ -23,20 +23,25 @@ class TransactionPage extends Component {
     blockStore.fetchTransaction(params.hash);
   }
 
+  get blockDateStr () {
+    const transaction = blockStore.transaction;
+    // consider delegating to store
+    return transaction.Block.timestamp ? TextUtils.getDateString(new Date(Number(transaction.Block.timestamp))) : '';
+    // if transaction.Block.timestamp is empty string by default ,we can do:
+    // return transaction.Block.timestamp && TextUtils.getDateString(new Date(Number(transaction.Block.timestamp)))
+  }
   render() {
     const transaction = blockStore.transaction;
     if (!transaction) {
       return null;
     }
     
-    const blockDateStr = transaction.Block.timestamp ? TextUtils.getDateString(new Date(Number(transaction.Block.timestamp))) : '';
-
     return (
       <div className="Transaction">
         <section className="bordered border-left border-primary pl-lg-4">
           <div className="row">
             <div className="col-sm">
-              <div className="medianTime mb-1 mb-lg-2">{blockDateStr}</div>
+              <div className="medianTime mb-1 mb-lg-2">{this.blockDateStr}</div>
               <h1 className="d-block d-sm-inline-block text-white mb-3 mb-lg-5">Transaction</h1>
             </div>
           </div>
