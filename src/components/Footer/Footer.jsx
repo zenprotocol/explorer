@@ -4,6 +4,8 @@ import blockStore from '../../store/BlockStore';
 import Logo from '../Logo/Logo.jsx';
 import './Footer.css';
 
+const ZEN_INFO_MAIL = 'info@zenprotocol.com';
+
 export default function Footer(props) {
   return (
     <footer className="Footer">
@@ -55,7 +57,8 @@ function FooterLinks() {
             <a
               className="nav-link text-nowrap"
               target="_blank"
-              rel="noopener noreferrer"
+              rel="noopener noreferrer" // why only this one has rel? because target="_blank"?
+              // dont want to use a reusable ExternalLink component?
               href="https://www.zenprotocol.com/deck/zen_protocol_deck_en.pdf"
             >
               Pitch Deck
@@ -128,7 +131,7 @@ function FooterLinks() {
             </a>
           </li>
           <li className="nav-item">
-            <a className="nav-link text-nowrap" href="mailto:info@zenprotocol.com" target="_top">
+            <a className="nav-link text-nowrap" href={`mailto:${ZEN_INFO_MAIL}`} target="_top">
               Contact Us
             </a>
           </li>
@@ -163,8 +166,8 @@ function FooterContact() {
       <li className="nav-item text-nowrap">
         <span className="nav-link">
           Contact us:{' '}
-          <a className=" pl-0 d-inline-block" target="_blank" rel="noopener noreferrer" href="mailto:info@zenprotocol.com">
-            info@zenprotocol.com
+          <a className=" pl-0 d-inline-block" target="_blank" rel="noopener noreferrer" href={`mailto:${ZEN_INFO_MAIL}`}>
+            {ZEN_INFO_MAIL}
           </a>
         </span>
       </li>

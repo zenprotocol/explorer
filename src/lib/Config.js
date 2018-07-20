@@ -5,3 +5,6 @@ export default {
     }
   }
 };
+
+// why not
+// export const SYNCING_INTERVAL_TIME = 60000

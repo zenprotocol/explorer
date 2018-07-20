@@ -6,10 +6,9 @@ import '../Transactions/Transactions.css';
 import Asset from '../../lib/AssetUtils';
 import Output from '../../lib/OutputUtils';
 
-class Transactions extends Component {
+class TransactionsFlat extends Component {
   render() {
-    const transactions = this.props.transactions;
-    const disableTXLinks = this.props.disableTXLinks;
+    const {transactions,disableTXLinks} = this.props;
 
     if (!transactions || !transactions.length) {
       return null;
@@ -20,11 +19,9 @@ class Transactions extends Component {
           return (
             <div className="Transaction" key={index}>
               <div className="hash mb-4 text-truncate no-text-transform">
-                {disableTXLinks ? (
-                  transaction.hash
-                ) : (
-                  <Link to={`/tx/${transaction.hash}`}>{transaction.hash}</Link>
-                )}
+                {disableTXLinks
+                  ? transaction.hash
+                  : <Link to={`/tx/${transaction.hash}`}>{transaction.hash}</Link>}
               </div>
               <div className="InsOuts">
                 <div className="row mx-0">
@@ -54,40 +51,28 @@ class Transactions extends Component {
   }
 
   renderInputs(transaction) {
-    let rowsToRender = [];
-
     if (!transaction.inputs || !transaction.inputs.length) {
       const title = 'No Inputs';
-      rowsToRender.push(this.renderInputOutputItem('1', title));
-    } else {
-      rowsToRender = transaction.inputs.map(input => {
-        return this.renderInputOutputItem(input.id, input.address, input.address);
-      });
+      return [(this.renderInputOutputItem('1', title))];
     }
-
-    return rowsToRender;
+    return transaction.inputs.map(input => {
+      return this.renderInputOutputItem(input.id, input.address, input.address);
+    });
   }
 
   renderOutputs(transaction) {
-    let rowsToRender = [];
-    let key = 0;
     const showAmount = Asset.showAmount(transaction);
     if (!transaction.outputs || !transaction.outputs.length) {
-      rowsToRender.push(this.renderInputOutputItem(key, 'No Outputs'));
-    } else {
-      rowsToRender = transaction.outputs.map(output => {
-        key++;
-        let amount = showAmount ? Asset.getAmountString(output, output.amount) : null;
-        const title = output.address? output.address : Output.getTextByLockType(output.lockType);
-        return this.renderInputOutputItem(key, title, output.address, amount);
-      });
-    }
-
-    return rowsToRender;
+      return[this.renderInputOutputItem(0, 'No Outputs')];
+    } 
+    return transaction.outputs.map((output, idx) => {
+      let amount = showAmount ? Asset.getAmountString(output, output.amount) : null;
+      const title = output.address? output.address : Output.getTextByLockType(output.lockType);
+      return this.renderInputOutputItem(idx, title, output.address, amount);
+    });
   }
 
-  renderInputOutputItem(key, title, address, amount, isTotal) {
-    title = title || '\u00a0';
+  renderInputOutputItem(key, title = '\u00a0', address, amount, isTotal) {
     return (
       <div className="row" key={key}>
         <div className="address break-word no-text-transform col-9" title={title}>
@@ -104,9 +89,9 @@ class Transactions extends Component {
   }
 }
 
-Transactions.propTypes = {
+TransactionsFlat.propTypes = {
   transactions: PropTypes.array,
   disableTXLinks: PropTypes.bool,
 };
 
-export default Transactions;
+export default TransactionsFlat;

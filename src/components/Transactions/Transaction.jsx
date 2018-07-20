@@ -8,14 +8,13 @@ export default function Transaction(props) {
   return (
     <div className="Transaction" key={transaction.id}>
       <div className="hash mb-4 text-truncate no-text-transform">
-        {transaction.isCoinbase ? (
+        {transaction.isCoinbase && (
           <h5 className="coinbase d-inline-block mr-1 text-white">Coinbase - </h5>
-        ) : null}
+        )}
         {disableTXLinks ? transaction.hash : <Link to={`/tx/${transaction.hash}`}>{transaction.hash}</Link>}
       </div>
       <div className="assets">
         {transaction.assets &&
-          transaction.assets.length &&
           transaction.assets.map((asset, assetIndex) => {
             return <TransactionAsset asset={asset} key={assetIndex} showHeader={assetIndex === 0} address={address} />;
           })}

@@ -1,8 +1,12 @@
+// if this is ony for api calls, maybe rename to ApiService?
+
+// why not import?
 const axios = require('axios');
 const request = axios.create({
   baseURL: (process.env.NODE_ENV === 'development')? 'http://localhost:3000' : ''
 });
 
+// why capital E?
 const Endpoints = {
   blocks: '/api/blocks',
   transactions: '/api/tx',
@@ -35,7 +39,7 @@ export default {
     },
   },
   infos: {
-    async findByName(name) {
+    findByName(name) {
       return sendHttpRequest({
         url: `${Endpoints.info}/${name}`,
         method: 'get',
@@ -43,14 +47,14 @@ export default {
     }
   },
   blocks: {
-    async find(params) {
+    find(params) {
       return sendHttpRequest({
         url: Endpoints.blocks,
         method: 'get',
         params: params,
       }).then(response => response.data);
     },
-    async findById(id) {
+    findById(id) {
       return sendHttpRequest({
         url: `${Endpoints.blocks}/${id}`,
         method: 'get',
@@ -58,14 +62,14 @@ export default {
     }
   },
   transactions: {
-    async find(params) {
+    find(params) {
       return sendHttpRequest({
         url: Endpoints.transactions,
         method: 'get',
         params: params,
       }).then(response => response.data);
     },
-    async findByHash(hash) {
+    findByHash(hash) {
       return sendHttpRequest({
         url: `${Endpoints.transactions}/${hash}`,
         method: 'get',
@@ -73,7 +77,7 @@ export default {
     }
   },
   addresses: {
-    async findByAddress(address) {
+    findByAddress(address) {
       return sendHttpRequest({
         url: `${Endpoints.addresses}/${address}`,
         method: 'get',

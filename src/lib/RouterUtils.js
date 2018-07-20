@@ -4,6 +4,6 @@ export default {
       match: { params },
     } = props;
 
-    return params? params : {};
+    return params || {};
   }
 };

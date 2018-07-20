@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import BlocksTable from '../../components/BlocksTable/BlocksTable.jsx';
 import blockStore from '../../store/BlockStore';
 import '../page.css';
-import './Blocks.css';
+import './Blocks.css'; // is this generated in scaffolding?
 
 class BlocksPage extends Component {
   render() {

@@ -4,23 +4,22 @@ import TextUtils from '../lib/TextUtils';
 
 // TODO split to several stores - blocks, transactions
 class BlockStore {
-  constructor() {
-    this.blocks = [];
-    this.blocksCount = 0;
-    this.block = {};
-    this.transaction = null;
-    this.transactions = [];
-    this.transactionsCount = 0;
-    this.address = {};
-    this.medianTime = null;
-    this.syncing = false;
-    this.loading = {
-      blocks: false,
-      block: false,
-      transaction: false,
-      transactions: false,
-      address: false,
-    };
+  blocks = [];
+  blocksCount = 0;
+  block = {};
+  transaction = null;
+  transactions = [];
+  transactionsCount = 0;
+  address = {};
+  medianTime = null;
+  syncing = false;
+  loading = {
+    blocks: false,
+    block: false,
+    transaction: false,
+    transactions: false,
+    address: false,
+  };
   }
 
   setBlocks(blocks) {
@@ -43,7 +42,7 @@ class BlockStore {
     Service.blocks.findById(id).then(response => {
       this.block = response.data;
       this.loading.block = false;
-    });
+    }); // error handling?
   }
 
   fetchTransaction(hash) {
@@ -83,12 +82,7 @@ class BlockStore {
 
   fetchSyncing() {
     Service.infos.findByName('syncing').then(response => {
-      if (response.success) {
-        this.syncing = response.data.value === 'true';
-      }
-      else {
-        this.syncing = false;
-      }
+      this.syncing = response.success && response.data.value === 'true';
     });
   }
 
@@ -100,25 +94,28 @@ class BlockStore {
   }
 
   get numberOfTransactions() {
+    // consider?
+    // return this.block.Transactions && this.block.Transactions.length
     if(this.block.Transactions) {
       return this.block.Transactions.length;
     }
   }
 
   confirmations(blockNumber) {
+    // explanation why this is required?
     if(isNaN(blockNumber)) {
       return 0;
     }
-    
+    // do we need to cast blockNumber to Number? isn't this covered in the above check?
     return Number(this.blocksCount) - Number(blockNumber) + 1;
   }
 }
-
+// why this syntax?
 decorate(BlockStore, {
   blocks: observable,
   blocksCount: observable,
-  block: observable,
-  transaction: observable,
+  block: observable, // are these the current ones? how about currentBlock?
+  transaction: observable, // are these the current ones? how about currentTransaction?
   transactions: observable,
   transactionsCount: observable,
   address: observable,

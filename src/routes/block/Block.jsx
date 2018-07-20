@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { Link } from 'react-router-dom';
-import classNames from 'classnames';
+import cx from 'classnames'; // just a convention we use in the wallet, shorter :)
 import PropTypes from 'prop-types';
 import blockStore from '../../store/BlockStore';
 import TextUtils from '../../lib/TextUtils';
@@ -11,42 +11,33 @@ import Loading from '../../components/Loading/Loading.jsx';
 import './Block.css';
 
 class BlockPage extends Component {
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      blockNumber: 0,
-    };
-  }
+  static propTypes = {
+    match: PropTypes.object,
+  };
+  state = {
+    blockNumber: this.propId,
+  };
   componentDidMount() {
-    const {
-      match: { params },
-    } = this.props;
-    this.setState({ blockNumber: Number(params.id) });
-    blockStore.fetchBlock(params.id);
+    blockStore.fetchBlock(this.propId);
   }
 
   componentDidUpdate(prevProps, prevState) {
-    if (Number(this.props.match.params.id) !== Number(prevProps.match.params.id)) {
-      blockStore.fetchBlock(Number(this.props.match.params.id));
+    if (this.propId !== Number(prevProps.match.params.id)) {
+      blockStore.fetchBlock(this.propId);
     }
   }
-
+  get propId() { // maybe you have idea for better name ...
+    return Number(this.props.match.params.id)
+  }
   renderPagination() {
-    const blockNumber = this.state.blockNumber;
-    let prevDisabled = false;
-    let nextDisabled = false;
-    if (blockNumber <= 1) {
-      prevDisabled = true;
-    }
-    if (blockNumber >= blockStore.blocksCount) {
-      nextDisabled = true;
-    }
+    const {blockNumber} = this.state;
+    let prevDisabled = blockNumber <= 1;
+    let nextDisabled = blockNumber >= blockStore.blocksCount;
 
     return (
       <nav aria-label="Page navigation" className="float-sm-right">
         <ul className="pagination pagination-sm">
-          <li className={classNames('page-item', { disabled: prevDisabled })}>
+          <li className={cx('page-item', { disabled: prevDisabled })}>
             <Link
               className="page-link"
               onClick={() => {
@@ -60,7 +51,7 @@ class BlockPage extends Component {
           <li className="page-item disabled">
             <a className="page-link bg-transparent border-0">BLOCK {blockNumber}</a>
           </li>
-          <li className={classNames('page-item', { disabled: nextDisabled })}>
+          <li className={cx('page-item', { disabled: nextDisabled })}>
             <Link
               className="page-link"
               onClick={() => {
@@ -82,6 +73,8 @@ class BlockPage extends Component {
 
   render() {
     const block = blockStore.block;
+    // can make the logic handling in the store to separate concerns, so ideally 
+    // component only deals with rendering
     const blockDateStr = block.timestamp ? TextUtils.getDateString(new Date(Number(block.timestamp))) : '';
 
     if (!block.id) return <Loading />;
@@ -129,10 +122,14 @@ class BlockPage extends Component {
                   </tr>
                   <tr>
                     <td>Difficulty</td>
+                    {/* BlockUtils.formatDifficulty is used twice in the project, maybe make a getter property in the
+                    store to reuse the logic */}
                     <td className="no-text-transform">{BlockUtils.formatDifficulty(block.difficulty)}</td>
                   </tr>
                   <tr>
                     <td>Confirmations</td>
+                    {/* since the block comes from the store, maybe expose a confirmation directly there?
+                    something like blockStore.blockConfirmations */}
                     <td className="no-text-transform">{blockStore.confirmations(block.blockNumber)}</td>
                   </tr>
                   <tr>
@@ -164,9 +161,5 @@ class BlockPage extends Component {
     );
   }
 }
-
-BlockPage.propTypes = {
-  match: PropTypes.object,
-};
 
 export default observer(BlockPage);

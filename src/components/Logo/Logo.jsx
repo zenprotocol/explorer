@@ -5,13 +5,11 @@ import logo from '../../logo.png';
 import logoAll from '../../logo_all.png';
 
 export default function Logo(props) {
+
   return (
+    const logoSrc = props.hideSubtitle ? logoAll : lgo
     <Link className="navbar-brand text-primary" to="/">
-      {!props.hideSubtitle? (
-        <img src={logoAll} className="logo d-inline-block align-middle" alt="" />
-      ): (
-        <img src={logo} className="logo d-inline-block align-middle" alt="" />
-      )}
+      <img src={this.getlogo} className="logo d-inline-block align-middle" />
     </Link>
   );
 }

@@ -4,12 +4,9 @@ const httpStatus = require('http-status');
 const transactionsDAL = require('../transactions/transactionsDAL');
 const addressesDAL = require('../addresses/addressesDAL');
 const outputsDAL = require('../outputs/outputsDAL');
-const inputsDAL = require('../inputs/inputsDAL');
 const jsonResponse = require('../../../lib/jsonResponse');
 const HttpError = require('../../../lib/HttpError');
 const createQueryObject = require('../../../lib/createQueryObject');
-const isCoinbaseTX = require('../transactions/isCoinbaseTX');
-const getTransactionAssets = require('../transactions/getTransactionAssets');
 
 module.exports = {
   index: async function(req, res) {
