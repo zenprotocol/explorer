@@ -121,12 +121,12 @@ transactionsDAL.addOutput = transactionsDAL.addOutput.bind(transactionsDAL);
  * @param {Object|string} address
  * @param {Object} [options={}]
  */
-transactionsDAL.addAddress = async function(transaction, address, options = {}) {
+transactionsDAL.addAddress = async function(transaction, address, addressBC, options = {}) {
   let addressDB = null;
   if (typeof address === 'string') {
     addressDB = await addressesDAL.findByAddress(address);
     if (!addressDB) {
-      addressDB = await addressesDAL.create({ address }, options);
+      addressDB = await addressesDAL.create({ address, addressBC }, options);
     }
   } else {
     addressDB = address;

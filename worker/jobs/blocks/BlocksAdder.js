@@ -230,8 +230,8 @@ class BlocksAdder {
     logger.info('Output added to transaction');
 
     if (addressWallet) {
-      logger.info(`Adding address to transaction #${transaction.id}...`);
-      await transactionsDAL.addAddress(transaction, addressWallet, {transaction: dbTransaction});
+      logger.info(`Adding address ${addressWallet} to transaction #${transaction.id}...`);
+      await transactionsDAL.addAddress(transaction, addressWallet, addressBC, {transaction: dbTransaction});
       logger.info('Address added to transaction');
     }
 
@@ -328,8 +328,8 @@ class BlocksAdder {
       logger.info('Output was set...');
 
       if(output.address) {
-        logger.info(`Adding address to transaction #${transaction.id}...`);
-        await transactionsDAL.addAddress(transaction, output.address, {transaction: dbTransaction});
+        logger.info(`Adding address ${output.address} to transaction #${transaction.id}...`);
+        await transactionsDAL.addAddress(transaction, output.address, output.addressBC, {transaction: dbTransaction});
         logger.info('Address added to transaction');
       }
     }
