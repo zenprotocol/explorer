@@ -6,6 +6,7 @@ import RouterUtils from '../../lib/RouterUtils';
 import Transactions from '../../components/Transactions/Transactions.jsx';
 import Loading from '../../components/Loading/Loading.jsx';
 import AssetUtils from '../../lib/AssetUtils';
+import HashLink from '../../components/HashLink/HashLink.jsx';
 import './Address.css';
 
 class AddressPage extends Component {
@@ -41,7 +42,7 @@ class AddressPage extends Component {
             <div className="col-sm">
               <h1 className="d-block d-sm-inline-block text-white mb-3 mb-lg-5">
                 ADDRESS
-                <div className="address break-word">{params.address}</div>
+                <div className="address break-word"><HashLink hash={params.address} /></div>
               </h1>
             </div>
           </div>

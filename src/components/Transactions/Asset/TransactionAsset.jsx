@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import Asset from '../../../lib/AssetUtils';
 import Output from '../../../lib/OutputUtils';
 import AssetUtils from '../../../lib/AssetUtils';
+import HashLink from '../../../components/HashLink/HashLink.jsx';
 
 class TransactionAsset extends Component {
   render() {
@@ -158,14 +158,11 @@ class TransactionAsset extends Component {
 
   renderInputOutputItem(key, title, address, amount, isTotal) {
     title = title || '\u00a0';
+    const url = address && address !== this.props.address ? `/address/${address}` : '';
     return (
       <div className="row" key={key}>
         <div className="address break-word no-text-transform col-9" title={title}>
-          {address && address !== this.props.address ? (
-            <Link to={`/address/${address}`}>{title}</Link>
-          ) : (
-            title
-          )}
+          {address? (<HashLink url={url? url : ''} hash={title} />) : title}
         </div>
         <div
           className={classNames('col-3 address break-word', { 'font-weight-bold': isTotal })}

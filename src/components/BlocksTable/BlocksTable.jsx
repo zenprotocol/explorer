@@ -10,6 +10,7 @@ import './BlocksTable.css';
 import PaginationComponent from './Pagination.jsx';
 import uiStore from '../../store/UIStore';
 import BlockUtils from '../../lib/BlockUtils';
+import HashLink from '../HashLink/HashLink.jsx';
 
 class BlocksTable extends Component {
   constructor(props) {
@@ -58,10 +59,9 @@ class BlocksTable extends Component {
       {
         Header: 'Parent',
         accessor: 'parent',
-        minWidth: 450,
         show: this.state.windowWidth > 767,
         Cell: data => {
-          return <Link to={`/blocks/${data.original.parentBlockNumber}`}>{data.value}</Link>;
+          return <HashLink url={`/blocks/${data.original.parentBlockNumber}`} hash={data.value}/>;
         },
       },
       {

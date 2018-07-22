@@ -1,7 +1,7 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import TransactionAsset from './Asset/TransactionAsset';
+import HashLink from '../HashLink/HashLink.jsx';
 
 export default function Transaction(props) {
   const {transaction, address, disableTXLinks} = props;
@@ -11,7 +11,7 @@ export default function Transaction(props) {
         {transaction.isCoinbase ? (
           <h5 className="coinbase d-inline-block mr-1 text-white">Coinbase - </h5>
         ) : null}
-        {disableTXLinks ? transaction.hash : <Link to={`/tx/${transaction.hash}`}>{transaction.hash}</Link>}
+        <HashLink url={disableTXLinks? '' : `/tx/${transaction.hash}`} hash={transaction.hash} />
       </div>
       <div className="assets">
         {transaction.assets &&

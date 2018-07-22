@@ -8,6 +8,7 @@ import TextUtils from '../../lib/TextUtils';
 import Transactions from '../../components/Transactions/Transactions.jsx';
 import BlockUtils from '../../lib/BlockUtils';
 import Loading from '../../components/Loading/Loading.jsx';
+import HashLink from '../../components/HashLink/HashLink.jsx';
 import './Block.css';
 
 class BlockPage extends Component {
@@ -112,7 +113,12 @@ class BlockPage extends Component {
                   {block.hash ? (
                     <tr>
                       <td>hash</td>
-                      <td className="no-text-transform">{block.hash}</td>
+                      <td className="no-text-transform">
+                        <HashLink
+                          hash={block.hash}
+                          shorten={false}
+                        />
+                      </td>
                     </tr>
                   ) : null}
                   <tr>
@@ -139,14 +145,13 @@ class BlockPage extends Component {
                     <td>Parent</td>
                     <td>
                       <div className="address no-text-transform break-word">
-                        <Link
+                        <HashLink 
                           onClick={() => {
                             this.switchBlock(block.parentBlockNumber);
                           }}
-                          to={`/blocks/${block.parentBlockNumber}`}
-                        >
-                          {block.parent}
-                        </Link>
+                          url={`/blocks/${block.parentBlockNumber}`}
+                          hash={block.parent}
+                        />
                       </div>
                     </td>
                   </tr>

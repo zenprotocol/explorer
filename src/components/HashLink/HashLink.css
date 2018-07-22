@@ -1,0 +1,9 @@
+.HashLink .copy {
+  display: inline-block;
+  position: relative;
+}
+
+.HashLink .copy button {
+  border: none;
+  cursor: pointer;
+}
