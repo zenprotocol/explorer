@@ -1,9 +1,12 @@
 'use strict';
 
+const deepMerge = require('deepmerge');
 const dal = require('../../../lib/dal');
 const transactionsDAL = dal.createDAL('Transaction');
 const addressesDAL = require('../addresses/addressesDAL');
 const blocksDAL = require('../blocks/blocksDAL');
+
+const overwriteMerge = (destinationArray, sourceArray, options) => sourceArray;
 
 transactionsDAL.findByHash = async function(hash) {
   return transactionsDAL.findOne({
@@ -33,7 +36,7 @@ transactionsDAL.findAllByAddress = async function(
   const addressDB = await addressesDAL.findByAddress(address);
   const whereOption = getFirstTransactionIdWhereOption(firstTransactionId, ascending);
   return addressDB.getTransactions(
-    Object.assign(
+    deepMerge.all([
       {
         include: [
           'Outputs',
@@ -42,20 +45,20 @@ transactionsDAL.findAllByAddress = async function(
             include: ['Output'],
           },
         ],
-        order: [['createdAt', 'DESC'], [this.db.Input, 'index'], [this.db.Output, 'index']],
       },
       options,
       {
         where: whereOption,
-      }
-    )
+        order: [[this.db.Input, 'index'], [this.db.Output, 'index']],
+      },
+    ])
   );
 };
 
 transactionsDAL.findAllByBlockNumber = async function(blockNumber, options = { limit: 10 }) {
   const blockDB = await blocksDAL.findByBlockNumber(blockNumber);
   return blockDB.getTransactions(
-    Object.assign(
+    deepMerge.all([
       {
         include: [
           'Outputs',
@@ -64,10 +67,12 @@ transactionsDAL.findAllByBlockNumber = async function(blockNumber, options = { l
             include: ['Output'],
           },
         ],
-        order: [['createdAt', 'DESC'], [this.db.Input, 'index'], [this.db.Output, 'index']],
       },
-      options
-    )
+      options,
+      {
+        order: [[this.db.Input, 'index'], [this.db.Output, 'index']],
+      },
+    ])
   );
 };
 
@@ -78,11 +83,9 @@ transactionsDAL.countByAddress = async function(address, firstTransactionId, asc
     include: [
       {
         model: this.db.Address,
-        where: Object.assign(
-          {
-            address,
-          },
-        ),
+        where: {
+          address,
+        },
       },
     ],
   });
@@ -133,8 +136,7 @@ transactionsDAL.addAddress = async function(transaction, address, options = {}) 
 };
 
 function getFirstTransactionIdWhereOption(firstTransactionId, ascending) {
-  const operator =
-    ascending ? transactionsDAL.db.Sequelize.Op.gte : transactionsDAL.db.Sequelize.Op.lte;
+  const operator = ascending ? transactionsDAL.db.Sequelize.Op.gte : transactionsDAL.db.Sequelize.Op.lte;
   return firstTransactionId && Number(firstTransactionId) > 0
     ? {
         id: {

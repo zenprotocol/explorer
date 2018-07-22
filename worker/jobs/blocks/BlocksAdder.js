@@ -198,7 +198,7 @@ class BlocksAdder {
       inputCount: (nodeTransaction.inputs)? nodeTransaction.inputs.length : 0,
       outputCount: (nodeTransaction.outputs)? nodeTransaction.outputs.length : 0,
     }, {transaction: dbTransaction});
-    logger.info('Transaction created.');
+    logger.info(`Transaction created. id=${transaction.id} hash=${transaction.hash}`);
 
     logger.info(`Adding the new transaction to block #${block.blockNumber}...`);
     await blocksDAL.addTransaction(block, transaction, {transaction: dbTransaction});
@@ -207,7 +207,7 @@ class BlocksAdder {
   }
 
   async addOutputToTransaction({transaction, nodeOutput, outputIndex, dbTransaction}) {
-    logger.info(`Creating a new output for transaction #${transaction.id}...`);
+    logger.info(`Creating a new output for transaction #${transaction.id} with hash ${transaction.hash}...`);
     const {lockType, address} = this.getLockValuesFromOutput(nodeOutput);
     const addressBC = address;
     let addressWallet = null;
@@ -276,7 +276,7 @@ class BlocksAdder {
     }
 
     logger.info(
-      `Searching for the relevant output with hash=${nodeInput.outpoint.txHash} and index=${
+      `Searching for the relevant output in transaction with hash=${nodeInput.outpoint.txHash} and index=${
         nodeInput.outpoint.index
       }...`
     );
@@ -284,6 +284,7 @@ class BlocksAdder {
       where: {
         hash: nodeInput.outpoint.txHash,
       },
+      transaction: dbTransaction,
     });
     if (transactionsWithRelevantHash.length === 1) {
       const outputs = await outputsDAL.findAll({
@@ -291,6 +292,7 @@ class BlocksAdder {
           index: nodeInput.outpoint.index,
           TransactionId: transactionsWithRelevantHash[0].id,
         },
+        transaction: dbTransaction,
       });
       if (outputs.length === 1) {
         logger.info('Found output');
@@ -298,23 +300,23 @@ class BlocksAdder {
         amount = output.amount;
       } else {
         outputs.length > 0
-          ? logger.warn('Found more than 1 related output!')
-          : logger.warn('Did not find an output');
+          ? logger.error('Found more than 1 related output!')
+          : logger.error('Did not find an output');
       }
     } else {
       transactionsWithRelevantHash.length > 0
-        ? logger.warn(`Found more than 1 transactions with hash=${nodeInput.outpoint.txHash} !`)
-        : logger.warn(`Could not find a transaction with hash=${nodeInput.outpoint.txHash}`);
+        ? logger.error(`Found more than 1 transactions with hash=${nodeInput.outpoint.txHash} !`)
+        : logger.error(`Could not find a transaction with hash=${nodeInput.outpoint.txHash}`);
     }
 
-    logger.info(`Creating a new input for transaction #${transaction.id}...`);
+    logger.info(`Creating a new input for transaction #${transaction.id} with hash ${transaction.hash}...`);
     const input = await inputsDAL.create({
       index: inputIndex,
       outpointTXHash: nodeInput.outpoint.txHash,
       outpointIndex: Number(nodeInput.outpoint.index),
       amount,
     }, {transaction: dbTransaction});
-    logger.info('Input created.');
+    logger.info(`Input created. id=${input.id}`);
 
     logger.info(`Adding the new input to transaction #${transaction.id}...`);
     await transactionsDAL.addInput(transaction, input, {transaction: dbTransaction});

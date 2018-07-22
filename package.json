@@ -48,6 +48,7 @@
     "bull": "^3.4.2",
     "classnames": "^2.2.6",
     "cors": "^2.8.4",
+    "deepmerge": "^2.1.1",
     "dotenv": "^6.0.0",
     "express": "^4.16.3",
     "file-loader": "^1.1.11",

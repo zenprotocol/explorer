@@ -1,7 +1,7 @@
 'use strict';
 
+const deepMerge = require('deepmerge');
 const dal = require('../../../lib/dal');
-
 const addressesDAL = dal.createDAL('Address');
 
 addressesDAL.findByAddress = function(address) {
@@ -15,7 +15,7 @@ addressesDAL.findByAddress = function(address) {
 addressesDAL.findAllTransactions = async function(address, options = { limit: 10 }) {
   const addressDB = await this.findByAddress(address);
   return addressDB.getTransactions(
-    Object.assign(
+    deepMerge.all([
       {
         include: [
           'Block',
@@ -25,10 +25,12 @@ addressesDAL.findAllTransactions = async function(address, options = { limit: 10
             include: ['Output'],
           },
         ],
+      },
+      options,
+      {
         order: [['createdAt', 'DESC'], [this.db.Input, 'index'], [this.db.Output, 'index']],
       },
-      options
-    )
+    ])
   );
 };
 

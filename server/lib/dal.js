@@ -1,5 +1,6 @@
 'use strict';
 
+const deepMerge = require('deepmerge');
 const db = require('../db/sequelize/models');
 const wrapORMErrors = require('./wrapORMErrors');
 
@@ -17,30 +18,10 @@ const createDAL = modelName => {
           });
       });
     },
-    async findAllWithFK(foreignKeys = []) {
+    async findById(id, options = {}) {
       return new Promise((resolve, reject) => {
         this.db[this.model]
-          .findAll({ include: foreignKeys })
-          .then(resolve)
-          .catch(error => {
-            reject(wrapORMErrors(error));
-          });
-      });
-    },
-    async findById(id) {
-      return new Promise((resolve, reject) => {
-        this.db[this.model]
-          .findById(id)
-          .then(resolve)
-          .catch(error => {
-            reject(wrapORMErrors(error));
-          });
-      });
-    },
-    async findByIdWithFK(id, foreignKeys = []) {
-      return new Promise((resolve, reject) => {
-        this.db[this.model]
-          .findById(id, { include: foreignKeys })
+          .findById(id, options)
           .then(resolve)
           .catch(error => {
             reject(wrapORMErrors(error));
@@ -57,10 +38,10 @@ const createDAL = modelName => {
           });
       });
     },
-    async count(where = {}) {
+    async count(options = {}) {
       return new Promise((resolve, reject) => {
         this.db[this.model]
-          .count(where)
+          .count(options)
           .then(resolve)
           .catch(error => {
             reject(wrapORMErrors(error));
@@ -82,7 +63,7 @@ const createDAL = modelName => {
         this.db[this.model]
           .findById(id)
           .then((model) => {
-            return model.update(values, Object.assign({individualHooks: true }, options));
+            return model.update(values, deepMerge({individualHooks: true }, options));
           })
           .then(resolve)
           .catch(error => {
@@ -90,10 +71,10 @@ const createDAL = modelName => {
           });
       });
     },
-    async delete(id) {
+    async delete(id, options = {}) {
       return new Promise((resolve, reject) => {
         this.db[this.model]
-          .destroy({ where: { id: id } })
+          .destroy(deepMerge({ where: { id: id } }, options))
           .then(resolve)
           .catch(error => {
             reject(wrapORMErrors(error));
