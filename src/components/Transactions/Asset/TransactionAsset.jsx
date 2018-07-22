@@ -20,22 +20,21 @@ class TransactionAsset extends Component {
 
     return (
       <div className={classNames('TransactionAsset', {'input': inputs.addressFound}, {'output': outputs.addressFound})}>
-        <div className="row mx-0">
-          <div className="col-12 border-bottom">ASSET</div>
-        </div>
-        <div className="row mx-0">
-          <div className="col-2 border-bottom">{Asset.getTypeFromCode(asset.asset)}</div>
-          <div className="col-4 border-bottom">{showHeader ? 'INPUT' : ''}</div>
-          <div className="col-6 border-bottom">
-            <div className="row">
-              <div className="col-9 py-0">{showHeader ? 'OUTPUT' : ''}</div>
-              <div className="col-3 py-0">{showHeader ? 'TOTAL' : ''}</div>
+        {showHeader ? (
+          <div className="row mx-0">
+            <div className="col-2 border-bottom">ASSET</div>
+            <div className="col-4 border-bottom">INPUT</div>
+            <div className="col-6 border-bottom">
+              <div className="row">
+                <div className="col-9 py-0">OUTPUT</div>
+                <div className="col-3 py-0">TOTAL</div>
+              </div>
             </div>
           </div>
-        </div>
+        ) : null}
 
         <div className="row mx-0">
-          <div className="col-2 break-word" />
+          <div className="col-2 break-word">{Asset.getTypeFromCode(asset.asset)}</div>
           <div className="col-4 py-0">
             <div className="inputs">{inputs.rowsToRender}</div>
             <div className="arrow">
