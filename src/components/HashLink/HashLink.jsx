@@ -28,7 +28,7 @@ export default class HashLink extends Component {
     return (
       <div className="HashLink break-word" title={hash}>
         {anchorHash}
-        {copy ? anchorCopy : null}
+        {copy && hash !== shortenedHash ? anchorCopy : null}
       </div>
     );
   }
@@ -55,6 +55,7 @@ function shortenHash(hash) {
   if (hash.length > HASH_TRIM_LENGTH * 2) {
     return `${hash.slice(0, HASH_TRIM_LENGTH)}...${hash.slice(hash.length - HASH_TRIM_LENGTH)}`;
   }
+  return hash;
 }
 
 HashLink.propTypes = {
