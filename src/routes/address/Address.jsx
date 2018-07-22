@@ -21,7 +21,7 @@ class AddressPage extends Component {
     return blockStore.address.balance.map((assetBalance, index) => {
       return (
         <tr key={index}>
-          <td>{AssetUtils.getTypeFromCode(assetBalance.asset)}</td>
+          <td><HashLink hash={AssetUtils.getTypeFromCode(assetBalance.asset)} /></td>
           <td>{AssetUtils.getAmountString(assetBalance, assetBalance.total)}</td>
         </tr>
       );

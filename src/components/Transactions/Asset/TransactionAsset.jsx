@@ -1,9 +1,8 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
-import Asset from '../../../lib/AssetUtils';
-import Output from '../../../lib/OutputUtils';
 import AssetUtils from '../../../lib/AssetUtils';
+import Output from '../../../lib/OutputUtils';
 import HashLink from '../../../components/HashLink/HashLink.jsx';
 
 class TransactionAsset extends Component {
@@ -34,7 +33,7 @@ class TransactionAsset extends Component {
         ) : null}
 
         <div className="row mx-0">
-          <div className="col-2 break-word">{Asset.getTypeFromCode(asset.asset)}</div>
+          <div className="col-2 break-word"><HashLink hash={AssetUtils.getTypeFromCode(asset.asset)} /></div>
           <div className="col-4 py-0">
             <div className="inputs">{inputs.rowsToRender}</div>
             <div className="arrow">
@@ -91,13 +90,13 @@ class TransactionAsset extends Component {
     let addressFound = false;
     let total = 0;
     let key = 0;
-    const showAmount = Asset.showAmount(asset);
+    const showAmount = AssetUtils.showAmount(asset);
     if (!asset.outputs || !asset.outputs.length) {
       rowsToRender.push(this.renderInputOutputItem(key, 'No Outputs'));
     } else {
       rowsToRender = asset.outputs.map(output => {
         key++;
-        let amount = showAmount ? Asset.getAmountString(asset, output.amount) : null;
+        let amount = showAmount ? AssetUtils.getAmountString(asset, output.amount) : null;
         const title = output.address ? output.address : Output.getTextByLockType(output.lockType);
         const address = output.address ? output.address : '';
         total += Number(output.amount);
