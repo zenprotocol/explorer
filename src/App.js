@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { Route, Switch } from 'react-router-dom';
 
-import config from './lib/Config';
 import './App.css';
 import Navbar from './components/Navbar/Navbar.jsx';
 import Footer from './components/Footer/Footer.jsx';
@@ -12,17 +11,25 @@ import Transaction from './routes/transaction/Transaction.jsx';
 import Address from './routes/address/Address.jsx';
 
 class App extends Component {
+  constructor(props) {
+    super(props);
+
+    this.fetchSyncingTimeout = this.fetchSyncingTimeout.bind(this);
+  }
+  
   componentDidMount() {
     blockStore.fetchMedianTime();
     blockStore.fetchBlocks();
-    blockStore.fetchSyncing();
-    this.syncingTimer = setInterval(() => {
-      blockStore.fetchSyncing();
-    }, config.time.intervals.syncing);
+    this.fetchSyncingTimeout();
   }
 
   componentWillUnmount() {
     clearInterval(this.syncingTimer);
+  }
+
+  fetchSyncingTimeout() {
+    blockStore.fetchSyncing();
+    this.syncingTimer = setTimeout(this.fetchSyncingTimeout, 60000);
   }
 
   render() {
