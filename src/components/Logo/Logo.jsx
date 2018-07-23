@@ -1,8 +1,8 @@
 import React from 'react';
 import {Link} from 'react-router-dom';
 import PropTypes from 'prop-types';
-import logo from '../../logo.png';
-import logoAll from '../../logo_all.png';
+import logo from '../../assets/logo.png';
+import logoAll from '../../assets/logo_all.png';
 
 export default function Logo(props) {
   return (
