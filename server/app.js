@@ -4,7 +4,8 @@
 require('./babel');
 
 const express = require('express');
-const logger = require('morgan');
+const morgan = require('morgan');
+const logger = require('./lib/logger');
 const bodyParser = require('body-parser');
 const helmet = require('helmet');
 const cors = require('cors');
@@ -18,8 +19,8 @@ const apiRouter = require('./components/api');
 const app = express();
 
 // middleware
+app.use(morgan(':remote-addr ":method :url HTTP/:http-version" :status :res[content-length] ":referrer" ":user-agent"', { stream: logger.stream }));
 if(process.env.NODE_ENV === 'development') {
-  app.use(logger('dev'));
   app.use(cors());
 }
 app.use(bodyParser.json({ limit: config.get('http:request:limit') }));

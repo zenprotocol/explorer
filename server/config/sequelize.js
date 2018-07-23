@@ -8,13 +8,7 @@ const developmentJson = JSON.parse(fs.readFileSync(path.join(__dirname, 'develop
 const testJson = JSON.parse(fs.readFileSync(path.join(__dirname, 'test.json')));
 
 module.exports = {
-  development: {
-    username: developmentJson.db.username,
-    password: developmentJson.db.password,
-    database: developmentJson.db.database,
-    host: developmentJson.db.host,
-    dialect: developmentJson.db.dialect,
-  },
+  development: developmentJson.db,
   test: {
     username: testJson.db.username,
     password: testJson.db.password,
@@ -26,5 +20,6 @@ module.exports = {
   production: {
     use_env_variable: 'DATABASE_URL',
     dialect: Config.get('db:dialect'),
+    logging: false,
   },
 };
