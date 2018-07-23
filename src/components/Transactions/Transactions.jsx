@@ -26,8 +26,9 @@ class Transactions extends Component {
   componentDidUpdate(prevProps) {
     const { blockNumber, address, order } = this.props;
     if (blockNumber !== prevProps.blockNumber || address !== prevProps.address || order !== prevProps.order) {
-      this.setState({ transactions: [] });
-      this.loadItems(0);
+      this.setState({ transactions: [] }, () => {
+        this.loadItems(0);
+      });
     }
   }
 
