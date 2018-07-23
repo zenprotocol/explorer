@@ -82,7 +82,7 @@ class BlockStore {
   }
 
   fetchSyncing() {
-    Service.infos.findByName('syncing').then(response => {
+    return Service.infos.findByName('syncing').then(response => {
       if (response.success) {
         this.syncing = response.data.value === 'true';
       }

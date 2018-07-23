@@ -16,7 +16,7 @@ class App extends Component {
 
     this.fetchSyncingTimeout = this.fetchSyncingTimeout.bind(this);
   }
-  
+
   componentDidMount() {
     blockStore.fetchMedianTime();
     blockStore.fetchBlocks();
@@ -28,8 +28,9 @@ class App extends Component {
   }
 
   fetchSyncingTimeout() {
-    blockStore.fetchSyncing();
-    this.syncingTimer = setTimeout(this.fetchSyncingTimeout, 60000);
+    blockStore.fetchSyncing().then(() => {
+      this.syncingTimer = setTimeout(this.fetchSyncingTimeout, 60000);
+    });
   }
 
   render() {
