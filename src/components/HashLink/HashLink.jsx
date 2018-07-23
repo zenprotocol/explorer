@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import classNames from 'classnames';
 import { Link } from 'react-router-dom';
 import './HashLink.css';
 
@@ -25,10 +26,12 @@ export default class HashLink extends Component {
       </div>
     );
 
+    const showCopy = copy && hash !== shortenedHash;
+
     return (
-      <div className="HashLink break-word" title={hash}>
+      <div className={classNames('HashLink break-word', {copyable: showCopy})} title={hash}>
         {anchorHash}
-        {copy && hash !== shortenedHash ? anchorCopy : null}
+        {showCopy ? anchorCopy : null}
       </div>
     );
   }

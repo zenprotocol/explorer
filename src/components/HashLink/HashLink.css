@@ -1,6 +1,22 @@
-.HashLink .copy {
-  display: inline-block;
+.HashLink {
   position: relative;
+  display: inline-block;
+}
+
+.HashLink.copyable {
+  padding-right: 30px;
+}
+
+.HashLink .copy {
+  display: none;
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+
+.HashLink:hover .copy {
+  display: block;
+  
 }
 
 .HashLink .copy button {
