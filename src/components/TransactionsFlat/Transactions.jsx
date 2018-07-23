@@ -19,7 +19,7 @@ class Transactions extends Component {
         {transactions.map((transaction, index) => {
           return (
             <div className="Transaction" key={index}>
-              <div className="hash mb-4 text-truncate no-text-transform">
+              <div className="hash mb-4 no-text-transform">
                 {disableTXLinks ? (
                   transaction.hash
                 ) : (

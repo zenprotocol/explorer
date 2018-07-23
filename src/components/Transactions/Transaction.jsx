@@ -7,7 +7,7 @@ export default function Transaction(props) {
   const {transaction, address, disableTXLinks} = props;
   return (
     <div className="Transaction" key={transaction.id}>
-      <div className="hash mb-4 text-truncate no-text-transform">
+      <div className="hash mb-4 no-text-transform">
         {transaction.isCoinbase ? (
           <h5 className="coinbase d-inline-block mr-1 text-white">Coinbase - </h5>
         ) : null}

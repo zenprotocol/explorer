@@ -120,6 +120,7 @@ class BlocksTable extends Component {
         </div>
         <ReactTable
           manual
+          resizable={false}
           sortable={false}
           onFetchData={this.fetchData}
           data={store.blocks}

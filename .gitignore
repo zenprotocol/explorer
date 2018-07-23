@@ -27,5 +27,5 @@ coverage
 /logs
 
 # generated
-bootstrap.css
+src/style/*.css
 /build

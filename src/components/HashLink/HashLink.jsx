@@ -10,7 +10,12 @@ export default class HashLink extends Component {
   constructor(props) {
     super(props);
 
+    this.state = {
+      copied: false,
+    };
+
     this.copyToClipboard = this.copyToClipboard.bind(this);
+    this.setCopied = this.setCopied.bind(this);
   }
 
   render() {
@@ -19,7 +24,7 @@ export default class HashLink extends Component {
     const anchorHash = url ? <Link to={url}>{shortenedHash}</Link> : shortenedHash;
 
     const anchorCopy = (
-      <div className="copy">
+      <div className="copy" onMouseLeave={() => {this.setCopied(false);}} data-balloon={this.state.copied? 'Copied to clipboard' : 'Copy'} data-balloon-pos="up-left">
         <button onClick={() => {this.copyToClipboard(hash);}} className="button btn-link" title="Copy hash to clipboard">
           <i className="far fa-copy" />
         </button>
@@ -51,6 +56,11 @@ export default class HashLink extends Component {
       document.getSelection().removeAllRanges();
       document.getSelection().addRange(selected);
     }
+    this.setCopied(true);
+  }
+
+  setCopied(copied) {
+    this.setState({copied});
   }
 }
 
