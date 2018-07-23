@@ -9,32 +9,29 @@ const Config = require('../config/Config');
 const loggerInstances = {};
 
 const createNamedLogger = function(name) {
-  var logsDir = path.join(__dirname, `../../logs/${name}/`);
-  if (!fs.existsSync(logsDir)) {
-    fs.mkdirSync(logsDir);
+  const addedTransports = [];
+
+  if(Config.get('NODE_ENV') !== 'production') {
+    const logsDir = path.join(__dirname, `../../logs/${name}/`);
+    if (!fs.existsSync(logsDir)) {
+      fs.mkdirSync(logsDir);
+    }
+
+    addedTransports.push(new transports.File({
+      filename: path.join(logsDir, 'error.log'),
+      level: 'error',
+      maxsize: 5242880, // 5MB
+      maxFiles: 5,
+    }),
+    new transports.File({
+      filename: path.join(logsDir, 'combined.log'),
+      maxsize: 5242880, // 5MB
+      maxFiles: 5,
+    }));
   }
 
-  const logger = createLogger({
-    level: 'info',
-    format: combine(label(), timestamp(), json()),
-    transports: [
-      new transports.File({
-        filename: path.join(logsDir, 'error.log'),
-        level: 'error',
-        maxsize: 5242880, // 5MB
-        maxFiles: 5,
-      }),
-      new transports.File({
-        filename: path.join(logsDir, 'combined.log'),
-        maxsize: 5242880, // 5MB
-        maxFiles: 5,
-      }),
-    ],
-    exitOnError: false,
-  });
-
   if (process.env.NODE_ENV !== 'test' || Config.get('SHOW_CONSOLE_LOGS')) {
-    logger.add(
+    addedTransports.push(
       new transports.Console({
         format: combine(
           format.colorize(),
@@ -44,6 +41,13 @@ const createNamedLogger = function(name) {
       })
     );
   }
+
+  const logger = createLogger({
+    level: 'info',
+    format: combine(label(), timestamp(), json()),
+    transports: addedTransports,
+    exitOnError: false,
+  });
 
   logger.stream = {
     write: function(message, encoding) {
