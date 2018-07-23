@@ -35,23 +35,28 @@ transactionsDAL.findAllByAddress = async function(
 ) {
   const addressDB = await addressesDAL.findByAddress(address);
   const whereOption = getFirstTransactionIdWhereOption(firstTransactionId, ascending);
+  const finalOptions = deepMerge.all([
+    {
+      include: [
+        'Outputs',
+        {
+          model: this.db.Input,
+          include: ['Output'],
+        },
+      ],
+    },
+    options,
+    {
+      where: whereOption,
+      order: [[this.db.Input, 'index'], [this.db.Output, 'index']],
+    },
+  ]);
+  // deepMerge makes symbols disappear!
+  if(whereOption.id) {
+    finalOptions.where.id = whereOption.id;
+  }
   return addressDB.getTransactions(
-    deepMerge.all([
-      {
-        include: [
-          'Outputs',
-          {
-            model: this.db.Input,
-            include: ['Output'],
-          },
-        ],
-      },
-      options,
-      {
-        where: whereOption,
-        order: [[this.db.Input, 'index'], [this.db.Output, 'index']],
-      },
-    ])
+    finalOptions
   );
 };
 
