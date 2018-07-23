@@ -1,3 +1,5 @@
+import Config from '../lib/Config';
+
 function addPrecedingZero(number) {
   if (Number(number) < 10) {
     return `0${number}`;
@@ -20,4 +22,13 @@ export default {
 
     return '';
   },
+  formatNumber(number, delimiter) {
+    if(!number) return '0';
+    delimiter = delimiter? delimiter.toString() : Config.format.number.delimiter;
+
+    let parts = String(number).split('.');
+    let whole = parts[0];
+    let fraction = (parts.length > 1)? '.' + parts[1] : '';
+    return whole.toString().replace(/\B(?=(\d{3})+(?!\d))/g, delimiter) + fraction;
+  }
 };

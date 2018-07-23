@@ -1,3 +1,5 @@
+import TextUtils from './TextUtils';
+
 export default {
   isZP(asset) {
     return asset.asset === '00';
@@ -16,9 +18,9 @@ export default {
       if (amount <= 100) {
         parsedAmount = (amount / 100000000).toFixed(8);
       }
-      return `${parsedAmount} ${this.getTypeFromCode(asset.asset)}`;
+      return `${TextUtils.formatNumber(parsedAmount)} ${this.getTypeFromCode(asset.asset)}`;
     }
-    return String(amount);
+    return String(TextUtils.formatNumber(amount));
   },
   getTypeFromCode(code) {
     switch (code) {
