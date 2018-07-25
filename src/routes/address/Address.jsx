@@ -15,17 +15,13 @@ class AddressPage extends Component {
     blockStore.fetchAddress(params.address);
   }
 
-  getBalanceTableRows() {
-    if (!blockStore.address.balance) return null;
+  componentDidUpdate(prevProps) {
+    const params = RouterUtils.getRouteParams(this.props);
+    const prevParams = RouterUtils.getRouteParams(prevProps);
 
-    return blockStore.address.balance.map((assetBalance, index) => {
-      return (
-        <tr key={index}>
-          <td><HashLink hash={AssetUtils.getTypeFromCode(assetBalance.asset)} /></td>
-          <td>{AssetUtils.getAmountString(assetBalance, assetBalance.total)}</td>
-        </tr>
-      );
-    });
+    if(params.address !== prevParams.address) {
+      blockStore.fetchAddress(params.address);
+    }
   }
 
   render() {
@@ -119,6 +115,19 @@ class AddressPage extends Component {
         </section>
       </div>
     );
+  }
+
+  getBalanceTableRows() {
+    if (!blockStore.address.balance) return null;
+
+    return blockStore.address.balance.map((assetBalance, index) => {
+      return (
+        <tr key={index}>
+          <td><HashLink hash={AssetUtils.getTypeFromCode(assetBalance.asset)} /></td>
+          <td>{AssetUtils.getAmountString(assetBalance, assetBalance.total)}</td>
+        </tr>
+      );
+    });
   }
 }
 
