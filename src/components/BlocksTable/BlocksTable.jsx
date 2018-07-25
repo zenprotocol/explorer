@@ -66,6 +66,7 @@ class BlocksTable extends Component {
       {
         Header: 'Difficulty',
         accessor: 'difficulty',
+        show: this.state.windowWidth > 767,
         Cell: function(data) {
           return BlockUtils.formatDifficulty(data.value);
         },
