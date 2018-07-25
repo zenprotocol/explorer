@@ -46,8 +46,7 @@ class BlocksTable extends Component {
         minWidth: 120,
         maxWidth: 120,
         Cell: function(data) {
-          const date = new Date(Number(data.value));
-          return TextUtils.getDateString(date);
+          return TextUtils.getDateStringFromTimestamp(data.value);
         },
       },
       {

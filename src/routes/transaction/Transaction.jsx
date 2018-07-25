@@ -29,7 +29,7 @@ class TransactionPage extends Component {
       return null;
     }
     
-    const blockDateStr = transaction.Block.timestamp ? TextUtils.getDateString(new Date(Number(transaction.Block.timestamp))) : '';
+    const blockDateStr = transaction.Block.timestamp ? TextUtils.getDateStringFromTimestamp(transaction.Block.timestamp) : '';
 
     return (
       <div className="Transaction">

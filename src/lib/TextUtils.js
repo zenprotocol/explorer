@@ -8,6 +8,9 @@ function addPrecedingZero(number) {
 }
 
 export default {
+  getDateStringFromTimestamp(timestamp) {
+    return this.getDateString(new Date(Number(timestamp)));
+  },
   getDateString(date) {
     if (date && typeof date === 'object') {
       const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];

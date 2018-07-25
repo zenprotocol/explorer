@@ -83,7 +83,7 @@ class BlockPage extends Component {
 
   render() {
     const block = blockStore.block;
-    const blockDateStr = block.timestamp ? TextUtils.getDateString(new Date(Number(block.timestamp))) : '';
+    const blockDateStr = block.timestamp ? TextUtils.getDateStringFromTimestamp(block.timestamp) : '';
 
     if (!block.id) return <Loading />;
 
