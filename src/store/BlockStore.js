@@ -67,8 +67,13 @@ class BlockStore {
   fetchAddress(address) {
     this.loading.address = true;
 
-    Service.addresses.findByAddress(address).then(response => {
+    return Service.addresses.findByAddress(address).then(response => {
       this.address = response.data;
+      this.loading.address = false;
+    }).catch((error) => {
+      if(error.response.status === 404) {
+        this.address = {status: 404};
+      }
       this.loading.address = false;
     });
   }

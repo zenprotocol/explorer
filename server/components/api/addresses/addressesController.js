@@ -27,6 +27,12 @@ module.exports = {
   },
   show: async function(req, res) {
     const address = req.params.address;
+    const addressDb = await addressesDAL.findByAddress(address);
+    console.log({addressDb});
+    if(!addressDb) {
+      throw new HttpError(httpStatus.NOT_FOUND);
+    }
+
     const [sent, received, assets] = await Promise.all([
       addressesDAL.getSentSums(address),
       addressesDAL.getReceivedSums(address),
@@ -57,7 +63,7 @@ module.exports = {
         });
       }
     });
-    if (address) {
+    if (addressDb) {
       res.status(httpStatus.OK).json(jsonResponse.create(httpStatus.OK, {
         address,
         assets,

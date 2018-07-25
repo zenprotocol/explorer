@@ -1,12 +1,14 @@
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import PropTypes from 'prop-types';
+import classNames from 'classnames';
 import blockStore from '../../store/BlockStore';
 import RouterUtils from '../../lib/RouterUtils';
 import Transactions from '../../components/Transactions/Transactions.jsx';
 import Loading from '../../components/Loading/Loading.jsx';
 import AssetUtils from '../../lib/AssetUtils';
 import HashLink from '../../components/HashLink/HashLink.jsx';
+import ItemNotFound from '../../components/ItemNotFound/ItemNotFound.jsx';
 import './Address.css';
 
 class AddressPage extends Component {
@@ -19,7 +21,7 @@ class AddressPage extends Component {
     const params = RouterUtils.getRouteParams(this.props);
     const prevParams = RouterUtils.getRouteParams(prevProps);
 
-    if(params.address !== prevParams.address) {
+    if (params.address !== prevParams.address) {
       blockStore.fetchAddress(params.address);
     }
   }
@@ -31,6 +33,8 @@ class AddressPage extends Component {
       sent: getAssetTotal(blockStore.address.sent, '00'),
       balance: getAssetTotal(blockStore.address.balance, '00'),
     };
+    const is404 = blockStore.address.status === 404;
+
     return (
       <div className="Address">
         <section className="bordered border-left border-primary pl-lg-4">
@@ -38,13 +42,15 @@ class AddressPage extends Component {
             <div className="col-sm">
               <h1 className="d-block d-sm-inline-block text-white mb-3 mb-lg-5">
                 ADDRESS
-                <div className="address break-word"><HashLink hash={params.address} /></div>
+                <div className="address break-word">
+                  <HashLink hash={params.address} />
+                </div>
               </h1>
             </div>
           </div>
           {blockStore.loading.address ? (
             <Loading />
-          ) : (
+          ) : !is404 ? (
             <div className="row">
               <div className="col-lg-6">
                 <table className="table">
@@ -58,7 +64,7 @@ class AddressPage extends Component {
                   <tbody>
                     <tr>
                       <td>BALANCE</td>
-                      <td>{AssetUtils.getAmountString({asset: '00'}, zpBalance.balance)}</td>
+                      <td>{AssetUtils.getAmountString({ asset: '00' }, zpBalance.balance)}</td>
                     </tr>
                     <tr>
                       <td>TRANSACTIONS</td>
@@ -66,11 +72,11 @@ class AddressPage extends Component {
                     </tr>
                     <tr>
                       <td>TOTAL RECEIVED</td>
-                      <td>{AssetUtils.getAmountString({asset: '00'}, zpBalance.received)}</td>
+                      <td>{AssetUtils.getAmountString({ asset: '00' }, zpBalance.received)}</td>
                     </tr>
                     <tr>
                       <td>TOTAL SENT</td>
-                      <td>{AssetUtils.getAmountString({asset: '00'}, zpBalance.sent)}</td>
+                      <td>{AssetUtils.getAmountString({ asset: '00' }, zpBalance.sent)}</td>
                     </tr>
                     <tr>
                       <td>NO. ASSET TYPES</td>
@@ -96,16 +102,16 @@ class AddressPage extends Component {
                       </th>
                     </tr>
                   </thead>
-                  <tbody>
-                    {this.getBalanceTableRows()}
-                  </tbody>
+                  <tbody>{this.getBalanceTableRows()}</tbody>
                 </table>
               </div>
             </div>
+          ) : (
+            <ItemNotFound item="Address" />
           )}
         </section>
 
-        <section className="bordered border-left border-primary pl-lg-4">
+        <section className={classNames('bordered border-left border-primary pl-lg-4', {'d-none': is404})}>
           <div className="row">
             <div className="col-sm">
               <h1 className="d-block d-sm-inline-block text-white mb-3 mb-lg-5">Transactions</h1>
@@ -123,7 +129,9 @@ class AddressPage extends Component {
     return blockStore.address.balance.map((assetBalance, index) => {
       return (
         <tr key={index}>
-          <td><HashLink hash={AssetUtils.getTypeFromCode(assetBalance.asset)} /></td>
+          <td>
+            <HashLink hash={AssetUtils.getTypeFromCode(assetBalance.asset)} />
+          </td>
           <td>{AssetUtils.getAmountString(assetBalance, assetBalance.total)}</td>
         </tr>
       );

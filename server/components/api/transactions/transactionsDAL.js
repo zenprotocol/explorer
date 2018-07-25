@@ -34,6 +34,8 @@ transactionsDAL.findAllByAddress = async function(
   options = { limit: 10 }
 ) {
   const addressDB = await addressesDAL.findByAddress(address);
+  if(!addressDB) return Promise.resolve([]);
+
   const whereOption = getFirstTransactionIdWhereOption(firstTransactionId, ascending);
   const finalOptions = deepMerge.all([
     {
