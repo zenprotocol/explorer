@@ -41,7 +41,7 @@ class TransactionAsset extends Component {
           <div className="col-6 py-0">
             <div className="outputs">
               {outputs.rowsToRender}
-              {this.renderTotal(asset, outputs.total)}
+              {outputs.total? this.renderTotal(asset, outputs.total) : null}
             </div>
           </div>
         </div>
