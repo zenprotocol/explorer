@@ -15,8 +15,6 @@ class TransactionAsset extends Component {
     const outputs = this.getOutputs(asset);
     const inputs = this.getInputs(asset);
 
-    if(this.props.address && !outputs.addressFound && !inputs.addressFound) return null;
-
     return (
       <div className={classNames('TransactionAsset', {'input': inputs.addressFound}, {'output': outputs.addressFound})}>
         {showHeader ? (
@@ -53,26 +51,15 @@ class TransactionAsset extends Component {
 
   getInputs(asset) {
     let rowsToRender = [];
-    let addressFound = false;
 
     if (!asset.inputs || !asset.inputs.length) {
       const title = 'No Inputs';
       rowsToRender.push(this.renderInputOutputItem('1', title));
     } else {
-      const addedInputAddresses = [];
       rowsToRender = asset.inputs.reduce((all, input) => {
-        if (!input.Output) {
-          return all;
-        }
 
         if (input.Output.address) {
-          if (!addedInputAddresses.includes(input.Output.address)) {
-            addedInputAddresses.push(input.Output.address);
-            all.push(this.renderInputOutputItem(input.id, input.Output.address, input.Output.address));
-            if (this.props.address === input.Output.address) {
-              addressFound = true;
-            }
-          }
+          all.push(this.renderInputOutputItem(input.id, input.Output.address, input.Output.address));
         } else {
           const title = Output.getTextByLockType(input.Output.lockType);
           all.push(this.renderInputOutputItem(input.id, title, ''));
@@ -82,12 +69,11 @@ class TransactionAsset extends Component {
       }, []);
     }
 
-    return { rowsToRender, addressFound };
+    return {rowsToRender};
   }
 
   getOutputs(asset) {
     let rowsToRender = [];
-    let addressFound = false;
     let total = 0;
     let key = 0;
     const showAmount = AssetUtils.showAmount(asset);
@@ -100,11 +86,6 @@ class TransactionAsset extends Component {
         const title = output.address ? output.address : Output.getTextByLockType(output.lockType);
         const address = output.address ? output.address : '';
         total += Number(output.amount);
-        if (address) {
-          if (this.props.address === address) {
-            addressFound = true;
-          }
-        }
         return this.renderInputOutputItem(key, title, address, amount);
       });
     }
@@ -120,7 +101,7 @@ class TransactionAsset extends Component {
     //   rowsToRender.push(this.renderInputOutputItem(key, '', null, totalAmount, true));
     // }
 
-    return { rowsToRender, addressFound, total };
+    return { rowsToRender, total };
   }
 
   renderTotal(asset, total) {

@@ -46,7 +46,7 @@ module.exports = {
       const customTX = transactionsDAL.toJSON(transaction);
       customTX.isCoinbase = isCoinbaseTX(transaction);
 
-      customTX['assets'] = getTransactionAssets(transaction);
+      customTX['assets'] = getTransactionAssets(transaction, address);
       delete customTX.Inputs;
       delete customTX.Outputs;
       delete customTX.AddressTransactions;
