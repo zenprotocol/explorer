@@ -51,6 +51,7 @@ class TransactionAsset extends Component {
 
   getInputs(asset) {
     let rowsToRender = [];
+    let addressFound = false;
 
     if (!asset.inputs || !asset.inputs.length) {
       const title = 'No Inputs';
@@ -60,6 +61,9 @@ class TransactionAsset extends Component {
 
         if (input.Output.address) {
           all.push(this.renderInputOutputItem(input.id, input.Output.address, input.Output.address));
+          if (this.props.address === input.Output.address) {
+            addressFound = true;
+          }
         } else {
           const title = Output.getTextByLockType(input.Output.lockType);
           all.push(this.renderInputOutputItem(input.id, title, ''));
@@ -69,11 +73,12 @@ class TransactionAsset extends Component {
       }, []);
     }
 
-    return {rowsToRender};
+    return {rowsToRender, addressFound};
   }
 
   getOutputs(asset) {
     let rowsToRender = [];
+    let addressFound = false;
     let total = 0;
     let key = 0;
     const showAmount = AssetUtils.showAmount(asset);
@@ -86,6 +91,11 @@ class TransactionAsset extends Component {
         const title = output.address ? output.address : Output.getTextByLockType(output.lockType);
         const address = output.address ? output.address : '';
         total += Number(output.amount);
+        if (address) {
+          if (this.props.address === address) {
+            addressFound = true;
+          }
+        }
         return this.renderInputOutputItem(key, title, address, amount);
       });
     }
@@ -101,7 +111,7 @@ class TransactionAsset extends Component {
     //   rowsToRender.push(this.renderInputOutputItem(key, '', null, totalAmount, true));
     // }
 
-    return { rowsToRender, total };
+    return { rowsToRender, addressFound, total };
   }
 
   renderTotal(asset, total) {
