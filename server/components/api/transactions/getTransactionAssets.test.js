@@ -46,6 +46,29 @@ test('Test address in inputs and outputs', function(t) {
   t.end();
 });
 
+test('Test addressFoundIn attribute with no address supplied', function(t) {
+  const assets = getTransactionAssets(testTX);
+  t.deepEquals(assets[0].addressFoundIn, [], 'addressFoundIn array should be empty');
+  t.end();
+});
+
+test('Test addressFoundIn attribute for address in input', function(t) {
+  const assets = getTransactionAssets(testTX, testAddressInInput);
+  t.deepEquals(assets[0].addressFoundIn, ['input'], 'addressFoundIn array should have "inputs" for asset 0');
+  t.end();
+});
+
+test('Test addressFoundIn attribute for address in output', function(t) {
+  const assets = getTransactionAssets(testTX, testAddressInOutput);
+  t.deepEquals(assets[0].addressFoundIn, ['output'], 'addressFoundIn array should have "outputs" for asset 0');
+  t.end();
+});
+
+test('Test addressFoundIn attribute for address in input and output', function(t) {
+  const assets = getTransactionAssets(testTX, testAddressInInputAndOutput);
+  t.deepEquals(assets[0].addressFoundIn, ['input', 'output'], 'addressFoundIn array should have "inputs" and "outputs" for asset 0');
+  t.end();
+});
 
 const testAddressInOutput = 'zen1q55eslzak4z0wcu76hela53kg7rl9fyej38ykzlssp2h9c5wvgtwq50vtzv';
 const testAddressInInput = 'zen1q03jc77dtd2x2gk90f40p9ezv5pf3e2wm5hy8me2xuxzmjneachrq6g05w5';
@@ -53,6 +76,7 @@ const testAddressInInputAndOutput = 'zen1qkr6aunrpjccdpltncey392ajppf5955ghxut30
 /**
  * This transaction was changed for the test:
  * - changed 2 outputs' assets from '00' to '01' for testing purposes
+ * - one of the outputs with asset '01' has null for the address!
  * - for address 'testAddressInOutput', added another output with this address
  * - for address 'testAddressInInput', added another input
  */
@@ -97,7 +121,7 @@ const testTX = {
       id: '123821',
       lockType: 'PK',
       contractLockVersion: 0,
-      address: 'zen1q0djqlrqx088vwx0lktxzs77gf7gu540ksh9akpwnxsv3ydfg5yqqwdyx29',
+      address: null,
       addressBC: '7b640f8c0679cec719ffb2cc287bc84f91ca55f685cbdb05d33419123528a100',
       asset: '01', // FAKE
       amount: '159493209',
