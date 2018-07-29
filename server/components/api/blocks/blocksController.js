@@ -8,6 +8,10 @@ const createQueryObject = require('../../../lib/createQueryObject');
 const getTransactionAssets = require('../transactions/getTransactionAssets');
 const isCoinbaseTX = require('../transactions/isCoinbaseTX');
 
+function isHash(value) {
+  return String(value).length === 64;
+}
+
 module.exports = {
   index: async function(req, res) {
     const page = req.query.page || 0;
@@ -18,11 +22,17 @@ module.exports = {
         : [{ id: 'blockNumber', desc: true }];
 
     const query = createQueryObject({ page, pageSize, sorted });
-    query.attributes = {include: [[blocksDAL.db.Sequelize.literal('(SELECT "Blocks"."blockNumber" FROM "Blocks" WHERE "Blocks"."hash" = "Block"."parent" LIMIT 1)'), 'parentBlockNumber']]};
-    const [count, allBlocks] = await Promise.all([
-      blocksDAL.count(),
-      blocksDAL.findAll(query),
-    ]);
+    query.attributes = {
+      include: [
+        [
+          blocksDAL.db.Sequelize.literal(
+            '(SELECT "Blocks"."blockNumber" FROM "Blocks" WHERE "Blocks"."hash" = "Block"."parent" LIMIT 1)'
+          ),
+          'parentBlockNumber',
+        ],
+      ],
+    };
+    const [count, allBlocks] = await Promise.all([blocksDAL.count(), blocksDAL.findAll(query)]);
 
     res.status(httpStatus.OK).json(
       jsonResponse.create(httpStatus.OK, {
@@ -31,8 +41,15 @@ module.exports = {
       })
     );
   },
-  findByBlockNumber: async function(req, res) {
-    const block = await blocksDAL.findByBlockNumber(req.params.blockNumber);
+  show: async function(req, res) {
+    const hashOrBlockNumber = req.params.hashOrBlockNumber;
+    if (!hashOrBlockNumber || (!isHash(hashOrBlockNumber) && isNaN(hashOrBlockNumber))) {
+      throw new HttpError(httpStatus.NOT_FOUND);
+    }
+
+    const block = isHash(hashOrBlockNumber)
+      ? await blocksDAL.findByHash(hashOrBlockNumber)
+      : await blocksDAL.findByBlockNumber(hashOrBlockNumber);
 
     if (block) {
       res.status(httpStatus.OK).json(jsonResponse.create(httpStatus.OK, block));

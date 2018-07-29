@@ -37,6 +37,16 @@ blocksDAL.findByHash = function(hash) {
     where: {
       hash,
     },
+    attributes: {
+      include: [
+        [
+          this.db.Sequelize.literal(
+            '(SELECT "Blocks"."blockNumber" FROM "Blocks" WHERE "Blocks"."hash" = "Block"."parent" LIMIT 1)'
+          ),
+          'parentBlockNumber',
+        ],
+      ],
+    },
   });
 };
 

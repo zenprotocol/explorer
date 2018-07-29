@@ -8,7 +8,7 @@ router.route('/')
 router.route('/id/:id')
   .get(wrapAsync(controller.getById));
 
-router.route('/:blockNumber')
-  .get(wrapAsync(controller.findByBlockNumber));
+router.route('/:hashOrBlockNumber')
+  .get(wrapAsync(controller.show));
 
 module.exports = router;
