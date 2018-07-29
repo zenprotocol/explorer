@@ -10,7 +10,7 @@ export default {
   },
   getAmountString(asset, amount) {
     if (!amount) {
-      return '';
+      return '0';
     }
 
     if (this.isZP(asset)) {
