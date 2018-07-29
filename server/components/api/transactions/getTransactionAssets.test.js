@@ -21,8 +21,16 @@ test('Test assets order', function(t) {
 });
 test('Test input output lengths', function(t) {
   const assets = getTransactionAssets(testTX);
-  t.equals(assets[0].inputs.length, testTX.Inputs.length - 1, 'All the source inputs belong to asset 00 and should be unique');
-  t.equals(assets[0].outputs.length, testTX.Outputs.length - 2, 'All outputs but 2 should be in the asset 00');
+  t.equals(
+    assets[0].inputs.length,
+    testTX.Inputs.length - 1,
+    'All the source inputs belong to asset 00 and should be unique'
+  );
+  t.equals(
+    assets[0].outputs.length,
+    testTX.Outputs.length - 2,
+    'All outputs but 2 should be in the asset 00'
+  );
   t.equals(assets[1].inputs.length, 0, 'There are no inputs for asset 01');
   t.equals(assets[1].outputs.length, 2, 'There are 2 outputs for asset 01');
   t.end();
@@ -60,13 +68,30 @@ test('Test addressFoundIn attribute for address in input', function(t) {
 
 test('Test addressFoundIn attribute for address in output', function(t) {
   const assets = getTransactionAssets(testTX, testAddressInOutput);
-  t.deepEquals(assets[0].addressFoundIn, ['output'], 'addressFoundIn array should have "outputs" for asset 0');
+  t.deepEquals(
+    assets[0].addressFoundIn,
+    ['output'],
+    'addressFoundIn array should have "outputs" for asset 0'
+  );
   t.end();
 });
 
 test('Test addressFoundIn attribute for address in input and output', function(t) {
   const assets = getTransactionAssets(testTX, testAddressInInputAndOutput);
-  t.deepEquals(assets[0].addressFoundIn, ['input', 'output'], 'addressFoundIn array should have "inputs" and "outputs" for asset 0');
+  t.deepEquals(
+    assets[0].addressFoundIn,
+    ['input', 'output'],
+    'addressFoundIn array should have "inputs" and "outputs" for asset 0'
+  );
+  t.end();
+});
+
+test('Test Activation Sacrifice TX', function(t) {
+  const assets = getTransactionAssets(testTXActivationSacrifice, 'zen1ql4ghuykrvuxmzv2rkz746vg4yc78c7r5h86l5eautx59p2hm5hjs7qpp0t');
+  t.equals(assets[0].outputs.length, 2, 'Outputs should not contain the receiving address');
+  assets[0].outputs.forEach((output) => {
+    t.equals(output.address, null, 'No output in this tx should have an address');
+  });
   t.end();
 });
 
@@ -75,10 +100,10 @@ const testAddressInInput = 'zen1q03jc77dtd2x2gk90f40p9ezv5pf3e2wm5hy8me2xuxzmjne
 const testAddressInInputAndOutput = 'zen1qkr6aunrpjccdpltncey392ajppf5955ghxut30r3xlcnlg83d7dq96ke7l';
 /**
  * This transaction was changed for the test:
- * - changed 2 outputs' assets from '00' to '01' for testing purposes
- * - one of the outputs with asset '01' has null for the address!
- * - for address 'testAddressInOutput', added another output with this address
- * - for address 'testAddressInInput', added another input
+ * 1. changed 2 outputs' assets from '00' to '01' for testing purposes
+ * 2. one of the outputs with asset '01' has null for the address!
+ * 3. for address 'testAddressInOutput', added another output with this address
+ * 4. for address 'testAddressInInput', added another input
  */
 const testTX = {
   id: '7399',
@@ -1859,7 +1884,8 @@ const testTX = {
       updatedAt: '2018-07-22T19:17:34.233Z',
       TransactionId: '7399',
     },
-    { // FAKE - ADDED FOR TEST
+    {
+      // FAKE - ADDED FOR TEST
       id: '12383645',
       lockType: 'PK',
       contractLockVersion: 0,
@@ -1953,4 +1979,98 @@ const testTX = {
     AddressId: '5569',
     TransactionId: '7399',
   },
+};
+
+const testTXActivationSacrifice = {
+  id: '16142',
+  version: 0,
+  hash: 'cf07641b8485e551d951a2eed6be8e8fc60c52cf4e47d3d97fabaf0bc7d3dc27',
+  index: 7,
+  inputCount: 1,
+  outputCount: 3,
+  createdAt: '2018-07-22T22:03:28.252Z',
+  updatedAt: '2018-07-22T22:03:28.255Z',
+  BlockId: 6277,
+  Block: {
+    id: 6277,
+    version: 0,
+    hash: '0000000000001d1306c8ef4062540e517b2ab8822b5564e9076dce4a67724391',
+    parent: '00000000000014b35c689873f12d76da831a4be9a972306fc52bb8411b608b18',
+    blockNumber: 6276,
+    commitments: '6071a304746860839c1a98de97d3053d9cfeb228da013907cffdae969d0d6800',
+    timestamp: '1531824673768',
+    difficulty: '438486627',
+    nonce1: '0',
+    nonce2: '1655636913533453800',
+    transactionCount: '8',
+    createdAt: '2018-07-22T22:03:25.329Z',
+    updatedAt: '2018-07-22T22:03:25.329Z',
+  },
+  Outputs: [
+    {
+      id: '362213',
+      lockType: 'ActivationSacrifice',
+      contractLockVersion: 0,
+      address: null,
+      addressBC: null,
+      asset: '00',
+      amount: '29960',
+      index: 0,
+      createdAt: '2018-07-22T22:03:28.257Z',
+      updatedAt: '2018-07-22T22:03:28.260Z',
+      TransactionId: '16142',
+    },
+    {
+      id: '362214',
+      lockType: 'Fee',
+      contractLockVersion: 0,
+      address: null,
+      addressBC: null,
+      asset: '00',
+      amount: '2260322',
+      index: 1,
+      createdAt: '2018-07-22T22:03:28.264Z',
+      updatedAt: '2018-07-22T22:03:28.266Z',
+      TransactionId: '16142',
+    },
+    {
+      id: '362215',
+      lockType: 'PK',
+      contractLockVersion: 0,
+      address: 'zen1ql4ghuykrvuxmzv2rkz746vg4yc78c7r5h86l5eautx59p2hm5hjs7qpp0t',
+      addressBC: 'fd517e12c3670db13143b0bd5d3115263c7c7874b9f5fa67bc59a850aafba5e5',
+      asset: '00',
+      amount: '7709718',
+      index: 2,
+      createdAt: '2018-07-22T22:03:28.269Z',
+      updatedAt: '2018-07-22T22:03:28.271Z',
+      TransactionId: '16142',
+    },
+  ],
+  Inputs: [
+    {
+      id: '204251',
+      index: 0,
+      outpointTXHash: 'e76ead73c4e1f10bd3bc0df7e3feddda8b28e627663214cc6e34184ddb0444dc',
+      outpointIndex: 2,
+      amount: '10000000',
+      createdAt: '2018-07-22T22:03:28.371Z',
+      updatedAt: '2018-07-22T22:03:28.377Z',
+      TransactionId: '16142',
+      OutputId: '204988',
+      Output: {
+        id: '204988',
+        lockType: 'PK',
+        contractLockVersion: 0,
+        address: 'zen1q8f0lmk448h7lymv8pf5537mpucdws0zwmt46f9y8v3r39u30h00q34rqdq',
+        addressBC: '3a5ffddab53dfdf26d870a6948fb61e61ae83c4edaeba49487644712f22fbbde',
+        asset: '00',
+        amount: '10000000',
+        index: 2,
+        createdAt: '2018-07-22T18:34:25.818Z',
+        updatedAt: '2018-07-22T18:34:25.821Z',
+        TransactionId: '9909',
+      },
+    },
+  ],
 };

@@ -36,28 +36,35 @@ module.exports = function(transaction, address) {
         if (address && output.address && address === output.address) {
           assets[output.asset].addressInOutputs = true;
         }
+
+        setActivationSacrificeAsset(assets[output.asset], output);
+
         assets[output.asset].outputs.push(output);
       }
     });
   }
 
   const filteredAssets = getFilteredAssetsArray(assets, address);
-
+  
   return filteredAssets.sort((a, b) => b.asset < a.asset);
 };
 
 function canAddAddressToOutputs(address, assets, output) {
-  if (address && output.address && (!assets[output.asset] || !assets[output.asset].addressInInputs) && address !== output.address) {
+  if (addressInOutputsOnlyAndNotEqualToGivenAddress(address, assets, output) || isAddressInActivationSacrificeTX(assets, output)) {
     return false;
   }
   return true;
+}
+
+function addressInOutputsOnlyAndNotEqualToGivenAddress(address, assets, output) {
+  return address && output.address && (!assets[output.asset] || !assets[output.asset].addressInInputs) && address !== output.address;
 }
 
 function getFilteredAssetsArray(assets, address) {
   return Object.keys(assets).reduce((all, asset) => {
     const addressFoundIn = getAddressFoundInArray(assets, asset);
 
-    if (!address || addressFoundIn.length) {
+    if (!address || addressFoundIn.length || isActivationSacrificeAsset(assets[asset])) {
       all.push({
         asset,
         addressFoundIn,
@@ -75,4 +82,17 @@ function getAddressFoundInArray(assets, asset) {
   if (assets[asset].addressInInputs) addressFoundIn.push('input');
   if (assets[asset].addressInOutputs) addressFoundIn.push('output');
   return addressFoundIn;
+}
+
+function setActivationSacrificeAsset(asset, output) {
+  if(output.lockType === 'ActivationSacrifice') {
+    asset.isActivationSacrifice = true;
+  }
+}
+function isActivationSacrificeAsset(asset) {
+  return asset.isActivationSacrifice === true;
+}
+function isAddressInActivationSacrificeTX(assets, output) {
+  const asset = assets[output.asset];
+  return asset && isActivationSacrificeAsset(asset) && output.address !== null;
 }
