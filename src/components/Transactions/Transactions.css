@@ -23,8 +23,8 @@
 }
 .TransactionAsset.input.output .arrow,
 .TransactionAsset.input.output .outputs .total {
-  color: #7bcc3a;
-  border-color: #7bcc3a;
+  color: #fd3a3a;
+  border-color: #fd3a3a;
 }
 
 
