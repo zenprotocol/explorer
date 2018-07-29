@@ -43,6 +43,7 @@ class BlockStore {
     return Service.blocks.findById(id).then(response => {
       this.block = response.data;
       this.loading.block = false;
+      return response.data;
     });
   }
 

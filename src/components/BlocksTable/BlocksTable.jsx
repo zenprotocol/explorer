@@ -60,7 +60,7 @@ class BlocksTable extends Component {
         accessor: 'parent',
         show: this.state.windowWidth > 767,
         Cell: data => {
-          return <HashLink url={`/blocks/${data.original.parentBlockNumber}`} hash={data.value}/>;
+          return <HashLink url={`/blocks/${data.original.parent}`} hash={data.value}/>;
         },
       },
       {

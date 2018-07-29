@@ -23,13 +23,16 @@ class BlockPage extends Component {
     const {
       match: { params },
     } = this.props;
-    this.setState({ blockNumber: Number(params.id) });
-    blockStore.fetchBlock(params.id);
+    blockStore.fetchBlock(params.id).then((block) => {
+      this.switchBlock(block.blockNumber);
+    });
   }
 
-  componentDidUpdate(prevProps, prevState) {
-    if (Number(this.props.match.params.id) !== Number(prevProps.match.params.id)) {
-      blockStore.fetchBlock(Number(this.props.match.params.id));
+  componentDidUpdate(prevProps) {
+    if (this.props.match.params.id !== prevProps.match.params.id) {
+      blockStore.fetchBlock(this.props.match.params.id).then((block) => {
+        this.switchBlock(block.blockNumber);
+      });
     }
   }
 
@@ -78,7 +81,7 @@ class BlockPage extends Component {
   }
 
   switchBlock(blockNumber) {
-    this.setState({ blockNumber });
+    this.setState({ blockNumber: Number(blockNumber) });
   }
 
   render() {
@@ -146,10 +149,10 @@ class BlockPage extends Component {
                     <td>
                       <div className="address no-text-transform break-word">
                         <HashLink 
-                          onClick={() => {
-                            this.switchBlock(block.parentBlockNumber);
-                          }}
-                          url={`/blocks/${block.parentBlockNumber}`}
+                          // onClick={() => {
+                          //   this.switchBlock(block.parentBlockNumber);
+                          // }}
+                          url={`/blocks/${block.parent}`}
                           hash={block.parent}
                         />
                       </div>
