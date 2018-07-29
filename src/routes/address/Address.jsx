@@ -7,6 +7,7 @@ import RouterUtils from '../../lib/RouterUtils';
 import Transactions from '../../components/Transactions/Transactions.jsx';
 import Loading from '../../components/Loading/Loading.jsx';
 import AssetUtils from '../../lib/AssetUtils';
+import TextUtils from '../../lib/TextUtils';
 import HashLink from '../../components/HashLink/HashLink.jsx';
 import ItemNotFound from '../../components/ItemNotFound/ItemNotFound.jsx';
 import './Address.css';
@@ -68,7 +69,7 @@ class AddressPage extends Component {
                     </tr>
                     <tr>
                       <td>TRANSACTIONS</td>
-                      <td>{blockStore.transactionsCount}</td>
+                      <td>{TextUtils.formatNumber(blockStore.transactionsCount)}</td>
                     </tr>
                     <tr>
                       <td>TOTAL RECEIVED</td>
