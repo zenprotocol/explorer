@@ -30,7 +30,7 @@ class BlockStore {
   fetchBlocks({ pageSize = 10, page = 0, sorted = [], filtered = [] } = {}) {
     this.loading.blocks = true;
 
-    Service.blocks.find({ pageSize, page, sorted: JSON.stringify(sorted), filtered }).then(response => {
+    return Service.blocks.find({ pageSize, page, sorted: JSON.stringify(sorted), filtered }).then(response => {
       this.setBlocks(response.data.items);
       this.blocksCount = response.data.total;
       this.loading.blocks = false;
@@ -40,7 +40,7 @@ class BlockStore {
   fetchBlock(id) {
     this.loading.block = true;
 
-    Service.blocks.findById(id).then(response => {
+    return Service.blocks.findById(id).then(response => {
       this.block = response.data;
       this.loading.block = false;
     });
@@ -49,7 +49,7 @@ class BlockStore {
   fetchTransaction(hash) {
     this.loading.transaction = true;
 
-    Service.transactions.findByHash(hash).then(response => {
+    return Service.transactions.findByHash(hash).then(response => {
       this.transaction = response.data;
       this.loading.transaction = false;
     });
@@ -79,7 +79,7 @@ class BlockStore {
   }
 
   fetchMedianTime() {
-    Service.infos.findByName('medianTime').then(response => {
+    return Service.infos.findByName('medianTime').then(response => {
       if (response.success) {
         this.medianTime = new Date(Number(response.data.value));
       }
