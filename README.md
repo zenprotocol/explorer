@@ -33,11 +33,17 @@ in the docker web container, run `npx sequelize` to see all cli options.
 
 ## DB Copy/Backup, copy db from staging to production
 ### Heroku
-- `heroku pg:backups:capture --app <app name>`
-- **Copy from staging to production**: `heroku pg:backups:restore <staging app name>::<backup name, eg b001> DATABASE_URL --app <destination app name, eg app>`
-- **get latest backup url from heroku**: `heroku pg:backups:url -a`
-- **linux download** (docker): `wget -O db.dump "<url from previous step>"`
-- **restore to a local db**: `pg_restore --verbose --clean --no-acl --no-owner -h localhost -U <postgres username> -d <db name> db.dump`
+**Heroku to Heroku**
+1. `heroku pg:backups:capture --app <app name>`
+2. **Copy from staging to production**: `heroku pg:backups:restore <staging app name>::<backup name, eg b001> DATABASE_URL --app <destination app name, eg app>`
+
+**Heroku to local**
+1. `heroku pg:backups:capture --app <app name>`
+1. **get latest backup url from heroku**: `heroku pg:backups:url -a`
+2. **linux download** (docker): `wget -O db.dump "<url from previous step>"`
+3. **restore to a local db**: `pg_restore --verbose --clean --no-acl --no-owner -h localhost -U <postgres username> -d <db name> db.dump`
+
+**Info**
 - https://devcenter.heroku.com/articles/heroku-postgres-backups
 - https://devcenter.heroku.com/articles/heroku-postgres-import-export
 
