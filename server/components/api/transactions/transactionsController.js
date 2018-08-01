@@ -63,12 +63,12 @@ module.exports = {
   },
   show: async function(req, res) {
     const transaction = await transactionsDAL.findByHash(req.params.hash);
-    const customTX = transactionsDAL.toJSON(transaction);
-    customTX.isCoinbase = isCoinbaseTX(transaction);
-    customTX['assets'] = getTransactionAssets(customTX);
-    delete customTX.Inputs;
-    delete customTX.Outputs;
-    if (customTX) {
+    if (transaction) {
+      const customTX = transactionsDAL.toJSON(transaction);
+      customTX.isCoinbase = isCoinbaseTX(transaction);
+      customTX['assets'] = getTransactionAssets(customTX);
+      delete customTX.Inputs;
+      delete customTX.Outputs;
       res.status(httpStatus.OK).json(jsonResponse.create(httpStatus.OK, customTX));
     } else {
       throw new HttpError(httpStatus.NOT_FOUND);
