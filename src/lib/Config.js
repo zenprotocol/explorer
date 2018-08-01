@@ -4,4 +4,7 @@ export default {
       delimiter: ',',
     },
   },
+  constants: {
+    zenInfoMail: 'info@zenprotocol.com',
+  }
 };

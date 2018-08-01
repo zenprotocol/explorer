@@ -1,6 +1,7 @@
 import React from 'react';
 import {observer} from 'mobx-react';
 import blockStore from '../../store/BlockStore';
+import Config from '../../lib/Config';
 import Logo from '../Logo/Logo.jsx';
 import './Footer.css';
 
@@ -128,7 +129,7 @@ function FooterLinks() {
             </a>
           </li>
           <li className="nav-item">
-            <a className="nav-link text-nowrap" href="mailto:info@zenprotocol.com" target="_top">
+            <a className="nav-link text-nowrap" href={`mailto:${Config.constants.zenInfoMail}`} target="_top">
               Contact Us
             </a>
           </li>
@@ -163,8 +164,8 @@ function FooterContact() {
       <li className="nav-item text-nowrap">
         <span className="nav-link">
           Contact us:{' '}
-          <a className=" pl-0 d-inline-block" target="_blank" rel="noopener noreferrer" href="mailto:info@zenprotocol.com">
-            info@zenprotocol.com
+          <a className=" pl-0 d-inline-block" target="_blank" rel="noopener noreferrer" href={`mailto:${Config.constants.zenInfoMail}`}>
+            {Config.constants.zenInfoMail}
           </a>
         </span>
       </li>
