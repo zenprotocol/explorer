@@ -53,6 +53,8 @@ function transformInputsOutputs(transaction, address) {
 }
 
 function canAddAddressToOutputs(address, assets, output) {
+  if(!address) return true;
+  
   if (addressInOutputsOnlyAndNotEqualToGivenAddress(address, assets, output) || isAddressInActivationSacrificeTX(assets, output) || outputAddressIsSingleInput(assets, output)) {
     return false;
   }

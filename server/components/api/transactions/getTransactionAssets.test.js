@@ -98,12 +98,36 @@ test('Test Activation Sacrifice TX', function(t) {
   t.end();
 });
 
+test('Test Activation Sacrifice TX - no address supplied', function(t) {
+  const address = 'zen1ql4ghuykrvuxmzv2rkz746vg4yc78c7r5h86l5eautx59p2hm5hjs7qpp0t';
+  const assets = getTransactionAssets(testTXActivationSacrifice);
+  t.equals(assets[0].outputs.length, 3, 'Outputs should contain the receiving address');
+  let addressFound = false;
+  assets[0].outputs.forEach(output => {
+    if (address === output.address) {
+      addressFound = true;
+    }
+  });
+  t.true(addressFound, 'Address should appear in outputs');
+  t.end();
+});
+
 test('Test single input that is in the outputs', function(t) {
   const address = 'zen1ql4ghuykrvuxmzv2rkz746vg4yc78c7r5h86l5eautx59p2hm5hjs7qpp0t';
   const assets = getTransactionAssets(testTXSingleInputThatInOutputs, address);
-  assets[0].outputs.forEach((output) => {
+  assets[0].outputs.forEach(output => {
     t.notEqual(output.address, address, 'The single input address should not appear in the outputs');
   });
+  t.end();
+});
+
+test('Test single input that is in the outputs - no address supplied', function(t) {
+  const assets = getTransactionAssets(testTXSingleInputThatInOutputs);
+  t.equals(
+    assets[0].outputs.length,
+    testTXSingleInputThatInOutputs.Outputs.length,
+    'Should show all of the outputs'
+  );
   t.end();
 });
 
