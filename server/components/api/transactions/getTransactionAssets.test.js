@@ -36,21 +36,18 @@ test('Test input output lengths', function(t) {
   t.end();
 });
 
-test('Test address in outputs only with asset 00', function(t) {
-  const assets = getTransactionAssets(testTX, testAddressInOutput);
-  t.equals(assets[0].outputs.length, 2, 'Only the address should appear in the outputs');
-  t.end();
-});
-
-test('Test address in inputs only', function(t) {
-  const assets = getTransactionAssets(testTX, testAddressInInput);
-  t.equals(assets[0].outputs.length, testTX.Outputs.length - 2, 'All outputs with same asset should appear');
-  t.end();
-});
-
-test('Test address in inputs and outputs', function(t) {
+test('Test input output lengths with address supplied', function(t) {
   const assets = getTransactionAssets(testTX, testAddressInInputAndOutput);
-  t.equals(assets[0].outputs.length, testTX.Outputs.length - 2, 'All outputs with same asset should appear');
+  t.equals(
+    assets[0].inputs.length,
+    testTX.Inputs.length - 1,
+    'All the source inputs belong to asset 00 and should be unique'
+  );
+  t.equals(
+    assets[0].outputs.length,
+    testTX.Outputs.length - 2,
+    'All outputs but 2 should be in the asset 00'
+  );
   t.end();
 });
 
@@ -86,48 +83,32 @@ test('Test addressFoundIn attribute for address in input and output', function(t
   t.end();
 });
 
-test('Test Activation Sacrifice TX', function(t) {
-  const assets = getTransactionAssets(
-    testTXActivationSacrifice,
-    'zen1ql4ghuykrvuxmzv2rkz746vg4yc78c7r5h86l5eautx59p2hm5hjs7qpp0t'
-  );
-  t.equals(assets[0].outputs.length, 2, 'Outputs should not contain the receiving address');
-  assets[0].outputs.forEach(output => {
-    t.equals(output.address, null, 'No output in this tx should have an address');
-  });
-  t.end();
-});
-
-test('Test Activation Sacrifice TX - no address supplied', function(t) {
-  const address = 'zen1ql4ghuykrvuxmzv2rkz746vg4yc78c7r5h86l5eautx59p2hm5hjs7qpp0t';
-  const assets = getTransactionAssets(testTXActivationSacrifice);
-  t.equals(assets[0].outputs.length, 3, 'Outputs should contain the receiving address');
-  let addressFound = false;
-  assets[0].outputs.forEach(output => {
-    if (address === output.address) {
-      addressFound = true;
+test('Test total - no address supplied', function(t) {
+  const assets = getTransactionAssets(testTX);
+  const total0 = testTX.Outputs.reduce((total, cur) => {
+    if(cur.asset == '00') {
+      total += Number(cur.amount);
     }
-  });
-  t.true(addressFound, 'Address should appear in outputs');
+
+    return total;
+  }, 0);
+
+  t.equals(assets[0].total, total0, 'Total should be the addition of all outputs with asset 00');
   t.end();
 });
 
-test('Test single input that is in the outputs', function(t) {
-  const address = 'zen1ql4ghuykrvuxmzv2rkz746vg4yc78c7r5h86l5eautx59p2hm5hjs7qpp0t';
-  const assets = getTransactionAssets(testTXSingleInputThatInOutputs, address);
-  assets[0].outputs.forEach(output => {
-    t.notEqual(output.address, address, 'The single input address should not appear in the outputs');
-  });
-  t.end();
-});
+test('Test total - with address', function(t) {
+  const address = testAddressInOutput;
+  const assets = getTransactionAssets(testTX, address);
+  const total0 = testTX.Outputs.reduce((total, cur) => {
+    if(cur.asset == '00' && cur.address !== address) {
+      total += Number(cur.amount);
+    }
 
-test('Test single input that is in the outputs - no address supplied', function(t) {
-  const assets = getTransactionAssets(testTXSingleInputThatInOutputs);
-  t.equals(
-    assets[0].outputs.length,
-    testTXSingleInputThatInOutputs.Outputs.length,
-    'Should show all of the outputs'
-  );
+    return total;
+  }, 0);
+
+  t.equals(assets[0].total, total0, 'Total should be the addition of all outputs with asset 00 except of the supplied address');
   t.end();
 });
 

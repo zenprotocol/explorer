@@ -11,10 +11,7 @@ function transformInputsOutputs(transaction, address) {
     transaction.Inputs.forEach(input => {
       if (input.Output) {
         if (!assets[input.Output.asset]) {
-          assets[input.Output.asset] = {
-            inputs: [],
-            outputs: [],
-          };
+          assets[input.Output.asset] = getEmptyAsset();
         }
         if (!addedInputAddresses.includes(input.Output.address)) {
           assets[input.Output.asset].inputs.push(input);
@@ -31,68 +28,48 @@ function transformInputsOutputs(transaction, address) {
 
   if (transaction.Outputs && transaction.Outputs.length) {
     transaction.Outputs.forEach(output => {
-      if (canAddAddressToOutputs(address, assets, output)) {
-        if (!assets[output.asset]) {
-          assets[output.asset] = {
-            inputs: [],
-            outputs: [],
-          };
-        }
-
-        if (address && output.address && address === output.address) {
-          assets[output.asset].addressInOutputs = true;
-        }
-
-        setActivationSacrificeAsset(assets[output.asset], output);
-
-        assets[output.asset].outputs.push(output);
+      if (!assets[output.asset]) {
+        assets[output.asset] = getEmptyAsset();
       }
+
+      if (address && address === output.address) {
+        assets[output.asset].addressInOutputs = true;
+      }
+
+      assets[output.asset].total += getOutputAmountForTotal(output, address);
+
+      assets[output.asset].outputs.push(output);
     });
   }
   return assets;
 }
 
-function canAddAddressToOutputs(address, assets, output) {
-  if(!address) return true;
-  
-  if (addressInOutputsOnlyAndNotEqualToGivenAddress(address, assets, output) || isAddressInActivationSacrificeTX(assets, output) || outputAddressIsSingleInput(assets, output)) {
-    return false;
+function getEmptyAsset() {
+  return {
+    total: 0,
+    inputs: [],
+    outputs: [],
+  };
+}
+
+// TODO - is this right? always? or only when the address was in the inputs?
+function getOutputAmountForTotal(output, address) {
+  if(!address || address !== output.address) {
+    return Number(output.amount);
   }
-  return true;
-}
 
-function addressInOutputsOnlyAndNotEqualToGivenAddress(address, assets, output) {
-  return address && output.address && (!assets[output.asset] || !assets[output.asset].addressInInputs) && address !== output.address;
-}
-
-function setActivationSacrificeAsset(asset, output) {
-  if(output.lockType === 'ActivationSacrifice') {
-    asset.isActivationSacrifice = true;
-  }
-}
-function isActivationSacrificeAsset(asset) {
-  return asset.isActivationSacrifice === true;
-}
-function isAddressInActivationSacrificeTX(assets, output) {
-  const asset = assets[output.asset];
-  return asset && isActivationSacrificeAsset(asset) && output.address !== null;
-}
-
-function outputAddressIsSingleInput(assets, output) {
-  const address = output.address;
-  const asset = output.asset;
-  
-  return address && asset && assets[asset] && assets[asset].inputs.length === 1 && assets[asset].inputs[0].Output.address === address;
+  return 0;
 }
 
 function getFilteredAssetsArray(assets, address) {
   return Object.keys(assets).reduce((all, asset) => {
     const addressFoundIn = getAddressFoundInArray(assets, asset);
 
-    if (!address || addressFoundIn.length || isActivationSacrificeAsset(assets[asset])) {
+    if (!address || addressFoundIn.length) {
       all.push({
         asset,
         addressFoundIn,
+        total: assets[asset].total,
         inputs: assets[asset].inputs,
         outputs: assets[asset].outputs,
       });

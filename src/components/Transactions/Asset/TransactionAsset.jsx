@@ -41,7 +41,7 @@ class TransactionAsset extends Component {
           <div className="col-6 py-0">
             <div className="outputs">
               {outputs.rowsToRender}
-              {outputs.total? this.renderTotal(asset, outputs.total) : null}
+              {this.renderTotal(asset)}
             </div>
           </div>
         </div>
@@ -74,7 +74,6 @@ class TransactionAsset extends Component {
 
   getOutputs(asset) {
     let rowsToRender = [];
-    let total = 0;
     let key = 0;
     const showAmount = AssetUtils.showAmount(asset);
     if (!asset.outputs || !asset.outputs.length) {
@@ -85,30 +84,22 @@ class TransactionAsset extends Component {
         let amount = showAmount ? AssetUtils.getAmountString(asset, output.amount) : null;
         const title = output.address ? output.address : Output.getTextByLockType(output.lockType);
         const address = output.address ? output.address : '';
-        total += Number(output.amount);
         return this.renderInputOutputItem(key, title, address, amount);
       });
     }
 
-    // // total amount
-    // if (showAmount) {
-    //   let totalAmount = asset.outputs.reduce((total, current) => {
-    //     return total + Number(current.amount);
-    //   }, 0);
-    //   totalAmount = Asset.getAmountString(asset, totalAmount);
-
-    //   key++;
-    //   rowsToRender.push(this.renderInputOutputItem(key, '', null, totalAmount, true));
-    // }
-
-    return { rowsToRender, total };
+    return { rowsToRender };
   }
 
-  renderTotal(asset, total) {
+  renderTotal(asset) {
+    if(!asset.total) {
+      return null;
+    }
+
     return (
       <div className="row">
         <div className="col d-flex justify-content-end">
-          <div className="total rounded">{AssetUtils.getAmountString(asset, total)}</div>
+          <div className="total rounded">{AssetUtils.getAmountString(asset, asset.total)}</div>
         </div>
       </div>
     );
