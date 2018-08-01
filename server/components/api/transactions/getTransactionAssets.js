@@ -1,4 +1,10 @@
 module.exports = function(transaction, address) {
+  const assets = transformInputsOutputs(transaction, address);
+  const filteredAssets = getFilteredAssetsArray(assets, address);
+  return filteredAssets.sort((a, b) => b.asset < a.asset);
+};
+
+function transformInputsOutputs(transaction, address) {
   const assets = {};
   if (transaction.Inputs && transaction.Inputs.length) {
     const addedInputAddresses = [];
@@ -43,14 +49,11 @@ module.exports = function(transaction, address) {
       }
     });
   }
-
-  const filteredAssets = getFilteredAssetsArray(assets, address);
-  
-  return filteredAssets.sort((a, b) => b.asset < a.asset);
-};
+  return assets;
+}
 
 function canAddAddressToOutputs(address, assets, output) {
-  if (addressInOutputsOnlyAndNotEqualToGivenAddress(address, assets, output) || isAddressInActivationSacrificeTX(assets, output)) {
+  if (addressInOutputsOnlyAndNotEqualToGivenAddress(address, assets, output) || isAddressInActivationSacrificeTX(assets, output) || outputAddressIsSingleInput(assets, output)) {
     return false;
   }
   return true;
@@ -58,6 +61,26 @@ function canAddAddressToOutputs(address, assets, output) {
 
 function addressInOutputsOnlyAndNotEqualToGivenAddress(address, assets, output) {
   return address && output.address && (!assets[output.asset] || !assets[output.asset].addressInInputs) && address !== output.address;
+}
+
+function setActivationSacrificeAsset(asset, output) {
+  if(output.lockType === 'ActivationSacrifice') {
+    asset.isActivationSacrifice = true;
+  }
+}
+function isActivationSacrificeAsset(asset) {
+  return asset.isActivationSacrifice === true;
+}
+function isAddressInActivationSacrificeTX(assets, output) {
+  const asset = assets[output.asset];
+  return asset && isActivationSacrificeAsset(asset) && output.address !== null;
+}
+
+function outputAddressIsSingleInput(assets, output) {
+  const address = output.address;
+  const asset = output.asset;
+  
+  return address && asset && assets[asset] && assets[asset].inputs.length === 1 && assets[asset].inputs[0].Output.address === address;
 }
 
 function getFilteredAssetsArray(assets, address) {
@@ -82,17 +105,4 @@ function getAddressFoundInArray(assets, asset) {
   if (assets[asset].addressInInputs) addressFoundIn.push('input');
   if (assets[asset].addressInOutputs) addressFoundIn.push('output');
   return addressFoundIn;
-}
-
-function setActivationSacrificeAsset(asset, output) {
-  if(output.lockType === 'ActivationSacrifice') {
-    asset.isActivationSacrifice = true;
-  }
-}
-function isActivationSacrificeAsset(asset) {
-  return asset.isActivationSacrifice === true;
-}
-function isAddressInActivationSacrificeTX(assets, output) {
-  const asset = assets[output.asset];
-  return asset && isActivationSacrificeAsset(asset) && output.address !== null;
 }

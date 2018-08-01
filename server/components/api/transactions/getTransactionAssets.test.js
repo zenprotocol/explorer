@@ -87,10 +87,22 @@ test('Test addressFoundIn attribute for address in input and output', function(t
 });
 
 test('Test Activation Sacrifice TX', function(t) {
-  const assets = getTransactionAssets(testTXActivationSacrifice, 'zen1ql4ghuykrvuxmzv2rkz746vg4yc78c7r5h86l5eautx59p2hm5hjs7qpp0t');
+  const assets = getTransactionAssets(
+    testTXActivationSacrifice,
+    'zen1ql4ghuykrvuxmzv2rkz746vg4yc78c7r5h86l5eautx59p2hm5hjs7qpp0t'
+  );
   t.equals(assets[0].outputs.length, 2, 'Outputs should not contain the receiving address');
-  assets[0].outputs.forEach((output) => {
+  assets[0].outputs.forEach(output => {
     t.equals(output.address, null, 'No output in this tx should have an address');
+  });
+  t.end();
+});
+
+test('Test single input that is in the outputs', function(t) {
+  const address = 'zen1ql4ghuykrvuxmzv2rkz746vg4yc78c7r5h86l5eautx59p2hm5hjs7qpp0t';
+  const assets = getTransactionAssets(testTXSingleInputThatInOutputs, address);
+  assets[0].outputs.forEach((output) => {
+    t.notEqual(output.address, address, 'The single input address should not appear in the outputs');
   });
   t.end();
 });
@@ -2069,6 +2081,87 @@ const testTXActivationSacrifice = {
         index: 2,
         createdAt: '2018-07-22T18:34:25.818Z',
         updatedAt: '2018-07-22T18:34:25.821Z',
+        TransactionId: '9909',
+      },
+    },
+  ],
+};
+
+const testTXSingleInputThatInOutputs = {
+  id: '32172',
+  version: 0,
+  hash: '00b4340411f848768046d5b9c913430e3bef441822da79b6992c4eee047a825f',
+  index: 2,
+  inputCount: 1,
+  outputCount: 2,
+  createdAt: '2018-07-26T16:08:01.271Z',
+  updatedAt: '2018-07-26T16:08:01.274Z',
+  BlockId: 9589,
+  Block: {
+    id: 9589,
+    version: 0,
+    hash: '0000000000000cdfa82f4f9022f07f73add3a95b7515f22fe44f71602d44b424',
+    parent: '00000000000013208f00eba8683d355e9575ce8307c6795774ec35e899bbd642',
+    blockNumber: 9587,
+    commitments: 'f00471672e4ce3909f5658cbb778a4ecb49faa42d96d069ee0b054862d3446d4',
+    timestamp: '1532621249890',
+    difficulty: '438512760',
+    nonce1: '0',
+    nonce2: '-3567103788625983000',
+    transactionCount: '18',
+    createdAt: '2018-07-26T16:08:00.931Z',
+    updatedAt: '2018-07-26T16:08:00.931Z',
+  },
+  Outputs: [
+    {
+      id: '795711',
+      lockType: 'PK',
+      contractLockVersion: 0,
+      address: 'zen1q2lphfreljpcr8r43zp6j5jpz46aml940xdy2hazqck2dw9xp95usxu9gdj',
+      addressBC: '57c3748f3f9070338eb110752a4822aebbbf96af3348abf440c594d714c12d39',
+      asset: '00000000f24db32aa1881956646d3ccbb647df71455de10cf98b635810e8870906a56b63',
+      amount: '1000000',
+      index: 0,
+      createdAt: '2018-07-26T16:08:01.277Z',
+      updatedAt: '2018-07-26T16:08:01.279Z',
+      TransactionId: '32172',
+    },
+    {
+      id: '795712',
+      lockType: 'PK',
+      contractLockVersion: 0,
+      address: 'zen1ql4ghuykrvuxmzv2rkz746vg4yc78c7r5h86l5eautx59p2hm5hjs7qpp0t',
+      addressBC: 'fd517e12c3670db13143b0bd5d3115263c7c7874b9f5fa67bc59a850aafba5e5',
+      asset: '00000000f24db32aa1881956646d3ccbb647df71455de10cf98b635810e8870906a56b63',
+      amount: '86987970',
+      index: 1,
+      createdAt: '2018-07-26T16:08:01.291Z',
+      updatedAt: '2018-07-26T16:08:01.294Z',
+      TransactionId: '32172',
+    },
+  ],
+  Inputs: [
+    {
+      id: '497798',
+      index: 0,
+      outpointTXHash: 'e76ead73c4e1f10bd3bc0df7e3feddda8b28e627663214cc6e34184ddb0444dc',
+      outpointIndex: 0,
+      amount: '87987970',
+      createdAt: '2018-07-26T16:08:01.514Z',
+      updatedAt: '2018-07-26T16:08:01.524Z',
+      TransactionId: '32172',
+      OutputId: '204986',
+      Output: {
+        id: '204986',
+        lockType: 'PK',
+        contractLockVersion: 0,
+        address: 'zen1ql4ghuykrvuxmzv2rkz746vg4yc78c7r5h86l5eautx59p2hm5hjs7qpp0t',
+        addressBC: 'fd517e12c3670db13143b0bd5d3115263c7c7874b9f5fa67bc59a850aafba5e5',
+        asset: '00000000f24db32aa1881956646d3ccbb647df71455de10cf98b635810e8870906a56b63',
+        amount: '87987970',
+        index: 0,
+        createdAt: '2018-07-22T18:34:25.786Z',
+        updatedAt: '2018-07-22T18:34:25.791Z',
         TransactionId: '9909',
       },
     },
