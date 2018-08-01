@@ -5,6 +5,8 @@
 2. nodejs + npm - https://nodejs.org
 
 # Development
+Server side was created from scratch using express.  
+Client side was bootstrapped with `create-react-app`.
 
 ## Docker
 1. **first time** - run `npm run setup` to create an env file
@@ -21,6 +23,23 @@ From there you can use `npm`
 ## Sequelize (ORM)
 we use sequelize to talk to the database  
 in the docker web container, run `npx sequelize` to see all cli options.
+
+## Deploy
+### Heroku
+- commit the code to heroku
+- Client is built automatically with the npm script `heroku-postbuild`
+- start web: `heroku ps:scale web=1 -a <app name>`
+- start worker: `heroku ps:scale worker=1 -a <app name>`
+
+## DB Copy/Backup, copy db from staging to production
+### Heroku
+- `heroku pg:backups:capture --app <app name>`
+- **Copy from staging to production**: `heroku pg:backups:restore <staging app name>::<backup name, eg b001> DATABASE_URL --app <destination app name, eg app>`
+- **get latest backup url from heroku**: `heroku pg:backups:url -a`
+- **linux download** (docker): `wget -O db.dump "<url from previous step>"`
+- **restore to a local db**: `pg_restore --verbose --clean --no-acl --no-owner -h localhost -U <postgres username> -d <db name> db.dump`
+- https://devcenter.heroku.com/articles/heroku-postgres-backups
+- https://devcenter.heroku.com/articles/heroku-postgres-import-export
 
 ## Folder Structure
 The project contain both the client and the server:
