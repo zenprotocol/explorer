@@ -1,8 +1,9 @@
 import React from 'react';
-import {observer} from 'mobx-react';
+import { observer } from 'mobx-react';
 import blockStore from '../../store/BlockStore';
 import Config from '../../lib/Config';
 import Logo from '../Logo/Logo.jsx';
+import ExternalLink from '../ExternalLink/ExternalLink.jsx';
 import './Footer.css';
 
 export default function Footer(props) {
@@ -28,21 +29,18 @@ export default function Footer(props) {
   );
 }
 
-const SyncNotification = observer(function () {
+const SyncNotification = observer(function() {
   return (
     <div className="SyncNotification">
-      {blockStore.syncing? (
+      {blockStore.syncing ? (
         <span className="syncing">
-          <i className="icon fa fa-spinner fa-spin"></i>{' '}
-          Syncing...
+          <i className="icon fa fa-spinner fa-spin" /> Syncing...
         </span>
       ) : (
         <span className="synced">
-          <i className="icon fas fa-circle"></i>{' '}
-          Synced.
+          <i className="icon fas fa-circle" /> Synced.
         </span>
       )}
-      
     </div>
   );
 });
@@ -53,104 +51,100 @@ function FooterLinks() {
       <div className="col-md-4">
         <ul className="nav flex-column">
           <li className="nav-item">
-            <a
+            <ExternalLink
               className="nav-link text-nowrap"
-              target="_blank"
-              rel="noopener noreferrer"
-              href="https://www.zenprotocol.com/deck/zen_protocol_deck_en.pdf"
+              url="https://www.zenprotocol.com/deck/zen_protocol_deck_en.pdf"
             >
               Pitch Deck
-            </a>
+            </ExternalLink>
           </li>
           <li className="nav-item">
-            <a
+            <ExternalLink
               className="nav-link text-nowrap"
-              href="https://www.zenprotocol.com/files/zen_protocol_white_paper.pdf"
               target="_top"
+              url="https://www.zenprotocol.com/files/zen_protocol_white_paper.pdf"
             >
               White Paper
-            </a>
+            </ExternalLink>
           </li>
           <li className="nav-item">
-            <a
+            <ExternalLink
               className="nav-link text-nowrap"
-              href="https://www.zenprotocol.com/files/technical_paper.pdf"
               target="_top"
+              url="https://www.zenprotocol.com/files/technical_paper.pdf"
             >
               Technical Paper
-            </a>
+            </ExternalLink>
           </li>
           <li className="nav-item">
-            <a className="nav-link text-nowrap" href="https://docs.zenprotocol.com/" target="_blank" rel="noopener noreferrer">
+            <ExternalLink className="nav-link text-nowrap" url="https://docs.zenprotocol.com/">
               Documentation
-            </a>
+            </ExternalLink>
           </li>
         </ul>
       </div>
       <div className="col-md-4">
         <ul className="nav flex-column">
           <li className="nav-item">
-            <a
+            <ExternalLink
               className="nav-link text-nowrap"
-              href="https://docs.zenprotocol.com/preparation/installers"
-              target="_blank"
-              rel="noopener noreferrer"
+              url="https://docs.zenprotocol.com/preparation/installers"
             >
               Download Wallet
-            </a>
+            </ExternalLink>
           </li>
           <li className="nav-item">
-            <a className="nav-link text-nowrap" href="https://github.com/zenprotocol/ZFS-SDK" target="_blank" rel="noopener noreferrer">
+            <ExternalLink className="nav-link text-nowrap" url="https://github.com/zenprotocol/ZFS-SDK">
               Developers SDK
-            </a>
+            </ExternalLink>
           </li>
           <li className="nav-item">
-            <a className="nav-link text-nowrap" href="https://docs.zenprotocol.com/api" target="_blank" rel="noopener noreferrer">
+            <ExternalLink className="nav-link text-nowrap" url="https://docs.zenprotocol.com/api">
               Developers API
-            </a>
+            </ExternalLink>
           </li>
           <li className="nav-item">
-            <a className="nav-link text-nowrap" href="https://docs.zenprotocol.com/zen_js" target="_blank" rel="noopener noreferrer">
+            <ExternalLink className="nav-link text-nowrap" url="https://docs.zenprotocol.com/zen_js">
               Zen’s JS
-            </a>
+            </ExternalLink>
           </li>
         </ul>
       </div>
       <div className="col-md-4">
         <ul className="nav flex-column">
           <li className="nav-item">
-            <a className="nav-link text-nowrap" target="_blank" rel="noopener noreferrer" href="http://blog.zenprotocol.com/">
+            <ExternalLink className="nav-link text-nowrap" url="http://blog.zenprotocol.com/">
               Blog
-            </a>
+            </ExternalLink>
           </li>
           <li className="nav-item">
-            <a className="nav-link text-nowrap" href="https://forum.zenprotocol.com/" target="_blank" rel="noopener noreferrer">
+            <ExternalLink className="nav-link text-nowrap" url="https://forum.zenprotocol.com/">
               Forum
-            </a>
+            </ExternalLink>
           </li>
           <li className="nav-item">
-            <a className="nav-link text-nowrap" href={`mailto:${Config.constants.zenInfoMail}`} target="_top">
+            <ExternalLink
+              className="nav-link text-nowrap"
+              url={`mailto:${Config.constants.zenInfoMail}`}
+              target="_top"
+            >
               Contact Us
-            </a>
+            </ExternalLink>
           </li>
           <li className="nav-item text-nowrap">
-            <a
+            <ExternalLink
               className="nav-link d-inline-block text-nowrap pr-0"
-              target="_blank"
-              rel="noopener noreferrer"
-              href="https://www.zenprotocol.com/privacy?locale=en"
+              url="https://www.zenprotocol.com/privacy?locale=en"
             >
               Privacy
-            </a>
+            </ExternalLink>
             <span> &amp; </span>
-            <a
-              href="https://www.zenprotocol.com/legal/zen_protocol_token_sale_agreement.pdf"
-              target="_blank"
-              rel="noopener noreferrer"
+            <ExternalLink
+              url="https://www.zenprotocol.com/legal/zen_protocol_token_sale_agreement.pdf"
               className="nav-link text-nowrap d-inline-block pl-0"
             >
               Terms
-            </a>
+            </ExternalLink>
           </li>
         </ul>
       </div>
@@ -164,9 +158,9 @@ function FooterContact() {
       <li className="nav-item text-nowrap">
         <span className="nav-link">
           Contact us:{' '}
-          <a className=" pl-0 d-inline-block" target="_blank" rel="noopener noreferrer" href={`mailto:${Config.constants.zenInfoMail}`}>
+          <ExternalLink className=" pl-0 d-inline-block" target="_top" url={`mailto:${Config.constants.zenInfoMail}`}>
             {Config.constants.zenInfoMail}
-          </a>
+          </ExternalLink>
         </span>
       </li>
     </ul>
@@ -216,12 +210,39 @@ function FooterContact() {
 function FooterSocial() {
   return (
     <ul className="FooterSocial nav">
-      <li className="nav-item"><a target="_blank" rel="noopener noreferrer" className="nav-link pr-2 telegram-icon" href="https://t.me/zenprotocol/"><i className="fab fa-telegram-plane"></i></a></li>
-      <li className="nav-item"><a target="_blank" rel="noopener noreferrer" className="nav-link px-2 github-icon" href="https://github.com/zenprotocol"><i className="fab fa-github"></i></a></li>
-      <li className="nav-item"><a target="_blank" rel="noopener noreferrer" className="nav-link px-2 medium-icon" href="https://blog.zenprotocol.com/"><i className="fab fa-medium-m"></i></a></li>
-      <li className="nav-item"><a target="_blank" rel="noopener noreferrer" className="nav-link px-2 twitter-icon" href="https://twitter.com/zen_protocol"><i className="fab fa-twitter"></i></a></li>
-      <li className="nav-item"><a target="_blank" rel="noopener noreferrer" className="nav-link px-2 youtube-icon" href="https://www.youtube.com/channel/UCVm4j3TrmD8mSvvExG_CAIw"><i className="fab fa-youtube"></i></a></li>
-      <li className="nav-item"><a target="_blank" rel="noopener noreferrer" className="nav-link pl-2 discourse-icon" href="https://forum.zenprotocol.com"><i className="fab fa-discourse"></i></a></li>
+      <li className="nav-item">
+        <ExternalLink className="nav-link pr-2 telegram-icon" url="https://t.me/zenprotocol/">
+          <i className="fab fa-telegram-plane" />
+        </ExternalLink>
+      </li>
+      <li className="nav-item">
+        <ExternalLink className="nav-link px-2 github-icon" url="https://github.com/zenprotocol">
+          <i className="fab fa-github" />
+        </ExternalLink>
+      </li>
+      <li className="nav-item">
+        <ExternalLink className="nav-link px-2 medium-icon" url="https://blog.zenprotocol.com/">
+          <i className="fab fa-medium-m" />
+        </ExternalLink>
+      </li>
+      <li className="nav-item">
+        <ExternalLink className="nav-link px-2 twitter-icon" url="https://twitter.com/zen_protocol">
+          <i className="fab fa-twitter" />
+        </ExternalLink>
+      </li>
+      <li className="nav-item">
+        <ExternalLink
+          className="nav-link px-2 youtube-icon"
+          url="https://www.youtube.com/channel/UCVm4j3TrmD8mSvvExG_CAIw"
+        >
+          <i className="fab fa-youtube" />
+        </ExternalLink>
+      </li>
+      <li className="nav-item">
+        <ExternalLink className="nav-link pl-2 discourse-icon" url="https://forum.zenprotocol.com">
+          <i className="fab fa-discourse" />
+        </ExternalLink>
+      </li>
     </ul>
   );
 }
@@ -231,10 +252,9 @@ function FooterCopyright() {
     <ul className="nav flex-column">
       <li className="nav-item text-nowrap">
         <div className="copyright nav-link">
-          <span>{`© ${(new Date()).getFullYear()}`} Blockchain Development LTD.</span>
+          <span>{`© ${new Date().getFullYear()}`} Blockchain Development LTD.</span>
         </div>
       </li>
     </ul>
-    
   );
 }
