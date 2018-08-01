@@ -5,8 +5,8 @@
 2. nodejs + npm - https://nodejs.org
 
 # Development
-Server side was created from scratch using express.  
-Client side was bootstrapped with `create-react-app`.
+Server side was created from scratch using [express](https://expressjs.com/).  
+Client side was bootstrapped with [create-react-app](https://github.com/facebook/create-react-app).
 
 ## Docker
 1. **first time** - run `npm run setup` to create an env file
