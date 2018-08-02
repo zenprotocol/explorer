@@ -1,23 +1,35 @@
-import { observable, decorate, action} from 'mobx';
+import { observable, decorate, action, autorun } from 'mobx';
+import blockStore from './BlockStore';
 
 class UIStore {
   constructor() {
-    this.blocksTablePageSize = 10;
-    this.blocksTableCurPage = 0;
+    this.blocksTable = {
+      pageSize: 10,
+      curPage: 0,
+      prevPage: -1,
+    };
+
+    autorun(() => {
+      if(this.blocksTable.curPage * this.blocksTable.pageSize < blockStore.blocksCount) {
+        blockStore.fetchBlocks({page: this.blocksTable.curPage, pageSize: this.blocksTable.pageSize});
+      }
+    });
   }
 
-  setBlocksTablePageSize(size) {
-    this.blocksTablePageSize = size;
-  }
-  setBlocksTableCurPage(page) {
-    this.blocksTableCurPage = page;
+  setBlocksTableData({pageSize, curPage} = {}) {
+    if(pageSize) {
+      this.blocksTable.pageSize = pageSize;
+    }
+    if(curPage !== undefined) {
+      this.blocksTable.prevPage = this.blocksTable.curPage;
+      this.blocksTable.curPage = curPage;
+    }
   }
 }
 
 decorate(UIStore, {
-  blocksTablePageSize: observable,
-  setBlocksTablePageSize: action,
-  setBlocksTableCurPage: action,
+  blocksTable: observable,
+  setBlocksTableData: action,
 });
 
 export default new UIStore();

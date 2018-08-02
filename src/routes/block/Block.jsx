@@ -148,10 +148,7 @@ class BlockPage extends Component {
                     <td>Parent</td>
                     <td>
                       <div className="address no-text-transform break-word">
-                        <HashLink 
-                          // onClick={() => {
-                          //   this.switchBlock(block.parentBlockNumber);
-                          // }}
+                        <HashLink
                           url={`/blocks/${block.parent}`}
                           hash={block.parent}
                         />

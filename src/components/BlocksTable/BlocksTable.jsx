@@ -1,27 +1,26 @@
 import React, { Component } from 'react';
-import ReactTable from 'react-table';
 import { observer } from 'mobx-react';
 import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import debounce from 'lodash.debounce';
-import 'react-table/react-table.css';
+import GenericTable from '../GenericTable/GenericTable.jsx';
 import TextUtils from '../../lib/TextUtils';
-import './BlocksTable.css';
-import PaginationComponent from './Pagination.jsx';
 import uiStore from '../../store/UIStore';
+import blockStore from '../../store/BlockStore';
 import BlockUtils from '../../lib/BlockUtils';
 import HashLink from '../HashLink/HashLink.jsx';
+import './BlocksTable.css';
 
 class BlocksTable extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      windowWidth: 0
+      windowWidth: 0,
     };
 
     this.setPageSize = this.setPageSize.bind(this);
-    this.fetchData = this.fetchData.bind(this);
+    this.onPageChange = this.onPageChange.bind(this);
     this.setWindowWidth = debounce(this.setWindowWidth, 200).bind(this);
   }
 
@@ -79,31 +78,28 @@ class BlocksTable extends Component {
   }
 
   setPageSize(event) {
-    uiStore.setBlocksTablePageSize(Number(event.target.value));
+    const pageSize = Number(event.target.value);
+    const curPage = Math.floor((uiStore.blocksTable.pageSize * uiStore.blocksTable.curPage) / pageSize);
+    uiStore.setBlocksTableData({pageSize, curPage});
   }
 
-  fetchData(state) {
-    this.props.store.fetchBlocks({
-      pageSize: uiStore.blocksTablePageSize,
-      page: state.page,
-      sorted: state.sorted,
-    });
+  onPageChange(page) {
+    uiStore.setBlocksTableData({curPage: page});
   }
 
   render() {
-    const store = this.props.store;
-    const numOfPages = Math.ceil(store.blocksCount / uiStore.blocksTablePageSize);
+    const numOfPages = Math.ceil(blockStore.blocksCount / uiStore.blocksTable.pageSize);
     return (
       <div className="BlocksTable">
         <div className="clearfix">
-          {store.medianTime ? <div className="medianTime mb-1 mb-lg-2">{store.medianTimeString}</div> : ''}
+          {blockStore.medianTime ? <div className="medianTime mb-1 mb-lg-2">{blockStore.medianTimeString}</div> : ''}
           {this.props.title && (
             <h1 className="d-block d-sm-inline-block text-white mb-3 mb-lg-5">{this.props.title}</h1>
           )}
           <div className="BlocksTable-pageSizes form-inline float-sm-right">
             <span className="mr-2 d-none d-md-inline-block">SHOW</span>
             <select
-              value={uiStore.blocksTablePageSize}
+              value={uiStore.blocksTable.pageSize}
               onChange={this.setPageSize}
               className="form-control d-block d-md-inline-block"
             >
@@ -118,25 +114,16 @@ class BlocksTable extends Component {
             <span className="ml-2 d-none d-md-inline-block">ENTRIES</span>
           </div>
         </div>
-        <ReactTable
-          manual
-          resizable={false}
-          sortable={false}
-          onFetchData={this.fetchData}
-          data={store.blocks}
+        <GenericTable
+          loading={blockStore.loading.blocks}
+          data={blockStore.blocks}
           columns={this.getTableColumns()}
-          showPaginationBottom={true}
-          defaultPageSize={uiStore.blocksTablePageSize}
-          pageSizeOptions={this.props.pageSizes}
+          defaultPageSize={uiStore.blocksTable.pageSize}
           pages={numOfPages}
-          page={uiStore.blocksTableCurPage}
-          onPageChange={page => {
-            uiStore.setBlocksTableCurPage(page);
-          }}
-          pageSize={uiStore.blocksTablePageSize}
-          PaginationComponent={PaginationComponent}
-          previousText={<i className="fas fa-angle-double-left"></i>}
-          nextText={<i className="fas fa-angle-double-right"></i>}
+          page={uiStore.blocksTable.curPage}
+          pageSizes={this.props.pageSizes}
+          onPageChange={this.onPageChange}
+          pageSize={uiStore.blocksTable.pageSize}
         />
       </div>
     );
@@ -149,7 +136,6 @@ BlocksTable.defaultProps = {
 
 BlocksTable.propTypes = {
   pageSizes: PropTypes.array,
-  store: PropTypes.object,
 };
 
 export default observer(BlocksTable);
