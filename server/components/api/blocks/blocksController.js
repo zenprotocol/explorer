@@ -5,8 +5,6 @@ const blocksDAL = require('./blocksDAL');
 const jsonResponse = require('../../../lib/jsonResponse');
 const HttpError = require('../../../lib/HttpError');
 const createQueryObject = require('../../../lib/createQueryObject');
-const getTransactionAssets = require('../transactions/getTransactionAssets');
-const isCoinbaseTX = require('../transactions/isCoinbaseTX');
 
 function isHash(value) {
   return String(value).length === 64;
@@ -22,16 +20,6 @@ module.exports = {
         : [{ id: 'blockNumber', desc: true }];
 
     const query = createQueryObject({ page, pageSize, sorted });
-    query.attributes = {
-      include: [
-        [
-          blocksDAL.db.Sequelize.literal(
-            '(SELECT "Blocks"."blockNumber" FROM "Blocks" WHERE "Blocks"."hash" = "Block"."parent" LIMIT 1)'
-          ),
-          'parentBlockNumber',
-        ],
-      ],
-    };
     const [count, allBlocks] = await Promise.all([blocksDAL.count(), blocksDAL.findAll(query)]);
 
     res.status(httpStatus.OK).json(

@@ -19,16 +19,6 @@ blocksDAL.findByBlockNumber = function(blockNumber) {
     where: {
       blockNumber,
     },
-    attributes: {
-      include: [
-        [
-          this.db.Sequelize.literal(
-            '(SELECT "Blocks"."blockNumber" FROM "Blocks" WHERE "Blocks"."hash" = "Block"."parent" LIMIT 1)'
-          ),
-          'parentBlockNumber',
-        ],
-      ],
-    },
   });
 };
 
@@ -36,16 +26,6 @@ blocksDAL.findByHash = function(hash) {
   return this.findOne({
     where: {
       hash,
-    },
-    attributes: {
-      include: [
-        [
-          this.db.Sequelize.literal(
-            '(SELECT "Blocks"."blockNumber" FROM "Blocks" WHERE "Blocks"."hash" = "Block"."parent" LIMIT 1)'
-          ),
-          'parentBlockNumber',
-        ],
-      ],
     },
   });
 };
