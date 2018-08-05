@@ -6,8 +6,6 @@ const transactionsDAL = dal.createDAL('Transaction');
 const addressesDAL = require('../addresses/addressesDAL');
 const blocksDAL = require('../blocks/blocksDAL');
 
-const overwriteMerge = (destinationArray, sourceArray, options) => sourceArray;
-
 transactionsDAL.findByHash = async function(hash) {
   return transactionsDAL.findOne({
     where: {
