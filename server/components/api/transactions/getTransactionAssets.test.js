@@ -86,7 +86,7 @@ test('Test addressFoundIn attribute for address in input and output', function(t
 test('Test total - no address supplied', function(t) {
   const assets = getTransactionAssets(testTX);
   const total0 = testTX.Outputs.reduce((total, cur) => {
-    if(cur.asset == '00') {
+    if (cur.asset == '00') {
       total += Number(cur.amount);
     }
 
@@ -101,14 +101,86 @@ test('Test total - with address', function(t) {
   const address = testAddressInOutput;
   const assets = getTransactionAssets(testTX, address);
   const total0 = testTX.Outputs.reduce((total, cur) => {
-    if(cur.asset == '00' && cur.address !== address) {
+    if (cur.asset == '00' && cur.address !== address) {
       total += Number(cur.amount);
     }
 
     return total;
   }, 0);
 
-  t.equals(assets[0].total, total0, 'Total should be the addition of all outputs with asset 00 except of the supplied address');
+  t.equals(
+    assets[0].total,
+    total0,
+    'Total should be the addition of all outputs with asset 00 except of the supplied address'
+  );
+  t.end();
+});
+
+test('Test addressTotal - address in inputs only', function(t) {
+  const address = testAddressInInput;
+  const assets = getTransactionAssets(testTX, address);
+  const totalInputs = testTX.Inputs.reduce((total, cur) => {
+    if (cur.Output.asset === '00' && cur.Output.address === address) {
+      total += Number(cur.amount);
+    }
+    return total;
+  }, 0);
+  const totalOutputs = testTX.Outputs.reduce((total, cur) => {
+    if (cur.asset === '00' && cur.address === address) {
+      total += Number(cur.amount);
+    }
+    return total;
+  }, 0);
+
+  t.equals(assets[0].addressTotal, -1 * totalInputs, 'Total should be -1 * total in inputs');
+  t.end();
+});
+
+test('Test addressTotal - address in outputs only', function(t) {
+  const address = testAddressInOutput;
+  const assets = getTransactionAssets(testTX, address);
+  const totalInputs = testTX.Inputs.reduce((total, cur) => {
+    if (cur.Output.asset === '00' && cur.Output.address === address) {
+      total += Number(cur.amount);
+    }
+    return total;
+  }, 0);
+  const totalOutputs = testTX.Outputs.reduce((total, cur) => {
+    if (cur.asset === '00' && cur.address === address) {
+      total += Number(cur.amount);
+    }
+    return total;
+  }, 0);
+
+  t.equals(
+    assets[0].addressTotal,
+    totalOutputs - totalInputs,
+    'Total should be the addition of all output amounts for the address'
+  );
+  t.end();
+});
+
+test('Test addressTotal - address in inputs and outputs', function(t) {
+  const address = testAddressInInputAndOutput;
+  const assets = getTransactionAssets(testTX, address);
+  const totalInputs = testTX.Inputs.reduce((total, cur) => {
+    if (cur.Output.asset === '00' && cur.Output.address === address) {
+      total += Number(cur.amount);
+    }
+    return total;
+  }, 0);
+  const totalOutputs = testTX.Outputs.reduce((total, cur) => {
+    if (cur.asset === '00' && cur.address === address) {
+      total += Number(cur.amount);
+    }
+    return total;
+  }, 0);
+
+  t.equals(
+    assets[0].addressTotal,
+    totalOutputs - totalInputs,
+    'Total should be the addition of all output minus the inputs'
+  );
   t.end();
 });
 
@@ -132,6 +204,21 @@ const testTX = {
   createdAt: '2018-07-22T19:17:30.833Z',
   updatedAt: '2018-07-22T19:17:30.842Z',
   BlockId: 4718,
+  Block: {
+    id: 4718,
+    version: 0,
+    hash: '0000000000001c6060de10de59ebd5f8710d75ea15c8ca75f4b5fd36bf26d364',
+    parent: '0000000000001f6f94e3365e68eafbdd018a2d6bff15e506e91b84b8ac76d0e0',
+    blockNumber: 4717,
+    commitments: '31c087b363c6db01e29277f1447adbe8c8e35cdef32dbfa0fe07b8373cd468d4',
+    timestamp: '1531459972168',
+    difficulty: '439815358',
+    nonce1: '0',
+    nonce2: '1331939590030424000',
+    transactionCount: '7',
+    createdAt: '2018-07-22T17:10:30.575Z',
+    updatedAt: '2018-07-22T17:10:30.575Z',
+  },
   Outputs: [
     {
       id: '123819',

@@ -40,7 +40,6 @@ transactionsDAL.findAllByAddress = async function(
       include: [
         {
           model: this.db.Block,
-          attributes: ['timestamp']
         },
         'Outputs',
         {
@@ -70,6 +69,9 @@ transactionsDAL.findAllByBlockNumber = async function(blockNumber, options = { l
     deepMerge.all([
       {
         include: [
+          {
+            model: this.db.Block,
+          },
           'Outputs',
           {
             model: this.db.Input,

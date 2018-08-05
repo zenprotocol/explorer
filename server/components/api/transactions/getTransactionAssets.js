@@ -1,6 +1,6 @@
 module.exports = function(transaction, address) {
   const assets = transformInputsOutputs(transaction, address);
-  const filteredAssets = getFilteredAssetsArray(assets, address);
+  const filteredAssets = getFilteredAssetsArray(transaction ,assets, address);
   return filteredAssets.sort((a, b) => b.asset < a.asset);
 };
 
@@ -22,6 +22,9 @@ function transformInputsOutputs(transaction, address) {
             }
           }
         }
+        if (address && address === input.Output.address) {
+          assets[input.Output.asset].addressTotal += -1 * Number(input.Output.amount);
+        }
       }
     });
   }
@@ -34,6 +37,7 @@ function transformInputsOutputs(transaction, address) {
 
       if (address && address === output.address) {
         assets[output.asset].addressInOutputs = true;
+        assets[output.asset].addressTotal += Number(output.amount);
       }
 
       assets[output.asset].total += getOutputAmountForTotal(output, address);
@@ -47,6 +51,7 @@ function transformInputsOutputs(transaction, address) {
 function getEmptyAsset() {
   return {
     total: 0,
+    addressTotal: 0,
     inputs: [],
     outputs: [],
   };
@@ -61,7 +66,7 @@ function getOutputAmountForTotal(output, address) {
   return 0;
 }
 
-function getFilteredAssetsArray(assets, address) {
+function getFilteredAssetsArray(transaction, assets, address) {
   return Object.keys(assets).reduce((all, asset) => {
     const addressFoundIn = getAddressFoundInArray(assets, asset);
 
@@ -70,6 +75,10 @@ function getFilteredAssetsArray(assets, address) {
         asset,
         addressFoundIn,
         total: assets[asset].total,
+        addressTotal: assets[asset].addressTotal,
+        blockHash: transaction.Block.hash,
+        txHash: transaction.hash,
+        timestamp: transaction.Block.timestamp,
         inputs: assets[asset].inputs,
         outputs: assets[asset].outputs,
       });

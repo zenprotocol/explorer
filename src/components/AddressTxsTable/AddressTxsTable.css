@@ -1,0 +1,7 @@
+.AddressTxsTable .negative {
+  color: #fd3a3a;
+}
+
+.AddressTxsTable .positive {
+  color: #7bcc3a;
+}

@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import 'react-table/react-table.css';
 import PaginationComponent from './Pagination.jsx';
 import LoadingWithBG from './LoadingWithBG.jsx';
+import './GenericTable.css';
 
 export default function GenericTable(props) {
   const {

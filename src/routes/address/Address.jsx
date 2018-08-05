@@ -3,11 +3,13 @@ import { observer } from 'mobx-react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import blockStore from '../../store/BlockStore';
+import uiStore from '../../store/UIStore';
 import RouterUtils from '../../lib/RouterUtils';
-import Transactions from '../../components/Transactions/Transactions.jsx';
-import Loading from '../../components/Loading/Loading.jsx';
 import AssetUtils from '../../lib/AssetUtils';
 import TextUtils from '../../lib/TextUtils';
+import Transactions from '../../components/Transactions/Transactions.jsx';
+import AddressTxsTable from '../../components/AddressTxsTable/AddressTxsTable.jsx';
+import Loading from '../../components/Loading/Loading.jsx';
 import HashLink from '../../components/HashLink/HashLink.jsx';
 import ItemNotFound from '../../components/ItemNotFound/ItemNotFound.jsx';
 import './Address.css';
@@ -15,7 +17,7 @@ import './Address.css';
 class AddressPage extends Component {
   componentDidMount() {
     const params = RouterUtils.getRouteParams(this.props);
-    blockStore.fetchAddress(params.address);
+    this.fetchData(params.address);
   }
 
   componentDidUpdate(prevProps) {
@@ -23,8 +25,14 @@ class AddressPage extends Component {
     const prevParams = RouterUtils.getRouteParams(prevProps);
 
     if (params.address !== prevParams.address) {
-      blockStore.fetchAddress(params.address);
+      this.fetchData(params.address);
     }
+  }
+
+  fetchData(address) {
+    blockStore.fetchAddress(address);
+    uiStore.setAddressTxTableData({address});
+    // blockStore.fetchTransactions({address, page: 0, pageSize: uiStore.addressTxTable.pageSize});
   }
 
   render() {
@@ -113,12 +121,7 @@ class AddressPage extends Component {
         </section>
 
         <section className={classNames('bordered border-left border-primary pl-lg-4', {'d-none': is404})}>
-          <div className="row">
-            <div className="col-sm">
-              <h1 className="d-block d-sm-inline-block text-white mb-3 mb-lg-5">Transactions</h1>
-            </div>
-          </div>
-          <Transactions address={params.address} />
+          <AddressTxsTable />
         </section>
       </div>
     );
