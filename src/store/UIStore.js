@@ -17,20 +17,37 @@ class UIStore {
     };
 
     autorun(() => {
-      if (this.blocksTable.curPage * this.blocksTable.pageSize < blockStore.blocksCount) {
-        blockStore.fetchBlocks({ page: this.blocksTable.curPage, pageSize: this.blocksTable.pageSize });
-      }
+      this.fetchBlocksOnChange();
     });
 
     autorun(() => {
-      if (this.addressTxTable.address) {
-        blockStore.fetchTransactions({
-          address: this.addressTxTable.address,
-          page: this.addressTxTable.curPage,
-          pageSize: this.addressTxTable.pageSize,
-        });
-      }
+      this.runOnAddressChange();
     });
+
+    autorun(() => {
+      this.fetchAddressTransactionsOnChange();
+    });
+  }
+
+  fetchBlocksOnChange() {
+    if (this.blocksTable.curPage * this.blocksTable.pageSize < blockStore.blocksCount) {
+      blockStore.fetchBlocks({ page: this.blocksTable.curPage, pageSize: this.blocksTable.pageSize });
+    }
+  }
+
+  fetchAddressTransactionsOnChange() {
+    if (this.addressTxTable.address) {
+      blockStore.fetchAddressTransactions({
+        address: this.addressTxTable.address,
+        page: this.addressTxTable.curPage,
+        pageSize: this.addressTxTable.pageSize,
+      });
+    }
+  }
+
+  runOnAddressChange() {
+    blockStore.resetAddressTransactions(this.addressTxTable.address);
+    blockStore.fetchAddress(this.addressTxTable.address);
   }
 
   setBlocksTableData({ pageSize, curPage } = {}) {

@@ -41,3 +41,7 @@
 .ReactTable .pagination-bottom .pagination {
   margin-bottom: 0;
 }
+
+.loading .rt-noData {
+  display: none;
+}

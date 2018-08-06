@@ -7,7 +7,6 @@ import uiStore from '../../store/UIStore';
 import RouterUtils from '../../lib/RouterUtils';
 import AssetUtils from '../../lib/AssetUtils';
 import TextUtils from '../../lib/TextUtils';
-import Transactions from '../../components/Transactions/Transactions.jsx';
 import AddressTxsTable from '../../components/AddressTxsTable/AddressTxsTable.jsx';
 import Loading from '../../components/Loading/Loading.jsx';
 import HashLink from '../../components/HashLink/HashLink.jsx';
@@ -17,7 +16,7 @@ import './Address.css';
 class AddressPage extends Component {
   componentDidMount() {
     const params = RouterUtils.getRouteParams(this.props);
-    this.fetchData(params.address);
+    this.setAddress(params.address);
   }
 
   componentDidUpdate(prevProps) {
@@ -25,13 +24,11 @@ class AddressPage extends Component {
     const prevParams = RouterUtils.getRouteParams(prevProps);
 
     if (params.address !== prevParams.address) {
-      this.fetchData(params.address);
+      this.setAddress(params.address);
     }
   }
 
-  fetchData(address) {
-    blockStore.fetchAddress(address);
-    blockStore.resetTransactions();
+  setAddress(address) {
     uiStore.setAddressTxTableData({address});
   }
 
@@ -77,7 +74,7 @@ class AddressPage extends Component {
                     </tr>
                     <tr>
                       <td>TRANSACTIONS</td>
-                      <td>{TextUtils.formatNumber(blockStore.transactionsCount)}</td>
+                      <td>{TextUtils.formatNumber(blockStore.addressTransactionsCount)}</td>
                     </tr>
                     <tr>
                       <td>TOTAL RECEIVED</td>

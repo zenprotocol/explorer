@@ -5,3 +5,10 @@
 .AddressTxsTable .positive {
   color: #7bcc3a;
 }
+
+.AddressTxsTable .expand {
+  cursor: 'pointer';
+  padding: 0;
+  text-align: center;
+  user-select: none;
+}

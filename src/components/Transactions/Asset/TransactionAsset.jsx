@@ -93,7 +93,7 @@ class TransactionAsset extends Component {
   }
 
   renderTotal(asset) {
-    if(!asset.total) {
+    if(!asset.total && !asset.addressTotal) {
       return null;
     }
 

@@ -12,6 +12,8 @@ class BlockStore {
     this.transactions = [];
     this.transactionsCount = 0;
     this.address = {};
+    this.addressTransactions = [];
+    this.addressTransactionsCount = 0;
     this.medianTime = null;
     this.syncing = false;
     this.loading = {
@@ -20,6 +22,7 @@ class BlockStore {
       transaction: false,
       transactions: false,
       address: false,
+      addressTransactions: false,
     };
   }
 
@@ -69,29 +72,42 @@ class BlockStore {
     });
   }
 
-  resetTransactions() {
-    this.transactions = [];
-    this.transactionsCount = 0;
+  fetchAddressTransactions(params = {}) {
+    this.loading.addressTransactions = true;
+    return Service.transactions.find(params).then(response => {
+      runInAction(() => {
+        this.addressTransactions = response.data.items;
+        this.addressTransactionsCount = response.data.total;
+        this.loading.addressTransactions = false;
+      });
+    });
+  }
+
+  resetAddressTransactions() {
+    this.addressTransactions = [];
+    this.addressTransactionsCount = 0;
   }
 
   fetchAddress(address) {
-    this.loading.address = true;
-
-    return Service.addresses.findByAddress(address).then(response => {
-      runInAction(() => {
-        this.address = response.data;
+    if(address) {
+      this.loading.address = true;
+  
+      return Service.addresses.findByAddress(address).then(response => {
+        runInAction(() => {
+          this.address = response.data;
+        });
+      }).catch((error) => {
+        runInAction(() => {
+          if(error.response.status === 404) {
+            this.address = {status: 404};
+          }
+        });
+      }).finally(() => {
+        runInAction(() => {
+          this.loading.address = false;
+        });
       });
-    }).catch((error) => {
-      runInAction(() => {
-        if(error.response.status === 404) {
-          this.address = {status: 404};
-        }
-      });
-    }).finally(() => {
-      runInAction(() => {
-        this.loading.address = false;
-      });
-    });
+    }
   }
 
   fetchMedianTime() {
@@ -157,9 +173,10 @@ decorate(BlockStore, {
   fetchTransaction: action,
   fetchTransactions: action,
   fetchAddress: action,
+  fetchAddressTransactions: action,
   fetchMedianTime: action,
   fetchSyncing: action,
-  resetTransactions: action,
+  resetAddressTransactions: action,
 });
 
 export default new BlockStore();

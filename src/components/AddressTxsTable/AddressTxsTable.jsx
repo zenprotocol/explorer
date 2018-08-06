@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import PropTypes from 'prop-types';
 import debounce from 'lodash.debounce';
+import classNames from 'classnames';
 import GenericTable from '../GenericTable/GenericTable.jsx';
 import uiStore from '../../store/UIStore';
 import blockStore from '../../store/BlockStore';
@@ -75,14 +76,7 @@ class AddressTxsTable extends Component {
         Header: 'Expand',
         expander: true,
         width: 65,
-        Expander: ({ isExpanded }) => <div>{isExpanded ? <i className="fas fa-minus"></i> : <i className="fas fa-plus"></i>}</div>,
-        style: {
-          cursor: 'pointer',
-          fontSize: 25,
-          padding: '0',
-          textAlign: 'center',
-          userSelect: 'none',
-        },
+        Expander: ({ isExpanded }) => <div className="expand">{isExpanded ? <i className="fas fa-minus"></i> : <i className="fas fa-plus"></i>}</div>,
       },
     ];
   }
@@ -107,10 +101,10 @@ class AddressTxsTable extends Component {
   }
 
   render() {
-    const numOfPages = Math.ceil(blockStore.transactionsCount / uiStore.addressTxTable.pageSize);
-    const assets = this.concatAllTxAssets(blockStore.transactions);
+    const numOfPages = Math.ceil(blockStore.addressTransactionsCount / uiStore.addressTxTable.pageSize);
+    const assets = this.concatAllTxAssets(blockStore.addressTransactions);
     return (
-      <div className="AddressTxsTable">
+      <div className={classNames('AddressTxsTable', {loading: blockStore.loading.addressTransactions})}>
         <div className="clearfix">
           <h1 className="d-block d-sm-inline-block text-white mb-3 mb-lg-5">Transactions</h1>
           <div className="AddressTxsTable-pageSizes form-inline float-sm-right">
@@ -132,7 +126,7 @@ class AddressTxsTable extends Component {
           </div>
         </div>
         <GenericTable
-          loading={blockStore.loading.transactions}
+          loading={blockStore.loading.addressTransactions}
           data={assets}
           columns={this.getTableColumns()}
           defaultPageSize={uiStore.addressTxTable.pageSize}
