@@ -1,4 +1,4 @@
-import { observable, decorate, action, computed } from 'mobx';
+import { observable, decorate, action, runInAction, computed } from 'mobx';
 import Service from '../lib/Service';
 import TextUtils from '../lib/TextUtils';
 
@@ -23,17 +23,15 @@ class BlockStore {
     };
   }
 
-  setBlocks(blocks) {
-    this.blocks = blocks;
-  }
-
   fetchBlocks({ pageSize = 10, page = 0, sorted = [], filtered = [] } = {}) {
     this.loading.blocks = true;
 
     return Service.blocks.find({ pageSize, page, sorted: JSON.stringify(sorted), filtered }).then(response => {
-      this.setBlocks(response.data.items);
-      this.blocksCount = response.data.total;
-      this.loading.blocks = false;
+      runInAction(() => {
+        this.blocks = response.data.items;
+        this.blocksCount = response.data.total;
+        this.loading.blocks = false;
+      });
     });
   }
 
@@ -41,8 +39,10 @@ class BlockStore {
     this.loading.block = true;
 
     return Service.blocks.findById(id).then(response => {
-      this.block = response.data;
-      this.loading.block = false;
+      runInAction(() => {
+        this.block = response.data;
+        this.loading.block = false;
+      });
       return response.data;
     });
   }
@@ -51,50 +51,69 @@ class BlockStore {
     this.loading.transaction = true;
 
     return Service.transactions.findByHash(hash).then(response => {
-      this.transaction = response.data;
-      this.loading.transaction = false;
+      runInAction(() => {
+        this.transaction = response.data;
+        this.loading.transaction = false;
+      });
     });
   }
 
   fetchTransactions(params = {}) {
     this.loading.transactions = true;
     return Service.transactions.find(params).then(response => {
-      this.transactions = response.data.items;
-      this.transactionsCount = response.data.total;
-      this.loading.transactions = false;
+      runInAction(() => {
+        this.transactions = response.data.items;
+        this.transactionsCount = response.data.total;
+        this.loading.transactions = false;
+      });
     });
+  }
+
+  resetTransactions() {
+    this.transactions = [];
+    this.transactionsCount = 0;
   }
 
   fetchAddress(address) {
     this.loading.address = true;
 
     return Service.addresses.findByAddress(address).then(response => {
-      this.address = response.data;
-      this.loading.address = false;
+      runInAction(() => {
+        this.address = response.data;
+      });
     }).catch((error) => {
-      if(error.response.status === 404) {
-        this.address = {status: 404};
-      }
-      this.loading.address = false;
+      runInAction(() => {
+        if(error.response.status === 404) {
+          this.address = {status: 404};
+        }
+      });
+    }).finally(() => {
+      runInAction(() => {
+        this.loading.address = false;
+      });
     });
   }
 
   fetchMedianTime() {
     return Service.infos.findByName('medianTime').then(response => {
-      if (response.success) {
-        this.medianTime = new Date(Number(response.data.value));
-      }
+      runInAction(() => {
+        if (response.success) {
+          this.medianTime = new Date(Number(response.data.value));
+        }
+      });
     });
   }
 
   fetchSyncing() {
     return Service.infos.findByName('syncing').then(response => {
-      if (response.success) {
-        this.syncing = response.data.value === 'true';
-      }
-      else {
-        this.syncing = false;
-      }
+      runInAction(() => {
+        if (response.success) {
+          this.syncing = response.data.value === 'true';
+        }
+        else {
+          this.syncing = false;
+        }
+      });
     });
   }
 
@@ -131,9 +150,16 @@ decorate(BlockStore, {
   loading: observable,
   medianTime: observable,
   syncing: observable,
-  setBlocks: action,
   medianTimeString: computed,
   numberOfTransactions: computed,
+  fetchBlocks: action,
+  fetchBlock: action,
+  fetchTransaction: action,
+  fetchTransactions: action,
+  fetchAddress: action,
+  fetchMedianTime: action,
+  fetchSyncing: action,
+  resetTransactions: action,
 });
 
 export default new BlockStore();
