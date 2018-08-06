@@ -7,6 +7,7 @@ import uiStore from '../../store/UIStore';
 import blockStore from '../../store/BlockStore';
 import AssetUtils from '../../lib/AssetUtils.js';
 import HashLink from '../HashLink/HashLink.jsx';
+import TransactionAsset from '../Transactions/Asset/TransactionAsset.jsx';
 import './AddressTxsTable.css';
 
 class AddressTxsTable extends Component {
@@ -27,12 +28,12 @@ class AddressTxsTable extends Component {
     window.addEventListener('resize', this.setWindowWidth);
   }
 
-  componentWillUnmount(){
+  componentWillUnmount() {
     window.removeEventListener('resize', this.setWindowWidth);
   }
 
   setWindowWidth() {
-    this.setState({windowWidth: window.innerWidth});
+    this.setState({ windowWidth: window.innerWidth });
   }
 
   getTableColumns() {
@@ -48,14 +49,14 @@ class AddressTxsTable extends Component {
         Header: 'TX',
         accessor: 'txHash',
         Cell: data => {
-          return <HashLink url={`/tx/${data.value}`} hash={data.value}/>;
+          return <HashLink url={`/tx/${data.value}`} hash={data.value} />;
         },
       },
       {
         Header: 'Block',
         accessor: 'blockHash',
         Cell: data => {
-          return <HashLink url={`/blocks/${data.value}`} hash={data.value}/>;
+          return <HashLink url={`/blocks/${data.value}`} hash={data.value} />;
         },
       },
       {
@@ -63,7 +64,24 @@ class AddressTxsTable extends Component {
         accessor: 'addressTotal',
         Cell: function(data) {
           const isNegative = Number(data.value) < 0;
-          return <span className={isNegative? 'negative' : 'positive'}>{AssetUtils.getAmountString(data.original, Number(data.value))}</span>;
+          return (
+            <span className={isNegative ? 'negative' : 'positive'}>
+              {AssetUtils.getAmountString(data.original, Number(data.value))}
+            </span>
+          );
+        },
+      },
+      {
+        Header: 'Expand',
+        expander: true,
+        width: 65,
+        Expander: ({ isExpanded }) => <div>{isExpanded ? <i className="fas fa-minus"></i> : <i className="fas fa-plus"></i>}</div>,
+        style: {
+          cursor: 'pointer',
+          fontSize: 25,
+          padding: '0',
+          textAlign: 'center',
+          userSelect: 'none',
         },
       },
     ];
@@ -72,17 +90,20 @@ class AddressTxsTable extends Component {
   setPageSize(event) {
     const pageSize = Number(event.target.value);
     const curPage = Math.floor((uiStore.addressTxTable.pageSize * uiStore.addressTxTable.curPage) / pageSize);
-    uiStore.setAddressTxTableData({pageSize, curPage});
+    uiStore.setAddressTxTableData({ pageSize, curPage });
   }
 
   onPageChange(page) {
-    uiStore.setAddressTxTableData({curPage: page});
+    uiStore.setAddressTxTableData({ curPage: page });
   }
 
   concatAllTxAssets(transactions) {
-    return [].concat.apply([], transactions.map((tx) => {
-      return tx.assets;
-    }));
+    return [].concat.apply(
+      [],
+      transactions.map(tx => {
+        return tx.assets;
+      })
+    );
   }
 
   render() {
@@ -120,6 +141,16 @@ class AddressTxsTable extends Component {
           pageSizes={this.props.pageSizes}
           onPageChange={this.onPageChange}
           pageSize={uiStore.addressTxTable.pageSize}
+          SubComponent={row => {
+            return (
+              <TransactionAsset
+                asset={row.original}
+                showHeader={true}
+                address={uiStore.addressTxTable.address}
+                timestamp={row.original.timestamp}
+              />
+            );
+          }}
         />
       </div>
     );

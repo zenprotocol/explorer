@@ -20,6 +20,7 @@ export default function GenericTable(props) {
     page,
     pageSize,
     onPageChange,
+    SubComponent
   } = props;
   return (
     <div className="GenericTable">
@@ -42,6 +43,7 @@ export default function GenericTable(props) {
         LoadingComponent={LoadingWithBG}
         previousText={<i className="fas fa-angle-double-left" />}
         nextText={<i className="fas fa-angle-double-right" />}
+        SubComponent={SubComponent}
       />
     </div>
   );
@@ -60,6 +62,7 @@ GenericTable.propTypes = {
   page: PropTypes.number,
   pageSize: PropTypes.number,
   onPageChange: PropTypes.func,
+  SubComponent: PropTypes.any,
 };
 
 GenericTable.defaultProps = {

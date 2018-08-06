@@ -4,6 +4,7 @@ import classNames from 'classnames';
 import AssetUtils from '../../../lib/AssetUtils';
 import Output from '../../../lib/OutputUtils';
 import HashLink from '../../../components/HashLink/HashLink.jsx';
+import './TransactionAsset.css';
 
 class TransactionAsset extends Component {
   render() {
@@ -96,10 +97,12 @@ class TransactionAsset extends Component {
       return null;
     }
 
+    const total = this.props.address ? Number(asset.addressTotal) : Number(asset.total);
+
     return (
       <div className="row">
         <div className="col d-flex justify-content-end">
-          <div className="total rounded">{AssetUtils.getAmountString(asset, asset.total)}</div>
+          <div className="total rounded">{AssetUtils.getAmountString(asset, total)}</div>
         </div>
       </div>
     );
