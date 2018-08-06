@@ -31,8 +31,8 @@ class AddressPage extends Component {
 
   fetchData(address) {
     blockStore.fetchAddress(address);
+    blockStore.resetTransactions();
     uiStore.setAddressTxTableData({address});
-    // blockStore.fetchTransactions({address, page: 0, pageSize: uiStore.addressTxTable.pageSize});
   }
 
   render() {
