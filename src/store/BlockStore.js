@@ -163,6 +163,8 @@ decorate(BlockStore, {
   transactions: observable,
   transactionsCount: observable,
   address: observable,
+  addressTransactions: observable,
+  addressTransactionsCount: observable,
   loading: observable,
   medianTime: observable,
   syncing: observable,
