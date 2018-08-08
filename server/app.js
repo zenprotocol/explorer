@@ -29,6 +29,9 @@ app.use(helmet());
 
 // routes
 app.use('/api', apiRouter);
+app.get('/.well-known/pki-validation/confirmation.html', (req, res) => {
+  res.send('E476-F512-0D78-51F5-66BA-2D18-2F70-2E0B');
+});
 app.use('/', clientRouter);
 
 // errors
