@@ -28,7 +28,6 @@ module.exports = {
   show: async function(req, res) {
     const address = req.params.address;
     const addressDb = await addressesDAL.findByAddress(address);
-    console.log({addressDb});
     if(!addressDb) {
       throw new HttpError(httpStatus.NOT_FOUND);
     }
