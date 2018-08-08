@@ -1,5 +1,6 @@
 module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyInput, falsyOutput} = {}) {
   return {
+    hash: 'cb746bfdbc472602064dbc04e66326a8edf11a3c64d08ddfa90257e86e866b0f',
     [falsyBlock? 'wrongKey' : 'header']: {
       version: 0,
       parent: '0000002863af18b0e69d66b1412c283b782435a7734611086d4b1167d8d98b2b',

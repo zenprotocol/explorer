@@ -1,0 +1,35 @@
+{
+    "hash": "0000000015b7fd9d5a22f3943e93aa260f489831be1ed44a9b74c22518c3efe2",
+    "header": {
+        "version": 0,
+        "parent": "000000001604b1bc9c9cb3689d3bc7606ae19b35b45300b30fc311d81534afed",
+        "blockNumber": 4,
+        "commitments": "8a39f4c790e6d141ed6f76d504e05740f37d628347f0cc8a611fca80a950af19",
+        "timestamp": 1530378111726,
+        "difficulty": 471598731,
+        "nonce": [
+            -1844128446271926074,
+            -5146420197042277952
+        ]
+    },
+    "transactions": {
+        "6dd446057050b1e4555a6ea37bfa7fca5dc0f830188b0090f2e0a0d45c61491b": {
+            "version": 0,
+            "inputs": [],
+            "outputs": [
+                {
+                    "lock": {
+                        "Coinbase": {
+                            "blockNumber": 4,
+                            "pkHash": "04665956a394179bd8d96d81cdf1471565cfe6f937f3d4741b93208577d3971e"
+                        }
+                    },
+                    "spend": {
+                        "asset": "00",
+                        "amount": 5000000000
+                    }
+                }
+            ]
+        }
+    }
+}

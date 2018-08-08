@@ -4,12 +4,18 @@ const deepMerge = require('deepmerge');
 const dal = require('../../../lib/dal');
 const addressesDAL = dal.createDAL('Address');
 
-addressesDAL.findByAddress = function(address) {
-  return this.findOne({
+addressesDAL.findByAddress = function(address, { transaction } = {}) {
+  const options = {
     where: {
       address,
     },
-  });
+  };
+
+  if(transaction) {
+    options.transaction = transaction;
+  }
+
+  return this.findOne(options);
 };
 
 addressesDAL.findAllTransactions = async function(address, options = { limit: 10 }) {

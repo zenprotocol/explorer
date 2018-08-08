@@ -135,14 +135,13 @@ transactionsDAL.addOutput = transactionsDAL.addOutput.bind(transactionsDAL);
 transactionsDAL.addAddress = async function(transaction, address, addressBC, options = {}) {
   let addressDB = null;
   if (typeof address === 'string') {
-    addressDB = await addressesDAL.findByAddress(address);
+    addressDB = await addressesDAL.findByAddress(address, options);
     if (!addressDB) {
       addressDB = await addressesDAL.create({ address, addressBC }, options);
     }
   } else {
     addressDB = address;
   }
-
   return transaction.addAddress(addressDB, options);
 };
 
