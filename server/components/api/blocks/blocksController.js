@@ -53,6 +53,12 @@ module.exports = {
       throw new HttpError(httpStatus.NOT_FOUND);
     }
   },
+  getTotalZp: async function(req, res) {
+    const blocksCount = await blocksDAL.count();
+    let total = (20000000 + (blocksCount - 1) * 50) * 100000000;
+
+    res.status(httpStatus.OK).json(jsonResponse.create(httpStatus.OK, { total }));
+  },
   create: async function(req, res) {
     const block = await blocksDAL.create(req.body);
     res.status(httpStatus.CREATED).json(jsonResponse.create(httpStatus.CREATED, block));

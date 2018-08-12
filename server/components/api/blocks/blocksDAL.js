@@ -12,7 +12,6 @@ blocksDAL.findLatest = function(amount = 1) {
     limit: amount,
   });
 };
-blocksDAL.findLatest = blocksDAL.findLatest.bind(blocksDAL);
 
 blocksDAL.findByBlockNumber = function(blockNumber) {
   return this.findOne({
