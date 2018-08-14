@@ -1,3 +1,6 @@
+# don't ignore keep files
+!.keep
+
 # node
 node_modules
 npm-debug.log
