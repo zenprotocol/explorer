@@ -12,8 +12,8 @@ class BlockStore {
     this.transactions = [];
     this.transactionsCount = 0;
     this.address = {};
-    this.addressTransactions = [];
-    this.addressTransactionsCount = 0;
+    this.addressTransactionAssets = [];
+    this.addressTransactionAssetsCount = 0;
     this.medianTime = null;
     this.syncing = false;
     this.loading = {
@@ -22,20 +22,22 @@ class BlockStore {
       transaction: false,
       transactions: false,
       address: false,
-      addressTransactions: false,
+      addressTransactionAssets: false,
     };
   }
 
   fetchBlocks({ pageSize = 10, page = 0, sorted = [], filtered = [] } = {}) {
     this.loading.blocks = true;
 
-    return Service.blocks.find({ pageSize, page, sorted: JSON.stringify(sorted), filtered }).then(response => {
-      runInAction(() => {
-        this.blocks = response.data.items;
-        this.blocksCount = response.data.total;
-        this.loading.blocks = false;
+    return Service.blocks
+      .find({ pageSize, page, sorted: JSON.stringify(sorted), filtered })
+      .then(response => {
+        runInAction(() => {
+          this.blocks = response.data.items;
+          this.blocksCount = response.data.total;
+          this.loading.blocks = false;
+        });
       });
-    });
   }
 
   fetchBlock(id) {
@@ -72,41 +74,62 @@ class BlockStore {
     });
   }
 
-  fetchAddressTransactions(params = {}) {
-    this.loading.addressTransactions = true;
-    return Service.transactions.find(params).then(response => {
+  fetchAddressTransactionAssets(address, params = {}) {
+    this.loading.addressTransactionAssets = true;
+    return Service.addresses.findTransactionsAssets(address, params).then(response => {
       runInAction(() => {
-        this.addressTransactions = response.data.items;
-        this.addressTransactionsCount = response.data.total;
-        this.loading.addressTransactions = false;
+        this.addressTransactionAssets = response.data.items;
+        this.addressTransactionAssetsCount = response.data.total;
+        this.loading.addressTransactionAssets = false;
       });
     });
   }
 
-  resetAddressTransactions() {
-    this.addressTransactions = [];
-    this.addressTransactionsCount = 0;
+  fetchTransactionAsset(transactionAssets, index, isAddress) {
+    const transactionAsset =
+      (transactionAssets || []).length > index ? transactionAssets[index] : null;
+    if (transactionAsset) {
+      return Service.transactions
+        .findAsset(transactionAsset.transactionId, transactionAsset.asset)
+        .then(response => {
+          runInAction(() => {
+            const theObservable = isAddress
+              ? this.addressTransactionAssets[index]
+              : this.transactions[index];
+            theObservable.TransactionAsset = response.data;
+          });
+        });
+    }
+  }
+
+  resetAddressTransactionAssets() {
+    this.addressTransactionAssets = [];
+    this.addressTransactionAssetsCount = 0;
   }
 
   fetchAddress(address) {
-    if(address) {
+    if (address) {
       this.loading.address = true;
-  
-      return Service.addresses.findByAddress(address).then(response => {
-        runInAction(() => {
-          this.address = response.data;
+
+      return Service.addresses
+        .findByAddress(address)
+        .then(response => {
+          runInAction(() => {
+            this.address = response.data;
+          });
+        })
+        .catch(error => {
+          runInAction(() => {
+            if (error.response.status === 404) {
+              this.address = { status: 404 };
+            }
+          });
+        })
+        .finally(() => {
+          runInAction(() => {
+            this.loading.address = false;
+          });
         });
-      }).catch((error) => {
-        runInAction(() => {
-          if(error.response.status === 404) {
-            this.address = {status: 404};
-          }
-        });
-      }).finally(() => {
-        runInAction(() => {
-          this.loading.address = false;
-        });
-      });
     }
   }
 
@@ -125,8 +148,7 @@ class BlockStore {
       runInAction(() => {
         if (response.success) {
           this.syncing = response.data.value === 'true';
-        }
-        else {
+        } else {
           this.syncing = false;
         }
       });
@@ -141,16 +163,16 @@ class BlockStore {
   }
 
   get numberOfTransactions() {
-    if(this.block.Transactions) {
+    if (this.block.Transactions) {
       return this.block.Transactions.length;
     }
   }
 
   confirmations(blockNumber) {
-    if(isNaN(blockNumber)) {
+    if (isNaN(blockNumber)) {
       return 0;
     }
-    
+
     return Number(this.blocksCount) - Number(blockNumber) + 1;
   }
 }
@@ -163,8 +185,8 @@ decorate(BlockStore, {
   transactions: observable,
   transactionsCount: observable,
   address: observable,
-  addressTransactions: observable,
-  addressTransactionsCount: observable,
+  addressTransactionAssets: observable,
+  addressTransactionAssetsCount: observable,
   loading: observable,
   medianTime: observable,
   syncing: observable,
@@ -175,10 +197,11 @@ decorate(BlockStore, {
   fetchTransaction: action,
   fetchTransactions: action,
   fetchAddress: action,
-  fetchAddressTransactions: action,
+  fetchAddressTransactionAssets: action,
+  fetchTransactionAsset: action,
   fetchMedianTime: action,
   fetchSyncing: action,
-  resetAddressTransactions: action,
+  resetAddressTransactionAssets: action,
 });
 
 export default new BlockStore();

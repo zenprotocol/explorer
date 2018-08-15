@@ -37,8 +37,7 @@ class UIStore {
 
   fetchAddressTransactionsOnChange() {
     if (this.addressTxTable.address) {
-      blockStore.fetchAddressTransactions({
-        address: this.addressTxTable.address,
+      blockStore.fetchAddressTransactionAssets(this.addressTxTable.address, {
         page: this.addressTxTable.curPage,
         pageSize: this.addressTxTable.pageSize,
       });
@@ -46,7 +45,7 @@ class UIStore {
   }
 
   runOnAddressChange() {
-    blockStore.resetAddressTransactions(this.addressTxTable.address);
+    blockStore.resetAddressTransactionAssets(this.addressTxTable.address);
     blockStore.fetchAddress(this.addressTxTable.address);
   }
 
