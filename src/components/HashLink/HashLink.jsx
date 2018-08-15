@@ -73,7 +73,7 @@ function shortenHash(hash) {
 
 HashLink.propTypes = {
   url: PropTypes.string,
-  hash: PropTypes.string,
+  hash: PropTypes.string.isRequired,
   copy: PropTypes.bool,
   shorten: PropTypes.bool,
 };
