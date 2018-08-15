@@ -74,7 +74,7 @@ class AddressPage extends Component {
                     </tr>
                     <tr>
                       <td>TRANSACTIONS</td>
-                      <td>{TextUtils.formatNumber(blockStore.addressTransactionsCount)}</td>
+                      <td>{TextUtils.formatNumber(blockStore.addressTransactionAssetsCount)}</td>
                     </tr>
                     <tr>
                       <td>TOTAL RECEIVED</td>

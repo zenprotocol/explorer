@@ -8,7 +8,7 @@ import uiStore from '../../store/UIStore';
 import blockStore from '../../store/BlockStore';
 import AssetUtils from '../../lib/AssetUtils.js';
 import HashLink from '../HashLink/HashLink.jsx';
-import TransactionAsset from '../Transactions/Asset/TransactionAsset.jsx';
+import TransactionAssetLoader from '../Transactions/Asset/TransactionAssetLoader';
 import './AddressTxsTable.css';
 
 class AddressTxsTable extends Component {
@@ -62,12 +62,12 @@ class AddressTxsTable extends Component {
       },
       {
         Header: 'Balance',
-        accessor: 'addressTotal',
+        accessor: 'totalSum',
         Cell: function(data) {
           const isNegative = Number(data.value) < 0;
           return (
             <span className={isNegative ? 'negative' : 'positive'}>
-              {AssetUtils.getAmountString(data.original, Number(data.value))}
+              {AssetUtils.getAmountString(data.original.asset, Number(data.value))}
             </span>
           );
         },
@@ -76,7 +76,7 @@ class AddressTxsTable extends Component {
         Header: 'Expand',
         expander: true,
         width: 65,
-        Expander: ({ isExpanded }) => <div className="expand">{isExpanded ? <i className="fas fa-minus"></i> : <i className="fas fa-plus"></i>}</div>,
+        Expander: ({ isExpanded }) => <div className="expand">{isExpanded ? <i className="fas fa-angle-up"></i> : <i className="fas fa-angle-down"></i>}</div>,
       },
     ];
   }
@@ -91,20 +91,11 @@ class AddressTxsTable extends Component {
     uiStore.setAddressTxTableData({ curPage: page });
   }
 
-  concatAllTxAssets(transactions) {
-    return [].concat.apply(
-      [],
-      transactions.map(tx => {
-        return tx.assets;
-      })
-    );
-  }
-
   render() {
-    const numOfPages = Math.ceil(blockStore.addressTransactionsCount / uiStore.addressTxTable.pageSize);
-    const assets = this.concatAllTxAssets(blockStore.addressTransactions);
+    const numOfPages = Math.ceil(blockStore.addressTransactionAssetsCount / uiStore.addressTxTable.pageSize);
+    const assets = blockStore.addressTransactionAssets;
     return (
-      <div className={classNames('AddressTxsTable', {loading: blockStore.loading.addressTransactions})}>
+      <div className={classNames('AddressTxsTable', {loading: blockStore.loading.addressTransactionAssets})}>
         <div className="clearfix">
           <h1 className="d-block d-sm-inline-block text-white mb-3 mb-lg-5">Transactions</h1>
           <div className="AddressTxsTable-pageSizes form-inline float-sm-right">
@@ -126,7 +117,7 @@ class AddressTxsTable extends Component {
           </div>
         </div>
         <GenericTable
-          loading={blockStore.loading.addressTransactions}
+          loading={blockStore.loading.addressTransactionAssets}
           data={assets}
           columns={this.getTableColumns()}
           defaultPageSize={uiStore.addressTxTable.pageSize}
@@ -136,12 +127,18 @@ class AddressTxsTable extends Component {
           onPageChange={this.onPageChange}
           pageSize={uiStore.addressTxTable.pageSize}
           SubComponent={row => {
+            const addressFoundIn = [];
+            Number(row.original.outputSum) !== 0 && addressFoundIn.push('output');
+            Number(row.original.inputSum) !== 0 && addressFoundIn.push('input');
+
             return (
-              <TransactionAsset
-                asset={row.original}
-                showHeader={true}
-                address={uiStore.addressTxTable.address}
+              <TransactionAssetLoader 
+                transactionAssets={blockStore.addressTransactionAssets}
+                index={row.index}
                 timestamp={row.original.timestamp}
+                address={uiStore.addressTxTable.address}
+                addressFoundIn={addressFoundIn}
+                total={row.original.totalSum}
               />
             );
           }}
