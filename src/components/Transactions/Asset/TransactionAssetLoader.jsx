@@ -7,9 +7,9 @@ import Loading from '../../Loading/Loading.jsx';
 
 class TransactionAssetLoader extends Component {
   componentDidMount() {
-    const { transactionAssets, index, address } = this.props;
+    const { transactionAssets, index } = this.props;
     if (!this.transactionAssetAlreadyLoaded) {
-      blockStore.fetchTransactionAsset(transactionAssets, index, !!address);
+      blockStore.fetchTransactionAsset(transactionAssets, index);
     }
   }
   render() {

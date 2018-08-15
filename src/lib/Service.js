@@ -56,6 +56,13 @@ export default {
         method: 'get',
       }).then(response => response.data);
     },
+    async findTransactionsAssets(blockNumber, params) {
+      return sendHttpRequest({
+        url: `${Endpoints.blocks}/${blockNumber}/assets`,
+        method: 'get',
+        params: params,
+      }).then(response => response.data);
+    },
   },
   transactions: {
     async find(params) {

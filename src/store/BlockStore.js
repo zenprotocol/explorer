@@ -8,6 +8,8 @@ class BlockStore {
     this.blocks = [];
     this.blocksCount = 0;
     this.block = {};
+    this.blockTransactionAssets = [];
+    this.blockTransactionAssetsCount = 0;
     this.transaction = null;
     this.transactions = [];
     this.transactionsCount = 0;
@@ -19,6 +21,7 @@ class BlockStore {
     this.loading = {
       blocks: false,
       block: false,
+      blockTransactionAssets: false,
       transaction: false,
       transactions: false,
       address: false,
@@ -50,6 +53,22 @@ class BlockStore {
       });
       return response.data;
     });
+  }
+
+  fetchBlockTransactionAssets(blockNumber, params = {}) {
+    this.loading.blockTransactionAssets = true;
+    return Service.blocks.findTransactionsAssets(blockNumber, params).then(response => {
+      runInAction(() => {
+        this.blockTransactionAssets = response.data.items;
+        this.blockTransactionAssetsCount = response.data.total;
+        this.loading.blockTransactionAssets = false;
+      });
+    });
+  }
+
+  resetBlockTransactionAssets() {
+    this.blockTransactionAssets = [];
+    this.blockTransactionAssetsCount = 0;
   }
 
   fetchTransaction(hash) {
@@ -85,7 +104,7 @@ class BlockStore {
     });
   }
 
-  fetchTransactionAsset(transactionAssets, index, isAddress) {
+  fetchTransactionAsset(transactionAssets, index) {
     const transactionAsset =
       (transactionAssets || []).length > index ? transactionAssets[index] : null;
     if (transactionAsset) {
@@ -93,10 +112,7 @@ class BlockStore {
         .findAsset(transactionAsset.transactionId, transactionAsset.asset)
         .then(response => {
           runInAction(() => {
-            const theObservable = isAddress
-              ? this.addressTransactionAssets[index]
-              : this.transactions[index];
-            theObservable.TransactionAsset = response.data;
+            transactionAssets[index].TransactionAsset = response.data;
           });
         });
     }
@@ -181,6 +197,8 @@ decorate(BlockStore, {
   blocks: observable,
   blocksCount: observable,
   block: observable,
+  blockTransactionAssets: observable,
+  blockTransactionAssetsCount: observable,
   transaction: observable,
   transactions: observable,
   transactionsCount: observable,
@@ -194,6 +212,7 @@ decorate(BlockStore, {
   numberOfTransactions: computed,
   fetchBlocks: action,
   fetchBlock: action,
+  fetchBlockTransactionAssets: action,
   fetchTransaction: action,
   fetchTransactions: action,
   fetchAddress: action,
@@ -202,6 +221,7 @@ decorate(BlockStore, {
   fetchMedianTime: action,
   fetchSyncing: action,
   resetAddressTransactionAssets: action,
+  resetBlockTransactionAssets: action,
 });
 
 export default new BlockStore();

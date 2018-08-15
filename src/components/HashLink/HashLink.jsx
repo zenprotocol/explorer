@@ -2,9 +2,8 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { Link } from 'react-router-dom';
+import TextUtils from '../../lib/TextUtils';
 import './HashLink.css';
-
-const HASH_TRIM_LENGTH = 6;
 
 export default class HashLink extends Component {
   constructor(props) {
@@ -65,10 +64,7 @@ export default class HashLink extends Component {
 }
 
 function shortenHash(hash) {
-  if (hash.length > HASH_TRIM_LENGTH * 2) {
-    return `${hash.slice(0, HASH_TRIM_LENGTH)}...${hash.slice(hash.length - HASH_TRIM_LENGTH)}`;
-  }
-  return hash;
+  return TextUtils.truncateHash(hash);
 }
 
 HashLink.propTypes = {

@@ -33,5 +33,12 @@ export default {
     let whole = parts[0];
     let fraction = (parts.length > 1)? '.' + parts[1] : '';
     return whole.toString().replace(/\B(?=(\d{3})+(?!\d))/g, delimiter) + fraction;
-  }
+  },
+  truncateHash(hash) {
+    const HASH_TRIM_LENGTH = 6;
+    if (hash.length > HASH_TRIM_LENGTH * 2) {
+      return `${hash.slice(0, HASH_TRIM_LENGTH)}...${hash.slice(hash.length - HASH_TRIM_LENGTH)}`;
+    }
+    return hash;
+  },
 };
