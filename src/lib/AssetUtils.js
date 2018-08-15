@@ -29,7 +29,7 @@ export default {
       case '00':
         return 'ZP';
       default:
-        return code;
+        return TextUtils.truncateHash(code);
     }
   },
 };

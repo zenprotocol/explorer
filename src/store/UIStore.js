@@ -16,8 +16,23 @@ class UIStore {
       prevPage: -1,
     };
 
+    this.blockTxTable = {
+      hashOrBlockNumber: 0,
+      pageSize: 10,
+      curPage: 0,
+      prevPage: -1,
+    };
+
     autorun(() => {
       this.fetchBlocksOnChange();
+    });
+
+    autorun(() => {
+      this.runOnBlockChange();
+    });
+
+    autorun(() => {
+      this.fetchBlockTransactionAssetsOnChange();
     });
 
     autorun(() => {
@@ -35,6 +50,15 @@ class UIStore {
     }
   }
 
+  fetchBlockTransactionAssetsOnChange() {
+    if (typeof this.blockTxTable.hashOrBlockNumber !== 'undefined') {
+      blockStore.fetchBlockTransactionAssets(this.blockTxTable.hashOrBlockNumber, {
+        page: this.blockTxTable.curPage,
+        pageSize: this.blockTxTable.pageSize,
+      });
+    }
+  }
+
   fetchAddressTransactionsOnChange() {
     if (this.addressTxTable.address) {
       blockStore.fetchAddressTransactionAssets(this.addressTxTable.address, {
@@ -49,6 +73,10 @@ class UIStore {
     blockStore.fetchAddress(this.addressTxTable.address);
   }
 
+  runOnBlockChange() {
+    blockStore.resetBlockTransactionAssets(this.blockTxTable.hashOrBlockNumber);
+  }
+
   setBlocksTableData({ pageSize, curPage } = {}) {
     if (pageSize) {
       this.blocksTable.pageSize = pageSize;
@@ -56,6 +84,19 @@ class UIStore {
     if (curPage !== undefined) {
       this.blocksTable.prevPage = this.blocksTable.curPage;
       this.blocksTable.curPage = curPage;
+    }
+  }
+
+  setBlockTxTableData({ hashOrBlockNumber, pageSize, curPage } = {}) {
+    if (typeof hashOrBlockNumber !== 'undefined') {
+      this.blockTxTable.hashOrBlockNumber = hashOrBlockNumber;
+    }
+    if (pageSize) {
+      this.blockTxTable.pageSize = pageSize;
+    }
+    if (curPage !== undefined) {
+      this.blockTxTable.prevPage = this.blockTxTable.curPage;
+      this.blockTxTable.curPage = curPage;
     }
   }
 
@@ -76,7 +117,9 @@ class UIStore {
 decorate(UIStore, {
   blocksTable: observable,
   addressTxTable: observable,
+  blockTxTable: observable,
   setBlocksTableData: action,
+  setBlockTxTableData: action,
   setAddressTxTableData: action,
 });
 
