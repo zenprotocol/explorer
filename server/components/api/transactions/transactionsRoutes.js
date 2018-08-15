@@ -11,4 +11,7 @@ router.route('/id/:id')
 router.route('/:hash')
   .get(wrapAsync(controller.show));
 
+router.route('/:id/:asset')
+  .get(wrapAsync(controller.asset));
+
 module.exports = router;
