@@ -112,7 +112,7 @@ transactionsDAL.findAllAssetsByAddress = async function(address, { limit = 10, o
           END AS "isCoinbaseTx",
       COALESCE("OutputAsset"."outputSum", 0) AS "outputSum",
       COALESCE("InputAsset"."inputSum", 0) AS "inputSum",
-      COALESCE("inputSum", 0) - COALESCE("outputSum", 0) AS "totalSum"
+      COALESCE("outputSum", 0) -  COALESCE("inputSum", 0) AS "totalSum"
   FROM
       (SELECT SUM("Output"."amount") AS "outputSum",
           "Output"."asset",
