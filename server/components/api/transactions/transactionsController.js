@@ -78,8 +78,8 @@ module.exports = {
     let countPromise;
     let findPromise;
     if (blockNumber && !isNaN(blockNumber)) {
-      findPromise = transactionsDAL.findAllByBlockNumber(Number(blockNumber), query);
-      countPromise = transactionsDAL.countByBlockNumber(Number(blockNumber));
+      findPromise = transactionsDAL.findAllAssetsByBlockNumber(Number(blockNumber), query);
+      countPromise = transactionsDAL.countAssetsByBlockNumber(Number(blockNumber));
     }
     else if (address) {
       findPromise = transactionsDAL.findAllAssetsByAddress(address, query);
@@ -107,7 +107,6 @@ module.exports = {
     if(!id || !asset) {
       throw new HttpError(httpStatus.NOT_FOUND);
     }
-
 
     const transactionAsset = await transactionsDAL.findTransactionAssetInputsOutputs(id, asset);
 

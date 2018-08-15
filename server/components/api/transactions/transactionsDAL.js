@@ -62,42 +62,6 @@ transactionsDAL.findAllByAddress = async function(
   return addressDB.getTransactions(finalOptions);
 };
 
-transactionsDAL.findAllByAddress = async function(
-  address,
-  firstTransactionId,
-  ascending,
-  options = { limit: 10 }
-) {
-  const addressDB = await addressesDAL.findByAddress(address);
-  if (!addressDB) return Promise.resolve([]);
-
-  const whereOption = getFirstTransactionIdWhereOption(firstTransactionId, ascending);
-  const finalOptions = deepMerge.all([
-    {
-      include: [
-        {
-          model: this.db.Block,
-        },
-        'Outputs',
-        {
-          model: this.db.Input,
-          include: ['Output'],
-        },
-      ],
-    },
-    options,
-    {
-      where: whereOption,
-      order: [[this.db.Input, 'index'], [this.db.Output, 'index']],
-    },
-  ]);
-  // deepMerge makes symbols disappear!
-  if (whereOption.id) {
-    finalOptions.where.id = whereOption.id;
-  }
-  return addressDB.getTransactions(finalOptions);
-};
-
 transactionsDAL.findAllAssetsByAddress = async function(address, { limit = 10, offset = 0 }) {
   const sequelize = transactionsDAL.db.sequelize;
   const sql = `
@@ -172,6 +136,58 @@ transactionsDAL.findAllByBlockNumber = async function(blockNumber, options = { l
   );
 };
 
+transactionsDAL.findAllAssetsByBlockNumber = async function(blockNumber, { limit = 10, offset = 0 }) {
+  const sequelize = transactionsDAL.db.sequelize;
+  const sql = `
+  SELECT
+    COALESCE("OutputAsset"."asset", "InputAsset"."asset") AS "asset",
+    "Block"."timestamp" AS "timestamp",
+    "Block"."hash" AS "blockHash",
+    "Transaction"."id" AS "transactionId",
+    "Transaction"."hash" AS "txHash",
+    CASE WHEN "Transaction"."index" = 0 THEN true
+            ELSE false
+            END AS "isCoinbaseTx",
+    COALESCE("OutputAsset"."outputSum", 0) AS "outputSum",
+    COALESCE("InputAsset"."inputSum", 0) AS "inputSum",
+    COALESCE("outputSum", 0) -  COALESCE("inputSum", 0) AS "totalSum"
+  FROM
+    (SELECT SUM("Output"."amount") AS "outputSum",
+      "Output"."asset",
+      "Output"."TransactionId"
+    FROM "Outputs" AS "Output"
+      JOIN "Transactions" ON "Output"."TransactionId" = "Transactions"."id"
+      JOIN "Blocks" ON "Transactions"."BlockId" = "Blocks"."id" AND "Blocks"."blockNumber" = :blockNumber
+    GROUP BY "Output"."TransactionId", "Output"."asset") AS "OutputAsset"
+
+    FULL OUTER JOIN
+
+    (SELECT SUM("Output"."amount") AS "inputSum",
+      "Output"."asset",
+      "Input"."TransactionId"
+    FROM "Inputs" AS "Input"
+      INNER JOIN "Outputs" as "Output" ON "Input"."OutputId" = "Output"."id"
+      JOIN "Transactions" ON "Input"."TransactionId" = "Transactions"."id"
+      JOIN "Blocks" ON "Transactions"."BlockId" = "Blocks"."id" AND "Blocks"."blockNumber" = :blockNumber
+    GROUP BY "Input"."TransactionId", "Output"."asset") AS "InputAsset"
+
+    ON "OutputAsset"."TransactionId" = "InputAsset"."TransactionId"
+      AND "OutputAsset"."asset" = "InputAsset"."asset"
+    INNER JOIN "Transactions" AS "Transaction" ON "OutputAsset"."TransactionId" = "Transaction"."id"
+    INNER JOIN "Blocks" AS "Block" ON "Transaction"."BlockId" = "Block"."id"
+  WHERE "Block"."blockNumber" = :blockNumber
+  LIMIT :limit OFFSET :offset`;
+
+  return sequelize.query(sql, {
+    replacements: {
+      blockNumber,
+      limit,
+      offset,
+    },
+    type: sequelize.QueryTypes.SELECT,
+  });
+};
+
 transactionsDAL.countByAddress = async function(address, firstTransactionId, ascending) {
   const whereOption = getFirstTransactionIdWhereOption(firstTransactionId, ascending);
   return this.count({
@@ -211,6 +227,49 @@ transactionsDAL.countAssetsByAddress = async function(address) {
     .query(sql, {
       replacements: {
         address,
+      },
+      type: sequelize.QueryTypes.SELECT,
+    })
+    .then(result => {
+      return result.length ? result[0].count : 0;
+    });
+};
+
+transactionsDAL.countAssetsByBlockNumber = async function(blockNumber) {
+  const sequelize = transactionsDAL.db.sequelize;
+  const sql = `
+  SELECT
+    COUNT("Transaction"."id")
+  FROM
+    (SELECT SUM("Output"."amount") AS "outputSum",
+      "Output"."asset",
+      "Output"."TransactionId"
+    FROM "Outputs" AS "Output"
+      JOIN "Transactions" ON "Output"."TransactionId" = "Transactions"."id"
+      JOIN "Blocks" ON "Transactions"."BlockId" = "Blocks"."id" AND "Blocks"."blockNumber" = :blockNumber
+    GROUP BY "Output"."TransactionId", "Output"."asset") AS "OutputAsset"
+
+    FULL OUTER JOIN
+
+    (SELECT SUM("Output"."amount") AS "inputSum",
+      "Output"."asset",
+      "Input"."TransactionId"
+    FROM "Inputs" AS "Input"
+      INNER JOIN "Outputs" as "Output" ON "Input"."OutputId" = "Output"."id"
+      JOIN "Transactions" ON "Input"."TransactionId" = "Transactions"."id"
+      JOIN "Blocks" ON "Transactions"."BlockId" = "Blocks"."id" AND "Blocks"."blockNumber" = :blockNumber
+    GROUP BY "Input"."TransactionId", "Output"."asset") AS "InputAsset"
+
+    ON "OutputAsset"."TransactionId" = "InputAsset"."TransactionId"
+      AND "OutputAsset"."asset" = "InputAsset"."asset"
+    INNER JOIN "Transactions" AS "Transaction" ON "OutputAsset"."TransactionId" = "Transaction"."id"
+    INNER JOIN "Blocks" AS "Block" ON "Transaction"."BlockId" = "Block"."id"
+  WHERE "Block"."blockNumber" = :blockNumber`;
+
+  return sequelize
+    .query(sql, {
+      replacements: {
+        blockNumber,
       },
       type: sequelize.QueryTypes.SELECT,
     })
