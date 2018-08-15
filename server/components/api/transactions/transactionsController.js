@@ -63,7 +63,7 @@ module.exports = {
   },
   assets: async function(req, res) {
     // find by blockNumber or address
-    const { blockNumber, address } = req.params;
+    const { hashOrBlockNumber, address } = req.params;
     const page = req.query.page || 0;
     const pageSize = req.query.pageSize || 10;
     const firstTransactionId = req.query.firstTransactionId || 0;
@@ -77,15 +77,16 @@ module.exports = {
     
     let countPromise;
     let findPromise;
-    if (blockNumber && !isNaN(blockNumber)) {
-      findPromise = transactionsDAL.findAllAssetsByBlockNumber(Number(blockNumber), query);
-      countPromise = transactionsDAL.countAssetsByBlockNumber(Number(blockNumber));
+    if (hashOrBlockNumber) {
+      findPromise = transactionsDAL.findAllAssetsByBlock(hashOrBlockNumber, query);
+      countPromise = transactionsDAL.countAssetsByBlock(hashOrBlockNumber);
     }
     else if (address) {
       findPromise = transactionsDAL.findAllAssetsByAddress(address, query);
       countPromise = transactionsDAL.countAssetsByAddress(address, firstTransactionId, ascending);
     }
     else {
+      // TODO - find all transaction assets !!!
       findPromise = transactionsDAL.findAll(query);
       countPromise = transactionsDAL.count();
     }

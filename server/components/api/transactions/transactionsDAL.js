@@ -5,7 +5,7 @@ const dal = require('../../../lib/dal');
 const transactionsDAL = dal.createDAL('Transaction');
 const addressesDAL = require('../addresses/addressesDAL');
 const blocksDAL = require('../blocks/blocksDAL');
-const getFieldsForSelectQuery = require('../../../lib/getFieldsForSelectQuery');
+const isHash = require('../../../lib/isHash');
 
 transactionsDAL.findByHash = async function(hash) {
   return transactionsDAL.findOne({
@@ -136,7 +136,8 @@ transactionsDAL.findAllByBlockNumber = async function(blockNumber, options = { l
   );
 };
 
-transactionsDAL.findAllAssetsByBlockNumber = async function(blockNumber, { limit = 10, offset = 0 }) {
+transactionsDAL.findAllAssetsByBlock = async function(hashOrBlockNumber, { limit = 10, offset = 0 }) {
+  const blockProp = isHash(hashOrBlockNumber) ? 'hash' : 'blockNumber';
   const sequelize = transactionsDAL.db.sequelize;
   const sql = `
   SELECT
@@ -157,7 +158,7 @@ transactionsDAL.findAllAssetsByBlockNumber = async function(blockNumber, { limit
       "Output"."TransactionId"
     FROM "Outputs" AS "Output"
       JOIN "Transactions" ON "Output"."TransactionId" = "Transactions"."id"
-      JOIN "Blocks" ON "Transactions"."BlockId" = "Blocks"."id" AND "Blocks"."blockNumber" = :blockNumber
+      JOIN "Blocks" ON "Transactions"."BlockId" = "Blocks"."id" AND "Blocks"."${blockProp}" = :hashOrBlockNumber
     GROUP BY "Output"."TransactionId", "Output"."asset") AS "OutputAsset"
 
     FULL OUTER JOIN
@@ -168,19 +169,19 @@ transactionsDAL.findAllAssetsByBlockNumber = async function(blockNumber, { limit
     FROM "Inputs" AS "Input"
       INNER JOIN "Outputs" as "Output" ON "Input"."OutputId" = "Output"."id"
       JOIN "Transactions" ON "Input"."TransactionId" = "Transactions"."id"
-      JOIN "Blocks" ON "Transactions"."BlockId" = "Blocks"."id" AND "Blocks"."blockNumber" = :blockNumber
+      JOIN "Blocks" ON "Transactions"."BlockId" = "Blocks"."id" AND "Blocks"."${blockProp}" = :hashOrBlockNumber
     GROUP BY "Input"."TransactionId", "Output"."asset") AS "InputAsset"
 
     ON "OutputAsset"."TransactionId" = "InputAsset"."TransactionId"
       AND "OutputAsset"."asset" = "InputAsset"."asset"
     INNER JOIN "Transactions" AS "Transaction" ON "OutputAsset"."TransactionId" = "Transaction"."id"
     INNER JOIN "Blocks" AS "Block" ON "Transaction"."BlockId" = "Block"."id"
-  WHERE "Block"."blockNumber" = :blockNumber
+  WHERE "Block"."${blockProp}" = :hashOrBlockNumber
   LIMIT :limit OFFSET :offset`;
 
   return sequelize.query(sql, {
     replacements: {
-      blockNumber,
+      hashOrBlockNumber,
       limit,
       offset,
     },
@@ -235,7 +236,8 @@ transactionsDAL.countAssetsByAddress = async function(address) {
     });
 };
 
-transactionsDAL.countAssetsByBlockNumber = async function(blockNumber) {
+transactionsDAL.countAssetsByBlock = async function(hashOrBlockNumber) {
+  const blockProp = isHash(hashOrBlockNumber) ? 'hash' : 'blockNumber';
   const sequelize = transactionsDAL.db.sequelize;
   const sql = `
   SELECT
@@ -246,7 +248,7 @@ transactionsDAL.countAssetsByBlockNumber = async function(blockNumber) {
       "Output"."TransactionId"
     FROM "Outputs" AS "Output"
       JOIN "Transactions" ON "Output"."TransactionId" = "Transactions"."id"
-      JOIN "Blocks" ON "Transactions"."BlockId" = "Blocks"."id" AND "Blocks"."blockNumber" = :blockNumber
+      JOIN "Blocks" ON "Transactions"."BlockId" = "Blocks"."id" AND "Blocks"."${blockProp}" = :hashOrBlockNumber
     GROUP BY "Output"."TransactionId", "Output"."asset") AS "OutputAsset"
 
     FULL OUTER JOIN
@@ -257,19 +259,19 @@ transactionsDAL.countAssetsByBlockNumber = async function(blockNumber) {
     FROM "Inputs" AS "Input"
       INNER JOIN "Outputs" as "Output" ON "Input"."OutputId" = "Output"."id"
       JOIN "Transactions" ON "Input"."TransactionId" = "Transactions"."id"
-      JOIN "Blocks" ON "Transactions"."BlockId" = "Blocks"."id" AND "Blocks"."blockNumber" = :blockNumber
+      JOIN "Blocks" ON "Transactions"."BlockId" = "Blocks"."id" AND "Blocks"."${blockProp}" = :hashOrBlockNumber
     GROUP BY "Input"."TransactionId", "Output"."asset") AS "InputAsset"
 
     ON "OutputAsset"."TransactionId" = "InputAsset"."TransactionId"
       AND "OutputAsset"."asset" = "InputAsset"."asset"
     INNER JOIN "Transactions" AS "Transaction" ON "OutputAsset"."TransactionId" = "Transaction"."id"
     INNER JOIN "Blocks" AS "Block" ON "Transaction"."BlockId" = "Block"."id"
-  WHERE "Block"."blockNumber" = :blockNumber`;
+  WHERE "Block"."${blockProp}" = :hashOrBlockNumber`;
 
   return sequelize
     .query(sql, {
       replacements: {
-        blockNumber,
+        hashOrBlockNumber,
       },
       type: sequelize.QueryTypes.SELECT,
     })

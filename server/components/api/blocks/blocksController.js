@@ -5,10 +5,7 @@ const blocksDAL = require('./blocksDAL');
 const jsonResponse = require('../../../lib/jsonResponse');
 const HttpError = require('../../../lib/HttpError');
 const createQueryObject = require('../../../lib/createQueryObject');
-
-function isHash(value) {
-  return String(value).length === 64;
-}
+const isHash = require('../../../lib/isHash');
 
 module.exports = {
   index: async function(req, res) {

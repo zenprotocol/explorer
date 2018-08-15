@@ -12,7 +12,7 @@ router.route('/id/:id')
 router.route('/:hashOrBlockNumber')
   .get(wrapAsync(controller.show));
 
-router.route('/:blockNumber/assets')
+router.route('/:hashOrBlockNumber/assets')
   .get(wrapAsync(transactionsController.assets));
 
 module.exports = router;
