@@ -20,6 +20,7 @@ module.exports = {
   production: {
     use_env_variable: 'DATABASE_URL',
     dialect: Config.get('db:dialect'),
+    dialectOptions: Config.get('db:dialectOptions'),
     logging: false,
   },
 };
