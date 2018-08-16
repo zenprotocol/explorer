@@ -1,27 +1,24 @@
 'use strict';
 
-const deepMerge = require('deepmerge');
-const dal = require('../../../lib/dal');
-const addressesDAL = dal.createDAL('Address');
+const outputsDAL = require('../outputs/outputsDAL');
+const inputsDAL = require('../inputs/inputsDAL');
+const addressesDAL = {};
 
-addressesDAL.findByAddress = function(address, { transaction } = {}) {
-  const options = {
+addressesDAL.addressExists = function(address) {
+  return outputsDAL.findAll({
     where: {
       address,
     },
-  };
-
-  if(transaction) {
-    options.transaction = transaction;
-  }
-
-  return this.findOne(options);
+    limit: 1,
+  }).then((results) => {
+    return results.length > 0;
+  });
 };
 
 addressesDAL.getSentSums = async function(address) {
-  const db = this.db;
+  const db = inputsDAL.db;
   const Sequelize = db.Sequelize;
-  return db.Input.findAll({
+  return inputsDAL.findAll({
     attributes: ['Output.asset', [Sequelize.fn('sum', Sequelize.col('Output.amount')), 'total']],
     include: [
       {
@@ -37,9 +34,9 @@ addressesDAL.getSentSums = async function(address) {
   });
 };
 addressesDAL.getReceivedSums = async function(address) {
-  const db = this.db;
+  const db = outputsDAL.db;
   const Sequelize = db.Sequelize;
-  return db.Output.findAll({
+  return outputsDAL.findAll({
     attributes: ['asset', [Sequelize.fn('sum', Sequelize.col('amount')), 'total']],
     where: {
       address,
@@ -47,17 +44,6 @@ addressesDAL.getReceivedSums = async function(address) {
     group: 'asset',
     raw: true,
   });
-};
-
-/**
- * Add a transaction to an address
- *
- * @param {Object} address
- * @param {Object} transaction
- * @param {Object} [options={}]
- */
-addressesDAL.addTransaction = async function(address, transaction, options = {}) {
-  return address.addTransaction(transaction, options);
 };
 
 module.exports = addressesDAL;

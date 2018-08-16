@@ -3,7 +3,6 @@
 const deepMerge = require('deepmerge');
 const dal = require('../../../lib/dal');
 const transactionsDAL = dal.createDAL('Transaction');
-const addressesDAL = require('../addresses/addressesDAL');
 const blocksDAL = require('../blocks/blocksDAL');
 const isHash = require('../../../lib/isHash');
 
@@ -24,42 +23,6 @@ transactionsDAL.findByHash = async function(hash) {
     ],
     order: [[transactionsDAL.db.Input, 'index'], [transactionsDAL.db.Output, 'index']],
   });
-};
-
-transactionsDAL.findAllByAddress = async function(
-  address,
-  firstTransactionId,
-  ascending,
-  options = { limit: 10 }
-) {
-  const addressDB = await addressesDAL.findByAddress(address);
-  if (!addressDB) return Promise.resolve([]);
-
-  const whereOption = getFirstTransactionIdWhereOption(firstTransactionId, ascending);
-  const finalOptions = deepMerge.all([
-    {
-      include: [
-        {
-          model: this.db.Block,
-        },
-        'Outputs',
-        {
-          model: this.db.Input,
-          include: ['Output'],
-        },
-      ],
-    },
-    options,
-    {
-      where: whereOption,
-      order: [[this.db.Input, 'index'], [this.db.Output, 'index']],
-    },
-  ]);
-  // deepMerge makes symbols disappear!
-  if (whereOption.id) {
-    finalOptions.where.id = whereOption.id;
-  }
-  return addressDB.getTransactions(finalOptions);
 };
 
 transactionsDAL.findAllAssetsByAddress = async function(address, { limit = 10, offset = 0 }) {
@@ -424,26 +387,6 @@ transactionsDAL.addOutput = async function(transaction, output, options = {}) {
   return transaction.addOutput(output, options);
 };
 transactionsDAL.addOutput = transactionsDAL.addOutput.bind(transactionsDAL);
-
-/**
- * Add an address to a transaction
- *
- * @param {Object} transaction
- * @param {Object|string} address
- * @param {Object} [options={}]
- */
-transactionsDAL.addAddress = async function(transaction, address, addressBC, options = {}) {
-  let addressDB = null;
-  if (typeof address === 'string') {
-    addressDB = await addressesDAL.findByAddress(address, options);
-    if (!addressDB) {
-      addressDB = await addressesDAL.create({ address, addressBC }, options);
-    }
-  } else {
-    addressDB = address;
-  }
-  return transaction.addAddress(addressDB, options);
-};
 
 function getFirstTransactionIdWhereOption(firstTransactionId, ascending) {
   const operator = ascending

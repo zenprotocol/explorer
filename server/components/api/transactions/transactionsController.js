@@ -30,10 +30,6 @@ module.exports = {
       findPromise = transactionsDAL.findAllByBlockNumber(Number(blockNumber), query);
       countPromise = transactionsDAL.countByBlockNumber(Number(blockNumber));
     }
-    else if (address) {
-      findPromise = transactionsDAL.findAllByAddress(address, firstTransactionId, ascending, query);
-      countPromise = transactionsDAL.countByAddress(address, firstTransactionId, ascending);
-    }
     else {
       findPromise = transactionsDAL.findAll(query);
       countPromise = transactionsDAL.count();

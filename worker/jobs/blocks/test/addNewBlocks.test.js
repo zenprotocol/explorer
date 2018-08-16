@@ -5,7 +5,6 @@ const Service = require('../../../../server/lib/Service');
 const truncate = require('../../../../common/test/truncate');
 const blocksDAL = require('../../../../server/components/api/blocks/blocksDAL');
 const transactionsDAL = require('../../../../server/components/api/transactions/transactionsDAL');
-const addressesDAL = require('../../../../server/components/api/addresses/addressesDAL');
 const NetworkHelper = require('../../../lib/NetworkHelper');
 const mock = require('./mock');
 const BlocksAdder = require('../BlocksAdder');
@@ -186,28 +185,5 @@ test('Add New Blocks with transactions and a falsy input', async function(t) {
   } catch (error) {
     const blocks = await blocksDAL.findAll();
     t.assert(blocks.length === 0, 'Should not have added the block to the db');
-  }
-});
-
-test('Check if address is added correctly', async function(t) {
-  const address = 'zen1qk02q3j43zaxa4vvrrc3dkzenvq3xpmk77y6c3ywn66qrum7l0asqv74w6l';
-  const addressTxCount = 3;
-
-  await truncate();
-  const networkHelper = new NetworkHelper();
-  mock.mockNetworkHelper(networkHelper);
-  const blocksAdder = new BlocksAdder(networkHelper);
-  try {
-    await blocksAdder.addNewBlocks({
-      data: { limitBlocks: 1 },
-    });
-    const numOfAppearances = await addressesDAL.count({ where: { address } });
-    t.equals(numOfAppearances, 1, 'An address should appear only once in the Addresses table');
-
-    const addressDB = await addressesDAL.findByAddress(address);
-    const numOfAddressTransactions = (await addressDB.getTransactions()).length;
-    t.equals(numOfAddressTransactions, addressTxCount, `This address should have ${addressTxCount} transactions`);
-  } catch (error) {
-    t.fail('Should not throw an error');
   }
 });
