@@ -1,0 +1,14 @@
+.ItemsTable .negative {
+  color: #fd3a3a;
+}
+
+.ItemsTable .positive {
+  color: #7bcc3a;
+}
+
+.ItemsTable .expand {
+  cursor: 'pointer';
+  padding: 0;
+  text-align: center;
+  user-select: none;
+}
