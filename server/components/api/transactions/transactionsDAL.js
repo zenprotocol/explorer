@@ -189,19 +189,28 @@ transactionsDAL.findAllAssetsByBlock = async function(hashOrBlockNumber, { limit
   });
 };
 
-transactionsDAL.countByAddress = async function(address, firstTransactionId, ascending) {
-  const whereOption = getFirstTransactionIdWhereOption(firstTransactionId, ascending);
-  return this.count({
-    where: whereOption,
-    include: [
-      {
-        model: this.db.Address,
-        where: {
-          address,
-        },
+transactionsDAL.countByAddress = async function(address) {
+  const sequelize = transactionsDAL.db.sequelize;
+  const sql = `
+  SELECT COUNT("Transaction"."id")
+    FROM
+      "Transactions" AS "Transaction"
+      INNER JOIN "Outputs" ON "Transaction"."id" = "Outputs"."TransactionId" AND "Outputs"."address" = :address
+      FULL OUTER JOIN (SELECT "Inputs"."TransactionId" 
+        FROM "Inputs" JOIN "Outputs" 
+        ON "Inputs"."OutputId" = "Outputs"."id" AND "Outputs"."address" = :address) AS "Inputs"
+      ON "Outputs"."TransactionId" = "Inputs"."TransactionId"`;
+
+  return sequelize
+    .query(sql, {
+      replacements: {
+        address,
       },
-    ],
-  });
+      type: sequelize.QueryTypes.SELECT,
+    })
+    .then(result => {
+      return result.length ? result[0].count : 0;
+    });
 };
 
 transactionsDAL.countAssetsByAddress = async function(address) {

@@ -31,20 +31,34 @@ module.exports = {
       countPromise = transactionsDAL.countByBlockNumber(Number(blockNumber));
     }
     else if (address) {
-      findPromise = transactionsDAL.findAllAssetsByAddress(address, query);
-      countPromise = transactionsDAL.countAssetsByAddress(address, firstTransactionId, ascending);
+      findPromise = transactionsDAL.findAllByAddress(address, firstTransactionId, ascending, query);
+      countPromise = transactionsDAL.countByAddress(address, firstTransactionId, ascending);
     }
     else {
       findPromise = transactionsDAL.findAll(query);
       countPromise = transactionsDAL.count();
     }
 
-    const [count, transactionAssets] = await Promise.all([countPromise, findPromise]);
+    const [count, transactions] = await Promise.all([countPromise, findPromise]);
+
+    const customTXs = [];
+
+    transactions.forEach(transaction => {
+      const customTX = transactionsDAL.toJSON(transaction);
+      customTX.isCoinbase = isCoinbaseTX(transaction);
+
+      customTX['assets'] = getTransactionAssets(transaction, address);
+      delete customTX.Inputs;
+      delete customTX.Outputs;
+      delete customTX.AddressTransactions;
+
+      customTXs.push(customTX);
+    });
 
     res.status(httpStatus.OK).json(
       jsonResponse.create(httpStatus.OK, {
         total: count,
-        items: transactionAssets,
+        items: customTXs,
       })
     );
   },
@@ -63,7 +77,7 @@ module.exports = {
   },
   assets: async function(req, res) {
     // find by blockNumber or address
-    const { hashOrBlockNumber, address } = req.params;
+    const { hashOrBlockNumber, txHash, address } = req.params;
     const page = req.query.page || 0;
     const pageSize = req.query.pageSize || 10;
     const firstTransactionId = req.query.firstTransactionId || 0;
@@ -75,11 +89,15 @@ module.exports = {
 
     const query = createQueryObject({ page, pageSize, sorted });
     
-    let countPromise;
-    let findPromise;
+    let countPromise, 
+      findPromise;
     if (hashOrBlockNumber) {
       findPromise = transactionsDAL.findAllAssetsByBlock(hashOrBlockNumber, query);
       countPromise = transactionsDAL.countAssetsByBlock(hashOrBlockNumber);
+    }
+    else if (txHash) {
+      findPromise = transactionsDAL.findAllAssetsByTxHash(txHash, query);
+      countPromise = transactionsDAL.countAssetsByTxHash(txHash);
     }
     else if (address) {
       findPromise = transactionsDAL.findAllAssetsByAddress(address, query);

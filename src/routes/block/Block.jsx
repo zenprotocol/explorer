@@ -4,9 +4,8 @@ import { Link } from 'react-router-dom';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import blockStore from '../../store/BlockStore';
-import uiStore from '../../store/UIStore';
 import TextUtils from '../../lib/TextUtils';
-import BlockTxsTable from '../../components/BlockTxsTable/BlockTxsTable.jsx';
+import Transactions from '../../components/Transactions/Transactions.jsx';
 import BlockUtils from '../../lib/BlockUtils';
 import Loading from '../../components/Loading/Loading.jsx';
 import HashLink from '../../components/HashLink/HashLink.jsx';
@@ -27,7 +26,6 @@ class BlockPage extends Component {
     blockStore.fetchBlock(params.id).then((block) => {
       this.switchBlock(block.blockNumber);
     });
-    this.setBlock(params.id);
   }
 
   componentDidUpdate(prevProps) {
@@ -35,12 +33,7 @@ class BlockPage extends Component {
       blockStore.fetchBlock(this.props.match.params.id).then((block) => {
         this.switchBlock(block.blockNumber);
       });
-      this.setBlock(this.props.match.params.id);
     }
-  }
-
-  setBlock(hashOrBlockNumber) {
-    uiStore.setBlockTxTableData({hashOrBlockNumber});
   }
 
   renderPagination() {
@@ -169,7 +162,8 @@ class BlockPage extends Component {
         </section>
 
         <section className="bordered border-left border-primary pl-lg-4">
-          <BlockTxsTable />
+          <h1 className="d-block d-sm-inline-block text-white mb-3 mb-lg-5">Transactions</h1>
+          <Transactions blockNumber={block.blockNumber} order="asc" />
         </section>
       </div>
     );
