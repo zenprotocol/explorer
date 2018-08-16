@@ -70,19 +70,19 @@ class AddressPage extends Component {
                   <tbody>
                     <tr>
                       <td>BALANCE</td>
-                      <td>{AssetUtils.getAmountString({ asset: '00' }, zpBalance.balance)}</td>
+                      <td>{AssetUtils.getAmountString('00', zpBalance.balance)}</td>
                     </tr>
                     <tr>
                       <td>TRANSACTIONS</td>
-                      <td>{TextUtils.formatNumber(blockStore.addressTransactionAssetsCount)}</td>
+                      <td>{TextUtils.formatNumber(blockStore.address.totalTxs)}</td>
                     </tr>
                     <tr>
                       <td>TOTAL RECEIVED</td>
-                      <td>{AssetUtils.getAmountString({ asset: '00' }, zpBalance.received)}</td>
+                      <td>{AssetUtils.getAmountString('00', zpBalance.received)}</td>
                     </tr>
                     <tr>
                       <td>TOTAL SENT</td>
-                      <td>{AssetUtils.getAmountString({ asset: '00' }, zpBalance.sent)}</td>
+                      <td>{AssetUtils.getAmountString('00', zpBalance.sent)}</td>
                     </tr>
                     <tr>
                       <td>NO. ASSET TYPES</td>
@@ -133,7 +133,7 @@ class AddressPage extends Component {
           <td>
             <HashLink hash={AssetUtils.getTypeFromCode(assetBalance.asset)} />
           </td>
-          <td>{AssetUtils.getAmountString(assetBalance, assetBalance.total)}</td>
+          <td>{AssetUtils.getAmountString(assetBalance.asset, assetBalance.total)}</td>
         </tr>
       );
     });

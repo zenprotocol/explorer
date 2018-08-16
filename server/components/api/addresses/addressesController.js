@@ -32,10 +32,11 @@ module.exports = {
       throw new HttpError(httpStatus.NOT_FOUND);
     }
 
-    const [sent, received, assets] = await Promise.all([
+    const [sent, received, assets, totalTxs] = await Promise.all([
       addressesDAL.getSentSums(address),
       addressesDAL.getReceivedSums(address),
-      outputsDAL.findAllAddressAssets(address)
+      outputsDAL.findAllAddressAssets(address),
+      transactionsDAL.countByAddress(address),
     ]);
     const alreadyAddedAssets = [];
     const balance = received.map((item) => {
@@ -65,6 +66,7 @@ module.exports = {
     if (addressDb) {
       res.status(httpStatus.OK).json(jsonResponse.create(httpStatus.OK, {
         address,
+        totalTxs,
         assets,
         received,
         sent,
