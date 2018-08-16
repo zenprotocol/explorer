@@ -135,8 +135,11 @@ class TxsAssetsTable extends Component {
   }
 
   render() {
-    const { loading, assetCount, assets, pageSize, curPage } = this.props;
+    const { loading, assetCount, assets, pageSize, curPage, address } = this.props;
     const numOfPages = Math.ceil(assetCount / pageSize);
+
+    
+
     return (
       <div className={classNames('TxsAssetsTable', { loading })}>
         <div className="clearfix">
@@ -170,12 +173,19 @@ class TxsAssetsTable extends Component {
           onPageChange={this.onPageChange}
           pageSize={pageSize}
           SubComponent={row => {
+            const addressFoundIn = [];
+            if(address) {
+              Number(row.original.outputSum) !== 0 && addressFoundIn.push('output');
+              Number(row.original.inputSum) !== 0 && addressFoundIn.push('input');
+            }
             return (
               <TransactionAssetLoader
                 transactionAssets={assets}
                 index={row.index}
                 timestamp={row.original.timestamp}
                 total={row.original.totalSum}
+                address={address}
+                addressFoundIn={addressFoundIn}
               />
             );
           }}
@@ -200,6 +210,7 @@ TxsAssetsTable.propTypes = {
   assets: PropTypes.array,
   pageSize: PropTypes.number,
   curPage: PropTypes.number,
+  address: PropTypes.string,
   tableDataSetter: PropTypes.func.isRequired,
 };
 

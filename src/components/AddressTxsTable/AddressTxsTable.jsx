@@ -4,7 +4,7 @@ import uiStore from '../../store/UIStore';
 import blockStore from '../../store/BlockStore';
 import TxsAssetsTable from '../TxsAssetsTable/TxsAssetsTable.jsx';
 
-function AddressTxsTable() {
+function AddressTxsTable(props) {
   return (
     <TxsAssetsTable
       columns={['asset', 'blockHash', 'txHash', 'isCoinbaseTx', 'timestamp', 'totalSum']}
@@ -15,6 +15,7 @@ function AddressTxsTable() {
       pageSize={uiStore.addressTxTable.pageSize}
       curPage={uiStore.addressTxTable.curPage}
       tableDataSetter={uiStore.setAddressTxTableData.bind(uiStore)}
+      address={props.address}
     />
   );
 }

@@ -115,6 +115,7 @@ class UIStore {
   setAddressTxTableData({ address, pageSize, curPage } = {}) {
     if (address) {
       this.addressTxTable.address = address;
+      this.addressTxTable.curPage = 0;
     }
     if (pageSize) {
       this.addressTxTable.pageSize = pageSize;

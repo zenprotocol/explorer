@@ -118,7 +118,7 @@ class AddressPage extends Component {
         </section>
 
         <section className={classNames('bordered border-left border-primary pl-lg-4', {'d-none': is404})}>
-          <AddressTxsTable />
+          <AddressTxsTable address={params.address} />
         </section>
       </div>
     );
