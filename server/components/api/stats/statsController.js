@@ -5,7 +5,7 @@ const jsonResponse = require('../../../lib/jsonResponse');
 const HttpError = require('../../../lib/HttpError');
 const blocksDAL = require('../blocks/blocksDAL');
 
-const STATS = ['totalzp', 'total_kalapa'];
+const STATS = ['totalzp', 'totalkalapa'];
 
 const StatsFunctions = {
   totalZp: async function() {
@@ -41,7 +41,7 @@ module.exports = {
       case 'totalzp':
         stat = await StatsFunctions.totalZp();
         break;
-      case 'total_kalapa':
+      case 'totalkalapa':
         stat = await StatsFunctions.totalKalapa();
         break;
     }
