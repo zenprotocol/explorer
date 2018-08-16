@@ -1,12 +1,12 @@
-.AddressTxsTable .negative {
+.TxsAssetsTable .negative {
   color: #fd3a3a;
 }
 
-.AddressTxsTable .positive {
+.TxsAssetsTable .positive {
   color: #7bcc3a;
 }
 
-.AddressTxsTable .expand {
+.TxsAssetsTable .expand {
   cursor: 'pointer';
   padding: 0;
   text-align: center;

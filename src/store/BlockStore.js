@@ -60,7 +60,7 @@ class BlockStore {
     return Service.blocks.findTransactionsAssets(blockNumber, params).then(response => {
       runInAction(() => {
         this.blockTransactionAssets = response.data.items;
-        this.blockTransactionAssetsCount = response.data.total;
+        this.blockTransactionAssetsCount = Number(response.data.total);
         this.loading.blockTransactionAssets = false;
       });
     });
@@ -98,7 +98,7 @@ class BlockStore {
     return Service.addresses.findTransactionsAssets(address, params).then(response => {
       runInAction(() => {
         this.addressTransactionAssets = response.data.items;
-        this.addressTransactionAssetsCount = response.data.total;
+        this.addressTransactionAssetsCount = Number(response.data.total);
         this.loading.addressTransactionAssets = false;
       });
     });

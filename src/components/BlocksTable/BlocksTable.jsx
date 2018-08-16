@@ -3,11 +3,12 @@ import { observer } from 'mobx-react';
 import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import debounce from 'lodash.debounce';
-import GenericTable from '../GenericTable/GenericTable.jsx';
 import TextUtils from '../../lib/TextUtils';
 import uiStore from '../../store/UIStore';
 import blockStore from '../../store/BlockStore';
 import BlockUtils from '../../lib/BlockUtils';
+import Config from '../../lib/Config';
+import GenericTable from '../GenericTable/GenericTable.jsx';
 import HashLink from '../HashLink/HashLink.jsx';
 import './BlocksTable.css';
 
@@ -57,7 +58,7 @@ class BlocksTable extends Component {
       {
         Header: 'Parent',
         accessor: 'parent',
-        show: this.state.windowWidth > 767,
+        show: this.state.windowWidth >= Config.ui.sizes.breakpointMd,
         Cell: data => {
           return <HashLink url={`/blocks/${data.original.parent}`} hash={data.value}/>;
         },
@@ -65,7 +66,7 @@ class BlocksTable extends Component {
       {
         Header: 'Difficulty',
         accessor: 'difficulty',
-        show: this.state.windowWidth > 767,
+        show: this.state.windowWidth >= Config.ui.sizes.breakpointMd,
         Cell: function(data) {
           return BlockUtils.formatDifficulty(data.value);
         },
