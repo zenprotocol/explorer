@@ -1,6 +1,15 @@
 import { observable, decorate, action, autorun } from 'mobx';
 import blockStore from './BlockStore';
 
+function hashOrBlockNumberNotEmpty(hashOrBlockNumber) {
+  return (
+    typeof hashOrBlockNumber !== 'undefined' &&
+    hashOrBlockNumber !== '' &&
+    hashOrBlockNumber !== '0' &&
+    hashOrBlockNumber !== 0
+  );
+}
+
 class UIStore {
   constructor() {
     this.blocksTable = {
@@ -17,7 +26,7 @@ class UIStore {
     };
 
     this.blockTxTable = {
-      hashOrBlockNumber: 0,
+      hashOrBlockNumber: '0',
       pageSize: 10,
       curPage: 0,
       prevPage: -1,
@@ -46,12 +55,15 @@ class UIStore {
 
   fetchBlocksOnChange() {
     if (this.blocksTable.curPage * this.blocksTable.pageSize < blockStore.blocksCount) {
-      blockStore.fetchBlocks({ page: this.blocksTable.curPage, pageSize: this.blocksTable.pageSize });
+      blockStore.fetchBlocks({
+        page: this.blocksTable.curPage,
+        pageSize: this.blocksTable.pageSize,
+      });
     }
   }
 
   fetchBlockTransactionAssetsOnChange() {
-    if (typeof this.blockTxTable.hashOrBlockNumber !== 'undefined') {
+    if (hashOrBlockNumberNotEmpty(this.blockTxTable.hashOrBlockNumber)) {
       blockStore.fetchBlockTransactionAssets(this.blockTxTable.hashOrBlockNumber, {
         page: this.blockTxTable.curPage,
         pageSize: this.blockTxTable.pageSize,
