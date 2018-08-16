@@ -192,13 +192,17 @@ transactionsDAL.findAllAssetsByBlock = async function(hashOrBlockNumber, { limit
 transactionsDAL.countByAddress = async function(address) {
   const sequelize = transactionsDAL.db.sequelize;
   const sql = `
-  SELECT COUNT("Transaction"."id")
+  SELECT COUNT("Outputs"."TransactionId")
     FROM
-      "Transactions" AS "Transaction"
-      INNER JOIN "Outputs" ON "Transaction"."id" = "Outputs"."TransactionId" AND "Outputs"."address" = :address
+      (SELECT "TransactionId" 
+        FROM "Outputs" 
+        WHERE "Outputs"."address" = :address
+        GROUP BY "TransactionId") AS "Outputs"
       FULL OUTER JOIN (SELECT "Inputs"."TransactionId" 
         FROM "Inputs" JOIN "Outputs" 
-        ON "Inputs"."OutputId" = "Outputs"."id" AND "Outputs"."address" = :address) AS "Inputs"
+        ON "Inputs"."OutputId" = "Outputs"."id" 
+        AND "Outputs"."address" = :address
+        GROUP BY "Inputs"."TransactionId" ) AS "Inputs"
       ON "Outputs"."TransactionId" = "Inputs"."TransactionId"`;
 
   return sequelize
