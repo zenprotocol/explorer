@@ -18,28 +18,6 @@ addressesDAL.findByAddress = function(address, { transaction } = {}) {
   return this.findOne(options);
 };
 
-addressesDAL.findAllTransactions = async function(address, options = { limit: 10 }) {
-  const addressDB = await this.findByAddress(address);
-  return addressDB.getTransactions(
-    deepMerge.all([
-      {
-        include: [
-          'Block',
-          'Outputs',
-          {
-            model: this.db.Input,
-            include: ['Output'],
-          },
-        ],
-      },
-      options,
-      {
-        order: [['createdAt', 'DESC'], [this.db.Input, 'index'], [this.db.Output, 'index']],
-      },
-    ])
-  );
-};
-
 addressesDAL.getSentSums = async function(address) {
   const db = this.db;
   const Sequelize = db.Sequelize;
