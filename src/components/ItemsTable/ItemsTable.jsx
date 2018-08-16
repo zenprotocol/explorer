@@ -44,14 +44,13 @@ class ItemsTable extends Component {
         </div>
       ),
     };
-    const columns = [
-      ...this.props.columns.map(column => {
-        const hideOnMobileObj = this.props.hideOnMobile.includes(column)
-          ? { show: this.state.windowWidth >= Config.ui.sizes.breakpointMd }
-          : {};
-        return Object.assign({}, column, hideOnMobileObj);
-      }),
-    ];
+
+    const columns = this.props.columns.map(column => {
+      const hideOnMobileObj = this.props.hideOnMobile.includes(column)
+        ? { show: this.state.windowWidth >= Config.ui.sizes.breakpointMd }
+        : {};
+      return Object.assign({}, column, hideOnMobileObj);
+    });
 
     if(this.props.SubComponent) {
       columns.push(expander);
