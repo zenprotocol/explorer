@@ -6,6 +6,8 @@ module.exports = (sequelize, DataTypes) => {
       index: DataTypes.INTEGER,
       outpointTXHash: DataTypes.STRING,
       outpointIndex: DataTypes.INTEGER,
+      isMint: DataTypes.BOOLEAN,
+      asset: DataTypes.STRING,
       amount: DataTypes.BIGINT,
     },
     {}
