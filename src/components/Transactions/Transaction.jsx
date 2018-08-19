@@ -28,7 +28,7 @@ export default function Transaction(props) {
                 showHeader={assetIndex === 0}
                 address={address}
                 timestamp={timestamp}
-                total={address ? asset.addressTotal : asset.total}
+                total={address ? Number(asset.addressTotal) : Number(asset.total)}
               />
             );
           })}

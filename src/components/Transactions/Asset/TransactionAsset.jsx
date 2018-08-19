@@ -144,7 +144,7 @@ TransactionAsset.propTypes = {
   address: PropTypes.string,
   addressFoundIn: PropTypes.array,
   showHeader: PropTypes.bool,
-  total: PropTypes.string,
+  total: PropTypes.number,
 };
 TransactionAsset.defaultProps = {
   address: '',

@@ -183,7 +183,7 @@ class TxsAssetsTable extends Component {
                 transactionAssets={assets}
                 index={row.index}
                 timestamp={row.original.timestamp}
-                total={row.original.totalSum}
+                total={Number(row.original.totalSum)}
                 address={address}
                 addressFoundIn={addressFoundIn}
               />

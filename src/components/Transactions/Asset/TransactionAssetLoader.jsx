@@ -43,7 +43,7 @@ TransactionAssetLoader.propTypes = {
   address: PropTypes.string,
   addressFoundIn: PropTypes.array,
   timestamp: PropTypes.string,
-  total: PropTypes.string,
+  total: PropTypes.number,
 };
 
 export default observer(TransactionAssetLoader);
