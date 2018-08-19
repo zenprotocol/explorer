@@ -46,7 +46,7 @@ class ItemsTable extends Component {
     };
 
     const columns = this.props.columns.map(column => {
-      const hideOnMobileObj = this.props.hideOnMobile.includes(column)
+      const hideOnMobileObj = this.props.hideOnMobile.includes(column.accessor)
         ? { show: this.state.windowWidth >= Config.ui.sizes.breakpointMd }
         : {};
       return Object.assign({}, column, hideOnMobileObj);
