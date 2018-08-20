@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import debounce from 'lodash.debounce';
 import classNames from 'classnames';
 import Config from '../../lib/Config';
-import GenericTable from '../GenericTable/GenericTable';
+import GenericTable from '../GenericTable/GenericTable.jsx';
 import './ItemsTable.css';
 
 class ItemsTable extends Component {

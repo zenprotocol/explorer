@@ -4,8 +4,8 @@ import PropTypes from 'prop-types';
 import uiStore from '../../store/UIStore';
 import AssetUtils from '../../lib/AssetUtils';
 import TextUtils from '../../lib/TextUtils';
-import HashLink from '../HashLink/HashLink.jsx';
 import blockStore from '../../store/BlockStore';
+import HashLink from '../HashLink/HashLink.jsx';
 import ItemsTable from '../ItemsTable/ItemsTable.jsx';
 import TransactionAssetLoader from '../Transactions/Asset/TransactionAssetLoader.jsx';
 
