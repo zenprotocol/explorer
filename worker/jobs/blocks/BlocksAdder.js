@@ -38,12 +38,7 @@ class BlocksAdder {
         )
       : latestBlockNumberInNode;
 
-    logger.info({
-      message: 'Block numbers',
-      latestBlockNumberInDB,
-      latestBlockNumberToAdd,
-      needsUpdate: latestBlockNumberToAdd > latestBlockNumberInDB,
-    });
+    logger.info(`latestBlockNumberInDB=${latestBlockNumberInDB}, latestBlockNumberToAdd=${latestBlockNumberToAdd}`);
 
     const addBlockPromises = [];
     let addBlockPromiseResults = [];
