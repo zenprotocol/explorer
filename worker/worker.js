@@ -40,7 +40,7 @@ addBlocksQueue.on('cleaned', function(jobs, type) {
 });
 
 // schedule ---
-addBlocksQueue.add({limitBlocks: 50}, { repeat: { cron: '* * * * *' } });
+addBlocksQueue.add({limitBlocks: 200}, { repeat: { cron: '* * * * *' } });
 
 setInterval(() => {
   addBlocksQueue.clean(Config.get('queues:addBlocks:cleanAfter') * 1000, 'completed');
