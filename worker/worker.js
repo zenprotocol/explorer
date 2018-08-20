@@ -23,24 +23,36 @@ addBlocksQueue.on('error', function(error) {
   logger.error('A job error has occurred', error);
 });
 
-addBlocksQueue.on('active', function(job, jobPromise){
+addBlocksQueue.on('active', function(job, jobPromise) {
   logger.info(`An AddBlocksQueue job has started. ID=${job.id}`);
 });
 
-addBlocksQueue.on('completed', function(job, result){
+addBlocksQueue.on('completed', function(job, result) {
   logger.info(`An AddBlocksQueue job has been completed. ID=${job.id} result=${result}`);
 });
 
-addBlocksQueue.on('failed', function(job, error){
+addBlocksQueue.on('failed', function(job, error) {
   logger.info(`An AddBlocksQueue job has failed. ID=${job.id}, error=${error}`);
 });
 
 addBlocksQueue.on('cleaned', function(jobs, type) {
-  logger.info('Jobs have been cleaned', {jobs, type});
+  logger.info('Jobs have been cleaned', { jobs, type });
 });
 
-// schedule ---
-addBlocksQueue.add({limitBlocks: 200}, { repeat: { cron: '* * * * *' } });
+// first clean the queue
+Promise.all([
+  addBlocksQueue.clean(0, 'active'),
+  addBlocksQueue.clean(0, 'delayed'),
+  addBlocksQueue.clean(0, 'wait'),
+  addBlocksQueue.clean(0, 'completed'),
+  addBlocksQueue.clean(0, 'failed'),
+]).then(() => {
+  // schedule ---
+  addBlocksQueue.add(
+    { limitBlocks: Config.get('queues:addBlocks:limitBlocks') },
+    { repeat: { cron: '* * * * *' } }
+  );
+});
 
 setInterval(() => {
   addBlocksQueue.clean(Config.get('queues:addBlocks:cleanAfter') * 1000, 'completed');

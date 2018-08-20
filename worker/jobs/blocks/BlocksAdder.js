@@ -39,7 +39,7 @@ class BlocksAdder {
       : latestBlockNumberInNode;
 
     logger.info(`latestBlockNumberInDB=${latestBlockNumberInDB}, latestBlockNumberToAdd=${latestBlockNumberToAdd}`);
-
+    
     const addBlockPromises = [];
     let addBlockPromiseResults = [];
 
