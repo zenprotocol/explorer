@@ -8,16 +8,16 @@ import './TransactionAsset.css';
 
 class TransactionAsset extends Component {
   render() {
-    const { asset, showHeader } = this.props;
-    if (!asset) {
+    const { transactionAsset, asset, showHeader, addressFoundIn } = this.props;
+    if (!transactionAsset) {
       return null;
     }
 
-    const outputs = this.getOutputs(asset);
-    const inputs = this.getInputs(asset);
+    const outputs = this.getOutputs(transactionAsset, asset);
+    const inputs = this.getInputs(transactionAsset);
 
     return (
-      <div className={classNames('TransactionAsset', asset.addressFoundIn)}>
+      <div className={classNames('TransactionAsset', addressFoundIn)}>
         {showHeader ? (
           <div className="row mx-0">
             <div className="col-2 border-bottom">ASSET</div>
@@ -32,7 +32,7 @@ class TransactionAsset extends Component {
         ) : null}
 
         <div className="row mx-0">
-          <div className="col-2 break-word"><HashLink hash={AssetUtils.getTypeFromCode(asset.asset)} /></div>
+          <div className="col-2 break-word"><HashLink hash={AssetUtils.getTypeFromCode(asset)} /></div>
           <div className="col-4 py-0">
             <div className="inputs">{inputs.rowsToRender}</div>
             <div className="arrow">
@@ -42,7 +42,7 @@ class TransactionAsset extends Component {
           <div className="col-6 py-0">
             <div className="outputs">
               {outputs.rowsToRender}
-              {this.renderTotal(asset)}
+              {this.renderTotal()}
             </div>
           </div>
         </div>
@@ -50,14 +50,14 @@ class TransactionAsset extends Component {
     );
   }
 
-  getInputs(asset) {
+  getInputs(transactionAsset) {
     let rowsToRender = [];
 
-    if (!asset.inputs || !asset.inputs.length) {
+    if (!transactionAsset.Inputs || !transactionAsset.Inputs.length) {
       const title = 'No Inputs';
       rowsToRender.push(this.renderInputOutputItem('1', title));
     } else {
-      rowsToRender = asset.inputs.reduce((all, input) => {
+      rowsToRender = transactionAsset.Inputs.reduce((all, input) => {
 
         if (input.Output.address) {
           all.push(this.renderInputOutputItem(input.id, input.Output.address, input.Output.address));
@@ -73,14 +73,14 @@ class TransactionAsset extends Component {
     return {rowsToRender};
   }
 
-  getOutputs(asset) {
+  getOutputs(transactionAsset, asset) {
     let rowsToRender = [];
     let key = 0;
-    const showAmount = AssetUtils.showAmount(asset);
-    if (!asset.outputs || !asset.outputs.length) {
+    const showAmount = AssetUtils.showAmount(transactionAsset);
+    if (!transactionAsset.Outputs || !transactionAsset.Outputs.length) {
       rowsToRender.push(this.renderInputOutputItem(key, 'No Outputs'));
     } else {
-      rowsToRender = asset.outputs.map(output => {
+      rowsToRender = transactionAsset.Outputs.map(output => {
         key++;
         let amount = showAmount ? AssetUtils.getAmountString(asset, output.amount) : null;
         const title = output.address ? output.address : Output.getTextByLockType(output.lockType);
@@ -92,12 +92,11 @@ class TransactionAsset extends Component {
     return { rowsToRender };
   }
 
-  renderTotal(asset) {
-    if(!asset.total && !asset.addressTotal) {
+  renderTotal() {
+    const {total, asset} = this.props;
+    if(!total) {
       return null;
     }
-
-    const total = this.props.address ? Number(asset.addressTotal) : Number(asset.total);
 
     return (
       <div className="row">
@@ -105,15 +104,6 @@ class TransactionAsset extends Component {
           <div className="total rounded">{AssetUtils.getAmountString(asset, total)}</div>
         </div>
       </div>
-    );
-  }
-
-  isCoinbase(asset) {
-    return (
-      asset.outputs &&
-      asset.outputs.length &&
-      asset.outputs[0].lockType &&
-      asset.outputs[0].lockType.toLowerCase() === 'coinbase'
     );
   }
 
@@ -149,9 +139,12 @@ class TransactionAsset extends Component {
 }
 
 TransactionAsset.propTypes = {
-  asset: PropTypes.object.isRequired,
+  transactionAsset: PropTypes.object.isRequired,
+  asset: PropTypes.string.isRequired,
   address: PropTypes.string,
+  addressFoundIn: PropTypes.array,
   showHeader: PropTypes.bool,
+  total: PropTypes.number,
 };
 TransactionAsset.defaultProps = {
   address: '',

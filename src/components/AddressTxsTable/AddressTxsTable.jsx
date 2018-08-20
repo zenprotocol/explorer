@@ -1,42 +1,15 @@
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import PropTypes from 'prop-types';
-import debounce from 'lodash.debounce';
-import classNames from 'classnames';
-import GenericTable from '../GenericTable/GenericTable.jsx';
 import uiStore from '../../store/UIStore';
-import blockStore from '../../store/BlockStore';
-import AssetUtils from '../../lib/AssetUtils.js';
+import AssetUtils from '../../lib/AssetUtils';
+import TextUtils from '../../lib/TextUtils';
 import HashLink from '../HashLink/HashLink.jsx';
-import TransactionAsset from '../Transactions/Asset/TransactionAsset.jsx';
-import './AddressTxsTable.css';
+import blockStore from '../../store/BlockStore';
+import ItemsTable from '../ItemsTable/ItemsTable.jsx';
+import TransactionAssetLoader from '../Transactions/Asset/TransactionAssetLoader.jsx';
 
 class AddressTxsTable extends Component {
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      windowWidth: 0,
-    };
-
-    this.setPageSize = this.setPageSize.bind(this);
-    this.onPageChange = this.onPageChange.bind(this);
-    this.setWindowWidth = debounce(this.setWindowWidth, 200).bind(this);
-  }
-
-  componentDidMount() {
-    this.setWindowWidth();
-    window.addEventListener('resize', this.setWindowWidth);
-  }
-
-  componentWillUnmount() {
-    window.removeEventListener('resize', this.setWindowWidth);
-  }
-
-  setWindowWidth() {
-    this.setState({ windowWidth: window.innerWidth });
-  }
-
   getTableColumns() {
     return [
       {
@@ -47,10 +20,10 @@ class AddressTxsTable extends Component {
         },
       },
       {
-        Header: 'TX',
-        accessor: 'txHash',
-        Cell: data => {
-          return <HashLink url={`/tx/${data.value}`} hash={data.value} />;
+        Header: 'Timestamp',
+        accessor: 'timestamp',
+        Cell: function(data) {
+          return TextUtils.getDateStringFromTimestamp(data.value);
         },
       },
       {
@@ -61,102 +34,70 @@ class AddressTxsTable extends Component {
         },
       },
       {
+        Header: 'TX',
+        accessor: 'txHash',
+        Cell: data => {
+          return <HashLink url={`/tx/${data.value}`} hash={data.value} />;
+        },
+      },
+      {
+        Header: '',
+        accessor: 'isCoinbaseTx',
+        Cell: data => {
+          return data.value ? 'Coinbase' : '';
+        },
+      },
+      {
         Header: 'Balance',
-        accessor: 'addressTotal',
-        Cell: function(data) {
+        accessor: 'totalSum',
+        Cell: data => {
           const isNegative = Number(data.value) < 0;
           return (
             <span className={isNegative ? 'negative' : 'positive'}>
-              {AssetUtils.getAmountString(data.original, Number(data.value))}
+              {AssetUtils.getAmountString(data.original.asset, Number(data.value))}
             </span>
           );
         },
       },
-      {
-        Header: 'Expand',
-        expander: true,
-        width: 65,
-        Expander: ({ isExpanded }) => <div className="expand">{isExpanded ? <i className="fas fa-minus"></i> : <i className="fas fa-plus"></i>}</div>,
-      },
     ];
   }
-
-  setPageSize(event) {
-    const pageSize = Number(event.target.value);
-    const curPage = Math.floor((uiStore.addressTxTable.pageSize * uiStore.addressTxTable.curPage) / pageSize);
-    uiStore.setAddressTxTableData({ pageSize, curPage });
-  }
-
-  onPageChange(page) {
-    uiStore.setAddressTxTableData({ curPage: page });
-  }
-
-  concatAllTxAssets(transactions) {
-    return [].concat.apply(
-      [],
-      transactions.map(tx => {
-        return tx.assets;
-      })
-    );
-  }
-
   render() {
-    const numOfPages = Math.ceil(blockStore.addressTransactionsCount / uiStore.addressTxTable.pageSize);
-    const assets = this.concatAllTxAssets(blockStore.addressTransactions);
+    const address = this.props.address;
     return (
-      <div className={classNames('AddressTxsTable', {loading: blockStore.loading.addressTransactions})}>
-        <div className="clearfix">
-          <h1 className="d-block d-sm-inline-block text-white mb-3 mb-lg-5">Transactions</h1>
-          <div className="AddressTxsTable-pageSizes form-inline float-sm-right">
-            <span className="mr-2 d-none d-md-inline-block">SHOW</span>
-            <select
-              value={uiStore.addressTxTable.pageSize}
-              onChange={this.setPageSize}
-              className="form-control d-block d-md-inline-block"
-            >
-              {this.props.pageSizes.map(pageSize => {
-                return (
-                  <option key={pageSize} value={pageSize}>
-                    {pageSize}
-                  </option>
-                );
-              })}
-            </select>
-            <span className="ml-2 d-none d-md-inline-block">ENTRIES</span>
-          </div>
-        </div>
-        <GenericTable
-          loading={blockStore.loading.addressTransactions}
-          data={assets}
-          columns={this.getTableColumns()}
-          defaultPageSize={uiStore.addressTxTable.pageSize}
-          pages={numOfPages}
-          page={uiStore.addressTxTable.curPage}
-          pageSizes={this.props.pageSizes}
-          onPageChange={this.onPageChange}
-          pageSize={uiStore.addressTxTable.pageSize}
-          SubComponent={row => {
-            return (
-              <TransactionAsset
-                asset={row.original}
-                showHeader={true}
-                address={uiStore.addressTxTable.address}
-                timestamp={row.original.timestamp}
-              />
-            );
-          }}
-        />
-      </div>
+      <ItemsTable
+        columns={this.getTableColumns()}
+        hideOnMobile={['blockHash', 'isCoinbaseTx']}
+        loading={blockStore.loading.addressTransactionAssets}
+        itemsCount={blockStore.addressTransactionAssetsCount}
+        items={blockStore.addressTransactionAssets}
+        pageSize={uiStore.addressTxTable.pageSize}
+        curPage={uiStore.addressTxTable.curPage}
+        tableDataSetter={uiStore.setAddressTxTableData.bind(uiStore)}
+        title="Transactions"
+        SubComponent={row => {
+          const addressFoundIn = [];
+          if (address) {
+            Number(row.original.outputSum) !== 0 && addressFoundIn.push('output');
+            Number(row.original.inputSum) !== 0 && addressFoundIn.push('input');
+          }
+          return (
+            <TransactionAssetLoader
+              transactionAssets={blockStore.addressTransactionAssets}
+              index={row.index}
+              timestamp={row.original.timestamp}
+              total={Number(row.original.totalSum)}
+              address={address}
+              addressFoundIn={addressFoundIn}
+            />
+          );
+        }}
+      />
     );
   }
 }
 
-AddressTxsTable.defaultProps = {
-  pageSizes: [5, 10, 20, 50, 100],
-};
-
 AddressTxsTable.propTypes = {
-  pageSizes: PropTypes.array,
+  address: PropTypes.string,
 };
 
 export default observer(AddressTxsTable);

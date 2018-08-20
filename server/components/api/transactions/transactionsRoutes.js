@@ -11,4 +11,10 @@ router.route('/id/:id')
 router.route('/:hash')
   .get(wrapAsync(controller.show));
 
+router.route('/:txHash/assets')
+  .get(wrapAsync(controller.assets));
+
+router.route('/:id/:asset')
+  .get(wrapAsync(controller.asset));
+
 module.exports = router;

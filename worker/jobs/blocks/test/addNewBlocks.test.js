@@ -1,15 +1,17 @@
 'use strict';
 
 const test = require('blue-tape');
+const faker = require('faker');
 const Service = require('../../../../server/lib/Service');
 const truncate = require('../../../../common/test/truncate');
 const blocksDAL = require('../../../../server/components/api/blocks/blocksDAL');
 const transactionsDAL = require('../../../../server/components/api/transactions/transactionsDAL');
-const addressesDAL = require('../../../../server/components/api/addresses/addressesDAL');
+const inputsDAL = require('../../../../server/components/api/inputs/inputsDAL');
 const NetworkHelper = require('../../../lib/NetworkHelper');
 const mock = require('./mock');
 const BlocksAdder = require('../BlocksAdder');
 const Config = require('../../../../server/config/Config');
+const createDemoBlocksFromTo = require('../../../lib/createDemoBlocksFromTo');
 
 test.onFinish(() => {
   blocksDAL.db.sequelize.close();
@@ -119,7 +121,7 @@ test('Add New Blocks with transactions', async function(t) {
 
   try {
     const numOfBlocksAdded = await blocksAdder.addNewBlocks({
-      data: { limitBlocks: 1, limitTransactions: 2 },
+      data: { limitBlocks: 2, limitTransactions: 2 },
     });
 
     t.assert(numOfBlocksAdded > 0, 'Should have added new blocks');
@@ -189,25 +191,65 @@ test('Add New Blocks with transactions and a falsy input', async function(t) {
   }
 });
 
-test('Check if address is added correctly', async function(t) {
-  const address = 'zen1qk02q3j43zaxa4vvrrc3dkzenvq3xpmk77y6c3ywn66qrum7l0asqv74w6l';
-  const addressTxCount = 3;
-
+test('Outpoint Input', async function(t) {
   await truncate();
+  const TEST_BLOCK_NUMBER = 86;
+  const OUTPOINT_BLOCK_NUMBER = 1;
   const networkHelper = new NetworkHelper();
-  mock.mockNetworkHelper(networkHelper);
+  mock.mockNetworkHelper(networkHelper, {latestBlockNumber: TEST_BLOCK_NUMBER});
   const blocksAdder = new BlocksAdder(networkHelper);
+
   try {
+    // add 1st block as the tested input references this
     await blocksAdder.addNewBlocks({
       data: { limitBlocks: 1 },
     });
-    const numOfAppearances = await addressesDAL.count({ where: { address } });
-    t.equals(numOfAppearances, 1, 'An address should appear only once in the Addresses table');
+    await createDemoBlocksFromTo(2, TEST_BLOCK_NUMBER - 1);
+    // this is the tested block with an outpoint input
+    await blocksAdder.addNewBlocks({
+      data: { limitBlocks: 1 },
+    });
 
-    const addressDB = await addressesDAL.findByAddress(address);
-    const numOfAddressTransactions = (await addressDB.getTransactions()).length;
-    t.equals(numOfAddressTransactions, addressTxCount, `This address should have ${addressTxCount} transactions`);
+    const inputs = await inputsDAL.findAll({
+      where: {
+        isMint: false,
+      },
+      limit: 1,
+    });
+    t.assert(inputs.length > 0, 'There should be at least one outpoint input in db');
+    const input = inputs[0];
+    t.assert(input.OutputId > 0, 'OutputId should be set on this input');
+    const block = await (await (await input.getOutput()).getTransaction()).getBlock();
+    t.equals(block.blockNumber, OUTPOINT_BLOCK_NUMBER, 'The input tested should have its outpoint pointing to block 1');
   } catch (error) {
-    t.fail('Should not throw an error');
+    console.log(error);
+    t.fail('should not throw an error');
+  }
+});
+
+test('Mint Input', async function(t) {
+  const TEST_BLOCK_NUMBER = 176;
+  await truncate();
+  const networkHelper = new NetworkHelper();
+  mock.mockNetworkHelper(networkHelper, {latestBlockNumber: TEST_BLOCK_NUMBER});
+  const blocksAdder = new BlocksAdder(networkHelper);
+
+  try {
+    await createDemoBlocksFromTo(1, TEST_BLOCK_NUMBER - 1);
+    await blocksAdder.addNewBlocks({
+      data: { limitBlocks: 1 },
+    });
+
+    const inputs = await inputsDAL.findAll({
+      where: {
+        isMint: true,
+      },
+      limit: 1,
+    });
+    t.assert(inputs.length > 0, 'There should be at least one mint input in db');
+    t.assert(typeof inputs[0].asset === 'string' && inputs[0].asset.length > 0, 'Asset should be set');
+    t.assert(typeof inputs[0].amount === 'string' && Number(inputs[0].amount) > 0, 'Amount should be set');
+  } catch (error) {
+    t.fail('should not throw an error');
   }
 });

@@ -22,11 +22,13 @@ export default function Transaction(props) {
           transaction.assets.map((asset, assetIndex) => {
             return (
               <TransactionAsset
-                asset={asset}
+                transactionAsset={asset}
+                asset={asset.asset}
                 key={assetIndex}
                 showHeader={assetIndex === 0}
                 address={address}
                 timestamp={timestamp}
+                total={address ? Number(asset.addressTotal) : Number(asset.total)}
               />
             );
           })}

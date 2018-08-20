@@ -9,6 +9,7 @@ const getTransactionAssets = require('./getTransactionAssets');
 const isCoinbaseTX = require('./isCoinbaseTX');
 
 module.exports = {
+  // TODO - change to get all transactions - not assets
   index: async function(req, res) {
     // find by blockNumber or address
     const { blockNumber, address } = req.query;
@@ -28,10 +29,6 @@ module.exports = {
     if (blockNumber && !isNaN(blockNumber)) {
       findPromise = transactionsDAL.findAllByBlockNumber(Number(blockNumber), query);
       countPromise = transactionsDAL.countByBlockNumber(Number(blockNumber));
-    }
-    else if (address) {
-      findPromise = transactionsDAL.findAllByAddress(address, firstTransactionId, ascending, query);
-      countPromise = transactionsDAL.countByAddress(address, firstTransactionId, ascending);
     }
     else {
       findPromise = transactionsDAL.findAll(query);
@@ -73,6 +70,64 @@ module.exports = {
     } else {
       throw new HttpError(httpStatus.NOT_FOUND);
     }
+  },
+  assets: async function(req, res) {
+    // find by blockNumber or address
+    const { hashOrBlockNumber, txHash, address } = req.params;
+    const page = req.query.page || 0;
+    const pageSize = req.query.pageSize || 10;
+    const firstTransactionId = req.query.firstTransactionId || 0;
+    const ascending = req.query.order === 'asc'; // descending by default
+    const sorted =
+      req.query.sorted && req.query.sorted != '[]'
+        ? JSON.parse(req.query.sorted)
+        : [{ id: 'createdAt', desc: !ascending }];
+
+    const query = createQueryObject({ page, pageSize, sorted });
+    
+    let countPromise, 
+      findPromise;
+    if (hashOrBlockNumber) {
+      findPromise = transactionsDAL.findAllAssetsByBlock(hashOrBlockNumber, query);
+      countPromise = transactionsDAL.countAssetsByBlock(hashOrBlockNumber);
+    }
+    else if (txHash) {
+      findPromise = transactionsDAL.findAllAssetsByTxHash(txHash, query);
+      countPromise = transactionsDAL.countAssetsByTxHash(txHash);
+    }
+    else if (address) {
+      findPromise = transactionsDAL.findAllAssetsByAddress(address, query);
+      countPromise = transactionsDAL.countAssetsByAddress(address, firstTransactionId, ascending);
+    }
+    else {
+      // TODO - find all transaction assets !!!
+      findPromise = transactionsDAL.findAll(query);
+      countPromise = transactionsDAL.count();
+    }
+
+    const [count, transactionAssets] = await Promise.all([countPromise, findPromise]);
+
+    res.status(httpStatus.OK).json(
+      jsonResponse.create(httpStatus.OK, {
+        total: count,
+        items: transactionAssets,
+      })
+    );
+  },
+  asset: async function(req, res) {
+    // get a specific asset from a tx. /tx/:hash/:assetName 
+    const { id, asset } = req.params;
+    const { address } = req.query;
+
+    if(!id || !asset) {
+      throw new HttpError(httpStatus.NOT_FOUND);
+    }
+
+    const transactionAsset = await transactionsDAL.findTransactionAssetInputsOutputs(id, asset);
+
+    res.status(httpStatus.OK).json(
+      jsonResponse.create(httpStatus.OK, transactionAsset)
+    );
   },
   getById: async function(req, res) {
     const transaction = await transactionsDAL.findById(req.params.id);

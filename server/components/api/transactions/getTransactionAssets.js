@@ -79,8 +79,8 @@ function getFilteredAssetsArray(transaction, assets, address) {
         blockHash: transaction.Block.hash,
         txHash: transaction.hash,
         timestamp: transaction.Block.timestamp,
-        inputs: assets[asset].inputs,
-        outputs: assets[asset].outputs,
+        Inputs: assets[asset].inputs,
+        Outputs: assets[asset].outputs,
       });
     }
 

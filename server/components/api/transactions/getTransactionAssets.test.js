@@ -22,29 +22,29 @@ test('Test assets order', function(t) {
 test('Test input output lengths', function(t) {
   const assets = getTransactionAssets(testTX);
   t.equals(
-    assets[0].inputs.length,
+    assets[0].Inputs.length,
     testTX.Inputs.length - 1,
     'All the source inputs belong to asset 00 and should be unique'
   );
   t.equals(
-    assets[0].outputs.length,
+    assets[0].Outputs.length,
     testTX.Outputs.length - 2,
     'All outputs but 2 should be in the asset 00'
   );
-  t.equals(assets[1].inputs.length, 0, 'There are no inputs for asset 01');
-  t.equals(assets[1].outputs.length, 2, 'There are 2 outputs for asset 01');
+  t.equals(assets[1].Inputs.length, 0, 'There are no inputs for asset 01');
+  t.equals(assets[1].Outputs.length, 2, 'There are 2 outputs for asset 01');
   t.end();
 });
 
 test('Test input output lengths with address supplied', function(t) {
   const assets = getTransactionAssets(testTX, testAddressInInputAndOutput);
   t.equals(
-    assets[0].inputs.length,
+    assets[0].Inputs.length,
     testTX.Inputs.length - 1,
     'All the source inputs belong to asset 00 and should be unique'
   );
   t.equals(
-    assets[0].outputs.length,
+    assets[0].Outputs.length,
     testTX.Outputs.length - 2,
     'All outputs but 2 should be in the asset 00'
   );

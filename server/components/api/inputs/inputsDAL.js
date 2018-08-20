@@ -37,6 +37,5 @@ inputsDAL.findAllByAddress = function(address, asset) {
 inputsDAL.setOutput = async function(input, output, options = {}) {
   return input.setOutput(output, options);
 };
-inputsDAL.setOutput = inputsDAL.setOutput.bind(inputsDAL);
 
 module.exports = inputsDAL;

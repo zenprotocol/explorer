@@ -6,37 +6,22 @@ const addressesDAL = require('../addresses/addressesDAL');
 const outputsDAL = require('../outputs/outputsDAL');
 const jsonResponse = require('../../../lib/jsonResponse');
 const HttpError = require('../../../lib/HttpError');
-const createQueryObject = require('../../../lib/createQueryObject');
 
 module.exports = {
-  index: async function(req, res) {
-    const sorted =
-      req.query.sorted && req.query.sorted != '[]'
-        ? JSON.parse(req.query.sorted)
-        : [{ id: 'createdAt', desc: true }];
-
-    const query = createQueryObject({ sorted });
-    const [count, allItems] = await Promise.all([transactionsDAL.count(), transactionsDAL.findAll(query)]);
-
-    res.status(httpStatus.OK).json(
-      jsonResponse.create(httpStatus.OK, {
-        items: allItems,
-        total: count,
-      })
-    );
-  },
   show: async function(req, res) {
     const address = req.params.address;
-    const addressDb = await addressesDAL.findByAddress(address);
-    if(!addressDb) {
+    const addressExists = await addressesDAL.addressExists(address);
+    if(!addressExists) {
       throw new HttpError(httpStatus.NOT_FOUND);
     }
-
-    const [sent, received, assets] = await Promise.all([
+    
+    const [sent, received, assets, totalTxs] = await Promise.all([
       addressesDAL.getSentSums(address),
       addressesDAL.getReceivedSums(address),
-      outputsDAL.findAllAddressAssets(address)
+      outputsDAL.findAllAddressAssets(address),
+      transactionsDAL.countByAddress(address),
     ]);
+
     const alreadyAddedAssets = [];
     const balance = received.map((item) => {
       alreadyAddedAssets.push(item.asset);
@@ -62,17 +47,15 @@ module.exports = {
         });
       }
     });
-    if (addressDb) {
-      res.status(httpStatus.OK).json(jsonResponse.create(httpStatus.OK, {
-        address,
-        assets,
-        received,
-        sent,
-        balance,
-      }));
-    } else {
-      throw new HttpError(httpStatus.NOT_FOUND);
-    }
+    
+    res.status(httpStatus.OK).json(jsonResponse.create(httpStatus.OK, {
+      address,
+      totalTxs,
+      assets,
+      received,
+      sent,
+      balance,
+    }));
   },
   findAllAssets: async function(req, res) {
     const assets = await outputsDAL.findAllAddressAssets(req.params.address);

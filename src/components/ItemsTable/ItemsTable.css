@@ -1,12 +1,12 @@
-.AddressTxsTable .negative {
+.ItemsTable .negative {
   color: #fd3a3a;
 }
 
-.AddressTxsTable .positive {
+.ItemsTable .positive {
   color: #7bcc3a;
 }
 
-.AddressTxsTable .expand {
+.ItemsTable .expand {
   cursor: 'pointer';
   padding: 0;
   text-align: center;

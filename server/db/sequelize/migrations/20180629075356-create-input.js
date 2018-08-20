@@ -13,12 +13,17 @@ module.exports = {
         type: Sequelize.INTEGER,
       },
       outpointTXHash: {
-        allowNull: false,
         type: Sequelize.STRING,
       },
       outpointIndex: {
-        allowNull: false,
         type: Sequelize.INTEGER,
+      },
+      isMint: {
+        allowNull: false,
+        type: Sequelize.BOOLEAN,
+      },
+      asset: {
+        type: Sequelize.STRING,
       },
       amount: {
         type: Sequelize.BIGINT,
