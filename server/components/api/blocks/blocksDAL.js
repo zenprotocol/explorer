@@ -29,6 +29,18 @@ blocksDAL.findByHash = function(hash) {
   });
 };
 
+blocksDAL.search = function(search) {
+  const blockNumber = Number(search);
+  if (isNaN(blockNumber)) {
+    return Promise.resolve([]);
+  }
+  return this.findAll({
+    where: {
+      blockNumber,
+    },
+  });
+};
+
 blocksDAL.addTransaction = async function(block, transaction, options = {}) {
   return block.addTransaction(transaction, options);
 };

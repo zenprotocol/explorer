@@ -25,6 +25,17 @@ transactionsDAL.findByHash = async function(hash) {
   });
 };
 
+transactionsDAL.search = function(search) {
+  const sequelize = this.db.sequelize;
+  return this.findAll({
+    where: {
+      hash: {
+        [sequelize.Op.like]: `%${search}%`,
+      },
+    },
+  });
+};
+
 transactionsDAL.findAllAssetsByAddress = async function(address, { limit = 10, offset = 0 }) {
   const sequelize = transactionsDAL.db.sequelize;
   const sql = `
@@ -100,7 +111,10 @@ transactionsDAL.findAllByBlockNumber = async function(blockNumber, options = { l
   );
 };
 
-transactionsDAL.findAllAssetsByBlock = async function(hashOrBlockNumber, { limit = 10, offset = 0 }) {
+transactionsDAL.findAllAssetsByBlock = async function(
+  hashOrBlockNumber,
+  { limit = 10, offset = 0 }
+) {
   const blockProp = isHash(hashOrBlockNumber) ? 'hash' : 'blockNumber';
   const sequelize = transactionsDAL.db.sequelize;
   const sql = `
@@ -273,19 +287,19 @@ transactionsDAL.countByBlockNumber = async function(blockNumber) {
 transactionsDAL.findTransactionAssetInputsOutputs = async function(id, asset) {
   const sequelize = this.db.sequelize;
   // console.log(this.db.Block.rawAttributes);
-  
+
   return this.findOne({
     where: {
-      id
+      id,
     },
     include: [
       {
-        model: this.db.Block
+        model: this.db.Block,
       },
       {
         model: this.db.Output,
         where: {
-          asset
+          asset,
         },
       },
       {
@@ -294,89 +308,87 @@ transactionsDAL.findTransactionAssetInputsOutputs = async function(id, asset) {
           {
             model: this.db.Output,
             where: {
-              asset
-            }
-          }
-        ]
-      }
+              asset,
+            },
+          },
+        ],
+      },
     ],
   });
 
-  
+  //   const sql = `
+  //   SELECT
+  //     ${getFieldsForSelectQuery(this.db.Transaction, 'Transaction', true)},
+  //     CASE WHEN "Transaction"."index" = 0 THEN true
+  //           ELSE false
+  //           END AS "isCoinbaseTx",
+  //     COALESCE("Sums"."outputSum", 0) AS "outputSum",
+  //     COALESCE("Sums"."inputSum", 0) AS "inputSum",
+  //     COALESCE("inputSum", 0) - COALESCE("outputSum", 0) AS "totalSum",
+  //     ${getFieldsForSelectQuery(this.db.Block, 'Block')},
+  //     ${getFieldsForSelectQuery(this.db.Output, 'Outputs')},
+  //     "Inputs"."id" AS "Inputs.id",
+  //     "Inputs"."index" AS "Inputs.index",
+  //     "Inputs"."outpointTXHash" AS "Inputs.outpointTXHash",
+  //     "Inputs"."outpointIndex" AS "Inputs.outpointIndex",
+  //     "Inputs"."amount" AS "Inputs.amount",
+  //     "Inputs"."createdAt" AS "Inputs.createdAt",
+  //     "Inputs"."updatedAt" AS "Inputs.updatedAt",
+  //     "Inputs"."TransactionId" AS "Inputs.TransactionId",
+  //     "Inputs"."OutputId" AS "Inputs.OutputId",
+  //     "Inputs->Output"."id" AS "Inputs.Output.id",
+  //     "Inputs->Output"."lockType" AS "Inputs.Output.lockType",
+  //     "Inputs->Output"."contractLockVersion" AS "Inputs.Output.contractLockVersion",
+  //     "Inputs->Output"."address" AS "Inputs.Output.address",
+  //     "Inputs->Output"."addressBC" AS "Inputs.Output.addressBC",
+  //     "Inputs->Output"."asset" AS "Inputs.Output.asset",
+  //     "Inputs->Output"."amount" AS "Inputs.Output.amount",
+  //     "Inputs->Output"."index" AS "Inputs.Output.index",
+  //     "Inputs->Output"."createdAt" AS "Inputs.Output.createdAt",
+  //     "Inputs->Output"."updatedAt" AS "Inputs.Output.updatedAt",
+  //     "Inputs->Output"."TransactionId" AS "Inputs.Output.TransactionId"
+  //   FROM
+  //     "Transactions" AS "Transaction"
+  //     LEFT OUTER JOIN "Blocks" AS "Block" ON "Transaction"."BlockId" = "Block"."id"
+  //     LEFT OUTER JOIN "Outputs" AS "Outputs" ON "Outputs"."TransactionId" = "Transaction"."id"
+  //     LEFT OUTER JOIN ("Inputs" AS "Inputs"
+  //     INNER JOIN "Outputs" AS "Inputs->Output" ON "Inputs"."OutputId" = "Inputs->Output"."id")
+  //     ON "Transaction"."id" = "Inputs"."TransactionId"
+  //     LEFT OUTER JOIN
+  //     (
+  //     SELECT "outputSum", "inputSum", COALESCE("OutputAsset"."TransactionId", "InputAsset"."TransactionId") AS "TransactionId"
+  //     FROM
+  //       (SELECT SUM("Output"."amount") AS "outputSum",
+  //         "Output"."TransactionId"
+  //       FROM "Outputs" AS "Output"
+  //       -- WHERE "Output"."address" = 'zen1qsap3rkrvl6ckfj0nsztxalcfh9gsuzt5ndcgh9nq03tx9ygxdsvshgeter'
+  //       WHERE "Output"."asset" = :asset AND "Output"."TransactionId" = :id
+  //       GROUP BY "Output"."TransactionId", "Output"."asset") AS "OutputAsset"
 
-//   const sql = `
-//   SELECT
-//     ${getFieldsForSelectQuery(this.db.Transaction, 'Transaction', true)},
-//     CASE WHEN "Transaction"."index" = 0 THEN true
-//           ELSE false
-//           END AS "isCoinbaseTx",
-//     COALESCE("Sums"."outputSum", 0) AS "outputSum",
-//     COALESCE("Sums"."inputSum", 0) AS "inputSum",
-//     COALESCE("inputSum", 0) - COALESCE("outputSum", 0) AS "totalSum",
-//     ${getFieldsForSelectQuery(this.db.Block, 'Block')},
-//     ${getFieldsForSelectQuery(this.db.Output, 'Outputs')},
-//     "Inputs"."id" AS "Inputs.id",
-//     "Inputs"."index" AS "Inputs.index",
-//     "Inputs"."outpointTXHash" AS "Inputs.outpointTXHash",
-//     "Inputs"."outpointIndex" AS "Inputs.outpointIndex",
-//     "Inputs"."amount" AS "Inputs.amount",
-//     "Inputs"."createdAt" AS "Inputs.createdAt",
-//     "Inputs"."updatedAt" AS "Inputs.updatedAt",
-//     "Inputs"."TransactionId" AS "Inputs.TransactionId",
-//     "Inputs"."OutputId" AS "Inputs.OutputId",
-//     "Inputs->Output"."id" AS "Inputs.Output.id",
-//     "Inputs->Output"."lockType" AS "Inputs.Output.lockType",
-//     "Inputs->Output"."contractLockVersion" AS "Inputs.Output.contractLockVersion",
-//     "Inputs->Output"."address" AS "Inputs.Output.address",
-//     "Inputs->Output"."addressBC" AS "Inputs.Output.addressBC",
-//     "Inputs->Output"."asset" AS "Inputs.Output.asset",
-//     "Inputs->Output"."amount" AS "Inputs.Output.amount",
-//     "Inputs->Output"."index" AS "Inputs.Output.index",
-//     "Inputs->Output"."createdAt" AS "Inputs.Output.createdAt",
-//     "Inputs->Output"."updatedAt" AS "Inputs.Output.updatedAt",
-//     "Inputs->Output"."TransactionId" AS "Inputs.Output.TransactionId"
-//   FROM
-//     "Transactions" AS "Transaction"
-//     LEFT OUTER JOIN "Blocks" AS "Block" ON "Transaction"."BlockId" = "Block"."id"
-//     LEFT OUTER JOIN "Outputs" AS "Outputs" ON "Outputs"."TransactionId" = "Transaction"."id"
-//     LEFT OUTER JOIN ("Inputs" AS "Inputs"
-//     INNER JOIN "Outputs" AS "Inputs->Output" ON "Inputs"."OutputId" = "Inputs->Output"."id")
-//     ON "Transaction"."id" = "Inputs"."TransactionId"
-//     LEFT OUTER JOIN
-//     ( 
-//     SELECT "outputSum", "inputSum", COALESCE("OutputAsset"."TransactionId", "InputAsset"."TransactionId") AS "TransactionId"
-//     FROM
-//       (SELECT SUM("Output"."amount") AS "outputSum",
-//         "Output"."TransactionId"
-//       FROM "Outputs" AS "Output"
-//       -- WHERE "Output"."address" = 'zen1qsap3rkrvl6ckfj0nsztxalcfh9gsuzt5ndcgh9nq03tx9ygxdsvshgeter'
-//       WHERE "Output"."asset" = :asset AND "Output"."TransactionId" = :id
-//       GROUP BY "Output"."TransactionId", "Output"."asset") AS "OutputAsset"
+  //       FULL OUTER JOIN
 
-//       FULL OUTER JOIN
+  //       (SELECT SUM("Output"."amount") AS "inputSum",
+  //         "Input"."TransactionId"
+  //       FROM "Inputs" AS "Input"
+  //         INNER JOIN "Outputs" as "Output" ON "Input"."OutputId" = "Output"."id"
+  //       -- WHERE "address" = 'zen1qsap3rkrvl6ckfj0nsztxalcfh9gsuzt5ndcgh9nq03tx9ygxdsvshgeter'
+  //       WHERE "Output"."asset" = :asset AND "Input"."TransactionId" = :id
+  //       GROUP BY "Input"."TransactionId", "Output"."asset") AS "InputAsset"
 
-//       (SELECT SUM("Output"."amount") AS "inputSum",
-//         "Input"."TransactionId"
-//       FROM "Inputs" AS "Input"
-//         INNER JOIN "Outputs" as "Output" ON "Input"."OutputId" = "Output"."id"
-//       -- WHERE "address" = 'zen1qsap3rkrvl6ckfj0nsztxalcfh9gsuzt5ndcgh9nq03tx9ygxdsvshgeter'
-//       WHERE "Output"."asset" = :asset AND "Input"."TransactionId" = :id
-//       GROUP BY "Input"."TransactionId", "Output"."asset") AS "InputAsset"
+  //       ON "OutputAsset"."TransactionId" = "InputAsset"."TransactionId"
+  //     ) AS "Sums"
+  //     ON "Sums"."TransactionId" = "Transaction"."id"
 
-//       ON "OutputAsset"."TransactionId" = "InputAsset"."TransactionId"
-//     ) AS "Sums"
-//     ON "Sums"."TransactionId" = "Transaction"."id"
-
-//   WHERE "Transaction"."id" = :id
-// `;
-//   return sequelize.query(sql, {
-//     replacements: {
-//       id,
-//       asset
-//     },
-//     type: sequelize.QueryTypes.SELECT,
-//     nest: true,
-//   });
+  //   WHERE "Transaction"."id" = :id
+  // `;
+  //   return sequelize.query(sql, {
+  //     replacements: {
+  //       id,
+  //       asset
+  //     },
+  //     type: sequelize.QueryTypes.SELECT,
+  //     nest: true,
+  //   });
 };
 
 transactionsDAL.addInput = async function(transaction, input, options = {}) {
