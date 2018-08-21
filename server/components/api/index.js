@@ -12,7 +12,7 @@ router.use('/blocks', blocksRouter);
 router.use('/inputs', inputsRouter);
 router.use('/outputs', outputsRouter);
 router.use('/tx', transactionsRouter);
-router.use('/address', addressesRouter);
+router.use('/addresses', addressesRouter);
 router.use('/infos', infosRouter);
 router.use('/stats', statsRouter);
 

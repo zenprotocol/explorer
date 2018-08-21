@@ -6,7 +6,7 @@ const request = axios.create({
 const Endpoints = {
   blocks: '/api/blocks',
   transactions: '/api/tx',
-  addresses: '/api/address',
+  addresses: '/api/addresses',
   info: '/api/infos',
 };
 
