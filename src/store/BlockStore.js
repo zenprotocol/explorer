@@ -187,10 +187,10 @@ class BlockStore {
   }
 
   search(value) {
-    if(!this.searchStringValid) {
+    if(!this.searchStringValid(value)) {
       return Promise.resolve();
     }
-    
+
     this.searchResults = {};
     this.searchString = value;
     this.loading.searchResults = true;
@@ -219,8 +219,8 @@ class BlockStore {
     }
   }
 
-  get searchStringValid() {
-    return this.searchString && this.searchString.length >= 3;
+  searchStringValid(searchString) {
+    return searchString && searchString.length >= 3 && searchString !== 'zen' && searchString !== 'zen1';
   }
 
   confirmations(blockNumber) {
@@ -251,7 +251,6 @@ decorate(BlockStore, {
   syncing: observable,
   medianTimeString: computed,
   numberOfTransactions: computed,
-  searchStringValid: computed,
   fetchBlocks: action,
   fetchBlock: action,
   fetchBlockTransactionAssets: action,

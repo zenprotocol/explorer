@@ -8,7 +8,7 @@ const jsonResponse = require('../../../lib/jsonResponse');
 const HttpError = require('../../../lib/HttpError');
 
 function isSearchStringValid(searchString) {
-  return searchString && searchString.length >= 3;
+  return searchString && searchString.length >= 3 && searchString !== 'zen' && searchString !== 'zen1';
 }
 
 module.exports = {
