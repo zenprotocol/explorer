@@ -140,10 +140,6 @@ class AddressPage extends Component {
   }
 }
 
-AddressPage.propTypes = {
-  match: PropTypes.object,
-};
-
 function getAssetTotal(array, asset) {
   if (array && array.length) {
     for (let i = 0; i < array.length; i++) {
