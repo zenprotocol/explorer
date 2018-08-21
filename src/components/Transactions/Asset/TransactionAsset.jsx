@@ -32,7 +32,7 @@ class TransactionAsset extends Component {
         ) : null}
 
         <div className="row mx-0">
-          <div className="col-2 break-word"><HashLink hash={AssetUtils.getTypeFromCode(asset)} /></div>
+          <div className="col-2 break-word"><HashLink hash={AssetUtils.getAssetNameFromCode(asset)} value={asset} /></div>
           <div className="col-4 py-0">
             <div className="inputs">{inputs.rowsToRender}</div>
             <div className="arrow">

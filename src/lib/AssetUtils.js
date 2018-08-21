@@ -20,16 +20,19 @@ export default {
       if (amount <= 100) {
         parsedAmount = (amount / 100000000).toFixed(8);
       }
-      return `${TextUtils.formatNumber(parsedAmount)} ${this.getTypeFromCode(asset)}`;
+      return `${TextUtils.formatNumber(parsedAmount)} ${this.getAssetNameFromCode(asset)}`;
     }
     return String(TextUtils.formatNumber(amount));
   },
-  getTypeFromCode(code) {
-    switch (code) {
-      case '00':
-        return 'ZP';
-      default:
-        return TextUtils.truncateHash(code);
+  getAssetNameFromCode(code) {
+    let name = code;
+    if (code === '00') {
+      name = 'ZP';
     }
+
+    return this.removeLeadingAssetZeros(name);
+  },
+  removeLeadingAssetZeros(asset) {
+    return asset.substring(0, 8) === '00000000' ? asset.substring(8) : asset;
   },
 };

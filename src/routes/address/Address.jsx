@@ -131,7 +131,7 @@ class AddressPage extends Component {
       return (
         <tr key={index}>
           <td>
-            <HashLink hash={AssetUtils.getTypeFromCode(assetBalance.asset)} />
+            <HashLink hash={AssetUtils.getAssetNameFromCode(assetBalance.asset)} value={assetBalance.asset} />
           </td>
           <td>{AssetUtils.getAmountString(assetBalance.asset, assetBalance.total)}</td>
         </tr>

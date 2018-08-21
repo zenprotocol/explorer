@@ -16,7 +16,7 @@ class AddressTxsTable extends Component {
         Header: 'Asset',
         accessor: 'asset',
         Cell: function(data) {
-          return AssetUtils.getTypeFromCode(data.value);
+          return <HashLink hash={AssetUtils.getAssetNameFromCode(data.value)} value={data.value} />;
         },
       },
       {
