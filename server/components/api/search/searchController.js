@@ -24,9 +24,12 @@ module.exports = {
 
     res.status(httpStatus.OK).json(
       jsonResponse.create(httpStatus.OK, {
-        blocks,
-        transactions,
-        addresses,
+        total: blocks.length + transactions.length + addresses.length,
+        results: {
+          blocks,
+          transactions,
+          addresses,
+        }
       })
     );
   },
