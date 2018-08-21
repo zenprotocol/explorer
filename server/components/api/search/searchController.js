@@ -7,10 +7,14 @@ const addressesDAL = require('../addresses/addressesDAL');
 const jsonResponse = require('../../../lib/jsonResponse');
 const HttpError = require('../../../lib/HttpError');
 
+function isSearchStringValid(searchString) {
+  return searchString && searchString.length >= 3;
+}
+
 module.exports = {
   index: async function(req, res) {
     let search = req.params.search;
-    if (!search || search.length < 3) {
+    if (!isSearchStringValid(search)) {
       throw new HttpError(httpStatus.BAD_REQUEST);
     }
 
@@ -29,7 +33,7 @@ module.exports = {
           blocks,
           transactions,
           addresses,
-        }
+        },
       })
     );
   },
