@@ -1,7 +1,8 @@
 import React from 'react';
 import {NavLink} from 'react-router-dom';
-import Logo from '../Logo/Logo.jsx';
 import classnames from 'classnames';
+import Logo from '../Logo/Logo.jsx';
+import SearchBar from '../SearchBar/SearchBar.jsx';
 import './Navbar.css';
 
 export default function Navbar(props) {
@@ -22,9 +23,7 @@ export default function Navbar(props) {
               <NavLink className="nav-link" to="/tx">Transactions</NavLink>
             </li> */}
           </ul>
-          {/* <form className="form-inline my-2 my-lg-0">
-            <input className="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" />
-          </form> */}
+          <SearchBar />
         </div>
       </nav>
     </div>
