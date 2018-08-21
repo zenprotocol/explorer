@@ -25,7 +25,8 @@ addressesDAL.search = function(search) {
   return Promise.all([
     outputsDAL.count({
       where,
-      group: 'address',
+      distinct: true,
+      col: 'address',
     }),
     outputsDAL.findAll({
       attributes: ['address'],
