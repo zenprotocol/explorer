@@ -28,11 +28,11 @@ module.exports = {
 
     res.status(httpStatus.OK).json(
       jsonResponse.create(httpStatus.OK, {
-        total: blocks.length + transactions.length + addresses.length,
-        results: {
-          blocks,
-          transactions,
-          addresses,
+        total: blocks[0] + transactions[0] + addresses[0],
+        items: {
+          blocks: blocks[1],
+          transactions: transactions[1],
+          addresses: addresses[1],
         },
       })
     );
