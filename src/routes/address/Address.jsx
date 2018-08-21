@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
-import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import blockStore from '../../store/BlockStore';
 import uiStore from '../../store/UIStore';
