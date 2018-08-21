@@ -15,6 +15,19 @@ addressesDAL.addressExists = function(address) {
   });
 };
 
+addressesDAL.search = function(search) {
+  const sequelize = outputsDAL.db.sequelize;
+  return outputsDAL.findAll({
+    attributes: ['address'],
+    where: {
+      address: {
+        [sequelize.Op.like]: `%${search}%`,
+      },
+    },
+    group: 'address',
+  });
+};
+
 addressesDAL.getSentSums = async function(address) {
   const db = inputsDAL.db;
   const Sequelize = db.Sequelize;
