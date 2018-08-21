@@ -8,9 +8,6 @@ import TransactionResults from './TransactionResults.jsx';
 import AddressResults from './AddressResults.jsx';
 
 class SearchResultsPage extends Component {
-  constructor(props) {
-    super(props);
-  }
   componentDidMount() {
     const {search} = RouterUtils.getRouteParams(this.props);
     this.search(search);
