@@ -17,15 +17,23 @@ addressesDAL.addressExists = function(address) {
 
 addressesDAL.search = function(search) {
   const sequelize = outputsDAL.db.sequelize;
-  return outputsDAL.findAll({
-    attributes: ['address'],
-    where: {
-      address: {
-        [sequelize.Op.like]: `%${search}%`,
-      },
+  const where = {
+    address: {
+      [sequelize.Op.like]: `%${search}%`,
     },
-    group: 'address',
-  });
+  };
+  return Promise.all([
+    outputsDAL.count({
+      where,
+      group: 'address',
+    }),
+    outputsDAL.findAll({
+      attributes: ['address'],
+      where,
+      limit: 10,
+      group: 'address',
+    })
+  ]);
 };
 
 addressesDAL.getSentSums = async function(address) {

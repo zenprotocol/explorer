@@ -27,13 +27,18 @@ transactionsDAL.findByHash = async function(hash) {
 
 transactionsDAL.search = function(search) {
   const sequelize = this.db.sequelize;
-  return this.findAll({
-    where: {
-      hash: {
-        [sequelize.Op.like]: `%${search}%`,
-      },
+  const where = {
+    hash: {
+      [sequelize.Op.like]: `%${search}%`,
     },
-  });
+  };
+  return Promise.all([
+    this.count({where}),
+    this.findAll({
+      where,
+      limit: 10,
+    })
+  ]);
 };
 
 transactionsDAL.findAllAssetsByAddress = async function(address, { limit = 10, offset = 0 }) {

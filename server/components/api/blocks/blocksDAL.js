@@ -34,11 +34,17 @@ blocksDAL.search = function(search) {
   if (isNaN(blockNumber)) {
     return Promise.resolve([]);
   }
-  return this.findAll({
-    where: {
-      blockNumber,
-    },
-  });
+
+  const where = {
+    blockNumber,
+  };
+  return Promise.all([
+    this.count({where}),
+    this.findAll({
+      where,
+      limit: 10,
+    })
+  ]);
 };
 
 blocksDAL.addTransaction = async function(block, transaction, options = {}) {
