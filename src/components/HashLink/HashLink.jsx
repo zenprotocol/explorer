@@ -18,13 +18,14 @@ export default class HashLink extends Component {
   }
 
   render() {
-    const { url, hash, copy, shorten } = this.props;
+    const { url, hash, copy, shorten, value } = this.props;
     const shortenedHash = shorten ? shortenHash(hash) : hash;
     const anchorHash = url ? <Link to={url}>{shortenedHash}</Link> : shortenedHash;
+    const valueToCopy = value ? value : hash;
 
     const anchorCopy = (
       <div className="copy" onMouseLeave={() => {this.setCopied(false);}} data-balloon={this.state.copied? 'Copied to clipboard' : 'Copy'} data-balloon-pos="up-left">
-        <button onClick={() => {this.copyToClipboard(hash);}} className="button btn-link" title="Copy hash to clipboard">
+        <button onClick={() => {this.copyToClipboard(valueToCopy);}} className="button btn-link" title="Copy hash to clipboard">
           <i className="far fa-copy" />
         </button>
       </div>
@@ -33,7 +34,7 @@ export default class HashLink extends Component {
     const showCopy = copy && hash !== shortenedHash;
 
     return (
-      <div className={classNames('HashLink break-word', {copyable: showCopy})} title={hash}>
+      <div className={classNames('HashLink break-word', {copyable: showCopy})} title={valueToCopy}>
         {anchorHash}
         {showCopy ? anchorCopy : null}
       </div>
@@ -70,6 +71,7 @@ function shortenHash(hash) {
 HashLink.propTypes = {
   url: PropTypes.string,
   hash: PropTypes.string.isRequired,
+  value: PropTypes.string,
   copy: PropTypes.bool,
   shorten: PropTypes.bool,
 };
