@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
+import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import uiStore from '../../store/UIStore';
 import AssetUtils from '../../lib/AssetUtils';
@@ -28,9 +29,9 @@ class AddressTxsTable extends Component {
       },
       {
         Header: 'Block',
-        accessor: 'blockHash',
+        accessor: 'blockNumber',
         Cell: data => {
-          return <HashLink url={`/blocks/${data.value}`} hash={data.value} />;
+          return <Link to={`/blocks/${data.value}`}>{data.value}</Link>;
         },
       },
       {

@@ -32,6 +32,7 @@ transactionsDAL.findAllAssetsByAddress = async function(address, { limit = 10, o
       COALESCE("OutputAsset"."asset", "InputAsset"."asset") AS "asset",
       "Block"."timestamp" AS "timestamp",
       "Block"."hash" AS "blockHash",
+      "Block"."blockNumber" AS "blockNumber",
       "Transaction"."id" AS "transactionId",
       "Transaction"."hash" AS "txHash",
       CASE WHEN "Transaction"."index" = 0 THEN true
