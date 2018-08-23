@@ -43,7 +43,7 @@ class SearchResultsPage extends Component {
             <div className="col-sm">
               <h1 className="d-block d-sm-inline-block text-white mb-1 mb-lg-5">
                 {results.total? `${results.total} Search Results` : 'No search results found for'}
-                <div className="search-string text-primary">{blockStore.searchString}</div>
+                <div className="search-string text-light">{blockStore.searchString}</div>
               </h1>
             </div>
           </div>
