@@ -5,22 +5,29 @@ import TextUtils from '../../lib/TextUtils';
 
 export default class BlockNumberResults extends Component {
   render() {
+    const {items} = this.props;
+    if(!items || !items.length) {
+      return null;
+    }
+
     return (
-      <table className="table">
-        <thead>
-          <tr>
-            <th colSpan="2">BLOCKS</th>
-          </tr>
-        </thead>
-        <tbody>
-          {this.props.items.map((block) => (
-            <tr key={block.blockNumber}>
-              <td><Link to={`/blocks/${block.blockNumber}`}>{block.blockNumber}</Link></td>
-              <td>{TextUtils.getDateStringFromTimestamp(block.timestamp)}</td>
+      <div className="search-results-group">
+        <table className="table">
+          <thead>
+            <tr>
+              <th colSpan="2">BLOCKS</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {items.map((block) => (
+              <tr key={block.blockNumber}>
+                <td><Link to={`/blocks/${block.blockNumber}`}>{block.blockNumber}</Link></td>
+                <td>{TextUtils.getDateStringFromTimestamp(block.timestamp)}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     );
   }
 }
