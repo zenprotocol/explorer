@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
+import { Link } from 'react-router-dom'; 
 import blockStore from '../../store/BlockStore';
 import RouterUtils from '../../lib/RouterUtils.js';
+import TextUtils from '../../lib/TextUtils.js';
 import Loading from '../../components/Loading/Loading.jsx';
-import BlockNumberResults from './BlockNumberResults.jsx';
-import TransactionResults from './TransactionResults.jsx';
-import AddressResults from './AddressResults.jsx';
+import HashLink from '../../components/HashLink/HashLink.jsx';
+import SearchResultsTable from '../../components/SearchResultsTable/SearchResultsTable.jsx';
 
 class SearchResultsPage extends Component {
   componentDidMount() {
@@ -45,9 +46,16 @@ class SearchResultsPage extends Component {
           </div>
           <div className="row">
             <div className="col-sm">
-              <BlockNumberResults items={results.items.blocks} />
-              <TransactionResults items={results.items.transactions} />
-              <AddressResults items={results.items.addresses} />
+              <SearchResultsTable items={results.items.blocks} title="BLOCKS" columns={[
+                { accessor: 'blockNumber', cell: (data) => <Link to={`/blocks/${data}`}>{data}</Link> },
+                { accessor: 'timestamp', cell: (data) => TextUtils.getDateStringFromTimestamp(data)}
+              ]} />
+              <SearchResultsTable items={results.items.transactions} title="TRANSACTIONS" columns={[
+                { accessor: 'hash', cell: (data) => <HashLink url={`/tx/${data}`} hash={data} /> }
+              ]} />
+              <SearchResultsTable items={results.items.addresses} title="ADDRESSES" columns={[
+                { accessor: 'address', cell: (data) => <HashLink url={`/address/${data}`} hash={data} /> }
+              ]} />
             </div>
           </div>
         </section>
