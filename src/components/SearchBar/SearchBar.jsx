@@ -3,6 +3,7 @@ import { observer } from 'mobx-react';
 import { withRouter } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import blockStore from '../../store/BlockStore.js';
+import './SearchBar.css';
 
 class SearchBar extends Component {
   constructor(props) {
@@ -25,15 +26,21 @@ class SearchBar extends Component {
 
   render() {
     return (
-      <form onSubmit={this.handleSubmit} className="form-inline my-2 my-lg-0">
-        <input
-          value={blockStore.searchString}
-          onChange={this.handleChange}
-          className="form-control mr-sm-2"
-          type="search"
-          placeholder="Search"
-          aria-label="Search"
-        />
+      <form onSubmit={this.handleSubmit} className="form-inline my-3 my-lg-0">
+        <div className="input-group">
+          <div className="input-group-prepend">
+            <button className="btn btn-outline-dark btn-search" type="submit"><i className="fas fa-search"></i></button>
+          </div>
+          <input
+            value={blockStore.searchString}
+            onChange={this.handleChange}
+            className="form-control mr-sm-2"
+            type="search"
+            placeholder="Search"
+            aria-label="Search"
+          />
+        </div>
+        
       </form>
     );
   }
