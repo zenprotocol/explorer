@@ -13,7 +13,7 @@ export default class SearchResultsTable extends Component {
         <table className="table">
           <thead>
             <tr>
-              <th colSpan={columns.length}>{title}</th>
+              <th colSpan={columns.length} className="border-0">{title}</th>
             </tr>
           </thead>
           <tbody>

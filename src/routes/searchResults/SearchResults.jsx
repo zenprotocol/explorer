@@ -7,6 +7,7 @@ import TextUtils from '../../lib/TextUtils.js';
 import Loading from '../../components/Loading/Loading.jsx';
 import HashLink from '../../components/HashLink/HashLink.jsx';
 import SearchResultsTable from '../../components/SearchResultsTable/SearchResultsTable.jsx';
+import './SearchResults.css';
 
 class SearchResultsPage extends Component {
   componentDidMount() {
@@ -40,8 +41,10 @@ class SearchResultsPage extends Component {
         <section className="bordered border-left border-primary pl-lg-4">
           <div className="row">
             <div className="col-sm">
-              <h1 className="d-block d-sm-inline-block text-white mb-1 mb-lg-5">{results.total} Search Results</h1>
-              <div className="search-string">{blockStore.searchString}</div>
+              <h1 className="d-block d-sm-inline-block text-white mb-1 mb-lg-5">
+                {results.total? `${results.total} Search Results` : 'No search results found for'}
+                <div className="search-string text-primary">{blockStore.searchString}</div>
+              </h1>
             </div>
           </div>
           <div className="row">
