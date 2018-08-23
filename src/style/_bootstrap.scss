@@ -11,7 +11,7 @@ $white: #f2f2f2;
 $gray-100: #f8f9fa;
 $gray-200: #e9ecef;
 $gray-300: #dee2e6;
-$gray-400: #ced4da;
+$gray-400: #bfbfbf;
 $gray-500: #adb5bd;
 $gray-600: #6c757d;
 $gray-700: #495057;
@@ -36,7 +36,7 @@ $success : $green;
 $info : $cyan;
 $warning : $yellow;
 $danger : $red;
-$light : $gray-100;
+$light : $gray-400;
 $dark : $gray-800;
 
 @import '../../node_modules/bootstrap/scss/functions';
@@ -100,6 +100,10 @@ $dark : $gray-800;
 }
 
 .table {
+  th {
+    color: $white;
+  }
+
   td,
   th {
     border-color: $dark !important;
