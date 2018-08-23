@@ -45,15 +45,9 @@ class SearchResultsPage extends Component {
           </div>
           <div className="row">
             <div className="col-sm">
-              <div className="search-results-group">
-                <BlockNumberResults items={results.items.blocks} />
-              </div>
-              <div className="search-results-group">
-                <TransactionResults items={results.items.transactions} />
-              </div>
-              <div className="search-results-group">
-                <AddressResults items={results.items.addresses} />
-              </div>
+              <BlockNumberResults items={results.items.blocks} />
+              <TransactionResults items={results.items.transactions} />
+              <AddressResults items={results.items.addresses} />
             </div>
           </div>
         </section>
