@@ -43,9 +43,12 @@ class BlockStore {
         runInAction(() => {
           this.blocks = response.data.items;
           this.blocksCount = response.data.total;
+          this.loading.blocks = false;
         });
-      }).finally(() => {
-        this.loading.blocks = false;
+      }).catch(() => {
+        runInAction(() => {
+          this.loading.blocks = false;
+        });
       });
   }
 
@@ -55,10 +58,13 @@ class BlockStore {
     return Service.blocks.findById(id).then(response => {
       runInAction(() => {
         this.block = response.data;
+        this.loading.block = false;
       });
       return response.data;
-    }).finally(() => {
-      this.loading.block = false;
+    }).catch(() => {
+      runInAction(() => {
+        this.loading.block = false;
+      });
     });
   }
 
@@ -68,9 +74,12 @@ class BlockStore {
       runInAction(() => {
         this.blockTransactionAssets = response.data.items;
         this.blockTransactionAssetsCount = Number(response.data.total);
+        this.loading.blockTransactionAssets = false;
       });
-    }).finally(() => {
-      this.loading.blockTransactionAssets = false;
+    }).catch(() => {
+      runInAction(() => {
+        this.loading.blockTransactionAssets = false;
+      });
     });
   }
 
@@ -85,9 +94,12 @@ class BlockStore {
     return Service.transactions.findByHash(hash).then(response => {
       runInAction(() => {
         this.transaction = response.data;
+        this.loading.transaction = false;
       });
-    }).finally(() => {
-      this.loading.transaction = false;
+    }).catch(() => {
+      runInAction(() => {
+        this.loading.transaction = false;
+      });
     });
   }
 
@@ -97,9 +109,12 @@ class BlockStore {
       runInAction(() => {
         this.transactions = response.data.items;
         this.transactionsCount = response.data.total;
+        this.loading.transactions = false;
       });
-    }).finally(() => {
-      this.loading.transactions = false;
+    }).catch(() => {
+      runInAction(() => {
+        this.loading.transactions = false;
+      });
     });
   }
 
@@ -109,9 +124,12 @@ class BlockStore {
       runInAction(() => {
         this.addressTransactionAssets = response.data.items;
         this.addressTransactionAssetsCount = Number(response.data.total);
+        this.loading.addressTransactionAssets = false;
       });
-    }).finally(() => {
-      this.loading.addressTransactionAssets = false;
+    }).catch(() => {
+      runInAction(() => {
+        this.loading.addressTransactionAssets = false;
+      });
     });
   }
 
@@ -143,18 +161,15 @@ class BlockStore {
         .then(response => {
           runInAction(() => {
             this.address = response.data;
+            this.loading.address = false;
           });
         })
         .catch(error => {
           runInAction(() => {
+            this.loading.address = false;
             if (error.response.status === 404) {
               this.address = { status: 404 };
             }
-          });
-        })
-        .finally(() => {
-          runInAction(() => {
-            this.loading.address = false;
           });
         });
     }
@@ -197,12 +212,15 @@ class BlockStore {
 
     return Service.search.searchAll(value).then(response => {
       runInAction(() => {
+        this.loading.searchResults = false;
         if (response.success) {
           this.searchResults = response.data;
         }
       });
-    }).finally(() => {
-      this.loading.searchResults = false;
+    }).catch(() => {
+      runInAction(() => {
+        this.loading.searchResults = false;
+      });
     });
   }
 
