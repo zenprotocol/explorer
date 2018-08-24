@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import blockStore from '../../store/BlockStore';
 import RouterUtils from '../../lib/RouterUtils';
 import TextUtils from '../../lib/TextUtils';
+import AssetUtils from '../../lib/AssetUtils';
 import Loading from '../../components/Loading/Loading';
 import HashLink from '../../components/HashLink/HashLink';
 import SearchResultsTable from '../../components/SearchResultsTable/SearchResultsTable';
@@ -60,7 +61,9 @@ class SearchResultsPage extends Component {
                 { accessor: 'transactionCount', cell: (data) => <span>{data} txns</span>},
               ]} />
               <SearchResultsTable items={results.items.addresses} title="ADDRESSES" columns={[
-                { accessor: 'address', cell: (data) => <HashLink url={`/address/${data}`} hash={data} truncate={false} /> }
+                { accessor: 'address', cell: (data) => <HashLink url={`/address/${data}`} hash={data} truncate={false} /> },
+                { accessor: 'txCount', cell: (data) => <span>{data} txns</span> },
+                { accessor: 'balance', cell: (data) => AssetUtils.getAmountString('00', data) },
               ]} />
             </div>
           </div>
