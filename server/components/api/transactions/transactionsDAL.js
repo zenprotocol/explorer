@@ -36,7 +36,11 @@ transactionsDAL.search = function(search) {
     this.count({where}),
     this.findAll({
       where,
+      include: [
+        'Block'
+      ],
       limit: 10,
+      order: [['createdAt', 'DESC']],
     })
   ]);
 };

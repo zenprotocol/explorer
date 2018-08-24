@@ -22,17 +22,26 @@ addressesDAL.search = function(search) {
       [sequelize.Op.like]: `%${search}%`,
     },
   };
+  const sql = `
+  SELECT "address"
+  FROM
+    (SELECT "address", MAX("createdAt") AS "createdAt"
+    FROM "Outputs" AS "Output"
+    WHERE "Output"."address" LIKE :search
+    GROUP BY "address") AS "Output"
+  ORDER BY "createdAt" DESC LIMIT 10
+  `;
   return Promise.all([
     outputsDAL.count({
       where,
       distinct: true,
       col: 'address',
     }),
-    outputsDAL.findAll({
-      attributes: ['address'],
-      where,
-      limit: 10,
-      group: 'address',
+    sequelize.query(sql, {
+      replacements: {
+        search: `%${search}%`,
+      },
+      type: sequelize.QueryTypes.SELECT,
     })
   ]);
 };
