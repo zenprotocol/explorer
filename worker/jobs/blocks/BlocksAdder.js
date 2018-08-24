@@ -38,8 +38,10 @@ class BlocksAdder {
         )
       : latestBlockNumberInNode;
 
-    logger.info(`latestBlockNumberInDB=${latestBlockNumberInDB}, latestBlockNumberToAdd=${latestBlockNumberToAdd}`);
-    
+    logger.info(
+      `latestBlockNumberInDB=${latestBlockNumberInDB}, latestBlockNumberToAdd=${latestBlockNumberToAdd}`
+    );
+
     const addBlockPromises = [];
     let addBlockPromiseResults = [];
 
@@ -436,59 +438,37 @@ class BlocksAdder {
   }
 
   async relateInputToOutput({ input, dbTransaction } = {}) {
-    let output = null;
-
     logger.info(
       `Searching for the relevant output for InputId=${input.id} in transaction with hash=${
         input.outpointTXHash
       } and index=${input.outpointIndex}...`
     );
-    const transactionsWithRelevantHash = await transactionsDAL.findAll(
-      {
-        where: {
-          hash: input.outpointTXHash,
-        },
-        transaction: dbTransaction
+    const output = await outputsDAL.findOne({
+      where: {
+        index: input.outpointIndex,
       },
-    );
-    if (transactionsWithRelevantHash.length === 1) {
-      const outputs = await outputsDAL.findAll(
+      include: [
         {
+          model: outputsDAL.db.Transaction,
+          attributes: [],
           where: {
-            index: input.outpointIndex,
-            TransactionId: transactionsWithRelevantHash[0].id,
+            hash: input.outpointTXHash,
           },
-          transaction: dbTransaction 
         },
+      ],
+      transaction: dbTransaction,
+    });
+    if (output) {
+      logger.info(
+        `Setting the found output with id=${output.id} on the input with id=${input.id}...`
       );
-      if (outputs.length === 1) {
-        logger.info(`Found output for InputId=${input.id}`);
-        output = outputs[0];
-      } else {
-        outputs.length > 0
-          ? logger.error(`Found more than 1 related output for InputId=${input.id}!`)
-          : logger.error(`Did not find an output for InputId=${input.id}`);
-        throw new Error(`Output not found for InputId=${input.id}`);
-      }
+      await inputsDAL.setOutput(input, output, { transaction: dbTransaction });
+      logger.info(`Output with id=${output.id} was set on the input with id=${input.id}.`);
+      return true;
     } else {
-      transactionsWithRelevantHash.length > 0
-        ? logger.error(
-            `Found more than 1 transactions with hash=${input.outpointTXHash} for InputId=${
-              input.id
-            }!`
-          )
-        : logger.error(
-            `Could not find a transaction with hash=${input.outpointTXHash} for InputId=${input.id}`
-          );
+      logger.error(`Did not find an output for InputId=${input.id}`);
       throw new Error(`Output not found for InputId=${input.id}`);
     }
-
-    logger.info(
-      `Setting the found output with id=${output.id} on the input with id=${input.id}...`
-    );
-    await inputsDAL.setOutput(input, output, { transaction: dbTransaction });
-    logger.info(`Output with id=${output.id} was set on the input with id=${input.id}.`);
-    return true;
   }
 }
 
