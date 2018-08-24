@@ -2,12 +2,12 @@ import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { Link } from 'react-router-dom'; 
 import blockStore from '../../store/BlockStore';
-import RouterUtils from '../../lib/RouterUtils.js';
-import TextUtils from '../../lib/TextUtils.js';
-import Loading from '../../components/Loading/Loading.jsx';
-import HashLink from '../../components/HashLink/HashLink.jsx';
-import SearchResultsTable from '../../components/SearchResultsTable/SearchResultsTable.jsx';
-import './SearchResults.css';
+import RouterUtils from '../../lib/RouterUtils';
+import TextUtils from '../../lib/TextUtils';
+import Loading from '../../components/Loading/Loading';
+import HashLink from '../../components/HashLink/HashLink';
+import SearchResultsTable from '../../components/SearchResultsTable/SearchResultsTable';
+import './Search.css';
 
 class SearchResultsPage extends Component {
   componentDidMount() {

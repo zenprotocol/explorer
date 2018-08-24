@@ -11,7 +11,7 @@ import Block from './routes/block/Block.jsx';
 import blockStore from './store/BlockStore';
 import Transaction from './routes/transaction/Transaction.jsx';
 import Address from './routes/address/Address.jsx';
-import SearchResults from './routes/searchResults/SearchResults.jsx';
+import Search from './routes/search/Search.jsx';
 
 class App extends Component {
   constructor(props) {
@@ -49,7 +49,7 @@ class App extends Component {
             <Route path="/blocks/:id" component={Block} />
             <Route path="/tx/:hash" component={Transaction} />
             <Route path="/address/:address/:asset?" component={Address} />
-            <Route path="/search/:search" component={SearchResults} />
+            <Route path="/search/:search" component={Search} />
           </Switch>
         </div>
         <div className="container px-lg-5">
