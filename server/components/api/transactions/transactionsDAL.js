@@ -81,9 +81,9 @@ transactionsDAL.findAllAssetsByAddress = async function(address, { limit = 10, o
 
       ON "OutputAsset"."TransactionId" = "InputAsset"."TransactionId"
           AND "OutputAsset"."asset" = "InputAsset"."asset"
-      INNER JOIN "Transactions" AS "Transaction" ON "OutputAsset"."TransactionId" = "Transaction"."id"
+      INNER JOIN "Transactions" AS "Transaction" ON "OutputAsset"."TransactionId" = "Transaction"."id" OR "InputAsset"."TransactionId" = "Transaction"."id"
       INNER JOIN "Blocks" AS "Block" ON "Transaction"."BlockId" = "Block"."id"
-  ORDER BY "Block"."timestamp" DESC 
+  ORDER BY "Block"."timestamp" DESC
   LIMIT :limit OFFSET :offset`;
 
   return sequelize.query(sql, {
