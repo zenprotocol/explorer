@@ -35,9 +35,7 @@ class SearchResultsPage extends Component {
     const {search} = RouterUtils.getRouteParams(this.props);
 
     const results = blockStore.searchResults;
-    if (!results || !results.items) {
-      return null;
-    }
+
     return (
       <div className="SearchResults">
         <section className="bordered border-left border-primary pl-lg-4">

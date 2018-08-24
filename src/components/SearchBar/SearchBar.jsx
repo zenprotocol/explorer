@@ -19,7 +19,9 @@ class SearchBar extends Component {
 
   handleSubmit(event) {
     event.preventDefault();
-    this.props.history.push(`/search/${blockStore.searchString}`);
+    if(blockStore.searchStringValid) {
+      this.props.history.push(`/search/${blockStore.searchString}`);
+    }
   }
 
   
