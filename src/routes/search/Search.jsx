@@ -49,14 +49,15 @@ class SearchResultsPage extends Component {
           </div>
           <div className="row">
             <div className="col-sm">
-              <SearchResultsTable items={results.items.blocks} title="BLOCKS" columns={[
-                { accessor: 'blockNumber', cell: (data) => <Link to={`/blocks/${data}`}>{data}</Link> },
-                { accessor: 'timestamp', cell: (data) => TextUtils.getDateStringFromTimestamp(data)}
-              ]} />
               <SearchResultsTable items={results.items.transactions} title="TRANSACTIONS" columns={[
                 { accessor: 'hash', cell: (data) => <HashLink url={`/tx/${data}`} hash={data} truncate={false} /> },
                 { accessor: 'Block.blockNumber', cell: (data) => <span>Block <Link to={`/blocks/${data}`}>{data}</Link></span> },
                 { accessor: 'Block.timestamp', cell: (data) => TextUtils.getDateStringFromTimestamp(data)},
+              ]} />
+              <SearchResultsTable items={results.items.blocks} title="BLOCKS" columns={[
+                { accessor: 'blockNumber', cell: (data) => <Link to={`/blocks/${data}`}>{data}</Link> },
+                { accessor: 'timestamp', cell: (data) => TextUtils.getDateStringFromTimestamp(data)},
+                { accessor: 'transactionCount', cell: (data) => <span>{data} txns</span>},
               ]} />
               <SearchResultsTable items={results.items.addresses} title="ADDRESSES" columns={[
                 { accessor: 'address', cell: (data) => <HashLink url={`/address/${data}`} hash={data} truncate={false} /> }
