@@ -54,10 +54,10 @@ class SearchResultsPage extends Component {
                 { accessor: 'timestamp', cell: (data) => TextUtils.getDateStringFromTimestamp(data)}
               ]} />
               <SearchResultsTable items={results.items.transactions} title="TRANSACTIONS" columns={[
-                { accessor: 'hash', cell: (data) => <HashLink url={`/tx/${data}`} hash={data} shorten={false} /> }
+                { accessor: 'hash', cell: (data) => <HashLink url={`/tx/${data}`} hash={data} truncate={false} /> }
               ]} />
               <SearchResultsTable items={results.items.addresses} title="ADDRESSES" columns={[
-                { accessor: 'address', cell: (data) => <HashLink url={`/address/${data}`} hash={data} shorten={false} /> }
+                { accessor: 'address', cell: (data) => <HashLink url={`/address/${data}`} hash={data} truncate={false} /> }
               ]} />
             </div>
           </div>

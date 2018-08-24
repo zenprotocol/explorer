@@ -48,7 +48,7 @@ class AddressPage extends Component {
               <h1 className="d-block d-sm-inline-block text-white mb-3 mb-lg-5">
                 ADDRESS
                 <div className="address break-word">
-                  <HashLink hash={params.address} shorten={false} />
+                  <HashLink hash={params.address} truncate={false} />
                 </div>
               </h1>
             </div>
