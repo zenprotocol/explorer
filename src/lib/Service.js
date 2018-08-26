@@ -8,6 +8,7 @@ const Endpoints = {
   transactions: '/api/tx',
   addresses: '/api/addresses',
   info: '/api/infos',
+  search: '/api/search',
 };
 
 let globalMute = false;
@@ -100,4 +101,12 @@ export default {
       }).then(response => response.data);
     },
   },
+  search: {
+    async searchAll(search) {
+      return sendHttpRequest({
+        url: `${Endpoints.search}/${search}`,
+        method: 'get',
+      }).then(response => response.data);
+    }
+  }
 };

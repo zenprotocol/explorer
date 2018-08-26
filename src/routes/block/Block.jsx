@@ -119,7 +119,7 @@ class BlockPage extends Component {
                       <td className="no-text-transform">
                         <HashLink
                           hash={block.hash}
-                          shorten={false}
+                          truncate={false}
                         />
                       </td>
                     </tr>

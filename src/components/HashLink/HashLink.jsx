@@ -18,9 +18,9 @@ export default class HashLink extends Component {
   }
 
   render() {
-    const { url, hash, copy, shorten, value } = this.props;
-    const shortenedHash = shorten ? shortenHash(hash) : hash;
-    const anchorHash = url ? <Link to={url}>{shortenedHash}</Link> : shortenedHash;
+    const { url, hash, copy, truncate, value } = this.props;
+    const truncatedHash = truncate ? truncateHash(hash) : hash;
+    const anchorHash = url ? <Link to={url}>{truncatedHash}</Link> : truncatedHash;
     const valueToCopy = value ? value : hash;
 
     const anchorCopy = (
@@ -31,10 +31,10 @@ export default class HashLink extends Component {
       </div>
     );
 
-    const showCopy = copy && hash !== shortenedHash;
+    const showCopy = copy && hash !== truncatedHash;
 
     return (
-      <div className={classNames('HashLink break-word', {copyable: showCopy})} title={valueToCopy}>
+      <div className={classNames('HashLink break-word', {copyable: showCopy})} title={showCopy ? valueToCopy : ''}>
         {anchorHash}
         {showCopy ? anchorCopy : null}
       </div>
@@ -64,7 +64,7 @@ export default class HashLink extends Component {
   }
 }
 
-function shortenHash(hash) {
+function truncateHash(hash) {
   return TextUtils.truncateHash(hash);
 }
 
@@ -73,9 +73,9 @@ HashLink.propTypes = {
   hash: PropTypes.string.isRequired,
   value: PropTypes.string,
   copy: PropTypes.bool,
-  shorten: PropTypes.bool,
+  truncate: PropTypes.bool,
 };
 HashLink.defaultProps = {
   copy: true,
-  shorten: true,
+  truncate: true,
 };

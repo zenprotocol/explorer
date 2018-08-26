@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
-import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import blockStore from '../../store/BlockStore';
 import uiStore from '../../store/UIStore';
@@ -49,7 +48,7 @@ class AddressPage extends Component {
               <h1 className="d-block d-sm-inline-block text-white mb-3 mb-lg-5">
                 ADDRESS
                 <div className="address break-word">
-                  <HashLink hash={params.address} shorten={false} />
+                  <HashLink hash={params.address} truncate={false} />
                 </div>
               </h1>
             </div>
@@ -139,10 +138,6 @@ class AddressPage extends Component {
     });
   }
 }
-
-AddressPage.propTypes = {
-  match: PropTypes.object,
-};
 
 function getAssetTotal(array, asset) {
   if (array && array.length) {

@@ -1,6 +1,7 @@
 import { observable, decorate, action, runInAction, computed } from 'mobx';
 import Service from '../lib/Service';
 import TextUtils from '../lib/TextUtils';
+import SearchUtils from '../lib/SearchUtils';
 
 // TODO split to several stores - blocks, transactions
 class BlockStore {
@@ -16,6 +17,8 @@ class BlockStore {
     this.address = {};
     this.addressTransactionAssets = [];
     this.addressTransactionAssetsCount = 0;
+    this.searchString = '';
+    this.searchResults = {};
     this.medianTime = null;
     this.syncing = false;
     this.loading = {
@@ -26,7 +29,10 @@ class BlockStore {
       transactions: false,
       address: false,
       addressTransactionAssets: false,
+      searchResults: false,
     };
+
+    this.resetSearchResults();
   }
 
   fetchBlocks({ pageSize = 10, page = 0, sorted = [], filtered = [] } = {}) {
@@ -40,30 +46,49 @@ class BlockStore {
           this.blocksCount = response.data.total;
           this.loading.blocks = false;
         });
+      })
+      .catch(() => {
+        runInAction(() => {
+          this.loading.blocks = false;
+        });
       });
   }
 
   fetchBlock(id) {
     this.loading.block = true;
 
-    return Service.blocks.findById(id).then(response => {
-      runInAction(() => {
-        this.block = response.data;
-        this.loading.block = false;
+    return Service.blocks
+      .findById(id)
+      .then(response => {
+        runInAction(() => {
+          this.block = response.data;
+          this.loading.block = false;
+        });
+        return response.data;
+      })
+      .catch(() => {
+        runInAction(() => {
+          this.loading.block = false;
+        });
       });
-      return response.data;
-    });
   }
 
   fetchBlockTransactionAssets(blockNumber, params = {}) {
     this.loading.blockTransactionAssets = true;
-    return Service.blocks.findTransactionsAssets(blockNumber, params).then(response => {
-      runInAction(() => {
-        this.blockTransactionAssets = response.data.items;
-        this.blockTransactionAssetsCount = Number(response.data.total);
-        this.loading.blockTransactionAssets = false;
+    return Service.blocks
+      .findTransactionsAssets(blockNumber, params)
+      .then(response => {
+        runInAction(() => {
+          this.blockTransactionAssets = response.data.items;
+          this.blockTransactionAssetsCount = Number(response.data.total);
+          this.loading.blockTransactionAssets = false;
+        });
+      })
+      .catch(() => {
+        runInAction(() => {
+          this.loading.blockTransactionAssets = false;
+        });
       });
-    });
   }
 
   resetBlockTransactionAssets() {
@@ -74,34 +99,55 @@ class BlockStore {
   fetchTransaction(hash) {
     this.loading.transaction = true;
 
-    return Service.transactions.findByHash(hash).then(response => {
-      runInAction(() => {
-        this.transaction = response.data;
-        this.loading.transaction = false;
+    return Service.transactions
+      .findByHash(hash)
+      .then(response => {
+        runInAction(() => {
+          this.transaction = response.data;
+          this.loading.transaction = false;
+        });
+      })
+      .catch(() => {
+        runInAction(() => {
+          this.loading.transaction = false;
+        });
       });
-    });
   }
 
   fetchTransactions(params = {}) {
     this.loading.transactions = true;
-    return Service.transactions.find(params).then(response => {
-      runInAction(() => {
-        this.transactions = response.data.items;
-        this.transactionsCount = response.data.total;
-        this.loading.transactions = false;
+    return Service.transactions
+      .find(params)
+      .then(response => {
+        runInAction(() => {
+          this.transactions = response.data.items;
+          this.transactionsCount = response.data.total;
+          this.loading.transactions = false;
+        });
+      })
+      .catch(() => {
+        runInAction(() => {
+          this.loading.transactions = false;
+        });
       });
-    });
   }
 
   fetchAddressTransactionAssets(address, params = {}) {
     this.loading.addressTransactionAssets = true;
-    return Service.addresses.findTransactionsAssets(address, params).then(response => {
-      runInAction(() => {
-        this.addressTransactionAssets = response.data.items;
-        this.addressTransactionAssetsCount = Number(response.data.total);
-        this.loading.addressTransactionAssets = false;
+    return Service.addresses
+      .findTransactionsAssets(address, params)
+      .then(response => {
+        runInAction(() => {
+          this.addressTransactionAssets = response.data.items;
+          this.addressTransactionAssetsCount = Number(response.data.total);
+          this.loading.addressTransactionAssets = false;
+        });
+      })
+      .catch(() => {
+        runInAction(() => {
+          this.loading.addressTransactionAssets = false;
+        });
       });
-    });
   }
 
   fetchTransactionAsset(transactionAssets, index) {
@@ -132,18 +178,15 @@ class BlockStore {
         .then(response => {
           runInAction(() => {
             this.address = response.data;
+            this.loading.address = false;
           });
         })
         .catch(error => {
           runInAction(() => {
+            this.loading.address = false;
             if (error.response.status === 404) {
               this.address = { status: 404 };
             }
-          });
-        })
-        .finally(() => {
-          runInAction(() => {
-            this.loading.address = false;
           });
         });
     }
@@ -169,6 +212,47 @@ class BlockStore {
         }
       });
     });
+  }
+
+  setSearchString(search) {
+    this.searchString = search;
+  }
+
+  search(value) {
+    if (!SearchUtils.validateSearchString(value)) {
+      return Promise.resolve();
+    }
+
+    this.resetSearchResults();
+    this.searchString = value;
+    this.loading.searchResults = true;
+
+    return Service.search
+      .searchAll(value)
+      .then(response => {
+        runInAction(() => {
+          this.loading.searchResults = false;
+          if (response.success) {
+            this.searchResults = response.data;
+          }
+        });
+      })
+      .catch(() => {
+        runInAction(() => {
+          this.loading.searchResults = false;
+        });
+      });
+  }
+
+  resetSearchResults() {
+    this.searchResults = {
+      total: 0,
+      items: [],
+    };
+  }
+
+  get searchStringValid() {
+    return SearchUtils.validateSearchString(this.searchString);
   }
 
   get medianTimeString() {
@@ -205,6 +289,8 @@ decorate(BlockStore, {
   address: observable,
   addressTransactionAssets: observable,
   addressTransactionAssetsCount: observable,
+  searchString: observable,
+  searchResults: observable,
   loading: observable,
   medianTime: observable,
   syncing: observable,
@@ -222,6 +308,10 @@ decorate(BlockStore, {
   fetchSyncing: action,
   resetAddressTransactionAssets: action,
   resetBlockTransactionAssets: action,
+  setSearchString: action,
+  search: action,
+  searchStringValid: computed,
+  resetSearchResults: action,
 });
 
 export default new BlockStore();

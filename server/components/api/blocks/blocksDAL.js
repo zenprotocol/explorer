@@ -14,6 +14,9 @@ blocksDAL.findLatest = function(amount = 1) {
 };
 
 blocksDAL.findByBlockNumber = function(blockNumber) {
+  if (isNaN(Number(blockNumber))) {
+    return Promise.resolve(null);
+  }
   return this.findOne({
     where: {
       blockNumber,
@@ -26,6 +29,36 @@ blocksDAL.findByHash = function(hash) {
     where: {
       hash,
     },
+  });
+};
+
+blocksDAL.search = function(search, limit = 10) {
+  const Op = this.db.sequelize.Op;
+  const whereByHash = {
+    hash: {
+      [Op.like]: `%${search}%`,
+    },
+  };
+
+  return Promise.all([
+    this.count({ where: whereByHash }),
+    this.findAll({
+      where: whereByHash,
+      limit,
+      order: [['createdAt', 'DESC']],
+    }),
+    this.findByBlockNumber(search),
+  ]).then(results => {
+    let count = Number(results[0]);
+    let items = results[1];
+    if (results[2]) {
+      count += 1;
+      items = [results[2]].concat(results[1]);
+    }
+    if (items.length > limit) {
+      items = items.slice(0, 10);
+    }
+    return [count, items];
   });
 };
 
