@@ -39,6 +39,8 @@ $danger : $red;
 $light : $gray-400;
 $dark : $gray-800;
 
+$mark-bg: $yellow;
+
 @import '../../node_modules/bootstrap/scss/functions';
 @import '../../node_modules/bootstrap/scss/variables';
 @import '../../node_modules/bootstrap/scss/mixins';
