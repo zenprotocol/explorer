@@ -4,6 +4,17 @@ const outputsDAL = require('../outputs/outputsDAL');
 const inputsDAL = require('../inputs/inputsDAL');
 const addressesDAL = {};
 
+addressesDAL.findOne = function(address) {
+  return outputsDAL.findAll({
+    where: {
+      address,
+    },
+    limit: 1,
+  }).then((results) => {
+    return results.length ? results[0] : null;
+  });
+};
+
 addressesDAL.addressExists = function(address) {
   return outputsDAL.findAll({
     where: {
@@ -58,7 +69,7 @@ addressesDAL.search = function(search, limit = 10) {
           "Output"."address",
           sum("Output"."amount") AS "outputSum"
         FROM "Outputs" AS "Output"
-        WHERE "Output"."asset" = '00'
+        WHERE "Output"."asset" = '00' AND "Output"."address" LIKE :search
         GROUP BY "address") AS "OutputSums"
         FULL OUTER JOIN
         (SELECT
@@ -68,7 +79,7 @@ addressesDAL.search = function(search, limit = 10) {
           "Outputs" AS "Output"
           INNER JOIN "Inputs" AS "Input"
           ON "Input"."OutputId" = "Output"."id"
-        WHERE "Output"."asset" = '00'
+        WHERE "Output"."asset" = '00' AND "Output"."address" LIKE :search
         GROUP BY "Output"."address") AS "InputSums"
         ON "OutputSums"."address" = "InputSums"."address") AS "BothSums"
     ) AS "Balance"
@@ -82,13 +93,19 @@ addressesDAL.search = function(search, limit = 10) {
       distinct: true,
       col: 'address',
     }),
-    sequelize.query(sql, {
-      replacements: {
-        search: `%${search}%`,
-        limit,
-      },
-      type: sequelize.QueryTypes.SELECT,
+    outputsDAL.findAll({
+      where,
+      attributes: ['address'],
+      group: 'address',
+      limit,
     })
+    // sequelize.query(sql, {
+    //   replacements: {
+    //     search: `%${search}%`,
+    //     limit,
+    //   },
+    //   type: sequelize.QueryTypes.SELECT,
+    // })
   ]);
 };
 
