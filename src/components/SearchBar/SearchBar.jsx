@@ -5,26 +5,34 @@ import PropTypes from 'prop-types';
 import blockStore from '../../store/BlockStore.js';
 import './SearchBar.css';
 
+const SUBMIT_AFTER_MS = 1000;
+
 class SearchBar extends Component {
   constructor(props) {
     super(props);
 
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.submit = this.submit.bind(this);
   }
 
   handleChange(event) {
     blockStore.setSearchString(event.target.value.trim());
+    clearTimeout(this.timeout);
+    this.timeout = setTimeout(this.submit, SUBMIT_AFTER_MS);
   }
 
   handleSubmit(event) {
     event.preventDefault();
+    this.submit();
+  }
+
+  submit() {
+    clearTimeout(this.timeout);
     if(blockStore.searchStringValid) {
       this.props.history.push(`/search/${blockStore.searchString}`);
     }
   }
-
-  
 
   render() {
     return (
