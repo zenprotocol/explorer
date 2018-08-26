@@ -10,6 +10,13 @@ import SearchResultsTable from '../../components/SearchResultsTable/SearchResult
 import './Search.css';
 
 class SearchResultsPage extends Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      initialSearchDone: false,
+    };
+  }
   componentDidMount() {
     const { search } = RouterUtils.getRouteParams(this.props);
     this.search(search);
@@ -25,15 +32,19 @@ class SearchResultsPage extends Component {
 
   search(value) {
     blockStore.search(value);
+    this.setState({initialSearchDone: true});
   }
 
   render() {
+    if(!this.state.initialSearchDone) {
+      return null;
+    }
     if (blockStore.loading.searchResults) {
       return <Loading />;
     }
-
+    
     const { search } = RouterUtils.getRouteParams(this.props);
-
+    
     const results = blockStore.searchResults;
     const total = results.total;
     const blocks = results.items.blocks;

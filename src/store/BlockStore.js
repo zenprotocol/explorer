@@ -311,6 +311,7 @@ decorate(BlockStore, {
   setSearchString: action,
   search: action,
   searchStringValid: computed,
+  resetSearchResults: action,
 });
 
 export default new BlockStore();
