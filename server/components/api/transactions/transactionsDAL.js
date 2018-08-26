@@ -25,7 +25,7 @@ transactionsDAL.findByHash = async function(hash) {
   });
 };
 
-transactionsDAL.search = function(search) {
+transactionsDAL.search = function(search, limit = 10) {
   const sequelize = this.db.sequelize;
   const where = {
     hash: {
@@ -39,7 +39,7 @@ transactionsDAL.search = function(search) {
       include: [
         'Block'
       ],
-      limit: 10,
+      limit,
       order: [['createdAt', 'DESC']],
     })
   ]);

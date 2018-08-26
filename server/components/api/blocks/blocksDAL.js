@@ -56,7 +56,7 @@ blocksDAL.search = function(search, limit = 10) {
       items = [results[2]].concat(results[1]);
     }
     if (items.length > limit) {
-      items = items.slice(0, 10);
+      items = items.slice(0, limit);
     }
     return [count, items];
   });
