@@ -44,7 +44,7 @@ class SearchBar extends Component {
           <input
             value={blockStore.searchString}
             onChange={this.handleChange}
-            className="form-control mr-sm-2"
+            className="input-search form-control mr-sm-2"
             type="search"
             placeholder="Search"
             aria-label="Search"

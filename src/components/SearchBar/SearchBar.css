@@ -1,3 +1,13 @@
 .btn-search {
   color: #808080;
 }
+
+.form-inline .input-group {
+  width: 100%;
+}
+
+@media (min-width: 992px) {
+  .form-inline {
+    width: 50%;
+  }
+}
