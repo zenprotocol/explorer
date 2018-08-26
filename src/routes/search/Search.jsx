@@ -117,7 +117,7 @@ class SearchResultsPage extends Component {
                   },
                   {
                     accessor: 'hash',
-                    cell: data => <Link to={`/blocks/${data}`}>{this.getHighlightedSearchResult(search, data)}</Link>,
+                    cell: data => <Link className="break-word" to={`/blocks/${data}`}>{this.getHighlightedSearchResult(search, data)}</Link>,
                   },
                   {
                     accessor: 'timestamp',
@@ -133,7 +133,7 @@ class SearchResultsPage extends Component {
                   {
                     accessor: 'address',
                     cell: data => (
-                      <Link to={`/address/${data}`}>{this.getHighlightedSearchResult(search, data)}</Link>
+                      <Link className="break-word" to={`/address/${data}`}>{this.getHighlightedSearchResult(search, data)}</Link>
                     ),
                   },
                   { accessor: 'txCount', cell: data => <span>{data} txns</span> },
