@@ -5,6 +5,7 @@ import blockStore from '../../store/BlockStore';
 import RouterUtils from '../../lib/RouterUtils';
 import TextUtils from '../../lib/TextUtils';
 import AssetUtils from '../../lib/AssetUtils';
+import SearchUtils from '../../lib/SearchUtils';
 import Loading from '../../components/Loading/Loading';
 import SearchResultsTable from '../../components/SearchResultsTable/SearchResultsTable';
 import './Search.css';
@@ -35,8 +36,15 @@ class SearchResultsPage extends Component {
   }
 
   search(value) {
+    this.redirectBeforeSearch(value);
     blockStore.search(value);
     this.setState({initialSearchDone: true});
+  }
+
+  redirectBeforeSearch(search) {
+    if(SearchUtils.isCompleteAddress(search)) {
+      this.props.history.push(`/address/${search}`);
+    }
   }
 
   render() {
@@ -129,7 +137,7 @@ class SearchResultsPage extends Component {
                   },
                   { accessor: 'transactionCount', cell: data => <span>{data} txns</span> },
                 ]}
-              />
+              /> 
               <SearchResultsTable
                 items={addresses}
                 title="ADDRESSES"
@@ -140,8 +148,8 @@ class SearchResultsPage extends Component {
                       <Link className="break-word" to={`/address/${data}`}>{this.getHighlightedSearchResult(search, data)}</Link>
                     ),
                   },
-                  { accessor: 'txCount', cell: data => <span>{data} txns</span> },
-                  { accessor: 'balance', cell: data => AssetUtils.getAmountString('00', data) },
+                  // { accessor: 'txCount', cell: data => <span>{data} txns</span> },
+                  // { accessor: 'balance', cell: data => AssetUtils.getAmountString('00', data) },
                 ]}
               />
             </div>
