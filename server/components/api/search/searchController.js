@@ -8,7 +8,13 @@ const jsonResponse = require('../../../lib/jsonResponse');
 const HttpError = require('../../../lib/HttpError');
 
 function isSearchStringValid(searchString) {
-  return searchString && searchString.length >= 3 && searchString !== 'zen' && searchString !== 'zen1';
+  return (
+    searchString &&
+    searchString.length >= 3 &&
+    searchString !== 'zen' &&
+    searchString !== 'zen1' &&
+    (searchString.indexOf('zen1') !== 0 || searchString.length >= 7)
+  );
 }
 
 function getSearchPromises(search, limit) {
@@ -18,7 +24,7 @@ function getSearchPromises(search, limit) {
     addresses: true,
   };
 
-  if(search.startsWith('zen1')) {
+  if (search.startsWith('zen1')) {
     searchFor.blocks = false;
     searchFor.transactions = false;
   }
@@ -43,7 +49,9 @@ module.exports = {
 
     search = search.trim().toLowerCase();
     const searchResultsLimit = 5;
-    const [blocks, transactions, addresses] = await Promise.all(getSearchPromises(search, searchResultsLimit));
+    const [blocks, transactions, addresses] = await Promise.all(
+      getSearchPromises(search, searchResultsLimit)
+    );
 
     res.status(httpStatus.OK).json(
       jsonResponse.create(httpStatus.OK, {
