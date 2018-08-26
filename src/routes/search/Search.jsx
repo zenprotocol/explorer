@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
-import { Link } from 'react-router-dom';
+import { Link, Redirect } from 'react-router-dom';
 import blockStore from '../../store/BlockStore';
 import RouterUtils from '../../lib/RouterUtils';
 import TextUtils from '../../lib/TextUtils';
@@ -35,6 +35,27 @@ class SearchResultsPage extends Component {
     const { search } = RouterUtils.getRouteParams(this.props);
 
     const results = blockStore.searchResults;
+    const total = results.total;
+    const blocks = results.items.blocks;
+    const transactions = results.items.transactions;
+    const addresses = results.items.addresses;
+
+    if(total === 1) {
+      let redirectTo = '';
+      if(blocks.length > 0) {
+        redirectTo = `/blocks/${blocks[0].blockNumber}`;
+      }
+      else if (transactions.length > 0) {
+        redirectTo = `/tx/${transactions[0].hash}`;
+      }
+      else if (addresses.length > 0) {
+        redirectTo = `/address/${addresses[0].address}`;
+      }
+
+      if(redirectTo) {
+        return <Redirect to={redirectTo} from={this.props.location.pathname} />;
+      }
+    }
 
     return (
       <div className="SearchResults">
@@ -42,7 +63,7 @@ class SearchResultsPage extends Component {
           <div className="row">
             <div className="col-sm">
               <h1 className="d-block d-sm-inline-block text-white mb-1 mb-lg-5">
-                {results.total ? `${results.total} Search Results` : 'No search results found for'}
+                {total ? `${total} Search Results` : 'No search results found for'}
                 <div className="search-string text-light">{search}</div>
               </h1>
             </div>
@@ -50,7 +71,7 @@ class SearchResultsPage extends Component {
           <div className="row">
             <div className="col-sm">
               <SearchResultsTable
-                items={results.items.transactions}
+                items={transactions}
                 title="TRANSACTIONS"
                 columns={[
                   {
@@ -76,7 +97,7 @@ class SearchResultsPage extends Component {
                 ]}
               />
               <SearchResultsTable
-                items={results.items.blocks}
+                items={blocks}
                 title="BLOCKS"
                 columns={[
                   {
@@ -95,7 +116,7 @@ class SearchResultsPage extends Component {
                 ]}
               />
               <SearchResultsTable
-                items={results.items.addresses}
+                items={addresses}
                 title="ADDRESSES"
                 columns={[
                   {
