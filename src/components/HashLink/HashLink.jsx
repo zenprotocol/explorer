@@ -1,0 +1,81 @@
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import classNames from 'classnames';
+import { Link } from 'react-router-dom';
+import TextUtils from '../../lib/TextUtils';
+import './HashLink.css';
+
+export default class HashLink extends Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      copied: false,
+    };
+
+    this.copyToClipboard = this.copyToClipboard.bind(this);
+    this.setCopied = this.setCopied.bind(this);
+  }
+
+  render() {
+    const { url, hash, copy, truncate, value } = this.props;
+    const truncatedHash = truncate ? truncateHash(hash) : hash;
+    const anchorHash = url ? <Link to={url}>{truncatedHash}</Link> : truncatedHash;
+    const valueToCopy = value ? value : hash;
+
+    const anchorCopy = (
+      <div className="copy" onMouseLeave={() => {this.setCopied(false);}} data-balloon={this.state.copied? 'Copied to clipboard' : 'Copy'} data-balloon-pos="up-left">
+        <button onClick={() => {this.copyToClipboard(valueToCopy);}} className="button btn-link" title="Copy hash to clipboard">
+          <i className="far fa-copy" />
+        </button>
+      </div>
+    );
+
+    const showCopy = copy && hash !== truncatedHash;
+
+    return (
+      <div className={classNames('HashLink break-word', {copyable: showCopy})} title={showCopy ? valueToCopy : ''}>
+        {anchorHash}
+        {showCopy ? anchorCopy : null}
+      </div>
+    );
+  }
+
+  copyToClipboard(str) {
+    const el = document.createElement('textarea');
+    el.value = str;
+    el.setAttribute('readonly', '');
+    el.style.position = 'absolute';
+    el.style.left = '-9999px';
+    document.body.appendChild(el);
+    const selected = document.getSelection().rangeCount > 0 ? document.getSelection().getRangeAt(0) : false;
+    el.select();
+    document.execCommand('copy');
+    document.body.removeChild(el);
+    if (selected) {
+      document.getSelection().removeAllRanges();
+      document.getSelection().addRange(selected);
+    }
+    this.setCopied(true);
+  }
+
+  setCopied(copied) {
+    this.setState({copied});
+  }
+}
+
+function truncateHash(hash) {
+  return TextUtils.truncateHash(hash);
+}
+
+HashLink.propTypes = {
+  url: PropTypes.string,
+  hash: PropTypes.string.isRequired,
+  value: PropTypes.string,
+  copy: PropTypes.bool,
+  truncate: PropTypes.bool,
+};
+HashLink.defaultProps = {
+  copy: true,
+  truncate: true,
+};

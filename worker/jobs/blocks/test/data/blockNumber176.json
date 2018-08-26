@@ -1,0 +1,134 @@
+{
+    "COMMENT": "THIS BLOCK WAS EDITED FOR TESTING MINT INPUT ONLY!!!",
+    "hash": "0000000000045e742e4c91cd1447351fcbde6d7ada71985ebbc5f1dc2a20361a",
+    "header": {
+        "version": 0,
+        "parent": "00000000000fad5999c26f7d37331082f6558ff8f809cdf0845c071af2bff7e2",
+        "blockNumber": 176,
+        "commitments": "43d5f9bc58dfeb7b42bf878a6ae38ae89fee6879b972bfa2a3cc330559eb6233",
+        "timestamp": 1530385370279,
+        "difficulty": 455874015,
+        "nonce": [
+            -8689598013436005834,
+            5093008228602618652
+        ]
+    },
+    "transactions": {
+        "b4b573185286eda14a022ad7494d4af5e329c0a5e877577188b1a1660637b2e2": {
+            "version": 0,
+            "inputs": [],
+            "outputs": [
+                {
+                    "lock": {
+                        "Coinbase": {
+                            "blockNumber": 176,
+                            "pkHash": "72c9f711659f19759967607f305da968f77f49e67ff23488d36fbd4df6a07b57"
+                        }
+                    },
+                    "spend": {
+                        "asset": "00",
+                        "amount": 5000001794
+                    }
+                }
+            ]
+        },
+        "ca091fbd44254ea6d74dfb177c125be52752a0715f3019ba0f6e9f3817cab672": {
+            "version": 0,
+            "inputs": [
+                {
+                    "mint": {
+                        "asset": "00000000f24db32aa1881956646d3ccbb647df71455de10cf98b635810e8870906a56b63",
+                        "amount": 100000000
+                    }
+                }
+            ],
+            "outputs": [
+                {
+                    "lock": {
+                        "PK": {
+                            "hash": "fd517e12c3670db13143b0bd5d3115263c7c7874b9f5fa67bc59a850aafba5e5",
+                            "address": "zen1ql4ghuykrvuxmzv2rkz746vg4yc78c7r5h86l5eautx59p2hm5hjs7qpp0t"
+                        }
+                    },
+                    "spend": {
+                        "asset": "00",
+                        "amount": 699880099239
+                    }
+                },
+                {
+                    "lock": {
+                        "Contract": {
+                            "id": "00000000f24db32aa1881956646d3ccbb647df71455de10cf98b635810e8870906a56b63",
+                            "address": "czen1qqqqqqq8jfkej4gvgr9txgmfuewmy0hm3g4w7zr8e3d34sy8gsuysdfttvvc93s77"
+                        }
+                    },
+                    "spend": {
+                        "asset": "00",
+                        "amount": 100000000
+                    }
+                },
+                {
+                    "lock": {
+                        "PK": {
+                            "hash": "3a5ffddab53dfdf26d870a6948fb61e61ae83c4edaeba49487644712f22fbbde",
+                            "address": "zen1q8f0lmk448h7lymv8pf5537mpucdws0zwmt46f9y8v3r39u30h00q34rqdq"
+                        }
+                    },
+                    "spend": {
+                        "asset": "00000000f24db32aa1881956646d3ccbb647df71455de10cf98b635810e8870906a56b63",
+                        "amount": 100000000
+                    }
+                }
+            ]
+        },
+        "14ecac04a23549c0fa06d5564dbf2ab0f64229b570605bd332c166deeb0576b5": {
+            "version": 0,
+            "inputs": [
+                {
+                    "mint": {
+                        "asset": "00000000f24db32aa1881956646d3ccbb647df71455de10cf98b635810e8870906a56b63",
+                        "amount": 20000000
+                    }
+                }
+            ],
+            "outputs": [
+                {
+                    "lock": {
+                        "PK": {
+                            "hash": "e728617e1a3531dff581ce70584b9c41e1a23aa8f2e5f8f2fc83e6be0dad1235",
+                            "address": "zen1quu5xzls6x5calavpeec9sjuug8s6yw4g7tjl3uhus0nturddzg6s6ptswj"
+                        }
+                    },
+                    "spend": {
+                        "asset": "00",
+                        "amount": 490000000
+                    }
+                },
+                {
+                    "lock": {
+                        "Contract": {
+                            "id": "00000000f24db32aa1881956646d3ccbb647df71455de10cf98b635810e8870906a56b63",
+                            "address": "czen1qqqqqqq8jfkej4gvgr9txgmfuewmy0hm3g4w7zr8e3d34sy8gsuysdfttvvc93s77"
+                        }
+                    },
+                    "spend": {
+                        "asset": "00",
+                        "amount": 20000000
+                    }
+                },
+                {
+                    "lock": {
+                        "PK": {
+                            "hash": "7dbb8068630bed0ec68d0eccf19ab3a0e90895ada230e41072eb0dd8e2c4f190",
+                            "address": "zen1q0kacq6rrp0ksa35dpmx0rx4n5r5s39dd5gcwgyrjavxa3cky7xgqj8d9xp"
+                        }
+                    },
+                    "spend": {
+                        "asset": "00000000f24db32aa1881956646d3ccbb647df71455de10cf98b635810e8870906a56b63",
+                        "amount": 20000000
+                    }
+                }
+            ]
+        }
+    }
+}

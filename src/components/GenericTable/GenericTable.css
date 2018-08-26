@@ -1,0 +1,56 @@
+.ReactTable .rt-th,
+.ReactTable .rt-td {
+  border-bottom: 1px solid var(--dark);
+}
+
+.ReactTable .rt-tr.-padRow .rt-td {
+  border-color: transparent;
+}
+
+.ReactTable .rt-thead .rt-th {
+  font-weight: 500;
+  font-size: 1rem;
+  text-transform: uppercase;
+  color: var(--white);
+  text-align: left;
+  padding: 16px 12px;
+}
+.ReactTable .rt-thead .rt-th:first-child {
+  padding-left: 0 !important;
+}
+.ReactTable .rt-thead .rt-th:last-child {
+  padding-right: 0 !important;
+}
+
+.ReactTable .rt-tbody {
+  overflow: visible;
+}
+.ReactTable .rt-td {
+  font-weight: 400;
+  font-size: 0.9rem;
+  letter-spacing: -0.5px;
+  padding: 12px 12px;
+  overflow: visible;
+}
+
+.ReactTable .rt-td:first-child {
+  padding-left: 0 !important;
+}
+.ReactTable .rt-td:last-child {
+  padding-right: 0 !important;
+}
+
+.ReactTable .pagination-bottom {
+  margin-top: 30px;
+}
+.ReactTable .-pagination {
+  justify-content: flex-end;
+}
+
+.ReactTable .pagination-bottom .pagination {
+  margin-bottom: 0;
+}
+
+.loading .rt-noData {
+  display: none;
+}

@@ -1,0 +1,117 @@
+// custom vars
+$font-size-base: 1rem;
+$h1-font-size: $font-size-base * 2;
+$h2-font-size: $font-size-base * 1.8;
+$h3-font-size: $font-size-base * 1.6;
+$h4-font-size: $font-size-base * 1.4;
+$h5-font-size: $font-size-base * 1.2;
+$h6-font-size: $font-size-base;
+
+$white: #f2f2f2;
+$gray-100: #f8f9fa;
+$gray-200: #e9ecef;
+$gray-300: #dee2e6;
+$gray-400: #bfbfbf;
+$gray-500: #adb5bd;
+$gray-600: #6c757d;
+$gray-700: #495057;
+$gray-800: #303030;
+$gray-900: #212529;
+$black : #000;
+
+$blue: #84D1ED;
+$indigo : #6610f2;
+$purple : #6f42c1;
+$pink : #e83e8c;
+$red : #dc3545;
+$orange : #fd7e14;
+$yellow : #ffc107;
+$green : #28a745;
+$teal : #20c997;
+$cyan : #17a2b8;
+
+$primary : $blue;
+$secondary : $gray-600;
+$success : $green;
+$info : $cyan;
+$warning : $yellow;
+$danger : $red;
+$light : $gray-400;
+$dark : $gray-800;
+
+$mark-bg: $yellow;
+
+@import '../../node_modules/bootstrap/scss/functions';
+@import '../../node_modules/bootstrap/scss/variables';
+@import '../../node_modules/bootstrap/scss/mixins';
+@import '../../node_modules/bootstrap/scss/root';
+@import '../../node_modules/bootstrap/scss/reboot';
+@import '../../node_modules/bootstrap/scss/type';
+@import '../../node_modules/bootstrap/scss/images';
+@import '../../node_modules/bootstrap/scss/code';
+@import '../../node_modules/bootstrap/scss/grid';
+@import '../../node_modules/bootstrap/scss/tables';
+@import '../../node_modules/bootstrap/scss/forms';
+@import '../../node_modules/bootstrap/scss/buttons';
+@import '../../node_modules/bootstrap/scss/transitions';
+@import '../../node_modules/bootstrap/scss/dropdown';
+@import '../../node_modules/bootstrap/scss/button-group';
+@import '../../node_modules/bootstrap/scss/input-group';
+@import '../../node_modules/bootstrap/scss/custom-forms';
+@import '../../node_modules/bootstrap/scss/nav';
+@import '../../node_modules/bootstrap/scss/navbar';
+@import '../../node_modules/bootstrap/scss/card';
+@import '../../node_modules/bootstrap/scss/breadcrumb';
+@import '../../node_modules/bootstrap/scss/pagination';
+@import '../../node_modules/bootstrap/scss/badge';
+@import '../../node_modules/bootstrap/scss/jumbotron';
+@import '../../node_modules/bootstrap/scss/alert';
+@import '../../node_modules/bootstrap/scss/progress';
+@import '../../node_modules/bootstrap/scss/media';
+@import '../../node_modules/bootstrap/scss/list-group';
+@import '../../node_modules/bootstrap/scss/close';
+@import '../../node_modules/bootstrap/scss/modal';
+@import '../../node_modules/bootstrap/scss/tooltip';
+@import '../../node_modules/bootstrap/scss/popover';
+@import '../../node_modules/bootstrap/scss/carousel';
+@import '../../node_modules/bootstrap/scss/utilities';
+@import '../../node_modules/bootstrap/scss/print';
+
+.page-link {
+  background-color: transparent;
+  border-color: $dark;
+  color: #a6a6a6 !important;
+  user-select: none;
+  font-size: 1rem;
+  text-transform: uppercase;
+}
+
+.page-item.active .page-link {
+  z-index: 1;
+  color: $white !important;
+  background-color: #a6a6a6;
+  border-color: $dark;
+}
+
+.page-item.disabled .page-link {
+  color: #6c757d;
+  pointer-events: none;
+  cursor: auto;
+  background-color: transparent;
+  border-color: $dark;
+}
+
+.table {
+  th {
+    color: $white;
+  }
+
+  td,
+  th {
+    border-color: $dark !important;
+  }
+  td:first-child,
+  th:first-child {
+    padding-left: 0;
+  }
+}

@@ -1,12 +1,11 @@
 const path = require('path');
 const express = require('express');
 const router = express.Router();
-const wrapAsync = require('../common/wrapAsyncForExpressErrors');
 const clientRenderer = require('./clientRenderer');
 
-router.get('/', clientRenderer);
 router.use('/public',
-  express.static(path.join(__dirname, '..', '..', '..', 'client', 'build'), { maxAge: '30d', index: false })
+  express.static(path.join(__dirname, '..', '..', '..', 'build'), { maxAge: '30d', index: false })
 );
+router.get('*', clientRenderer);
 
 module.exports = router;

@@ -1,0 +1,26 @@
+@import url('https://fonts.googleapis.com/css?family=Roboto:400,500');
+
+.App {
+  color: #bfbfbf;
+  font-family: 'Roboto', sans-serif;
+}
+
+.App-separator {
+  border-bottom: 1px solid #303030;
+}
+
+section {
+  margin-bottom: 80px;
+  position: relative;
+}
+@media (max-width: 991.98px) {
+  section.bordered {
+    border: none !important;
+  }
+}
+
+select, input {
+  background-color: transparent !important;
+  color: #999999 !important;
+  border-color: #303030 !important;
+}

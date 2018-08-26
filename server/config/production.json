@@ -1,6 +1,9 @@
 {
   "db": {
-    "dialect": "postgres"
+    "dialect": "postgres",
+    "dialectOptions": {
+      "ssl": true
+    }
   },
   "encryption": {
     "saltRounds": 10
