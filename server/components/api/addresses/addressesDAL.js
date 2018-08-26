@@ -42,35 +42,35 @@ addressesDAL.search = function(search, limit = 10) {
     GROUP BY "OutputInput"."address") AS "Addresses"
     INNER JOIN
     (SELECT
-      ("output_sum" - "input_sum") AS "balance",
-      "bothsums"."address" AS "address"
+      ("outputSum" - "inputSum") AS "balance",
+      "BothSums"."address" AS "address"
     FROM
       (SELECT
-        coalesce("osums"."address", "isums"."address") AS "address",
-        "osums"."output_sum",
+        coalesce("OutputSums"."address", "InputSums"."address") AS "address",
+        "OutputSums"."outputSum",
         CASE
-      WHEN "isums"."input_sum" IS NULL
+      WHEN "InputSums"."inputSum" IS NULL
       THEN 0
-      ELSE "isums"."input_sum"
+      ELSE "InputSums"."inputSum"
       END
       FROM
         (SELECT
-          "o"."address",
-          sum("o"."amount") AS "output_sum"
-        FROM "Outputs" AS "o"
-        WHERE "o"."asset" = '00'
-        GROUP BY "address") AS "osums"
-        full outer join
+          "Output"."address",
+          sum("Output"."amount") AS "outputSum"
+        FROM "Outputs" AS "Output"
+        WHERE "Output"."asset" = '00'
+        GROUP BY "address") AS "OutputSums"
+        FULL OUTER JOIN
         (SELECT
-          "io"."address",
-          sum("io"."amount") AS "input_sum"
+          "Output"."address",
+          sum("Output"."amount") AS "inputSum"
         FROM
-          "Outputs" AS "io"
-          inner join "Inputs" AS "i"
-          ON "i"."OutputId" = "io"."id"
-        WHERE "io"."asset" = '00'
-        GROUP BY "io"."address") AS "isums"
-        ON "osums"."address" = "isums"."address") AS "bothsums"
+          "Outputs" AS "Output"
+          INNER JOIN "Inputs" AS "Input"
+          ON "Input"."OutputId" = "Output"."id"
+        WHERE "Output"."asset" = '00'
+        GROUP BY "Output"."address") AS "InputSums"
+        ON "OutputSums"."address" = "InputSums"."address") AS "BothSums"
     ) AS "Balance"
     ON "Balance"."address" = "Addresses"."address"
   ORDER BY "TransactionId" DESC
