@@ -2,12 +2,12 @@
   color: #808080;
 }
 
-.form-inline .input-group {
+.form-search .input-group {
   width: 100%;
 }
 
 @media (min-width: 992px) {
-  .form-inline {
+  .form-search {
     width: 50%;
   }
 }

@@ -41,7 +41,7 @@ class SearchBar extends Component {
 
   render() {
     return (
-      <form onSubmit={this.handleSubmit} className="form-inline my-3 my-lg-0">
+      <form onSubmit={this.handleSubmit} className="form-search form-inline my-3 my-lg-0">
         <div className="input-group">
           <div className="input-group-prepend">
             <button className="btn btn-outline-dark btn-search" type="submit">
@@ -51,7 +51,7 @@ class SearchBar extends Component {
           <input
             value={blockStore.searchString}
             onChange={this.handleChange}
-            className="input-search form-control mr-sm-2"
+            className="input-search form-control"
             type="search"
             placeholder="Search"
             aria-label="Search"
