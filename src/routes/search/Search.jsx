@@ -30,6 +30,10 @@ class SearchResultsPage extends Component {
     }
   }
 
+  componentWillUnmount() {
+    blockStore.setSearchString('');
+  }
+
   search(value) {
     blockStore.search(value);
     this.setState({initialSearchDone: true});
