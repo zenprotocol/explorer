@@ -34,7 +34,7 @@ export default class HashLink extends Component {
     const showCopy = copy && hash !== truncatedHash;
 
     return (
-      <div className={classNames('HashLink break-word', {copyable: showCopy})} title={valueToCopy}>
+      <div className={classNames('HashLink break-word', {copyable: showCopy})} title={showCopy ? valueToCopy : ''}>
         {anchorHash}
         {showCopy ? anchorCopy : null}
       </div>
