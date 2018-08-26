@@ -53,7 +53,7 @@ class SearchResultsPage extends Component {
       }
 
       if(redirectTo) {
-        return <Redirect to={redirectTo} from={this.props.location.pathname} />;
+        return <Redirect to={redirectTo} />;
       }
     }
 
