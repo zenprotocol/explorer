@@ -33,6 +33,14 @@ Client side was bootstrapped with [create-react-app](https://github.com/facebook
       1. Follow the steps in [Heroku to local](#heroku-to-local)
 8. Start the client dev environment - `npm run client:start`
 
+## Normal development workflow
+1. Terminal A - `docker-compose up`
+2. Terminal B - `npm run client:start`
+
+## Load client from server
+1. `npm run client:build` - creates the build folder
+2. `docker-compose up`
+3. now load http://localhost:3000
 
 ### General Docker commands:
 1. `docker-compose up` - start the server
