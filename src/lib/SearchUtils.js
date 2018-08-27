@@ -9,6 +9,6 @@ export default {
     );
   },
   isCompleteAddress(searchString) {
-    return searchString.indexOf('zen1') == 0 && searchString.length === 63;
+    return searchString.indexOf('zen1') === 0 && searchString.length === 63;
   }
 };

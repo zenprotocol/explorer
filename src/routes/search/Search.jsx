@@ -4,7 +4,6 @@ import { Link, Redirect } from 'react-router-dom';
 import blockStore from '../../store/BlockStore';
 import RouterUtils from '../../lib/RouterUtils';
 import TextUtils from '../../lib/TextUtils';
-import AssetUtils from '../../lib/AssetUtils';
 import SearchUtils from '../../lib/SearchUtils';
 import Loading from '../../components/Loading/Loading';
 import SearchResultsTable from '../../components/SearchResultsTable/SearchResultsTable';

@@ -225,7 +225,7 @@ class BlockStore {
   }
 
   search(value) {
-    if (!SearchUtils.validateSearchString(value) || this.searchString === this.searchStringPrev) {
+    if (!SearchUtils.validateSearchString(value) || value === this.searchStringPrev) {
       return Promise.resolve();
     }
 
