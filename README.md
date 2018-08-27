@@ -2,17 +2,29 @@
 
 ## Dependencies
 1. Docker - https://www.docker.com/
+2. Docker Compose (Comes with docker) - https://docs.docker.com/compose/install/#prerequisites
 2. nodejs + npm - https://nodejs.org
 
 # Development
 Server side was created from scratch using [express](https://expressjs.com/).  
 Client side was bootstrapped with [create-react-app](https://github.com/facebook/create-react-app).
 
-## Docker
-1. **first time** - run `npm run setup` to create an env file
-2. `docker-compose up` in the root directory
-3. in another shell, `docker-compose exec web sh` to connect to the web container.  
-From there you can use `npm`
+## Get started
+1. `npm run setup` to create your env file
+2. inside the created env file, fill in the block chain node url.  
+The password can stay the same as this is a development password.
+3. `docker-compose up` - this will:
+   - Download all the needed images
+   - Create all the containers. 
+   - Start the web server.
+
+
+### General Docker commands:
+1. `docker-compose up` - start the server
+2. `docker-compose exec <service name> sh` - start a shell inside once of the services. Replace `<service name>` with the wanted service.   
+For example -   
+`docker-compose exec web sh` - start a shell in the web container
+`docker-compose exec web sh` - start a shell in the db container
 
 ## First time
 1. log in to the docker web container as explained in [docker](#docker) 
