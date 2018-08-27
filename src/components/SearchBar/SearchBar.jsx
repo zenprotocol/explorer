@@ -6,6 +6,7 @@ import blockStore from '../../store/BlockStore.js';
 import './SearchBar.css';
 
 const SUBMIT_AFTER_MS = 1000;
+const SUBMIT_IMMEDIATE_MS = 100;
 
 class SearchBar extends Component {
   constructor(props) {
@@ -14,12 +15,14 @@ class SearchBar extends Component {
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.submit = this.submit.bind(this);
+    this.canSearchImmediately = this.canSearchImmediately.bind(this);
   }
 
   handleChange(event) {
     blockStore.setSearchString(event.target.value.trim());
     clearTimeout(this.timeout);
-    this.timeout = setTimeout(this.submit, SUBMIT_AFTER_MS);
+    const time = this.canSearchImmediately(blockStore.searchString) ? SUBMIT_IMMEDIATE_MS : SUBMIT_AFTER_MS;
+    this.timeout = setTimeout(this.submit, time);
   }
 
   handleSubmit(event) {
@@ -32,6 +35,10 @@ class SearchBar extends Component {
     if (blockStore.searchStringValid && blockStore.searchString !== blockStore.searchStringPrev) {
       this.props.history.push(`/search/${blockStore.searchString}`);
     }
+  }
+
+  canSearchImmediately(search) {
+    return search.indexOf('zen1') === 0 && search.length > 50;
   }
 
   render() {
