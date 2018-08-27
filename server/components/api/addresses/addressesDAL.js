@@ -28,9 +28,10 @@ addressesDAL.addressExists = function(address) {
 
 addressesDAL.search = function(search, limit = 10) {
   const sequelize = outputsDAL.db.sequelize;
+  const like = search.startsWith('zen1')? `${search}%` : `%${search}%`;
   const where = {
     address: {
-      [sequelize.Op.like]: `%${search}%`,
+      [sequelize.Op.like]: like,
     },
   };
   const sql = `
