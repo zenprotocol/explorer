@@ -18,6 +18,7 @@ class BlockStore {
     this.addressTransactionAssets = [];
     this.addressTransactionAssetsCount = 0;
     this.searchString = '';
+    this.searchStringPrev = '';
     this.searchResults = {};
     this.medianTime = null;
     this.syncing = false;
@@ -218,12 +219,18 @@ class BlockStore {
     this.searchString = search;
   }
 
+  clearSearchString() {
+    this.searchString = '';
+    this.searchStringPrev = '';
+  }
+
   search(value) {
-    if (!SearchUtils.validateSearchString(value)) {
+    if (!SearchUtils.validateSearchString(value) || this.searchString === this.searchStringPrev) {
       return Promise.resolve();
     }
 
     this.resetSearchResults();
+    this.searchStringPrev = this.searchString;
     this.searchString = value;
     this.loading.searchResults = true;
 
@@ -290,6 +297,7 @@ decorate(BlockStore, {
   addressTransactionAssets: observable,
   addressTransactionAssetsCount: observable,
   searchString: observable,
+  searchStringPrev: observable,
   searchResults: observable,
   loading: observable,
   medianTime: observable,
@@ -309,6 +317,7 @@ decorate(BlockStore, {
   resetAddressTransactionAssets: action,
   resetBlockTransactionAssets: action,
   setSearchString: action,
+  clearSearchString: action,
   search: action,
   searchStringValid: computed,
   resetSearchResults: action,

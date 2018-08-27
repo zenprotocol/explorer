@@ -32,7 +32,7 @@ class SearchResultsPage extends Component {
   }
 
   componentWillUnmount() {
-    blockStore.setSearchString('');
+    blockStore.clearSearchString();
   }
 
   search(value) {

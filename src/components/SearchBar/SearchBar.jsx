@@ -11,10 +11,6 @@ class SearchBar extends Component {
   constructor(props) {
     super(props);
 
-    this.state = {
-      lastSearch: '',
-    };
-
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.submit = this.submit.bind(this);
@@ -33,8 +29,7 @@ class SearchBar extends Component {
 
   submit() {
     clearTimeout(this.timeout);
-    if (blockStore.searchStringValid && blockStore.searchString !== this.state.lastSearch) {
-      this.setState({lastSearch: blockStore.searchString});
+    if (blockStore.searchStringValid && blockStore.searchString !== blockStore.searchStringPrev) {
       this.props.history.push(`/search/${blockStore.searchString}`);
     }
   }
@@ -43,11 +38,6 @@ class SearchBar extends Component {
     return (
       <form onSubmit={this.handleSubmit} className="form-search form-inline my-3 my-lg-0">
         <div className="input-group">
-          <div className="input-group-prepend">
-            <button className="btn btn-outline-dark btn-search" type="submit">
-              <i className="fas fa-search" />
-            </button>
-          </div>
           <input
             value={blockStore.searchString}
             onChange={this.handleChange}
@@ -56,6 +46,11 @@ class SearchBar extends Component {
             placeholder="Search"
             aria-label="Search"
           />
+          <div className="input-group-append">
+            <button className="btn btn-outline-dark btn-search" type="submit">
+              <i className="fas fa-search" />
+            </button>
+          </div>
         </div>
       </form>
     );
