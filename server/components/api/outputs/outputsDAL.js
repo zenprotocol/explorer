@@ -52,4 +52,36 @@ outputsDAL.findAllAddressAssets = function(address) {
   });
 };
 
+outputsDAL.searchByAmount = function(amount, limit) {
+  if (
+    isNaN(Number(amount)) ||
+    Number(amount) < 0 ||
+    String(amount).length > 18 // reaching bigint limit
+  ) {
+    // above db integer
+    return Promise.resolve([0, []]);
+  }
+
+  const where = {
+    amount,
+  };
+
+  return Promise.all([
+    this.count({where}),
+    this.findAll({
+      where: {
+        amount,
+      },
+      include: [
+        {
+          model: this.db.Transaction,
+          include: ['Block']
+        }
+      ],
+      limit,
+      order: [['createdAt', 'DESC']],
+    })
+  ]);
+};
+
 module.exports = outputsDAL;

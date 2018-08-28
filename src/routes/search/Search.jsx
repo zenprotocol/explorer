@@ -5,6 +5,7 @@ import blockStore from '../../store/BlockStore';
 import RouterUtils from '../../lib/RouterUtils';
 import TextUtils from '../../lib/TextUtils';
 import SearchUtils from '../../lib/SearchUtils';
+import AssetUtils from '../../lib/AssetUtils';
 import Loading from '../../components/Loading/Loading';
 import SearchResultsTable from '../../components/SearchResultsTable/SearchResultsTable';
 import './Search.css';
@@ -38,45 +39,44 @@ class SearchResultsPage extends Component {
     const search = SearchUtils.formatSearchString(value);
     this.redirectBeforeSearch(search);
     blockStore.search(search);
-    this.setState({initialSearchDone: true});
+    this.setState({ initialSearchDone: true });
   }
 
   redirectBeforeSearch(search) {
-    if(SearchUtils.isCompleteAddress(search)) {
+    if (SearchUtils.isCompleteAddress(search)) {
       this.props.history.push(`/address/${search}`);
     }
   }
 
   render() {
-    if(!this.state.initialSearchDone) {
+    if (!this.state.initialSearchDone) {
       return null;
     }
     if (blockStore.loading.searchResults) {
       return <Loading />;
     }
-    
+
     let { search } = RouterUtils.getRouteParams(this.props);
     search = SearchUtils.formatSearchString(search);
-    
+
     const results = blockStore.searchResults;
     const total = results.total;
-    const blocks = results.items.blocks;
-    const transactions = results.items.transactions;
-    const addresses = results.items.addresses;
+    const { blocks, transactions, addresses, outputs } = results.items;
 
-    if(total === 1) {
+    if (total === 1) {
       let redirectTo = '';
-      if(blocks.length > 0) {
+      if (blocks.length > 0) {
         redirectTo = `/blocks/${blocks[0].blockNumber}`;
-      }
-      else if (transactions.length > 0) {
+      } else if (transactions.length > 0) {
         redirectTo = `/tx/${transactions[0].hash}`;
-      }
-      else if (addresses.length > 0) {
+      } else if (addresses.length > 0) {
         redirectTo = `/address/${addresses[0].address}`;
+      } else if (outputs.length > 0) {
+        redirectTo = `/tx/${outputs[0].Transaction.hash}`;
       }
 
-      if(redirectTo) {
+
+      if (redirectTo) {
         return <Redirect to={redirectTo} />;
       }
     }
@@ -121,16 +121,54 @@ class SearchResultsPage extends Component {
                 ]}
               />
               <SearchResultsTable
+                items={outputs}
+                title="TRANSACTION AMOUNTS"
+                columns={[
+                  {
+                    accessor: 'Transaction.hash',
+                    cell: data => (
+                      <Link className="break-word" to={`/tx/${data}`}>
+                        {data}
+                      </Link>
+                    ),
+                  },
+                  {
+                    accessor: 'Transaction.Block.blockNumber',
+                    cell: data => (
+                      <span>
+                        Block <Link to={`/blocks/${data}`}>{data}</Link>
+                      </span>
+                    ),
+                  },
+                  {
+                    accessor: 'Transaction.Block.timestamp',
+                    cell: data => TextUtils.getDateStringFromTimestamp(data),
+                  },
+                  {
+                    accessor: 'amount',
+                    cell: (data, row) => this.getHighlightedSearchResult(search, AssetUtils.getAmountString(row.asset, data), true),
+                  },
+                ]}
+              />
+              <SearchResultsTable
                 items={blocks}
                 title="BLOCKS"
                 columns={[
                   {
                     accessor: 'blockNumber',
-                    cell: data => <Link to={`/blocks/${data}`}>{this.getHighlightedSearchResult(search, data)}</Link>,
+                    cell: data => (
+                      <Link to={`/blocks/${data}`}>
+                        {this.getHighlightedSearchResult(search, data)}
+                      </Link>
+                    ),
                   },
                   {
                     accessor: 'hash',
-                    cell: data => <Link className="break-word" to={`/blocks/${data}`}>{this.getHighlightedSearchResult(search, data)}</Link>,
+                    cell: data => (
+                      <Link className="break-word" to={`/blocks/${data}`}>
+                        {this.getHighlightedSearchResult(search, data)}
+                      </Link>
+                    ),
                   },
                   {
                     accessor: 'timestamp',
@@ -138,7 +176,7 @@ class SearchResultsPage extends Component {
                   },
                   { accessor: 'transactionCount', cell: data => <span>{data} txns</span> },
                 ]}
-              /> 
+              />
               <SearchResultsTable
                 items={addresses}
                 title="ADDRESSES"
@@ -146,7 +184,9 @@ class SearchResultsPage extends Component {
                   {
                     accessor: 'address',
                     cell: data => (
-                      <Link className="break-word" to={`/address/${data}`}>{this.getHighlightedSearchResult(search, data)}</Link>
+                      <Link className="break-word" to={`/address/${data}`}>
+                        {this.getHighlightedSearchResult(search, data)}
+                      </Link>
                     ),
                   },
                   // { accessor: 'txCount', cell: data => <span>{data} txns</span> },
@@ -160,9 +200,12 @@ class SearchResultsPage extends Component {
     );
   }
 
-  getHighlightedSearchResult(searchString, searchResult) {
-    searchResult = String(searchResult);
-    const partsWithoutSearchString = searchResult.split(searchString);
+  getHighlightedSearchResult(searchString, searchResult, formatNumbers = false) {
+    let formattedSearchResult = String(searchResult);
+    if(formatNumbers && !isNaN(Number(searchString))) {
+      searchString = TextUtils.formatNumber(searchString);
+    }
+    const partsWithoutSearchString = formattedSearchResult.split(searchString);
     if (partsWithoutSearchString.length <= 1) {
       return searchResult;
     }
