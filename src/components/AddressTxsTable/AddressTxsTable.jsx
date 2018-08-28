@@ -49,7 +49,7 @@ class AddressTxsTable extends Component {
         },
       },
       {
-        Header: 'Balance',
+        Header: 'Amount',
         accessor: 'totalSum',
         Cell: data => {
           const isNegative = Number(data.value) < 0;

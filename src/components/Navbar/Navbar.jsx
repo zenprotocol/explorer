@@ -153,3 +153,4 @@ Navbar.propTypes = {
 };
 
 export default withRouter(Navbar);
+

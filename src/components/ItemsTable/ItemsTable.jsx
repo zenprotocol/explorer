@@ -35,7 +35,6 @@ class ItemsTable extends Component {
 
   getTableColumns() {
     const expander = {
-      Header: 'Expand',
       expander: true,
       width: 65,
       Expander: ({ isExpanded }) => (
