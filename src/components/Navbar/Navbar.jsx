@@ -130,12 +130,12 @@ class Navbar extends Component {
             id="navbarSupportedContent"
           >
             <ul className="navbar-nav mr-auto">
-              <li className="nav-item active">
+              {/* <li className="nav-item active">
                 <NavLink className="nav-link" to="/blocks">
                   Blocks
                 </NavLink>
               </li>
-              {/* <li className="nav-item">
+              <li className="nav-item">
                 <NavLink className="nav-link" to="/tx">Transactions</NavLink>
               </li> */}
             </ul>
