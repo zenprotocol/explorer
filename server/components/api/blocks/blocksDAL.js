@@ -14,7 +14,12 @@ blocksDAL.findLatest = function(amount = 1) {
 };
 
 blocksDAL.findByBlockNumber = function(blockNumber) {
-  if (isNaN(Number(blockNumber))) {
+  if (
+    isNaN(Number(blockNumber)) ||
+    !Number.isInteger(Number(blockNumber)) ||
+    Number(blockNumber) < 1 ||
+    Number(blockNumber) >= 2147483647 // above db integer
+  ) {
     return Promise.resolve(null);
   }
   return this.findOne({
