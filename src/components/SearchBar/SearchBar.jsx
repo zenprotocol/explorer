@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { withRouter } from 'react-router-dom';
 import PropTypes from 'prop-types';
+import SearchUtils from '../../lib/SearchUtils.js';
 import blockStore from '../../store/BlockStore.js';
 import './SearchBar.css';
 
@@ -19,7 +20,7 @@ class SearchBar extends Component {
   }
 
   handleChange(event) {
-    blockStore.setSearchString(event.target.value.trim());
+    blockStore.setSearchString(SearchUtils.formatSearchString(event.target.value));
     clearTimeout(this.timeout);
     const time = this.canSearchImmediately(blockStore.searchString) ? SUBMIT_IMMEDIATE_MS : SUBMIT_AFTER_MS;
     this.timeout = setTimeout(this.submit, time);

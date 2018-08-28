@@ -35,8 +35,9 @@ class SearchResultsPage extends Component {
   }
 
   search(value) {
-    this.redirectBeforeSearch(value);
-    blockStore.search(value);
+    const search = SearchUtils.formatSearchString(value);
+    this.redirectBeforeSearch(search);
+    blockStore.search(search);
     this.setState({initialSearchDone: true});
   }
 
@@ -54,7 +55,8 @@ class SearchResultsPage extends Component {
       return <Loading />;
     }
     
-    const { search } = RouterUtils.getRouteParams(this.props);
+    let { search } = RouterUtils.getRouteParams(this.props);
+    search = SearchUtils.formatSearchString(search);
     
     const results = blockStore.searchResults;
     const total = results.total;

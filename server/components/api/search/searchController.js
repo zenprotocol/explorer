@@ -7,13 +7,16 @@ const addressesDAL = require('../addresses/addressesDAL');
 const jsonResponse = require('../../../lib/jsonResponse');
 const HttpError = require('../../../lib/HttpError');
 
+const NOT_VALID_REGEX = /[^a-zA-Z\d.]/g;
+
 function isSearchStringValid(searchString) {
   return (
     searchString &&
-    searchString.length >= 3 &&
-    searchString !== 'zen' &&
-    searchString !== 'zen1' &&
-    (searchString.indexOf('zen1') !== 0 || searchString.length >= 7)
+      searchString.length >= 3 &&
+      !NOT_VALID_REGEX.test(searchString) &&
+      searchString !== 'zen' &&
+      searchString !== 'zen1' &&
+      (searchString.indexOf('zen1') !== 0 || searchString.length >= 7)
   );
 }
 
