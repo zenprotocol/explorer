@@ -122,7 +122,7 @@ class SearchResultsPage extends Component {
               />
               <SearchResultsTable
                 items={outputs}
-                title="TRANSACTION AMOUNTS"
+                title="ZP TRANSACTIONS"
                 columns={[
                   {
                     accessor: 'Transaction.hash',
