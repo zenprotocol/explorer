@@ -149,7 +149,7 @@ class BlockPage extends Component {
                     <td>
                       <div className="address no-text-transform break-word">
                         <HashLink
-                          url={`/blocks/${block.parent}`}
+                          url={block.blockNumber > 1 ? `/blocks/${block.parent}` : ''}
                           hash={block.parent}
                         />
                       </div>
