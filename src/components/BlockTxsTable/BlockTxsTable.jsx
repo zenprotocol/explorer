@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import uiStore from '../../store/UIStore';
-import TextUtils from '../../lib/TextUtils';
 import blockStore from '../../store/BlockStore';
+import TextUtils from '../../lib/TextUtils';
+import AssetUtils from '../../lib/AssetUtils';
 import HashLink from '../HashLink/HashLink';
 import ItemsTable from '../ItemsTable/ItemsTable';
 import TransactionAssetLoader from '../Transactions/Asset/TransactionAssetLoader';
@@ -15,6 +16,13 @@ class BlockTxsTable extends Component {
         accessor: 'txHash',
         Cell: data => {
           return <HashLink url={`/tx/${data.value}`} hash={data.value} />;
+        },
+      },
+      {
+        Header: 'Asset',
+        accessor: 'asset',
+        Cell: function(data) {
+          return <HashLink hash={AssetUtils.getAssetNameFromCode(data.value)} value={data.value} />;
         },
       },
       {
