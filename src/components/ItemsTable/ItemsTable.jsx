@@ -13,6 +13,7 @@ class ItemsTable extends Component {
 
     this.state = {
       windowWidth: 0,
+      expanded: {},
     };
 
     this.setPageSize = this.setPageSize.bind(this);
@@ -51,7 +52,7 @@ class ItemsTable extends Component {
       return Object.assign({}, column, hideOnMobileObj);
     });
 
-    if(this.props.SubComponent) {
+    if (this.props.SubComponent) {
       columns.push(expander);
     }
     return columns;
@@ -105,6 +106,24 @@ class ItemsTable extends Component {
           onPageChange={this.onPageChange}
           pageSize={pageSize}
           SubComponent={SubComponent}
+          expanded={this.state.expanded}
+          getTrProps={(state, rowInfo, column, instance) => {
+            return {
+              className: SubComponent ? 'expandable' : '',
+              onClick: (e, handleOriginal) => {
+                if (SubComponent && e.target.tagName.toLowerCase() !== 'a') {
+                  this.setState(prevState => ({
+                    expanded: {
+                      [rowInfo.index]: !prevState.expanded[rowInfo.index],
+                    },
+                  }));
+                }
+                if (handleOriginal) {
+                  handleOriginal();
+                }
+              },
+            };
+          }}
         />
       </div>
     );

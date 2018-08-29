@@ -20,7 +20,10 @@ export default function GenericTable(props) {
     page,
     pageSize,
     onPageChange,
-    SubComponent
+    SubComponent,
+    pivotBy,
+    expanded,
+    getTrProps,
   } = props;
   return (
     <div className="GenericTable">
@@ -45,6 +48,9 @@ export default function GenericTable(props) {
         previousText={<i className="fas fa-angle-double-left" />}
         nextText={<i className="fas fa-angle-double-right" />}
         SubComponent={SubComponent}
+        pivotBy={pivotBy}
+        expanded={expanded}
+        getTrProps={getTrProps}
       />
     </div>
   );
@@ -64,6 +70,9 @@ GenericTable.propTypes = {
   pageSize: PropTypes.number,
   onPageChange: PropTypes.func,
   SubComponent: PropTypes.any,
+  pivotBy: PropTypes.array,
+  expanded: PropTypes.object,
+  getTrProps: PropTypes.func,
 };
 
 GenericTable.defaultProps = {
