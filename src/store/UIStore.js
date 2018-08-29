@@ -144,13 +144,13 @@ class UIStore {
     const data = localStore.get('ui-store');
     if(data) {
       if (data.blocksTable) {
-        this.blocksTable = data.blocksTable;
+        this.blocksTable.pageSize = data.blocksTable.pageSize;
       }
       if (data.addressTxTable) {
-        this.addressTxTable = data.addressTxTable;
+        this.addressTxTable.pageSize = data.addressTxTable.pageSize;
       }
       if (data.blockTxTable) {
-        this.blockTxTable = data.blockTxTable;
+        this.blockTxTable.pageSize = data.blockTxTable.pageSize;
       }
     }
   }
