@@ -1,8 +1,19 @@
 const KEY_PREFIX = 'zp-explorer-';
 
 // same key can not be in both session and local - session gets the precedence.
+
+// make sure storage objects are defined for node js environment
+let sessionStorage;
+let localStorage;
+if(typeof window !== 'undefined') {
+  sessionStorage = window.sessionStorage;
+  localStorage = window.localStorage;
+}
+else {
+  sessionStorage = localStorage = {};
+}
 const sessionKeys = Object.keys(sessionStorage);
-export default {
+let localStore = {
   get(key) {
     const innerKey = `${KEY_PREFIX}${key}`;
     const storage = sessionKeys.includes(innerKey) ? sessionStorage : localStorage;
@@ -31,3 +42,17 @@ export default {
     sessionStorage.clear();
   },
 };
+
+if (Object.keys(localStorage).length === 0 && localStorage.constructor === Object) {
+  // no storage mechanisms
+  localStore = {
+    get() {
+      return null;
+    },
+    set() {},
+    remove() {},
+    clear() {},
+  };
+}
+
+export default localStore;
