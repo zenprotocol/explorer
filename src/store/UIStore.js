@@ -1,5 +1,6 @@
-import { observable, decorate, action, autorun } from 'mobx';
+import { observable, decorate, action, autorun, toJS } from 'mobx';
 import blockStore from './BlockStore';
+import localStore from '../lib/localStore';
 
 function hashOrBlockNumberNotEmpty(hashOrBlockNumber) {
   return (
@@ -31,6 +32,15 @@ class UIStore {
       curPage: 0,
       prevPage: -1,
     };
+
+    let firstRun = true;
+    autorun(() => {
+      if(firstRun) {
+        this.loadFromStorage();
+      }
+      this.saveToStorage(this);
+    });
+    firstRun = false;
 
     autorun(() => {
       this.fetchBlocksOnChange();
@@ -113,7 +123,7 @@ class UIStore {
   }
 
   setAddressTxTableData({ address, pageSize, curPage } = {}) {
-    if (address) {
+    if (address && address !== this.addressTxTable.address) {
       this.addressTxTable.address = address;
       this.addressTxTable.curPage = 0;
     }
@@ -125,6 +135,25 @@ class UIStore {
       this.addressTxTable.curPage = curPage;
     }
   }
+
+  saveToStorage(store) {
+    localStore.set('ui-store', toJS(store));
+  }
+
+  loadFromStorage() {
+    const data = localStore.get('ui-store');
+    if(data) {
+      if (data.blocksTable) {
+        this.blocksTable = data.blocksTable;
+      }
+      if (data.addressTxTable) {
+        this.addressTxTable = data.addressTxTable;
+      }
+      if (data.blockTxTable) {
+        this.blockTxTable = data.blockTxTable;
+      }
+    }
+  }
 }
 
 decorate(UIStore, {
@@ -134,6 +163,7 @@ decorate(UIStore, {
   setBlocksTableData: action,
   setBlockTxTableData: action,
   setAddressTxTableData: action,
+  loadFromStorage: action,
 });
 
 export default new UIStore();
