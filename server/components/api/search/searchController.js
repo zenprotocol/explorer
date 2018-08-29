@@ -55,7 +55,7 @@ function getSearchPromises(search, limit) {
     searchFor.blocks ? blocksDAL.search(search, limit) : Promise.resolve([0, []]),
     searchFor.transactions ? transactionsDAL.search(search, limit) : Promise.resolve([0, []]),
     searchFor.addresses ? addressesDAL.search(search, limit) : Promise.resolve([0, []]),
-    searchFor.amount ? outputsDAL.searchByAmount(shouldMultiplyAmount ? Number(search) * 100000000 : search, limit) : Promise.resolve([0, []]),
+    searchFor.amount ? outputsDAL.searchByAmount(shouldMultiplyAmount ? Math.floor(Number(search) * 100000000) : search, limit) : Promise.resolve([0, []]),
   ];
 }
 
