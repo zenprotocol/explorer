@@ -9,6 +9,7 @@ const logger = require('./lib/logger');
 const bodyParser = require('body-parser');
 const helmet = require('helmet');
 const cors = require('cors');
+const compression = require('compression');
 const config = require('./config/Config');
 const errorHandlers = require('./errorHandlers');
 
@@ -17,6 +18,7 @@ const clientRouter = require('./components/client/clientRouter');
 const apiRouter = require('./components/api');
 
 const app = express();
+app.use(compression());
 
 // middleware
 app.use(morgan(':remote-addr ":method :url HTTP/:http-version" :status :res[content-length] ":referrer" ":user-agent"', { stream: logger.stream }));

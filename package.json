@@ -50,6 +50,7 @@
     "bootstrap": "^4.1.1",
     "bull": "^3.4.2",
     "classnames": "^2.2.6",
+    "compression": "^1.7.3",
     "core-js": "^2.5.7",
     "cors": "^2.8.4",
     "deepmerge": "^2.1.1",
