@@ -164,6 +164,7 @@ transactionsDAL.findAllAssetsByBlock = async function(
     INNER JOIN "Transactions" AS "Transaction" ON "OutputAsset"."TransactionId" = "Transaction"."id" OR "InputAsset"."TransactionId" = "Transaction"."id"
     INNER JOIN "Blocks" AS "Block" ON "Transaction"."BlockId" = "Block"."id"
   WHERE "Block"."${blockProp}" = :hashOrBlockNumber
+  ORDER BY "Transaction"."index"
   LIMIT :limit OFFSET :offset`;
 
   return sequelize.query(sql, {
