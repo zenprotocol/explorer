@@ -23,7 +23,7 @@ class TransactionAsset extends Component {
             <div className="col-2 border-bottom">ASSET</div>
             <div className="col-4 border-bottom">INPUT</div>
             <div className="col-6 border-bottom">
-              <div className="row">
+              <div className="row mx-0">
                 <div className="col-9 py-0">OUTPUT</div>
                 <div className="col-3 py-0">TOTAL</div>
               </div>
@@ -99,7 +99,7 @@ class TransactionAsset extends Component {
     }
 
     return (
-      <div className="row">
+      <div className="row mx-0">
         <div className="col d-flex justify-content-end">
           <div className="total rounded">{AssetUtils.getAmountString(asset, total)}</div>
         </div>
@@ -123,7 +123,7 @@ class TransactionAsset extends Component {
     title = title || '\u00a0';
     const url = address && address !== this.props.address ? `/address/${address}` : '';
     return (
-      <div className="row" key={key}>
+      <div className="row mx-0" key={key}>
         <div className="address break-word no-text-transform col-9" title={title}>
           {address? (<HashLink url={url? url : ''} hash={title} />) : title}
         </div>
