@@ -125,38 +125,38 @@ class BlockPage extends Component {
                 <tbody>
                   {block.hash ? (
                     <tr>
-                      <td>hash</td>
+                      <td>HASH</td>
                       <td className="no-text-transform">
                         <HashLink hash={block.hash} truncate={false} />
                       </td>
                     </tr>
                   ) : null}
                   <tr>
-                    <td>transactions</td>
+                    <td>TRANSACTIONS</td>
                     <td>{block.transactionCount}</td>
                   </tr>
                   <tr>
-                    <td>Timestamp</td>
+                    <td>TIMESTAMP</td>
                     <td>{blockDateStr}</td>
                   </tr>
                   <tr>
-                    <td>Version</td>
+                    <td>VERSION</td>
                     <td>{block.version}</td>
                   </tr>
                   <tr>
-                    <td>Difficulty</td>
+                    <td>DIFFICULTY</td>
                     <td className="no-text-transform">
                       {BlockUtils.formatDifficulty(block.difficulty)}
                     </td>
                   </tr>
                   <tr>
-                    <td>Confirmations</td>
+                    <td>CONFIRMATIONS</td>
                     <td className="no-text-transform">
                       {blockStore.confirmations(block.blockNumber)}
                     </td>
                   </tr>
                   <tr>
-                    <td>Parent</td>
+                    <td>PARENT</td>
                     <td>
                       <div className="address no-text-transform break-word">
                         <HashLink
