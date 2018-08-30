@@ -4,9 +4,10 @@ import { Link } from 'react-router-dom';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import blockStore from '../../store/BlockStore';
+import uiStore from '../../store/UIStore';
 import TextUtils from '../../lib/TextUtils';
-import Transactions from '../../components/Transactions/Transactions.jsx';
 import BlockUtils from '../../lib/BlockUtils';
+import BlockTxsTable from '../../components/BlockTxsTable/BlockTxsTable.jsx';
 import Loading from '../../components/Loading/Loading.jsx';
 import HashLink from '../../components/HashLink/HashLink.jsx';
 import './Block.css';
@@ -23,17 +24,24 @@ class BlockPage extends Component {
     const {
       match: { params },
     } = this.props;
-    blockStore.fetchBlock(params.id).then((block) => {
+    blockStore.fetchBlock(params.id).then(block => {
       this.switchBlock(block.blockNumber);
     });
+    this.setBlockInUiTable(params.id);
   }
 
   componentDidUpdate(prevProps) {
-    if (this.props.match.params.id !== prevProps.match.params.id) {
-      blockStore.fetchBlock(this.props.match.params.id).then((block) => {
+    const {id} = this.props.match.params;
+    if (id !== prevProps.match.params.id) {
+      blockStore.fetchBlock(id).then(block => {
         this.switchBlock(block.blockNumber);
       });
+      this.setBlockInUiTable(id);
     }
+  }
+
+  setBlockInUiTable(hashOrBlockNumber) {
+    uiStore.setBlockTxTableData({ hashOrBlockNumber });
   }
 
   renderPagination() {
@@ -86,7 +94,9 @@ class BlockPage extends Component {
 
   render() {
     const block = blockStore.block;
-    const blockDateStr = block.timestamp ? TextUtils.getDateStringFromTimestamp(block.timestamp) : '';
+    const blockDateStr = block.timestamp
+      ? TextUtils.getDateStringFromTimestamp(block.timestamp)
+      : '';
 
     if (!block.id) return <Loading />;
 
@@ -115,37 +125,38 @@ class BlockPage extends Component {
                 <tbody>
                   {block.hash ? (
                     <tr>
-                      <td>hash</td>
+                      <td>HASH</td>
                       <td className="no-text-transform">
-                        <HashLink
-                          hash={block.hash}
-                          truncate={false}
-                        />
+                        <HashLink hash={block.hash} truncate={false} />
                       </td>
                     </tr>
                   ) : null}
                   <tr>
-                    <td>transactions</td>
-                    <td>{blockStore.transactionsCount}</td>
+                    <td>TRANSACTIONS</td>
+                    <td>{block.transactionCount}</td>
                   </tr>
                   <tr>
-                    <td>Timestamp</td>
+                    <td>TIMESTAMP</td>
                     <td>{blockDateStr}</td>
                   </tr>
                   <tr>
-                    <td>Version</td>
+                    <td>VERSION</td>
                     <td>{block.version}</td>
                   </tr>
                   <tr>
-                    <td>Difficulty</td>
-                    <td className="no-text-transform">{BlockUtils.formatDifficulty(block.difficulty)}</td>
+                    <td>DIFFICULTY</td>
+                    <td className="no-text-transform">
+                      {BlockUtils.formatDifficulty(block.difficulty)}
+                    </td>
                   </tr>
                   <tr>
-                    <td>Confirmations</td>
-                    <td className="no-text-transform">{blockStore.confirmations(block.blockNumber)}</td>
+                    <td>CONFIRMATIONS</td>
+                    <td className="no-text-transform">
+                      {blockStore.confirmations(block.blockNumber)}
+                    </td>
                   </tr>
                   <tr>
-                    <td>Parent</td>
+                    <td>PARENT</td>
                     <td>
                       <div className="address no-text-transform break-word">
                         <HashLink
@@ -162,8 +173,7 @@ class BlockPage extends Component {
         </section>
 
         <section className="bordered border-left border-primary pl-lg-4">
-          <h1 className="d-block d-sm-inline-block text-white mb-3 mb-lg-5">Transactions</h1>
-          <Transactions blockNumber={block.blockNumber} order="asc" />
+          <BlockTxsTable />
         </section>
       </div>
     );

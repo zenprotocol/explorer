@@ -161,9 +161,10 @@ transactionsDAL.findAllAssetsByBlock = async function(
 
     ON "OutputAsset"."TransactionId" = "InputAsset"."TransactionId"
       AND "OutputAsset"."asset" = "InputAsset"."asset"
-    INNER JOIN "Transactions" AS "Transaction" ON "OutputAsset"."TransactionId" = "Transaction"."id"
+    INNER JOIN "Transactions" AS "Transaction" ON "OutputAsset"."TransactionId" = "Transaction"."id" OR "InputAsset"."TransactionId" = "Transaction"."id"
     INNER JOIN "Blocks" AS "Block" ON "Transaction"."BlockId" = "Block"."id"
   WHERE "Block"."${blockProp}" = :hashOrBlockNumber
+  ORDER BY "Transaction"."index"
   LIMIT :limit OFFSET :offset`;
 
   return sequelize.query(sql, {
@@ -240,8 +241,7 @@ transactionsDAL.countAssetsByBlock = async function(hashOrBlockNumber) {
   const blockProp = isHash(hashOrBlockNumber) ? 'hash' : 'blockNumber';
   const sequelize = transactionsDAL.db.sequelize;
   const sql = `
-  SELECT
-    COUNT("Transaction"."id")
+  SELECT COUNT("OutputAsset"."TransactionId")
   FROM
     (SELECT SUM("Output"."amount") AS "outputSum",
       "Output"."asset",
@@ -263,10 +263,7 @@ transactionsDAL.countAssetsByBlock = async function(hashOrBlockNumber) {
     GROUP BY "Input"."TransactionId", "Output"."asset") AS "InputAsset"
 
     ON "OutputAsset"."TransactionId" = "InputAsset"."TransactionId"
-      AND "OutputAsset"."asset" = "InputAsset"."asset"
-    INNER JOIN "Transactions" AS "Transaction" ON "OutputAsset"."TransactionId" = "Transaction"."id"
-    INNER JOIN "Blocks" AS "Block" ON "Transaction"."BlockId" = "Block"."id"
-  WHERE "Block"."${blockProp}" = :hashOrBlockNumber`;
+      AND "OutputAsset"."asset" = "InputAsset"."asset"`;
 
   return sequelize
     .query(sql, {

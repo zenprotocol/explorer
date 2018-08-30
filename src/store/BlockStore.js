@@ -163,6 +163,7 @@ class BlockStore {
           });
         });
     }
+    return Promise.resolve();
   }
 
   resetAddressTransactionAssets() {
