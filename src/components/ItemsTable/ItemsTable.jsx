@@ -66,6 +66,7 @@ class ItemsTable extends Component {
   }
 
   onPageChange(page) {
+    this.setState({ expanded: {} });
     this.props.tableDataSetter({ curPage: page });
   }
 
