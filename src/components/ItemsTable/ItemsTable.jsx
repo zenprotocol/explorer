@@ -30,6 +30,13 @@ class ItemsTable extends Component {
     window.removeEventListener('resize', this.setWindowWidth);
   }
 
+  componentDidUpdate(prevProps) {
+    const { items, curPage } = this.props;
+    if (items !== prevProps.items || curPage !== prevProps.curPage) {
+      this.setState({ expanded: {} });
+    }
+  }
+
   setWindowWidth() {
     this.setState({ windowWidth: window.innerWidth });
   }
@@ -66,7 +73,6 @@ class ItemsTable extends Component {
   }
 
   onPageChange(page) {
-    this.setState({ expanded: {} });
     this.props.tableDataSetter({ curPage: page });
   }
 
