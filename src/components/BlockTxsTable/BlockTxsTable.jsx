@@ -39,6 +39,11 @@ class BlockTxsTable extends Component {
           return data.value ? 'Coinbase' : '';
         },
       },
+      {
+        Header: 'Total',
+        accessor: 'outputSum',
+        Cell: data => AssetUtils.getAmountString(data.original.asset, Number(data.value)),
+      },
     ];
   }
   render() {
