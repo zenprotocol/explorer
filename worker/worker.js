@@ -9,6 +9,7 @@ const path = require('path');
 const Queue = require('bull');
 const Config = require('../server/config/Config');
 const logger = require('./lib/logger');
+const NUM_OF_BLOCKS_IN_CHUNK = Config.get('queues:addBlocks:limitBlocks');
 
 const addBlocksQueue = new Queue(
   Config.get('queues:addBlocks:name'),
@@ -29,6 +30,11 @@ addBlocksQueue.on('active', function(job, jobPromise) {
 
 addBlocksQueue.on('completed', function(job, result) {
   logger.info(`An AddBlocksQueue job has been completed. ID=${job.id} result=${result}`);
+  if(result > 0) {
+    addBlocksQueue.add(
+      { limitBlocks: NUM_OF_BLOCKS_IN_CHUNK },
+    );
+  }
 });
 
 addBlocksQueue.on('failed', function(job, error) {
@@ -49,8 +55,12 @@ Promise.all([
 ]).then(() => {
   // schedule ---
   addBlocksQueue.add(
-    { limitBlocks: Config.get('queues:addBlocks:limitBlocks') },
+    { limitBlocks: NUM_OF_BLOCKS_IN_CHUNK },
     { repeat: { cron: '* * * * *' } }
+  );
+  // now
+  addBlocksQueue.add(
+    { limitBlocks: NUM_OF_BLOCKS_IN_CHUNK },
   );
 });
 

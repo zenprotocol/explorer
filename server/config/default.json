@@ -4,7 +4,7 @@
       "name": "Add Blocks From Node",
       "cleanInterval": 60,
       "cleanAfter": 10,
-      "limitBlocks": 50
+      "limitBlocks": 10
     }
   }
 }
