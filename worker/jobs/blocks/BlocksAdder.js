@@ -77,7 +77,7 @@ class BlocksAdder {
         logger.info('Commit the database transaction');
         await dbTransaction.commit();
       } catch (error) {
-        logger.error('An Error has occurred when adding blocks', { error });
+        logger.error(`An Error has occurred when adding blocks: ${error.message}`);
         logger.info('Rollback the database transaction');
         await dbTransaction.rollback();
         throw error;
@@ -170,7 +170,6 @@ class BlocksAdder {
       for (let transactionIndex = 0; transactionIndex < transactionsToAdd; transactionIndex++) {
         const transactionHash = transactionHashes[transactionIndex];
         const nodeTransaction = nodeBlock.transactions[transactionHash];
-        logger.info(`Transaction #${transactionIndex}`);
         const transaction = await this.addTransactionToBlock({
           block,
           nodeTransaction,
@@ -234,7 +233,9 @@ class BlocksAdder {
       },
       { transaction: dbTransaction }
     );
-    logger.info(`Block #${nodeBlock.header.blockNumber} created.`);
+    logger.info(
+      `Block #${nodeBlock.header.blockNumber} created. id=${block.id} hash=${block.hash}`
+    );
     return block;
   }
 
@@ -245,7 +246,11 @@ class BlocksAdder {
     transactionIndex,
     dbTransaction,
   } = {}) {
-    logger.info(`Creating a new transaction for block #${block.blockNumber}...`);
+    logger.info(
+      `Creating a new transaction for block. blockNumber=#${block.blockNumber}, blockHash = ${
+        block.hash
+      }, block id=${block.id}...`
+    );
     const transaction = await transactionsDAL.create(
       {
         version: nodeTransaction.version,
@@ -257,14 +262,22 @@ class BlocksAdder {
       { transaction: dbTransaction }
     );
     logger.info(
-      `Transaction created for block #${block.blockNumber}. id=${transaction.id} hash=${
-        transaction.hash
-      }`
+      `Transaction created for block #${block.blockNumber} blockHash = ${
+        block.hash
+      }. Transaction hash=${transaction.hash}, transactionId=${transaction.id}`
     );
 
-    logger.info(`Adding transaction with id=${transaction.id} to block #${block.blockNumber}...`);
+    logger.info(
+      `Adding transaction with hash=${transaction.hash} to block blockNumber=${
+        block.blockNumber
+      }, blockHash=${block.hash}...`
+    );
     await blocksDAL.addTransaction(block, transaction, { transaction: dbTransaction });
-    logger.info(`Transaction with id=${transaction.id} added to block #${block.blockNumber}`);
+    logger.info(
+      `Transaction with hash=${transaction.hash} added to block blockNumber=${
+        block.blockNumber
+      }, blockHash=${block.hash}`
+    );
     return transaction;
   }
 
@@ -294,9 +307,17 @@ class BlocksAdder {
       `Output created for transactionId=#${transaction.id} with hash ${transaction.hash}.`
     );
 
-    logger.info(`Adding output with id=${output.id} to transaction #${transaction.id}...`);
+    logger.info(
+      `Adding output with id=${output.id} and index=${output.index} to transaction id=${
+        transaction.id
+      } hash=${transaction.hash}...`
+    );
     await transactionsDAL.addOutput(transaction, output, { transaction: dbTransaction });
-    logger.info(`Output with id=${output.id} added to transaction #${transaction.id}.`);
+    logger.info(
+      `Output with id=${output.id} and index=${output.index} added to transaction id=${
+        transaction.id
+      } hash=${transaction.hash}.`
+    );
 
     return output;
   }
@@ -340,9 +361,17 @@ class BlocksAdder {
       throw new Error('Input is invalid');
     }
 
-    logger.info(`Adding input with id=${input.id} to transaction #${transaction.id}...`);
+    logger.info(
+      `Adding input with id=${input.id} and index=${input.index} to transaction id=${
+        transaction.id
+      } hash=${transaction.hash}...`
+    );
     await transactionsDAL.addInput(transaction, input, { transaction: dbTransaction });
-    logger.info(`Input with id=${input.id} added to transaction #${transaction.id}.`);
+    logger.info(
+      `Input with id=${input.id} and index=${input.index} added to transaction id=${
+        transaction.id
+      } hash=${transaction.hash}.`
+    );
 
     return input;
   }
@@ -353,9 +382,9 @@ class BlocksAdder {
     }
 
     logger.info(
-      `Creating a new mint input for transactionId=${transaction.id} with hash ${
-        transaction.hash
-      }...`
+      `Creating a new mint input index=${inputIndex} for transaction with id=${
+        transaction.id
+      } hash=${transaction.hash}...`
     );
     const input = await inputsDAL.create(
       {
@@ -366,7 +395,11 @@ class BlocksAdder {
       },
       { transaction: dbTransaction }
     );
-    logger.info(`Mint input created for transactionId=${transaction.id}. id=${input.id}`);
+    logger.info(
+      `Mint input with id=${input.id} index=${input.index} created for transaction with id=${
+        transaction.id
+      } hash=${transaction.hash}.`
+    );
 
     return input;
   }
@@ -379,13 +412,17 @@ class BlocksAdder {
 
   async createOutpointInput({ transaction, nodeInput, inputIndex, dbTransaction }) {
     if (!this.isOutpointInputValid(nodeInput)) {
-      throw new Error(`Outpoint input not valid in transaction with hash=${transaction.hash}`);
+      throw new Error(
+        `Outpoint input with index=${inputIndex} not valid in transaction with hash=${
+          transaction.hash
+        }`
+      );
     }
 
     logger.info(
-      `Creating a new outpoint input for transactionId=#${transaction.id} with hash ${
-        transaction.hash
-      }...`
+      `Creating a new outpoint input with index=${inputIndex} for transactionId=#${
+        transaction.id
+      } with hash ${transaction.hash}...`
     );
     const input = await inputsDAL.create(
       {
@@ -396,7 +433,11 @@ class BlocksAdder {
       },
       { transaction: dbTransaction }
     );
-    logger.info(`Outpoint input created for transactionId=#${transaction.id}. id=${input.id}`);
+    logger.info(
+      `Outpoint input with id=${input.id} index=${input.index} created for transactionId=#${
+        transaction.id
+      } with hash ${transaction.hash}.`
+    );
 
     return input;
   }
@@ -430,18 +471,18 @@ class BlocksAdder {
       transaction: dbTransaction,
     });
     logger.info(`Found ${inputs.length} outpoint inputs that need to be related to outputs`);
-    const relateInputToOutputPromises = inputs.map(input => {
-      return this.relateInputToOutput({ input, dbTransaction });
-    });
-    const results = await Promise.all(relateInputToOutputPromises);
-    return results;
+    for (let i = 0; i < inputs.length; i++) {
+      const input = inputs[i];
+      await this.relateInputToOutput({ input, dbTransaction });
+    }
   }
 
   async relateInputToOutput({ input, dbTransaction } = {}) {
+    const startTime = process.hrtime();
     logger.info(
-      `Searching for the relevant output for InputId=${input.id} in transaction with hash=${
-        input.outpointTXHash
-      } and index=${input.outpointIndex}...`
+      `Searching for the relevant output for input id=${input.id} index=${
+        input.index
+      } in outpoint transaction: hash=${input.outpointTXHash} and index=${input.outpointIndex}...`
     );
     const output = await outputsDAL.findOne({
       where: {
@@ -460,14 +501,30 @@ class BlocksAdder {
     });
     if (output) {
       logger.info(
-        `Setting the found output with id=${output.id} on the input with id=${input.id}...`
+        `Setting the found output with id=${output.id} (outpoint: hash=${
+          input.outpointTXHash
+        } index=${input.outpointIndex}) on the input with id=${input.id} index=${
+          input.index
+        } in transaction with id=${input.TransactionId}...`
       );
       await inputsDAL.setOutput(input, output, { transaction: dbTransaction });
-      logger.info(`Output with id=${output.id} was set on the input with id=${input.id}.`);
+      const hrEnd = process.hrtime(startTime);
+      logger.info(
+        `relateInputToOutput Finished. Time elapsed = ${(hrEnd[0] * 1e9 + hrEnd[1]) / 1000000}ms`
+      );
+      logger.info(
+        `Output with id=${output.id} (outpoint: hash=${input.outpointTXHash} index=${
+          input.outpointIndex
+        }) was set on the input with id=${input.id} index=${input.index} in transaction with id=${
+          input.TransactionId
+        }.`
+      );
       return true;
     } else {
-      logger.error(`Did not find an output for InputId=${input.id}`);
-      throw new Error(`Output not found for InputId=${input.id}`);
+      const errorMsg = `Did not find an output for input with id=${input.id}, index=${
+        input.index
+      } in transaction with id=${input.TransactionId}`;
+      throw new Error(errorMsg);
     }
   }
 }
