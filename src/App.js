@@ -22,7 +22,6 @@ class App extends Component {
 
   componentDidMount() {
     blockStore.fetchMedianTime();
-    blockStore.fetchBlocks();
     this.fetchSyncingTimeout();
   }
 

@@ -52,7 +52,7 @@ class BlocksTable extends Component {
       <ItemsTable
         columns={this.getTableColumns()}
         hideOnMobile={['parent', 'difficulty']}
-        loading={blockStore.loading.blocks}
+        // loading={blockStore.loading.blocks}
         itemsCount={blockStore.blocksCount}
         items={blockStore.blocks}
         pageSize={uiStore.blocksTable.pageSize}

@@ -131,6 +131,7 @@ class ItemsTable extends Component {
               },
             };
           }}
+          
         />
       </div>
     );

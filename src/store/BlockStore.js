@@ -36,11 +36,15 @@ class BlockStore {
     this.resetSearchResults();
   }
 
-  fetchBlocks({ pageSize = 10, page = 0, sorted = [], filtered = [] } = {}) {
+  setBlocksCount(count) {
+    this.blocksCount = count;
+  }
+
+  fetchBlocks(params = {pageSize: 10, page: 0}) {
     this.loading.blocks = true;
 
     return Service.blocks
-      .find({ pageSize, page, sorted: JSON.stringify(sorted), filtered })
+      .find(params)
       .then(response => {
         runInAction(() => {
           this.blocks = response.data.items;
@@ -305,6 +309,7 @@ decorate(BlockStore, {
   syncing: observable,
   medianTimeString: computed,
   numberOfTransactions: computed,
+  setBlocksCount: action,
   fetchBlocks: action,
   fetchBlock: action,
   fetchBlockTransactionAssets: action,
