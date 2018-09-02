@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { Link, Redirect } from 'react-router-dom';
+import classNames from 'classnames';
 import blockStore from '../../store/BlockStore';
 import RouterUtils from '../../lib/RouterUtils';
 import TextUtils from '../../lib/TextUtils';
@@ -86,9 +87,9 @@ class SearchResultsPage extends Component {
         <section>
           <div className="row">
             <div className="col-sm">
-              <h1 className="d-block d-sm-inline-block text-white mb-1 mb-lg-5">
+              <h1 className="d-block text-white mb-1 mb-lg-5">
                 {total ? `${total} Search Results` : 'No search results found for'}
-                <div className="search-string text-light">{search}</div>
+                <div className={classNames('search-string text-light', {'border-top border-dark mt-3': !total})}>{search}</div>
               </h1>
             </div>
           </div>
