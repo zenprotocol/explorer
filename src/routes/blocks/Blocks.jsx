@@ -24,7 +24,7 @@ class BlocksPage extends Component {
       if (response.data.total !== blockStore.blocksCount) {
         blockStore.setBlocksCount(Number(response.data.total));
       }
-      this.blocksTimer = setTimeout(this.fetchBlocksCount, 10000);
+      this.blocksTimer = setTimeout(this.fetchBlocksCount, 30000);
     });
   }
 
