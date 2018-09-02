@@ -10,7 +10,7 @@ const isHash = require('../../../lib/isHash');
 module.exports = {
   index: async function(req, res) {
     const page = req.query.page || 0;
-    const pageSize = req.query.pageSize;
+    const pageSize = req.query.pageSize || 10;
     const sorted =
       req.query.sorted && req.query.sorted != '[]'
         ? JSON.parse(req.query.sorted)
