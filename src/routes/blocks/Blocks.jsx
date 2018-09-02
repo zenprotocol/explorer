@@ -30,7 +30,7 @@ class BlocksPage extends Component {
 
   render() {
     return (
-      <section className="bordered border-left border-primary pl-lg-4">
+      <section>
         <BlocksTable title="LATEST BLOCKS" />
       </section>
     );

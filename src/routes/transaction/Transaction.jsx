@@ -39,7 +39,7 @@ class TransactionPage extends Component {
 
     return (
       <div className="Transaction">
-        <section className="bordered border-left border-primary pl-lg-4">
+        <section>
           <div className="row">
             <div className="col-sm">
               <div className="medianTime mb-1 mb-lg-2">{blockDateStr}</div>

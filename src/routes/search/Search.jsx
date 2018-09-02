@@ -83,7 +83,7 @@ class SearchResultsPage extends Component {
 
     return (
       <div className="SearchResults">
-        <section className="bordered border-left border-primary pl-lg-4">
+        <section>
           <div className="row">
             <div className="col-sm">
               <h1 className="d-block d-sm-inline-block text-white mb-1 mb-lg-5">
