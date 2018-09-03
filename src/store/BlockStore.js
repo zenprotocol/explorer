@@ -285,7 +285,7 @@ class BlockStore {
       return 0;
     }
 
-    return Number(this.blocksCount) - Number(blockNumber) + 1;
+    return Math.max(0, Number(this.blocksCount) - Number(blockNumber) + 1);
   }
 }
 
