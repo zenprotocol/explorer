@@ -3,15 +3,16 @@ import { Route, Switch } from 'react-router-dom';
 
 import DevTools from './DevTools';
 
-import './App.css';
+import Service from './lib/Service';
+import blockStore from './store/BlockStore';
 import Navbar from './components/Navbar/Navbar.jsx';
 import Footer from './components/Footer/Footer.jsx';
 import Blocks from './routes/blocks/Blocks.jsx';
 import Block from './routes/block/Block.jsx';
-import blockStore from './store/BlockStore';
 import Transaction from './routes/transaction/Transaction.jsx';
 import Address from './routes/address/Address.jsx';
 import Search from './routes/search/Search.jsx';
+import './App.css';
 
 class App extends Component {
   constructor(props) {
@@ -21,6 +22,7 @@ class App extends Component {
   }
 
   componentDidMount() {
+    this.fetchBlocksCount();
     blockStore.fetchMedianTime();
     this.fetchSyncingTimeout();
   }
@@ -28,6 +30,15 @@ class App extends Component {
   componentWillUnmount() {
     clearInterval(this.syncingTimer);
   }
+
+  fetchBlocksCount() {
+    Service.blocks.find({ pageSize: 1 }).then(response => {
+      if (response.data.total !== blockStore.blocksCount) {
+        blockStore.setBlocksCount(Number(response.data.total));
+      }
+    });
+  }
+
 
   fetchSyncingTimeout() {
     blockStore.fetchSyncing().then(() => {
