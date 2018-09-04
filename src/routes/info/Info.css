@@ -1,12 +1,12 @@
 .Info .row .col {
-  padding: 10px;
+  padding: 11px 10px;
   margin-left: -1px;
   margin-bottom: -1px;
 }
 
 .Info .content-box .icon {
-  width: 60px;
-  height: 60px;
+  width: 64px;
+  height: 64px;
   margin-right: 20px;
   font-size: 1.08rem;
 }
@@ -49,6 +49,10 @@
 .Info .content-box .value {
   font-size: 1.3rem;
   line-height: 1.3rem;
+}
+
+.Info .content-box .content-wrapper {
+  margin-right: 30px;
 }
 
 .Info .content-box .btn {
