@@ -1,8 +1,7 @@
-@import url('https://fonts.googleapis.com/css?family=Roboto:400,500');
+@import url('https://fonts.googleapis.com/css?family=Roboto+Mono|Roboto:400,500');
 
 .App {
   color: #bfbfbf;
-  font-family: 'Roboto', sans-serif;
 }
 
 .App-separator {
@@ -12,11 +11,6 @@
 section {
   margin-bottom: 80px;
   position: relative;
-}
-@media (max-width: 991.98px) {
-  section.bordered {
-    border: none !important;
-  }
 }
 
 select, input {

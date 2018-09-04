@@ -16,7 +16,7 @@ export default function Footer(props) {
         </div>
       </div>
       <div className="row logo-padding">
-        <div className="col-lg-7 border-secondary separator">
+        <div className="col-lg-7 border-dark separator">
           <FooterLinks />
         </div>
         <div className="col-lg-5">

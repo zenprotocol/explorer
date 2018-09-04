@@ -1,10 +1,5 @@
 'use strict';
 
-/**
- * Currently worker is responsible for scheduling and work
- * if more jobs should be added, consider scheduling on a different file
- */
-
 const path = require('path');
 const Queue = require('bull');
 const Config = require('../server/config/Config');
@@ -21,7 +16,7 @@ addBlocksQueue.process(path.join(__dirname, 'jobs/blocks/addNewBlocks.handler.js
 
 // events
 addBlocksQueue.on('error', function(error) {
-  logger.error('A job error has occurred', error);
+  logger.error('A AddBlocksQueue job error has occurred', error);
 });
 
 addBlocksQueue.on('active', function(job, jobPromise) {
@@ -42,7 +37,7 @@ addBlocksQueue.on('failed', function(job, error) {
 });
 
 addBlocksQueue.on('cleaned', function(jobs, type) {
-  logger.info('Jobs have been cleaned', { jobs, type });
+  logger.info('AddBlocksQueue Jobs have been cleaned', { jobs, type });
 });
 
 // first clean the queue
@@ -65,6 +60,6 @@ Promise.all([
 });
 
 setInterval(() => {
-  addBlocksQueue.clean(Config.get('queues:addBlocks:cleanAfter') * 1000, 'completed');
-  addBlocksQueue.clean(Config.get('queues:addBlocks:cleanAfter') * 1000, 'failed');
-}, Config.get('queues:addBlocks:cleanInterval') * 1000);
+  addBlocksQueue.clean(Config.get('queues:cleanAfter') * 1000, 'completed');
+  addBlocksQueue.clean(Config.get('queues:cleanAfter') * 1000, 'failed');
+}, Config.get('queues:cleanInterval') * 1000);

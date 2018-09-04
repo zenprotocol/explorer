@@ -36,6 +36,12 @@ export default {
     },
   },
   infos: {
+    async find() {
+      return sendHttpRequest({
+        url: `${Endpoints.info}`,
+        method: 'get',
+      }).then(response => response.data);
+    },
     async findByName(name) {
       return sendHttpRequest({
         url: `${Endpoints.info}/${name}`,
