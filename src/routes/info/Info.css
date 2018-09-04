@@ -1,32 +1,63 @@
 .Info .row .col {
   padding: 10px;
+  margin-left: -1px;
+  margin-bottom: -1px;
 }
 
 .Info .content-box .icon {
-  font-size: 2rem;
-  position: relative;
-  top: 2px;
+  width: 60px;
+  height: 60px;
+  margin-right: 20px;
+  font-size: 1.08rem;
 }
 
-.Info .content-box .icon .chain {
-  color: #fd3a3a;
+.Info .content-box.chain .icon {
+  color: #fd3a3a !important; 
+  font-size: 3rem;
 }
-.Info .content-box .icon .blocks {
-  color: #3384f3;
+.Info .content-box.chain .content .value {
+  font-family: 'Roboto';
+}
+.Info .content-box.blocks .icon {
+  color: #3384f3 !important;
+  font-size: 3rem;
+}
+.Info .content-box.transactions .icon {
+  font-size: 2.2rem;
+}
+.Info .content-box.difficulty .icon {
+  font-size: 3rem;
+}
+.Info .content-box.hashrate .icon {
+  font-size: 3rem;
+}
+.Info .content-box.wallet .icon,
+.Info .content-box.node .icon {
+  border: 1px solid;
+  border-color: #303030 !important;
+  border-radius: 50%;
 }
 
 .Info .content-box .title {
-  font-size: 0.7rem;
+  font-size: 0.75rem;
+  letter-spacing: 0.05rem;
   text-transform: uppercase;
+  margin-bottom: 5px;
 }
 
 .Info .content-box .value {
-  font-size: 1.2rem;
+  font-size: 1.3rem;
   line-height: 1.3rem;
 }
 
 .Info .content-box .btn {
   font-size: 0.8rem;
-  padding: 0.6rem 1.2rem;
-  min-width: 140px;
+  padding-top: 0.82rem;
+  padding-bottom: 0.82rem;
+  width: 130px;
+}
+
+.Info .content-box.node .btn:hover {
+  background-color: #303030;
+  border-color: #303030;
 }

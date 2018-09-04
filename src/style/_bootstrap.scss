@@ -40,6 +40,7 @@ $warning : $yellow;
 $danger : $red;
 $light : $gray-400;
 $dark : $gray-800;
+$dark-2 : #242424;
 
 
 $theme-colors: ();
@@ -52,7 +53,8 @@ $theme-colors: map-merge((
   "warning":    $warning,
   "danger":     $danger,
   "light":      $light,
-  "dark":       $dark
+  "dark":       $dark,
+  "dark-2":     $dark-2
 ), $theme-colors);
 
 $mark-bg: $yellow;

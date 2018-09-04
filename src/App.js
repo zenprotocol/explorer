@@ -53,7 +53,7 @@ class App extends Component {
         <div className="container px-lg-5">
           <Navbar />
         </div>
-        <div className="App-separator mb-3 mb-sm-4 mb-lg-5" />
+        <div className="App-separator" />
         <div className="container px-lg-5">
           <Switch>
             <Route exact path="/(|blocks)" component={Blocks} />
