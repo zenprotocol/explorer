@@ -1,10 +1,13 @@
 {
   "queues": {
+    "cleanInterval": 60,
+    "cleanAfter": 10,
     "addBlocks": {
       "name": "Add Blocks From Node",
-      "cleanInterval": 60,
-      "cleanAfter": 10,
       "limitBlocks": 10
+    },
+    "updateGeneralInfos": {
+      "name": "Update General Infos"
     }
   }
 }
