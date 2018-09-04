@@ -10,15 +10,17 @@ import '../page.css';
 function ContentBox(props) {
   return (
     <div className="col border border-dark">
-      <div className={classNames('content-box d-flex align-items-center', props.className)}>
-        <div className="icon text-secondary d-flex align-items-center justify-content-center">
-          <i className={props.iconClass} />
+      <div className={classNames('content-box d-flex align-items-center flex-wrap', props.className)}>
+        <div className="d-flex align-items-center">
+          <div className="icon text-secondary d-flex align-items-center justify-content-center">
+            <i className={props.iconClass} />
+          </div>
+          <div className="content mr-4">
+            <div className="title text-secondary">{props.title}</div>
+            <div className="value text-white text-monospace">{props.content}</div>
+          </div>
         </div>
-        <div className="content">
-          <div className="title text-secondary">{props.title}</div>
-          <div className="value text-white text-monospace">{props.content}</div>
-        </div>
-        {props.children ? <div className="body ml-4">{props.children}</div> : null}
+        {props.children ? <div className="body">{props.children}</div> : null}
       </div>
     </div>
   );
