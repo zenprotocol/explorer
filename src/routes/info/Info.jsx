@@ -10,7 +10,7 @@ function ContentBox(props) {
   return (
     <div className="col border border-dark">
       <div className="content-box d-flex align-items-center">
-        <div className="icon mr-4 text-secondary">
+        <div className="icon mr-3 text-secondary d-flex justify-content-center">
           <i className={props.iconClass} />
         </div>
         <div className="content">
@@ -59,16 +59,16 @@ class InfoPage extends Component {
     return (
       <section className="Info">
         <div className="row">
-          <ContentBox title="Chain" content={`${chain}net`} iconClass="fal fa-cubes chain" />
-          <ContentBox title="Blocks" content={TextUtils.formatNumber(blocks)} iconClass="fal fa-cube blocks" />
-          <ContentBox title="Transactions" content={TextUtils.formatNumber(transactions)} iconClass="fal fa-money-check" />
+          <ContentBox title="Chain" content={`${TextUtils.capitalize(chain)}net`} iconClass="fal fa-cubes fa-fw chain" />
+          <ContentBox title="Blocks" content={TextUtils.formatNumber(blocks)} iconClass="fal fa-cube fa-fw blocks" />
+          <ContentBox title="Transactions" content={TextUtils.formatNumber(transactions)} iconClass="fal fa-money-check fa-fw" />
         </div>
         <div className="row">
-          <ContentBox title="Mining difficulty" content={TextUtils.formatNumber(difficulty)} iconClass="fal fa-tachometer-alt-fastest" />
-          <ContentBox title="Network Hashrate" content={TextUtils.formatNumber(difficulty / 55)} iconClass="fal fa-fire" />
+          <ContentBox title="Mining difficulty" content={TextUtils.formatNumber(Math.floor(difficulty))} iconClass="fal fa-tachometer-alt-fastest fa-fw" />
+          <ContentBox title="Network Hashrate" content={`${TextUtils.formatNumber(Math.floor(difficulty / 55))} TH/s`} iconClass="fal fa-fire fa-fw" />
         </div>
         <div className="row">
-          <ContentBox title="wallet" content={walletVersion} iconClass="fas fa-user-friends">
+          <ContentBox title="wallet" content={walletVersion} iconClass="fas fa-user-friends fa-fw">
             <a
               href="https://docs.zenprotocol.com/preparation/installers"
               className="btn btn-primary-strong"
@@ -76,7 +76,7 @@ class InfoPage extends Component {
               Download wallet
             </a>
           </ContentBox>
-          <ContentBox title="Zen node" content={nodeVersion} iconClass="fas fa-user-friends">
+          <ContentBox title="Zen node" content={nodeVersion} iconClass="fas fa-user-friends fa-fw">
             <a href="https://docs.zenprotocol.com/headless" className="btn btn-dark">
               Download node
             </a>
