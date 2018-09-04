@@ -57,7 +57,7 @@ class InfoPage extends Component {
     const { chain, blocks, transactions, difficulty, nodeVersion, walletVersion } = this.state.infos;
 
     return (
-      <section className="Info">
+      <section className="Info container">
         <div className="row">
           <ContentBox title="Chain" content={`${TextUtils.capitalize(chain)}net`} iconClass="fal fa-cubes fa-fw chain" />
           <ContentBox title="Blocks" content={TextUtils.formatNumber(blocks)} iconClass="fal fa-cube fa-fw blocks" />
