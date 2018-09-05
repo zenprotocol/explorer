@@ -1,3 +1,8 @@
+.Button {
+  font-size: 1.05rem;
+  padding: 1.1rem 1.9rem;
+}
+
 .Button.btn-dark-2:hover {
   background-color: #202020;
   border-color: #202020;
