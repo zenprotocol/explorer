@@ -54,4 +54,22 @@ module.exports = {
       }).then(response => response.data);
     },
   },
+  zen: {
+    async getZenNodeTags() {
+      return sendHttpRequest({
+        url: 'https://api.github.com/repos/zenprotocol/zenprotocol/tags',
+        method: 'get',
+      }).then(response => {
+        return response.data;
+      });
+    },
+    async getWalletLatestRelease() {
+      return sendHttpRequest({
+        url: 'https://api.github.com/repos/zenprotocol/zenwallet/releases/latest',
+        method: 'get',
+      }).then(response => {
+        return response.data;
+      });
+    }
+  }
 };

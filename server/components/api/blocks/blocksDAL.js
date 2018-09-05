@@ -14,7 +14,12 @@ blocksDAL.findLatest = function(amount = 1) {
 };
 
 blocksDAL.findByBlockNumber = function(blockNumber) {
-  if (isNaN(Number(blockNumber))) {
+  if (
+    isNaN(Number(blockNumber)) ||
+    !Number.isInteger(Number(blockNumber)) ||
+    Number(blockNumber) < 1 ||
+    Number(blockNumber) >= 2147483647 // above db integer
+  ) {
     return Promise.resolve(null);
   }
   return this.findOne({
@@ -56,7 +61,7 @@ blocksDAL.search = function(search, limit = 10) {
       items = [results[2]].concat(results[1]);
     }
     if (items.length > limit) {
-      items = items.slice(0, 10);
+      items = items.slice(0, limit);
     }
     return [count, items];
   });

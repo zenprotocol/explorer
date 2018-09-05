@@ -2,23 +2,59 @@
 
 ## Dependencies
 1. Docker - https://www.docker.com/
+2. Docker Compose (Comes with docker) - https://docs.docker.com/compose/install/#prerequisites
 2. nodejs + npm - https://nodejs.org
 
-# Development
+## General
 Server side was created from scratch using [express](https://expressjs.com/).  
 Client side was bootstrapped with [create-react-app](https://github.com/facebook/create-react-app).
 
-## Docker
-1. **first time** - run `npm run setup` to create an env file
-2. `docker-compose up` in the root directory
-3. in another shell, `docker-compose exec web sh` to connect to the web container.  
-From there you can use `npm`
+# Development
 
-## First time
-1. log in to the docker web container as explained in [docker](#docker) 
-2. run `npm run setup:db`
-3. outside of the container, to get linting in your editor, also run `npm install`
-4. working with npm should be done from inside of the container (the node_modules folder that is actually used is the one inside of the container)
+## Get Started Guide
+1. Make sure docker is running
+2. Open a terminal in the root folder of the project.
+3. **AS AN ADMINISTRATOR** - `npm run setup` - to create your env file and needed directories and to install dependencies.
+4. Inside the created env file, fill in the block chain node url. _The password can stay the same as this is a development password_.
+5. `docker-compose up` - this will:
+   - Download all the needed images
+   - Create all the containers. 
+   - Start the web server.
+6. **In another terminal** -
+   1. `docker-compose exec web sh` - to run a shell inside of the web container. 
+   2. `npm run setup:db`
+   3. `exit` - to exit the container
+7. Start caching the db or copy the staging db   
+   - **Option 1** - run the worker to cache your db   
+      1. `docker-compose exec web sh`
+      2. `node worker/worker.js` - start the worker
+      3. let it work
+   - **Option 2** - copy the db from staging   
+      1. Follow the steps in [Heroku to local](#heroku-to-local)
+8. Start the client dev environment - `npm run client:start`
+
+## Normal development workflow
+1. Terminal A - `docker-compose up`
+2. Terminal B - `npm run client:start`
+
+## Load client from server
+1. `npm run client:build` - creates the build folder
+2. `docker-compose up`
+3. now load http://localhost:3000
+
+### General Docker commands:
+1. `docker-compose up` - start the server
+2. `docker-compose exec <service name> sh` - start a shell inside once of the services. Replace `<service name>` with the wanted service.   
+For example -   
+`docker-compose exec web sh` - start a shell in the web container
+`docker-compose exec web sh` - start a shell in the db container
+3. `docker ps -a` - list all containers
+4. `docker stop $(docker ps -a -q)` stop all containers
+5. `docker rm $(docker ps -a -q -f status=exited)` - remove all exited containers
+6. `docker images` - list all images
+7. `docker rmi $(docker images -q)` - remove all images
+
+
 
 ## Sequelize (ORM)
 we use sequelize to talk to the database  
@@ -33,15 +69,17 @@ in the docker web container, run `npx sequelize` to see all cli options.
 
 ## DB Copy/Backup, copy db from staging to production
 ### Heroku
-**Heroku to Heroku**
+#### Heroku to Heroku
 1. `heroku pg:backups:capture --app <app name>`
 2. **Copy from staging to production**: `heroku pg:backups:restore <staging app name>::<backup name, eg b001> DATABASE_URL --app <destination app name, eg app>`
 
-**Heroku to local**
+#### Heroku to local
 1. `heroku pg:backups:capture --app <app name>`
-1. **get latest backup url from heroku**: `heroku pg:backups:url -a`
+1. **get latest backup url from heroku**: `heroku pg:backups:url -a <app name>`
+2. log into db container `docker-compose exec db sh`
+2. `cd home` in the db container
 2. **linux download** (docker): `wget -O db.dump "<url from previous step>"`
-3. **restore to a local db**: `pg_restore --verbose --clean --no-acl --no-owner -h localhost -U <postgres username> -d <db name> db.dump`
+3. **restore to a local db** (replace `<db name>` with actual name): `pg_restore --verbose --clean --no-acl --no-owner -h localhost -U postgres -d <db name> db.dump`
 
 **Info**
 - https://devcenter.heroku.com/articles/heroku-postgres-backups
@@ -54,3 +92,9 @@ The project contain both the client and the server:
 - **server** - server code
 - **src** - client source
 - **worker** - server worker jobs & scheduler
+
+## Examining the db in the container
+1. `docker-compose exec db sh`
+2. `psql -U postgres`
+3. `\c <db name>`
+4. Run SQL queries or use any of the psql commands (run `\?` for help)

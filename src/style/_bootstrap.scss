@@ -12,7 +12,7 @@ $gray-100: #f8f9fa;
 $gray-200: #e9ecef;
 $gray-300: #dee2e6;
 $gray-400: #bfbfbf;
-$gray-500: #adb5bd;
+$gray-500: #999999;
 $gray-600: #6c757d;
 $gray-700: #495057;
 $gray-800: #303030;
@@ -20,6 +20,7 @@ $gray-900: #212529;
 $black : #000;
 
 $blue: #84D1ED;
+$blue-strong: #3384f3;
 $indigo : #6610f2;
 $purple : #6f42c1;
 $pink : #e83e8c;
@@ -31,15 +32,39 @@ $teal : #20c997;
 $cyan : #17a2b8;
 
 $primary : $blue;
-$secondary : $gray-600;
+$primary-strong : $blue-strong;
+$secondary : $gray-500;
 $success : $green;
 $info : $cyan;
 $warning : $yellow;
 $danger : $red;
 $light : $gray-400;
 $dark : $gray-800;
+$dark-2 : #242424;
+
+$btn-font-weight: 500;
+// $btn-padding-y:  9px;
+// $btn-padding-x:  14px;
+
+$theme-colors: ();
+$theme-colors: map-merge((
+  "primary":    $primary,
+  "primary-strong":    $primary-strong,
+  "secondary":  $secondary,
+  "success":    $success,
+  "info":       $info,
+  "warning":    $warning,
+  "danger":     $danger,
+  "light":      $light,
+  "dark":       $dark,
+  "dark-2":     $dark-2
+), $theme-colors);
 
 $mark-bg: $yellow;
+$input-btn-focus-box-shadow: 0;
+
+$font-family-sans-serif: 'Roboto', -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol" !default;
+$font-family-monospace: 'Roboto Mono', SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace !default;
 
 @import '../../node_modules/bootstrap/scss/functions';
 @import '../../node_modules/bootstrap/scss/variables';
@@ -113,5 +138,13 @@ $mark-bg: $yellow;
   td:first-child,
   th:first-child {
     padding-left: 0;
+  }
+}
+
+h1 {
+  text-transform: uppercase;
+
+  * {
+    text-transform: none;
   }
 }

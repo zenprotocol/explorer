@@ -21,7 +21,7 @@ export default class SearchResultsTable extends Component {
               <tr key={itemIndex}>
                 {columns.map((column, columnIndex) => (
                   <td key={columnIndex} className={column.className}>
-                    <span>{this.executeCellFunction(this.getItemValue(item, column), column.cell)}</span>
+                    <span>{this.executeCellFunction(this.getItemValue(item, column), column.cell, item)}</span>
                   </td>
                 ))}
               </tr>
@@ -39,9 +39,9 @@ export default class SearchResultsTable extends Component {
       (obj && obj[key] !== 'undefined') ? obj[key] : undefined, item);
   }
 
-  executeCellFunction(cellData, cellFunction) {
+  executeCellFunction(cellData, cellFunction, rowData) {
     if(typeof cellData !== 'undefined' && typeof cellFunction === 'function') {
-      return cellFunction(cellData);
+      return cellFunction(cellData, rowData);
     }
     return cellData;
   }

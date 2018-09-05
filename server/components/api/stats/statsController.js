@@ -13,7 +13,7 @@ const StatsFunctions = {
     return 20000000 + (blocksCount - 1) * 50;
   },
   totalKalapa: async function() {
-    return (await this.totalZp()) * 100000000;
+    return Math.floor((await this.totalZp()) * 100000000);
   },
 };
 

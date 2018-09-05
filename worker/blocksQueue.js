@@ -1,14 +1,10 @@
 'use strict';
 
-/**
- * Currently worker is responsible for scheduling and work
- * if more jobs should be added, consider scheduling on a different file
- */
-
 const path = require('path');
 const Queue = require('bull');
 const Config = require('../server/config/Config');
 const logger = require('./lib/logger');
+const NUM_OF_BLOCKS_IN_CHUNK = Config.get('queues:addBlocks:limitBlocks');
 
 const addBlocksQueue = new Queue(
   Config.get('queues:addBlocks:name'),
@@ -20,7 +16,7 @@ addBlocksQueue.process(path.join(__dirname, 'jobs/blocks/addNewBlocks.handler.js
 
 // events
 addBlocksQueue.on('error', function(error) {
-  logger.error('A job error has occurred', error);
+  logger.error('A AddBlocksQueue job error has occurred', error);
 });
 
 addBlocksQueue.on('active', function(job, jobPromise) {
@@ -29,6 +25,11 @@ addBlocksQueue.on('active', function(job, jobPromise) {
 
 addBlocksQueue.on('completed', function(job, result) {
   logger.info(`An AddBlocksQueue job has been completed. ID=${job.id} result=${result}`);
+  if(result > 0) {
+    addBlocksQueue.add(
+      { limitBlocks: NUM_OF_BLOCKS_IN_CHUNK },
+    );
+  }
 });
 
 addBlocksQueue.on('failed', function(job, error) {
@@ -36,7 +37,7 @@ addBlocksQueue.on('failed', function(job, error) {
 });
 
 addBlocksQueue.on('cleaned', function(jobs, type) {
-  logger.info('Jobs have been cleaned', { jobs, type });
+  logger.info('AddBlocksQueue Jobs have been cleaned', { jobs, type });
 });
 
 // first clean the queue
@@ -49,12 +50,16 @@ Promise.all([
 ]).then(() => {
   // schedule ---
   addBlocksQueue.add(
-    { limitBlocks: Config.get('queues:addBlocks:limitBlocks') },
+    { limitBlocks: NUM_OF_BLOCKS_IN_CHUNK },
     { repeat: { cron: '* * * * *' } }
+  );
+  // now
+  addBlocksQueue.add(
+    { limitBlocks: NUM_OF_BLOCKS_IN_CHUNK },
   );
 });
 
 setInterval(() => {
-  addBlocksQueue.clean(Config.get('queues:addBlocks:cleanAfter') * 1000, 'completed');
-  addBlocksQueue.clean(Config.get('queues:addBlocks:cleanAfter') * 1000, 'failed');
-}, Config.get('queues:addBlocks:cleanInterval') * 1000);
+  addBlocksQueue.clean(Config.get('queues:cleanAfter') * 1000, 'completed');
+  addBlocksQueue.clean(Config.get('queues:cleanAfter') * 1000, 'failed');
+}, Config.get('queues:cleanInterval') * 1000);

@@ -18,6 +18,7 @@ class BlockStore {
     this.addressTransactionAssets = [];
     this.addressTransactionAssetsCount = 0;
     this.searchString = '';
+    this.searchStringPrev = '';
     this.searchResults = {};
     this.medianTime = null;
     this.syncing = false;
@@ -35,11 +36,15 @@ class BlockStore {
     this.resetSearchResults();
   }
 
-  fetchBlocks({ pageSize = 10, page = 0, sorted = [], filtered = [] } = {}) {
+  setBlocksCount(count) {
+    this.blocksCount = count;
+  }
+
+  fetchBlocks(params = {pageSize: 10, page: 0}) {
     this.loading.blocks = true;
 
     return Service.blocks
-      .find({ pageSize, page, sorted: JSON.stringify(sorted), filtered })
+      .find(params)
       .then(response => {
         runInAction(() => {
           this.blocks = response.data.items;
@@ -162,6 +167,7 @@ class BlockStore {
           });
         });
     }
+    return Promise.resolve();
   }
 
   resetAddressTransactionAssets() {
@@ -218,12 +224,18 @@ class BlockStore {
     this.searchString = search;
   }
 
+  clearSearchString() {
+    this.searchString = '';
+    this.searchStringPrev = '';
+  }
+
   search(value) {
-    if (!SearchUtils.validateSearchString(value)) {
+    if (!SearchUtils.validateSearchString(value) || value === this.searchStringPrev) {
       return Promise.resolve();
     }
 
     this.resetSearchResults();
+    this.searchStringPrev = this.searchString;
     this.searchString = value;
     this.loading.searchResults = true;
 
@@ -273,7 +285,7 @@ class BlockStore {
       return 0;
     }
 
-    return Number(this.blocksCount) - Number(blockNumber) + 1;
+    return Math.max(0, Number(this.blocksCount) - Number(blockNumber) + 1);
   }
 }
 
@@ -290,12 +302,14 @@ decorate(BlockStore, {
   addressTransactionAssets: observable,
   addressTransactionAssetsCount: observable,
   searchString: observable,
+  searchStringPrev: observable,
   searchResults: observable,
   loading: observable,
   medianTime: observable,
   syncing: observable,
   medianTimeString: computed,
   numberOfTransactions: computed,
+  setBlocksCount: action,
   fetchBlocks: action,
   fetchBlock: action,
   fetchBlockTransactionAssets: action,
@@ -309,6 +323,7 @@ decorate(BlockStore, {
   resetAddressTransactionAssets: action,
   resetBlockTransactionAssets: action,
   setSearchString: action,
+  clearSearchString: action,
   search: action,
   searchStringValid: computed,
   resetSearchResults: action,

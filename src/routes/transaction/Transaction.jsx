@@ -5,6 +5,7 @@ import PropTypes from 'prop-types';
 import blockStore from '../../store/BlockStore';
 import TextUtils from '../../lib/TextUtils';
 import Transaction from '../../components/Transactions/Transaction.jsx';
+import Loading from '../../components/Loading/Loading.jsx';
 import './Transaction.css';
 
 class TransactionPage extends Component {
@@ -25,6 +26,11 @@ class TransactionPage extends Component {
 
   render() {
     const transaction = blockStore.transaction;
+
+    if(blockStore.loading.transaction) {
+      return <Loading />;
+    }
+    
     if (!transaction) {
       return null;
     }
@@ -33,7 +39,7 @@ class TransactionPage extends Component {
 
     return (
       <div className="Transaction">
-        <section className="bordered border-left border-primary pl-lg-4">
+        <section>
           <div className="row">
             <div className="col-sm">
               <div className="medianTime mb-1 mb-lg-2">{blockDateStr}</div>

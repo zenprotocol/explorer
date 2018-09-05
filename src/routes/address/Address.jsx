@@ -42,7 +42,7 @@ class AddressPage extends Component {
 
     return (
       <div className="Address">
-        <section className="bordered border-left border-primary pl-lg-4">
+        <section>
           <div className="row">
             <div className="col-sm">
               <h1 className="d-block d-sm-inline-block text-white mb-3 mb-lg-5">
@@ -116,7 +116,7 @@ class AddressPage extends Component {
           )}
         </section>
 
-        <section className={classNames('bordered border-left border-primary pl-lg-4', {'d-none': is404})}>
+        <section className={classNames({'d-none': is404})}>
           <AddressTxsTable address={params.address} />
         </section>
       </div>

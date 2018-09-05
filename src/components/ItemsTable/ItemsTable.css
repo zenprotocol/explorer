@@ -12,3 +12,15 @@
   text-align: center;
   user-select: none;
 }
+
+.ItemsTable .rt-tr.expandable {
+  cursor: pointer;
+}
+.ItemsTable .rt-tr.expandable:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+.ItemsTable .rt-tr.-padRow,
+.ItemsTable .rt-tr.-padRow:hover {
+  background-color: transparent;
+  cursor: default;
+}
