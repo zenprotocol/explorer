@@ -73,7 +73,7 @@ class InfoPage extends Component {
         </div>
         <div className="row">
           <ContentBox className="difficulty" title="Mining difficulty" content={TextUtils.formatNumber(Math.floor(difficulty))} iconClass="fal fa-dumbbell fa-fw" />
-          <ContentBox className="hashrate" title="Network Hashrate" content={`${TextUtils.formatNumber(Math.floor(difficulty / 55))} TH/s`} iconClass="fal fa-tachometer-alt-fastest fa-fw" />
+          <ContentBox className="hashrate" title="Network Hashrate" content={`${TextUtils.formatNumber(Math.floor(difficulty / 550)/100)} TH/s`} iconClass="fal fa-tachometer-alt-fastest fa-fw" />
         </div>
         <div className="row">
           <ContentBox className="wallet" title="wallet" content={walletVersion} iconClass="fal fa-wallet fa-fw">
