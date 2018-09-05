@@ -12,7 +12,7 @@ class BlocksPage extends Component {
     this.fetchBlocksCount = this.fetchBlocksCount.bind(this);
   }
   componentDidMount() {
-    this.fetchBlocksCount();
+    this.fetchBlocksCount(); // MUST HAVE THE BLOCK COUNT FIRST, FOR INNER PAGES TOO!
   }
 
   componentWillUnmount() {
