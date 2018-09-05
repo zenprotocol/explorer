@@ -45,7 +45,7 @@ class InfoPage extends Component {
 
     this.fetchInfos = this.fetchInfos.bind(this);
   }
-  
+
   componentDidMount() {
     this.fetchInfos(true);
   }
@@ -85,12 +85,12 @@ class InfoPage extends Component {
           <ContentBox className="hashrate" title="Network Hashrate" content={`${TextUtils.formatNumber(Math.floor(difficulty / 550)/100)} TH/s`} iconClass="fal fa-tachometer-alt-fastest fa-fw" />
         </div>
         <div className="row bg-black-accent">
-          <ContentBox className="wallet" title="zen wallet" content={walletVersion.toUpperCase()} iconClass="fas fa-user-friends fa-fw">
+          <ContentBox className="wallet" title="zen wallet" content={walletVersion} iconClass="fal fa-wallet fa-fw">
             <LinkButton href="https://docs.zenprotocol.com/preparation/installers">
             Download wallet
             </LinkButton>
           </ContentBox>
-          <ContentBox className="node" title="Zen node" content={nodeVersion.toUpperCase()} iconClass="fas fa-user-friends fa-fw">
+          <ContentBox className="node" title="Zen node" content={nodeVersion} iconClass="fal fa-server fa-fw">
             <LinkButton href="https://docs.zenprotocol.com/headless" type="dark-2">
             Download node
             </LinkButton>

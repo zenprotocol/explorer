@@ -13,7 +13,7 @@
 
 .Info .content-box.chain .icon {
   color: #fd3a3a !important;
-  font-size: 3.5rem;
+  font-size: 3rem;
 }
 
 .Info .content-box.chain .content .value {
@@ -29,21 +29,11 @@
   font-size: 2.2rem;
 }
 
-.Info .content-box.difficulty .icon {
-  font-size: 3rem;
-}
-
-.Info .content-box.hashrate .icon {
-  font-size: 3.25rem;
-}
-
+.Info .content-box.difficulty .icon,
+.Info .content-box.hashrate .icon,
 .Info .content-box.wallet .icon,
 .Info .content-box.node .icon {
-  border: 1px solid;
-  border-color: #303030 !important;
-  border-radius: 50%;
-  position: relative;
-  left: 7px;
+  font-size: 3rem;
 }
 
 .Info .content-box .title {
