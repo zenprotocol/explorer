@@ -68,13 +68,13 @@ class InfoPage extends Component {
     return (
       <section className="Info container">
         <div className="row">
-          <ContentBox className="chain" title="Chain" content={`${TextUtils.capitalize(chain)}net`} iconClass="fal fa-cubes fa-fw" />
-          <ContentBox className="blocks" title="Blocks" content={TextUtils.formatNumber(blocks)} iconClass="fal fa-cube fa-fw" />
+          <ContentBox className="chain" title="Chain" content={`${TextUtils.capitalize(chain)}net`} iconClass="fal fa-link fa-fw" />
+          <ContentBox className="blocks" title="Blocks" content={TextUtils.formatNumber(blocks)} iconClass="fal fa-cubes fa-fw" />
           <ContentBox className="transactions" title="Transactions" content={TextUtils.formatNumber(transactions)} iconClass="fal fa-money-check fa-fw" />
         </div>
         <div className="row">
-          <ContentBox className="difficulty" title="Mining difficulty" content={TextUtils.formatNumber(Math.floor(difficulty))} iconClass="fal fa-tachometer-alt-fastest fa-fw" />
-          <ContentBox className="hashrate" title="Network Hashrate" content={`${TextUtils.formatNumber(Math.floor(difficulty / 55))} TH/s`} iconClass="fal fa-fire fa-fw" />
+          <ContentBox className="difficulty" title="Mining difficulty" content={TextUtils.formatNumber(Math.floor(difficulty))} iconClass="fal fa-dumbbell fa-fw" />
+          <ContentBox className="hashrate" title="Network Hashrate" content={`${TextUtils.formatNumber(Math.floor(difficulty / 550)/100)} TH/s`} iconClass="fal fa-tachometer-alt-fastest fa-fw" />
         </div>
         <div className="row bg-black-accent">
           <ContentBox className="wallet" title="zen wallet" content={walletVersion.toUpperCase()} iconClass="fas fa-user-friends fa-fw">
