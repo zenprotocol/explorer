@@ -12,7 +12,7 @@
 }
 
 .Info .content-box.chain .icon {
-  color: #fd3a3a !important; 
+  color: #fd3a3a !important;
   font-size: 3rem;
 }
 .Info .content-box.chain .content .value {
@@ -22,20 +22,12 @@
   color: #3384f3 !important;
   font-size: 3rem;
 }
-.Info .content-box.transactions .icon {
-  font-size: 2.2rem;
-}
-.Info .content-box.difficulty .icon {
-  font-size: 3rem;
-}
-.Info .content-box.hashrate .icon {
-  font-size: 3rem;
-}
+.Info .content-box.transactions .icon { font-size: 2.2rem; }
+.Info .content-box.difficulty .icon,
+.Info .content-box.hashrate .icon,
 .Info .content-box.wallet .icon,
 .Info .content-box.node .icon {
-  border: 1px solid;
-  border-color: #303030 !important;
-  border-radius: 50%;
+  font-size: 3rem;
 }
 
 .Info .content-box .title {

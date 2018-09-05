@@ -130,14 +130,21 @@ class Navbar extends Component {
             id="navbarSupportedContent"
           >
             <ul className="navbar-nav mr-auto">
-              {/* <li className="nav-item active">
-                <NavLink className="nav-link" to="/blocks">
-                  Blocks
+              <li className="nav-item active">
+                <NavLink className="nav-link" to="/blockchain/info">
+                  Stats
                 </NavLink>
               </li>
-              <li className="nav-item">
-                <NavLink className="nav-link" to="/tx">Transactions</NavLink>
-              </li> */}
+              {/*
+                <li className="nav-item active">
+                <NavLink className="nav-link" to="/blocks">
+                Blocks
+                </NavLink>
+                </li>
+                <li className="nav-item">
+                  <NavLink className="nav-link" to="/tx">Transactions</NavLink>
+                </li>
+              */}
             </ul>
             <SearchBar />
           </div>
@@ -153,4 +160,3 @@ Navbar.propTypes = {
 };
 
 export default withRouter(Navbar);
-
