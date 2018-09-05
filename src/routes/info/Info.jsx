@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import Service from '../../lib/Service';
 import TextUtils from '../../lib/TextUtils.js';
 import Loading from '../../components/Loading/Loading.jsx';
+import LinkButton from '../../components/buttons/LinkButton.jsx';
 import './Info.css';
 import '../page.css';
 
@@ -75,19 +76,16 @@ class InfoPage extends Component {
           <ContentBox className="difficulty" title="Mining difficulty" content={TextUtils.formatNumber(Math.floor(difficulty))} iconClass="fal fa-tachometer-alt-fastest fa-fw" />
           <ContentBox className="hashrate" title="Network Hashrate" content={`${TextUtils.formatNumber(Math.floor(difficulty / 55))} TH/s`} iconClass="fal fa-fire fa-fw" />
         </div>
-        <div className="row">
-          <ContentBox className="wallet" title="wallet" content={walletVersion.toUpperCase()} iconClass="fas fa-user-friends fa-fw">
-            <a
-              href="https://docs.zenprotocol.com/preparation/installers"
-              className="btn btn-primary-strong"
-            >
-              Download wallet
-            </a>
+        <div className="row bg-black-accent">
+          <ContentBox className="wallet" title="zen wallet" content={walletVersion.toUpperCase()} iconClass="fas fa-user-friends fa-fw">
+            <LinkButton href="https://docs.zenprotocol.com/preparation/installers">
+            Download wallet
+            </LinkButton>
           </ContentBox>
           <ContentBox className="node" title="Zen node" content={nodeVersion.toUpperCase()} iconClass="fas fa-user-friends fa-fw">
-            <a href="https://docs.zenprotocol.com/headless" className="btn btn-dark-2">
-              Download node
-            </a>
+            <LinkButton href="https://docs.zenprotocol.com/headless" type="dark-2">
+            Download node
+            </LinkButton>
           </ContentBox>
         </div>
       </section>

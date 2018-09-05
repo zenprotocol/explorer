@@ -1,11 +1,7 @@
 html {
   font-size: 0.9rem;
 }
-body {
-  margin: 0;
-  padding: 0;
-  background-color: #010203;
-}
+
 .no-text-transform {
   text-transform: initial !important;
 }
