@@ -42,15 +42,23 @@ class InfoPage extends Component {
       loading: false,
       infos: {},
     };
+
+    this.fetchInfos = this.fetchInfos.bind(this);
   }
+  
   componentDidMount() {
-    this.fetchInfos();
+    this.fetchInfos(true);
   }
 
-  fetchInfos() {
-    this.setState({ loading: true });
+  componentWillUnmount() {
+    clearTimeout(this.fetchTimer);
+  }
+
+  fetchInfos(setLoading) {
+    setLoading && this.setState({ loading: true });
     Service.infos.find().then(result => {
       this.setState({ loading: false, infos: result.data });
+      this.fetchTimer = setTimeout(this.fetchInfos, 30000);
     });
   }
 
