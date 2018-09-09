@@ -9,6 +9,7 @@ const Endpoints = {
   addresses: '/api/addresses',
   info: '/api/infos',
   search: '/api/search',
+  stats: '/api/stats',
 };
 
 let globalMute = false;
@@ -111,6 +112,14 @@ export default {
     async searchAll(search) {
       return sendHttpRequest({
         url: `${Endpoints.search}/${search}`,
+        method: 'get',
+      }).then(response => response.data);
+    }
+  },
+  stats: {
+    async transactionsPerDay() {
+      return sendHttpRequest({
+        url: `${Endpoints.stats}/charts/transactionsPerDay`,
         method: 'get',
       }).then(response => response.data);
     }

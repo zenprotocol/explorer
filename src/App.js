@@ -13,6 +13,7 @@ import Transaction from './routes/transaction/Transaction.jsx';
 import Address from './routes/address/Address.jsx';
 import Search from './routes/search/Search.jsx';
 import Info from './routes/info/Info.jsx';
+import Chart from './routes/chart/Chart.jsx';
 import './App.css';
 
 class App extends Component {
@@ -62,6 +63,7 @@ class App extends Component {
             <Route path="/address/:address/:asset?" component={Address} />
             <Route path="/search/:search" component={Search} />
             <Route path="/blockchain/info" component={Info} />
+            <Route path="/charts/:name" component={Chart} />
           </Switch>
         </div>
         <div className="container px-lg-5">
