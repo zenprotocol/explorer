@@ -11,6 +11,16 @@ const PARAM_TO_CHART_MAP = {
     title: 'Transactions Per Day',
     seriesTitle: 'Total Transactions',
   },
+  difficulty: {
+    name: 'blockDifficulty',
+    title: 'Block Difficulty',
+    seriesTitle: 'Average Difficulty',
+  },
+  hashrate: {
+    name: 'networkHashrate',
+    title: 'Network Hashrate',
+    seriesTitle: 'Average Hashrate',
+  },
 };
 
 const Mappers = {
@@ -19,6 +29,22 @@ const Mappers = {
       return {
         x: Date.parse(item.dt),
         y: Number(item.count),
+      };
+    });
+  },
+  blockDifficulty(data) {
+    return data.map(item => {
+      return {
+        x: Date.parse(item.dt),
+        y: Number(item.difficulty),
+      };
+    });
+  },
+  networkHashrate(data) {
+    return data.map(item => {
+      return {
+        x: Date.parse(item.dt),
+        y: Number(item.hashrate),
       };
     });
   },
@@ -35,7 +61,7 @@ class Chart extends Component {
   componentDidMount() {
     const chart = this.getChartConfig();
     if (chart) {
-      Service.stats[chart.name]().then(response => {
+      Service.stats.charts(chart.name).then(response => {
         if (response.success) {
           this.setState({ data: response.data });
         }

@@ -117,11 +117,11 @@ export default {
     }
   },
   stats: {
-    async transactionsPerDay() {
+    async charts(name) {
       return sendHttpRequest({
-        url: `${Endpoints.stats}/charts/transactionsPerDay`,
+        url: `${Endpoints.stats}/charts/${name}`,
         method: 'get',
       }).then(response => response.data);
     }
-  }
+  },
 };
