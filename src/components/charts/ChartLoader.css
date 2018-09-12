@@ -9,3 +9,8 @@
   padding: 25px;
   margin-bottom: 40px;
 }
+
+.Chart .title a {
+  color: inherit;
+  text-decoration: none;
+}

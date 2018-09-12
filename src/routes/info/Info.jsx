@@ -147,23 +147,23 @@ class InfoPage extends Component {
           <h2 className="d-block text-white mb-5">CHARTS</h2>
           <div className="row">
             <div className="col-lg-6">
-              <ChartLoader chartName="transactionsPerDay" showTitle={true} />
+              <ChartLoader chartName="transactionsPerDay" showTitle={true} titleLinkTo="/charts/transactions" />
             </div>
             <div className="col-lg-6">
-              <ChartLoader chartName="blockDifficulty" showTitle={true} />
-            </div>
-          </div>
-          <div className="row">
-            <div className="col-lg-6">
-              <ChartLoader chartName="networkHashrate" showTitle={true} />
-            </div>
-            <div className="col-lg-6">
-              <ChartLoader chartName="zpRichList" showTitle={true} />
+              <ChartLoader chartName="blockDifficulty" showTitle={true} titleLinkTo="/charts/difficulty" />
             </div>
           </div>
           <div className="row">
             <div className="col-lg-6">
-              <ChartLoader chartName="zpSupply" showTitle={true} />
+              <ChartLoader chartName="networkHashrate" showTitle={true} titleLinkTo="/charts/hashrate" />
+            </div>
+            <div className="col-lg-6">
+              <ChartLoader chartName="zpRichList" showTitle={true} titleLinkTo="/charts/richlist" />
+            </div>
+          </div>
+          <div className="row">
+            <div className="col-lg-6">
+              <ChartLoader chartName="zpSupply" showTitle={true} titleLinkTo="/charts/supply" />
             </div>
             <div className="col-lg-6" />
           </div>

@@ -1,4 +1,5 @@
 import React, { PureComponent } from 'react';
+import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import Service from '../../lib/Service';
 import Loading from '../Loading/Loading.jsx';
@@ -109,7 +110,7 @@ export default class ChartLoader extends PureComponent {
   }
 
   render() {
-    const { chartName, showTitle } = this.props;
+    const { chartName, showTitle, titleLinkTo } = this.props;
     const chartConfig = ChartConfigs[chartName];
     if (!chartConfig) {
       return null;
@@ -130,9 +131,11 @@ export default class ChartLoader extends PureComponent {
         break;
     }
 
+    const title = titleLinkTo? <Link to={titleLinkTo}>{chartConfig.title}</Link> : chartConfig.title;
+
     return (
       <div className="Chart">
-        {showTitle && <h5 className="title text-white border-dark">{chartConfig.title}</h5>}
+        {showTitle && <h5 className="title text-white border-dark">{title}</h5>}
         {React.createElement(componentType, {
           data: Mappers[chartName](this.state.data),
           ...chartConfig,
@@ -150,4 +153,5 @@ export default class ChartLoader extends PureComponent {
 ChartLoader.propTypes = {
   chartName: PropTypes.string.isRequired,
   showTitle: PropTypes.bool,
+  titleLinkTo: PropTypes.string,
 };
