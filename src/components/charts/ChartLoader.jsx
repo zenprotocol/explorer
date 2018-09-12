@@ -25,7 +25,13 @@ const ChartConfigs = {
     xAxisType: 'linear',
     title: 'ZP Rich List',
     seriesTitle: 'Top ZP holders',
-    tooltipHeaderFormat: '<span style="font-size: 10px"><strong>{point.x}</strong> - {point.key}</span><br/>'
+    tooltipHeaderFormat:
+      '<span style="font-size: 10px"><strong>{point.x}</strong> - {point.key}</span><br/>',
+  },
+  zpSupply: {
+    type: 'line',
+    title: 'ZP Supply',
+    seriesTitle: 'ZP Supply',
   },
 };
 
@@ -60,6 +66,14 @@ const Mappers = {
         name: item.address,
         y: Number(item.balance),
         x: index + 1,
+      };
+    });
+  },
+  zpSupply(data) {
+    return data.map(item => {
+      return {
+        x: Date.parse(item.dt),
+        y: Number(item.supply),
       };
     });
   },

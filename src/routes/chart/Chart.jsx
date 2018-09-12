@@ -21,6 +21,10 @@ const PARAM_TO_CHART_MAP = {
     name: 'zpRichList',
     title: 'ZP Rich List',
   },
+  supply: {
+    name: 'zpSupply',
+    title: 'ZP Supply',
+  },
 };
 
 class Chart extends Component {

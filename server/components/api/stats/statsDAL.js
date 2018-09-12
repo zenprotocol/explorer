@@ -13,7 +13,7 @@ statsDAL.transactionsPerDay = async function() {
   FROM "Transactions"
     INNER JOIN (SELECT CAST(to_timestamp("Blocks"."timestamp" / 1000) AS DATE) AS dt, *
     FROM "Blocks") AS "Blocks" ON "Transactions"."BlockId" = "Blocks"."id"
-  WHERE "Blocks"."dt" > CURRENT_DATE - interval '${maximumChartInterval}'
+  WHERE "Blocks"."dt" < CURRENT_DATE AND "Blocks"."dt" > CURRENT_DATE - interval '${maximumChartInterval}'
   GROUP BY "Blocks"."dt"
   ORDER BY "Blocks"."dt"
   `;
@@ -91,6 +91,22 @@ statsDAL.zpRichList = async function() {
   where output_sum <> input_sum
   order by balance desc
   limit 100
+  `;
+  return sequelize
+    .query(sql, {
+      type: sequelize.QueryTypes.SELECT,
+    });
+};
+
+statsDAL.zpSupply = async function() {
+  const sql = `
+  SELECT (MAX("Blocks"."blockNumber") * 50 + 20000000) AS supply, "dt"
+  FROM
+    (SELECT CAST(to_timestamp("Blocks"."timestamp" / 1000) AS DATE) AS dt, *
+    FROM "Blocks") AS "Blocks"
+  WHERE "dt" < CURRENT_DATE AND "dt" > CURRENT_DATE - interval '${maximumChartInterval}'
+  GROUP BY "dt"
+  ORDER BY "dt"
   `;
   return sequelize
     .query(sql, {
