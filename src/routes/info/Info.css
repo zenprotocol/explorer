@@ -71,3 +71,7 @@
     margin-top: 0;
   }
 }
+
+.Info .charts .row {
+  margin-bottom: 42px;
+}

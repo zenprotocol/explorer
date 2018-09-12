@@ -1,0 +1,11 @@
+.Chart {
+  background-color: #0e0e0e;
+}
+
+.Chart .title {
+  border-width: 0;
+  border-bottom-width: 1px;
+  border-style: solid;
+  padding: 25px;
+  margin-bottom: 50px;
+}

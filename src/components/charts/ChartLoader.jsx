@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import Service from '../../lib/Service';
 import Loading from '../Loading/Loading.jsx';
 import LineChart from './LineChart.jsx';
+import './ChartLoader.css';
 
 const ChartConfigs = {
   transactionsPerDay: {
@@ -108,7 +109,7 @@ export default class ChartLoader extends Component {
   }
 
   render() {
-    const { chartName } = this.props;
+    const { chartName, showTitle } = this.props;
     const chartConfig = ChartConfigs[chartName];
     if (!chartConfig) {
       return null;
@@ -129,10 +130,15 @@ export default class ChartLoader extends Component {
         break;
     }
 
-    return React.createElement(componentType, {
-      data: Mappers[chartName](this.state.data),
-      ...chartConfig,
-    });
+    return (
+      <div className="Chart">
+        {showTitle && <h5 className="title text-white border-dark">{chartConfig.title}</h5>}
+        {React.createElement(componentType, {
+          data: Mappers[chartName](this.state.data),
+          ...chartConfig,
+        })}
+      </div>
+    );
   }
 
   getChartConfig() {
@@ -143,4 +149,5 @@ export default class ChartLoader extends Component {
 
 ChartLoader.propTypes = {
   chartName: PropTypes.string.isRequired,
+  showTitle: PropTypes.bool,
 };

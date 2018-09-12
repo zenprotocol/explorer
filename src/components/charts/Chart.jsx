@@ -20,7 +20,7 @@ export default function Chart(props) {
       thousandsSep: ',',
     },
     chart: {
-      backgroundColor: '#0e0e0e',
+      backgroundColor: 'transparent',
       borderWidth: 0,
       style: { color: COLORS.text },
     },

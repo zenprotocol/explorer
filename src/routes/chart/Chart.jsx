@@ -35,7 +35,7 @@ class Chart extends Component {
     }
 
     return (
-      <div className="Chart">
+      <div className="ChartPage">
         <section>
           <h1 className="d-block d-sm-inline-block text-white mb-3 mb-lg-5">{chartConfig.title}</h1>
           <ChartLoader chartName={chartConfig.name} />
