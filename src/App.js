@@ -1,8 +1,6 @@
 import React, { Component } from 'react';
 import { Route, Switch } from 'react-router-dom';
 
-import DevTools from './DevTools';
-
 import Service from './lib/Service';
 import blockStore from './store/BlockStore';
 import Navbar from './components/Navbar/Navbar.jsx';
@@ -69,7 +67,6 @@ class App extends Component {
         <div className="container px-lg-5">
           <Footer />
         </div>
-        <DevTools />
       </div>
     );
   }
