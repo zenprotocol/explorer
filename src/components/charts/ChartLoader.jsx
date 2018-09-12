@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import Service from '../../lib/Service';
 import Loading from '../Loading/Loading.jsx';
@@ -80,7 +80,7 @@ const Mappers = {
   },
 };
 
-export default class ChartLoader extends Component {
+export default class ChartLoader extends PureComponent {
   constructor(props) {
     super(props);
 
