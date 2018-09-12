@@ -95,17 +95,25 @@ export default class ChartLoader extends PureComponent {
     const chartConfig = this.getChartConfig();
     if (chartConfig) {
       this.setState({ loading: true });
-      Service.stats
-        .charts(chartConfig.name)
+      this.currentPromise = Service.stats.charts(chartConfig.name);
+      this.currentPromise
         .then(response => {
           if (response.success) {
             this.setState({ data: response.data });
           }
           this.setState({ loading: false });
         })
-        .catch(() => {
-          this.setState({ loading: false });
+        .catch((err) => {
+          if (!Service.utils.isCancel(err)) {
+            this.setState({ loading: false });
+          }
         });
+    }
+  }
+
+  componentWillUnmount() {
+    if (this.currentPromise && typeof this.currentPromise.cancel === 'function') {
+      this.currentPromise.cancel();
     }
   }
 
@@ -131,7 +139,11 @@ export default class ChartLoader extends PureComponent {
         break;
     }
 
-    const title = titleLinkTo? <Link to={titleLinkTo}>{chartConfig.title}</Link> : chartConfig.title;
+    const title = titleLinkTo ? (
+      <Link to={titleLinkTo}>{chartConfig.title}</Link>
+    ) : (
+      chartConfig.title
+    );
 
     return (
       <div className="Chart">
