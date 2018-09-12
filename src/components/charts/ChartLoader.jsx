@@ -17,8 +17,8 @@ const ChartConfigs = {
   },
   networkHashrate: {
     type: 'line',
-    title: 'Network Hashrate',
-    seriesTitle: 'Average Hashrate',
+    title: 'Network HashRate',
+    seriesTitle: 'Avg.Daily HashRate',
   },
   zpRichList: {
     type: 'line',
@@ -31,7 +31,7 @@ const ChartConfigs = {
   zpSupply: {
     type: 'line',
     title: 'ZP Supply',
-    seriesTitle: 'ZP Supply',
+    seriesTitle: 'Total ZP Supply',
   },
 };
 

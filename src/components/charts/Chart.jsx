@@ -16,6 +16,9 @@ const titleStyle = {
 
 export default function Chart(props) {
   ReactHighcharts.Highcharts.setOptions({
+    lang: {
+      thousandsSep: ',',
+    },
     chart: {
       backgroundColor: '#0e0e0e',
       borderWidth: 0,
@@ -52,14 +55,20 @@ export default function Chart(props) {
       },
       title: {
         style: titleStyle,
+        margin: 20,
       },
     },
     legend: {
       enabled: false,
     },
+    tooltip: {
+      style: {
+        fontFamily: 'Roboto',
+      },
+    },
     credits: {
       enabled: false,
-    }
+    },
   });
   return <ReactHighcharts config={props.config} />;
 }
