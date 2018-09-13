@@ -8,7 +8,7 @@ import './Footer.css';
 
 export default function Footer(props) {
   return (
-    <footer className="Footer">
+    <footer className="Footer container">
       <div className="row">
         <div className="col-12">
           <Logo hideSubtitle={true} />
