@@ -79,6 +79,7 @@ class InfoPage extends Component {
       blocks,
       transactions,
       difficulty,
+      hashRate,
       nodeVersion,
       walletVersion,
     } = this.state.infos;
@@ -116,7 +117,7 @@ class InfoPage extends Component {
             <ContentBox
               className="hashrate"
               title="Network Hashrate"
-              content={`${TextUtils.formatNumber(Math.floor(difficulty / 550) / 100)} TH/s`}
+              content={`${TextUtils.formatNumber((hashRate / 1000000000000).toFixed(2))} TH/s`}
               iconClass="fal fa-tachometer-alt-fastest fa-fw"
             />
           </div>
