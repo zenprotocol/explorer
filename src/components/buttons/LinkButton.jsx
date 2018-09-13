@@ -5,7 +5,14 @@ import './buttons.css';
 
 export default function LinkButton(props) {
   return (
-    <a className={classNames('Button btn', `btn-${props.type}`, props.className)} target={props.target} href={props.href} onClick={props.onClick}>
+    <a
+      data-balloon={props.title}
+      data-balloon-pos="up-left"
+      className={classNames('Button btn', `btn-${props.type}`, `btn-size-${props.size}`, props.className)}
+      target={props.target}
+      href={props.href}
+      onClick={props.onClick}
+    >
       {props.children}
     </a>
   );
@@ -17,10 +24,13 @@ LinkButton.propTypes = {
   target: PropTypes.string,
   type: PropTypes.string,
   className: PropTypes.string,
+  size: PropTypes.string,
+  title: PropTypes.string,
   children: PropTypes.any,
 };
 
 LinkButton.defaultProps = {
   target: '_self',
   type: 'primary-strong',
+  size: 'lg',
 };

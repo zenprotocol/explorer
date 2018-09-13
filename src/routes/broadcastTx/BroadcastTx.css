@@ -1,0 +1,11 @@
+.BroadcastTx .btn-paste {
+  display: none;
+  position: absolute;
+  top: 1px;
+  right: 1px;
+  background-color: rgba(0,0,0,0.7);
+}
+
+.BroadcastTx .textarea-container:hover .btn-paste {
+  display: block;
+}

@@ -12,6 +12,7 @@ import Address from './routes/address/Address.jsx';
 import Search from './routes/search/Search.jsx';
 import Info from './routes/info/Info.jsx';
 import Chart from './routes/chart/Chart.jsx';
+import BroadcastTx from './routes/broadcastTx/BroadcastTx.jsx';
 import './App.css';
 
 class App extends Component {
@@ -62,6 +63,7 @@ class App extends Component {
             <Route path="/search/:search" component={Search} />
             <Route path="/blockchain/info" component={Info} />
             <Route path="/charts/:name" component={Chart} />
+            <Route path="/pushTx" component={BroadcastTx} />
           </Switch>
         </div>
         <div className="container px-lg-5">

@@ -109,6 +109,12 @@ export default {
         method: 'get',
       });
     },
+    async broadcast(tx) {
+      return cancelableHttpRequest({
+        url: `${Endpoints.transactions}/broadcast/${tx}`,
+        method: 'post',
+      });
+    }
   },
   addresses: {
     async findByAddress(address) {
