@@ -12,6 +12,7 @@ services:
     depends_on:
       - db
       - redis
+      - zen-node
   db:
     image: postgres:10.4-alpine
     environment:
@@ -22,4 +23,13 @@ services:
     volumes:
       - './data/redis:/data'
     ports:
-      - '6379:6379'
+      - 6379:6379
+  zen-node:
+    build:
+      context: ./zen-node
+      dockerfile: Dockerfile
+    command: zen-node --api *:5050
+    ports: 
+      - 5050:5050
+    logging:
+      driver: "none"

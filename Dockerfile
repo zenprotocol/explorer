@@ -1,4 +1,4 @@
-FROM node:8.11.3-alpine
+FROM node:8.12.0-alpine
 
 # do not run as root
 RUN addgroup -g 1001 app \
