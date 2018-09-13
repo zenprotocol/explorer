@@ -28,13 +28,14 @@ statsDAL.transactionsPerDay = async function(chartInterval = maximumChartInterva
 
 statsDAL.blockDifficulty = async function(chartInterval = maximumChartInterval) {
   const sql = `
-  SELECT FLOOR(AVG("Blocks"."difficulty")) AS difficulty, "dt"
-  FROM
-    (SELECT CAST(to_timestamp("Blocks"."timestamp" / 1000) AS DATE) AS dt, *
-    FROM "Blocks") AS "Blocks"
-  WHERE "dt" > CURRENT_DATE - interval :chartInterval
-  GROUP BY "dt"
-  ORDER BY "dt"
+  with t_vals as
+  (select id, timestamp as tsp, "blockNumber" as block_number, least (greatest ((difficulty >> 24), 3), 32) as lnth, (difficulty & x'00FFFFFF' :: int) as mantissa from "Blocks")
+  , i_vals as
+  (select id, date_trunc('day',to_timestamp(0) + tsp * interval '1 millisecond') as block_date, ((x'1000000' :: int) :: real / (mantissa :: real)) * 256 ^ (32 - lnth) as expected_hashes, block_number from t_vals)
+  select block_date as "dt", (sum(expected_hashes) / 86400.0) * 55000 / 1000000000000 as "difficulty" from i_vals
+  where block_date < (select max(block_date) from i_vals) and now() - block_date < interval :chartInterval
+  group by block_date
+  order by block_date asc offset 1
   `;
   return sequelize
     .query(sql, {
