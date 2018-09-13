@@ -4,9 +4,11 @@ const httpStatus = require('http-status');
 const transactionsDAL = require('./transactionsDAL');
 const jsonResponse = require('../../../lib/jsonResponse');
 const HttpError = require('../../../lib/HttpError');
+const ValidationError = require('../../../lib/ValidationError');
 const createQueryObject = require('../../../lib/createQueryObject');
 const getTransactionAssets = require('./getTransactionAssets');
 const isCoinbaseTX = require('./isCoinbaseTX');
+const Service = require('../../../lib/Service');
 
 module.exports = {
   // TODO - change to get all transactions - not assets
@@ -136,6 +138,15 @@ module.exports = {
     } else {
       throw new HttpError(httpStatus.NOT_FOUND);
     }
+  },
+  broadcast: async function(req, res) {
+    const tx = req.params.tx || '';
+
+    if (!tx) {
+      throw new ValidationError(null, 'tx was not supplied');
+    }
+    const response = await Service.wallet.broadcastTx(tx);
+    res.status(httpStatus.OK).json(jsonResponse.create(httpStatus.OK, response));
   },
   create: async function(req, res) {
     const transaction = await transactionsDAL.create(req.body);

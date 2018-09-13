@@ -17,10 +17,10 @@ const Endpoints = {
 let globalMute = false;
 
 function sendHttpRequest(config) {
-  if(globalMute) {
-    return Promise.resolve({data: {}});
+  if (globalMute) {
+    return Promise.resolve({ data: {} });
   }
-  return request.request(config).catch((error) => {
+  return request.request(config).catch(error => {
     throw new NetworkError(error);
   });
 }
@@ -70,6 +70,20 @@ module.exports = {
       }).then(response => {
         return response.data;
       });
-    }
-  }
+    },
+  },
+  wallet: {
+    async broadcastTx(tx) {
+      return sendHttpRequest({
+        url: 'https://remote-node.zp.io/api/publishtransaction',
+        method: 'post',
+        data: {
+          tx
+        }
+      }).then(response => {
+        console.log(response);
+        return response.data;
+      });
+    },
+  },
 };
