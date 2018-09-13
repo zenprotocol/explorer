@@ -155,7 +155,7 @@ class InfoPage extends Component {
           </div>
           <div className="row">
             <div className="col-lg-6">
-              <ChartLoader chartName="networkHashrate" showTitle={true} titleLinkTo="/charts/hashrate" />
+              <ChartLoader chartName="networkHashRate" showTitle={true} titleLinkTo="/charts/hashrate" />
             </div>
             <div className="col-lg-6">
               <ChartLoader chartName="zpRichList" showTitle={true} titleLinkTo="/charts/richlist" />

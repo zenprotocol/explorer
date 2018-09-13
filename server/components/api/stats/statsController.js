@@ -7,7 +7,7 @@ const blocksDAL = require('../blocks/blocksDAL');
 const statsDAL = require('./statsDAL');
 
 const STATS = ['totalzp', 'totalkalapa'];
-const CHARTS = ['transactionsPerDay', 'blockDifficulty', 'networkHashrate', 'zpRichList', 'zpSupply'];
+const CHARTS = ['transactionsPerDay', 'blockDifficulty', 'networkHashRate', 'zpRichList', 'zpSupply'];
 
 const StatsFunctions = {
   totalZp: async function() {

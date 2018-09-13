@@ -14,7 +14,7 @@ const PARAM_TO_CHART_MAP = {
     title: 'Block Difficulty',
   },
   hashrate: {
-    name: 'networkHashrate',
+    name: 'networkHashRate',
     title: 'Network Hashrate',
   },
   richlist: {

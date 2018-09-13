@@ -17,7 +17,7 @@ const ChartConfigs = {
     title: 'Block Difficulty',
     seriesTitle: 'Average Difficulty',
   },
-  networkHashrate: {
+  networkHashRate: {
     type: 'line',
     title: 'Network HashRate',
     seriesTitle: 'Avg.Daily HashRate',
@@ -54,7 +54,7 @@ const Mappers = {
       };
     });
   },
-  networkHashrate(data) {
+  networkHashRate(data) {
     return data.map(item => {
       return {
         x: Date.parse(item.dt),
