@@ -4,14 +4,14 @@ import classNames from 'classnames';
 import './buttons.css';
 
 export default function LinkButton(props) {
+  const {title, className, type, size, target, ...rest} = props;
   return (
     <a
-      data-balloon={props.title}
+      data-balloon={title}
       data-balloon-pos="up-left"
-      className={classNames('Button btn', `btn-${props.type}`, `btn-size-${props.size}`, props.className)}
-      target={props.target}
-      href={props.href}
-      onClick={props.onClick}
+      className={classNames('Button btn', `btn-${type}`, `btn-size-${size}`, className)}
+      target={target}
+      {...rest}
     >
       {props.children}
     </a>
@@ -19,8 +19,6 @@ export default function LinkButton(props) {
 }
 
 LinkButton.propTypes = {
-  href: PropTypes.string,
-  onClick: PropTypes.func,
   target: PropTypes.string,
   type: PropTypes.string,
   className: PropTypes.string,

@@ -4,18 +4,19 @@ import classNames from 'classnames';
 import './buttons.css';
 
 export default function Button(props) {
+  const {title, isSubmit, className, type, size, ...rest} = props;
   return (
     <button
-      data-balloon={props.title}
+      data-balloon={title}
       data-balloon-pos="up-left"
-      type={props.isSubmit ? 'submit' : 'button'}
+      type={isSubmit ? 'submit' : 'button'}
       className={classNames(
         'Button btn',
-        `btn-${props.type}`,
-        `btn-size-${props.size}`,
-        props.className
+        `btn-${type}`,
+        `btn-size-${size}`,
+        className
       )}
-      onClick={props.onClick}
+      {...rest}
     >
       {props.children}
     </button>
@@ -23,7 +24,6 @@ export default function Button(props) {
 }
 
 Button.propTypes = {
-  onClick: PropTypes.func,
   isSubmit: PropTypes.bool,
   type: PropTypes.string,
   className: PropTypes.string,
