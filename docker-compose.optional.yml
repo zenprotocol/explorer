@@ -1,0 +1,9 @@
+version: "3"
+services:
+  zen-node:
+    build:
+      context: ./zen-node
+      dockerfile: Dockerfile
+    command: zen-node --api *:5050
+    ports: 
+      - 5050:5050
