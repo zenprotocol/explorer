@@ -6,7 +6,11 @@ import './BroadcastTx.css';
 import '../page.css';
 
 const clipboardApiSupported = () => {
-  return navigator.clipboard && !navigator.userAgent.toLowerCase().includes('opr');
+  return (
+    typeof navigator !== 'undefined' &&
+    navigator.clipboard &&
+    !navigator.userAgent.toLowerCase().includes('opr')
+  );
 };
 
 class BroadcastTx extends Component {
