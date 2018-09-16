@@ -109,7 +109,7 @@ export default {
         method: 'get',
       });
     },
-    async broadcast(tx) {
+    broadcast(tx) {
       return cancelableHttpRequest({
         url: `${Endpoints.transactions}/broadcast/${tx}`,
         method: 'post',
