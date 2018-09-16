@@ -64,7 +64,9 @@ class BroadcastTx extends Component {
                 </div>
               </div>
             </div>
-            <Button isSubmit={true}>Send Transaction</Button>
+            <Button isSubmit={true} disabled={this.state.progress}>
+              Send Transaction
+            </Button>
           </form>
         </section>
       </div>
@@ -80,6 +82,7 @@ class BroadcastTx extends Component {
 
     const { tx } = this.state;
     if (tx.length > 0) {
+      this.setState({ progress: true });
       this.cancelCurrentRequest();
       this.currentPromise = Service.transactions.broadcast(tx);
       this.currentPromise
@@ -88,6 +91,9 @@ class BroadcastTx extends Component {
         })
         .catch(() => {
           this.setState({ error: 'Invalid transaction' });
+        })
+        .then(() => {
+          this.setState({ progress: false });
         });
     }
   }
