@@ -23,7 +23,6 @@ class BroadcastTx extends Component {
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.pasteFromClipboard = this.pasteFromClipboard.bind(this);
-    this.cancelCurrentRequest = this.cancelCurrentRequest.bind(this);
   }
 
   componentWillUnmount() {
@@ -35,7 +34,6 @@ class BroadcastTx extends Component {
 
     return (
       <div className="BroadcastTx">
-        {progress && <Loading />}
         <section>
           <form onSubmit={this.handleSubmit}>
             <div className="form-group">
@@ -44,6 +42,7 @@ class BroadcastTx extends Component {
                 characters 0-9, a-f) and broadcast it over the zen protocol network.
               </label>
               <div className="textarea-container position-relative">
+                {progress && <Loading />}
                 {clipboardApiSupported() && (
                   <Button
                     onClick={this.pasteFromClipboard}
@@ -79,18 +78,21 @@ class BroadcastTx extends Component {
 
   handleSubmit(event) {
     event.preventDefault();
+    const INVALID_TXT = 'Invalid transaction';
 
     const { tx } = this.state;
-    if (tx.length > 0) {
-      this.setState({ progress: true });
+    if (tx.length === 0 || !this.txValid(tx)) {
+      this.setState({ error: INVALID_TXT });
+    } else {
+      this.setState({ progress: true, response: '', error: '' });
       this.cancelCurrentRequest();
       this.currentPromise = Service.transactions.broadcast(tx);
       this.currentPromise
         .then(res => {
-          this.setState({ response: res.data });
+          this.setState({ response: res.data, tx: '' });
         })
         .catch(() => {
-          this.setState({ error: 'Invalid transaction' });
+          this.setState({ error: INVALID_TXT });
         })
         .then(() => {
           this.setState({ progress: false });
@@ -119,6 +121,10 @@ class BroadcastTx extends Component {
         console.log(error);
       }
     }
+  }
+
+  txValid(tx) {
+    return /([^a-fA-F0-9])/g.test(tx) === false;
   }
 }
 

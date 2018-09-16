@@ -1,3 +1,6 @@
+.BroadcastTx {
+  position: relative;
+}
 .BroadcastTx .btn-paste {
   display: none;
   position: absolute;
@@ -8,4 +11,16 @@
 
 .BroadcastTx .textarea-container:hover .btn-paste {
   display: block;
+}
+
+.BroadcastTx .Loading {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(0, 0, 0, 0.5);
 }
