@@ -24,3 +24,11 @@
   justify-content: center;
   background-color: rgba(0, 0, 0, 0.5);
 }
+
+.BroadcastTx .Button {
+  min-width: 150px;
+}
+
+.BroadcastTx .Message {
+  margin-bottom: 1rem;
+}

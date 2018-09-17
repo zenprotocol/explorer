@@ -1,7 +1,11 @@
 import React, { Component } from 'react';
+import { Link } from 'react-router-dom';
 import Service from '../../lib/Service';
 import Loading from '../../components/Loading/Loading.jsx';
 import Button from '../../components/buttons/Button.jsx';
+import ButtonToolbar from '../../components/buttons/ButtonToolbar.jsx';
+import SuccessMessage from '../../components/messages/SuccessMessage.jsx';
+import ErrorMessage from '../../components/messages/ErrorMessage.jsx';
 import './BroadcastTx.css';
 import '../page.css';
 
@@ -35,7 +39,6 @@ class BroadcastTx extends Component {
 
   render() {
     const { tx, progress, response, error } = this.state;
-
     return (
       <div className="BroadcastTx">
         <section>
@@ -50,30 +53,37 @@ class BroadcastTx extends Component {
               </label>
               <div className="textarea-container position-relative">
                 {progress && <Loading />}
-                {clipboardApiSupported() && (
-                  <Button
-                    onClick={this.pasteFromClipboard}
-                    type="link"
-                    className="btn-paste"
-                    size="sm"
-                    title="Paste from clipboard"
-                  >
-                    <i className="fal fa-paste" />
-                  </Button>
-                )}
+
                 <textarea className="form-control" value={tx} onChange={this.handleChange} />
-                <div className="valid-feedback" style={{ display: response ? 'block' : 'none' }}>
-                  {response}
-                </div>
-                <div className="invalid-feedback" style={{ display: error ? 'block' : 'none' }}>
-                  {error}
-                </div>
               </div>
             </div>
-            <div className="d-flex justify-content-end">
-              <Button isSubmit={true} disabled={this.state.progress}>
-                Broadcast Tx
-              </Button>
+            <div className="row no-gutters">
+              <div className="col">
+                {response && (
+                  <SuccessMessage>
+                    Your tx was broadcasted successfully - once it is included in a block you can
+                    view it here -{' '}
+                    <Link to={`/tx/${response}`} className="break-word">
+                      https://zp.io/tx/
+                      {response}
+                    </Link>
+                    
+                  </SuccessMessage>
+                )}
+                {error && <ErrorMessage>{error}</ErrorMessage>}
+              </div>
+              <div className="col">
+                <ButtonToolbar className="d-flex justify-content-end">
+                  {clipboardApiSupported() && (
+                    <Button onClick={this.pasteFromClipboard} type="dark-2">
+                      <i className="fal fa-paste" /> Paste
+                    </Button>
+                  )}
+                  <Button isSubmit={true} disabled={this.submitDisabled()}>
+                    Broadcast Tx
+                  </Button>
+                </ButtonToolbar>
+              </div>
             </div>
           </form>
         </section>
@@ -90,7 +100,7 @@ class BroadcastTx extends Component {
     const INVALID_TXT = 'Invalid transaction';
 
     const { tx } = this.state;
-    if (tx.length === 0 || !this.txValid(tx)) {
+    if (!this.txValid(tx)) {
       this.setState({ error: INVALID_TXT });
     } else {
       this.setState({ progress: true, response: '', error: '' });
@@ -133,7 +143,11 @@ class BroadcastTx extends Component {
   }
 
   txValid(tx) {
-    return /([^a-fA-F0-9])/g.test(tx) === false;
+    return tx.length > 0 && /([^a-fA-F0-9])/g.test(tx) === false;
+  }
+
+  submitDisabled() {
+    return this.state.progress || !this.txValid(this.state.tx);
   }
 }
 
