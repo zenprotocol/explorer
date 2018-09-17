@@ -39,6 +39,9 @@ class BroadcastTx extends Component {
     return (
       <div className="BroadcastTx">
         <section>
+          <h1 className="d-block d-sm-inline-block text-white mb-3 mb-lg-5">
+            Broadcast raw transaction
+          </h1>
           <form onSubmit={this.handleSubmit}>
             <div className="form-group">
               <label>
@@ -67,9 +70,11 @@ class BroadcastTx extends Component {
                 </div>
               </div>
             </div>
-            <Button isSubmit={true} disabled={this.state.progress}>
-              Send Transaction
-            </Button>
+            <div className="d-flex justify-content-end">
+              <Button isSubmit={true} disabled={this.state.progress}>
+                Broadcast Tx
+              </Button>
+            </div>
           </form>
         </section>
       </div>
@@ -77,7 +82,7 @@ class BroadcastTx extends Component {
   }
 
   handleChange(event) {
-    this.setState({ tx: event.target.value.trim() });
+    this.setState({ tx: event.target.value.trim(), error: '', response: '' });
   }
 
   handleSubmit(event) {
