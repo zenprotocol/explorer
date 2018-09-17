@@ -19,7 +19,23 @@ function sendHttpRequest(config) {
   if (globalMute) {
     return Promise.resolve({ data: {} });
   }
-  return request.request(config).then(response => response.data);
+  return request
+    .request(config)
+    .then(response => response.data)
+    .catch(error => {
+      if(error.response) {
+        const err = new Error(((error.response.data || {}).error || {}).message);
+        err.status = error.response.status;
+        err.data = error.response.data;
+        throw err;
+      }
+      else {
+        const err = new Error(error.message);
+        err.status = -1;
+        err.data = {};
+        throw err;
+      }
+    });
 }
 
 function cancelableHttpRequest(config) {
@@ -51,7 +67,7 @@ export default {
   utils: {
     isCancel(error) {
       return axios.isCancel(error);
-    }
+    },
   },
   infos: {
     async find() {
@@ -114,7 +130,7 @@ export default {
         url: `${Endpoints.transactions}/broadcast/${tx}`,
         method: 'post',
       });
-    }
+    },
   },
   addresses: {
     async findByAddress(address) {

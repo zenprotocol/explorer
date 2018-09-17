@@ -21,7 +21,7 @@ function sendHttpRequest(config) {
     return Promise.resolve({ data: {} });
   }
   return request.request(config).catch(error => {
-    throw new NetworkError(error);
+    throw new NetworkError(error, error.message, (error.response || {}).status);
   });
 }
 

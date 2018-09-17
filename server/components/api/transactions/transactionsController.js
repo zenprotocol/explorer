@@ -145,6 +145,7 @@ module.exports = {
     if (!tx) {
       throw new ValidationError(null, 'tx was not supplied');
     }
+    
     const response = await Service.wallet.broadcastTx(tx);
     res.status(httpStatus.OK).json(jsonResponse.create(httpStatus.OK, response));
   },

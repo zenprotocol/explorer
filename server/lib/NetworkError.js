@@ -1,5 +1,5 @@
 class NetworkError extends Error {
-  constructor(innerError, message) {
+  constructor(innerError, message, status) {
     if (!message && innerError && innerError.message) {
       message = innerError.message;
     }
@@ -13,6 +13,7 @@ class NetworkError extends Error {
 
     this.name = 'NetworkError';
     this.inner = innerError;
+    this.status = status || 500;
   }
 }
 
