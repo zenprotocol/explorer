@@ -2,8 +2,10 @@ import React, { PureComponent } from 'react';
 import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import Service from '../../lib/Service';
+import TextUtils from '../../lib/TextUtils';
 import Loading from '../Loading/Loading.jsx';
 import LineChart from './LineChart.jsx';
+import PieChart from './PieChart.jsx';
 import './ChartLoader.css';
 
 const ChartConfigs = {
@@ -23,12 +25,16 @@ const ChartConfigs = {
     seriesTitle: 'Avg.Daily HashRate',
   },
   zpRichList: {
-    type: 'line',
+    type: 'pie',
     xAxisType: 'linear',
     title: 'ZP Rich List',
-    seriesTitle: 'Top ZP holders',
+    seriesTitle: 'ZP Amount',
+    tooltipValueSuffix: ' ZP',
     tooltipHeaderFormat:
-      '<span style="font-size: 10px"><strong>{point.x}</strong> - {point.key}</span><br/>',
+      '<span style="font-size: 10px;"><strong>{point.key}</strong></span><br/>',
+    dataLabelsFormatter: function () {
+      return this.point.x <= 20 || this.point.x === 100 ? TextUtils.truncateHash(this.point.name) : null;
+    },
   },
   zpSupply: {
     type: 'line',
@@ -66,8 +72,8 @@ const Mappers = {
     return data.map((item, index) => {
       return {
         name: item.address,
+        x: index,
         y: Number(item.balance),
-        x: index + 1,
       };
     });
   },
@@ -133,12 +139,15 @@ export default class ChartLoader extends PureComponent {
 
     let componentType = null;
     switch (chartConfig.type) {
+      case 'pie': 
+        componentType = PieChart;
+        break;
       case 'line':
       default:
         componentType = LineChart;
         break;
     }
-
+    
     const title = titleLinkTo ? (
       <Link to={titleLinkTo}>{chartConfig.title}</Link>
     ) : (

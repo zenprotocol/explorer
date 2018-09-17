@@ -6,6 +6,7 @@ const COLORS = {
   text: '#f2f2f2',
   textGray: '#999999',
   border: '#333333',
+  bg: '#0e0e0e',
 };
 
 const titleStyle = {
@@ -24,6 +25,16 @@ export default function Chart(props) {
       backgroundColor: 'transparent',
       borderWidth: 0,
       style: { color: COLORS.text },
+    },
+    plotOptions: {
+      series: {
+        dataLabels: {
+          color: COLORS.text,
+        }
+      },
+      pie: {
+        borderColor: COLORS.bg,
+      }
     },
     title: {
       style: { display: 'none' },
