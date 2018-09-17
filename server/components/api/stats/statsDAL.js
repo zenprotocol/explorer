@@ -1,11 +1,17 @@
 'use strict';
 
 const transactionsDAL = require('../transactions/transactionsDAL');
+const blocksDAL = require('../blocks/blocksDAL');
 const db = transactionsDAL.db;
 const sequelize = db.sequelize;
 
 const statsDAL = {};
 const maximumChartInterval = '1 year';
+
+statsDAL.totalZp = async function() {
+  const blocksCount = await blocksDAL.count();
+  return 20000000 + (blocksCount - 1) * 50;
+};
 
 statsDAL.transactionsPerDay = async function(chartInterval = maximumChartInterval) {
   const sql = `
@@ -17,13 +23,12 @@ statsDAL.transactionsPerDay = async function(chartInterval = maximumChartInterva
   GROUP BY "Blocks"."dt"
   ORDER BY "Blocks"."dt"
   `;
-  return sequelize
-    .query(sql, {
-      type: sequelize.QueryTypes.SELECT,
-      replacements: {
-        chartInterval,
-      },
-    });
+  return sequelize.query(sql, {
+    type: sequelize.QueryTypes.SELECT,
+    replacements: {
+      chartInterval,
+    },
+  });
 };
 
 statsDAL.blockDifficulty = async function(chartInterval = maximumChartInterval) {
@@ -37,13 +42,12 @@ statsDAL.blockDifficulty = async function(chartInterval = maximumChartInterval) 
   group by block_date
   order by block_date asc offset 1
   `;
-  return sequelize
-    .query(sql, {
-      type: sequelize.QueryTypes.SELECT,
-      replacements: {
-        chartInterval,
-      },
-    });
+  return sequelize.query(sql, {
+    type: sequelize.QueryTypes.SELECT,
+    replacements: {
+      chartInterval,
+    },
+  });
 };
 
 statsDAL.networkHashRate = async function(chartInterval = maximumChartInterval) {
@@ -57,13 +61,12 @@ statsDAL.networkHashRate = async function(chartInterval = maximumChartInterval) 
   group by block_date
   order by block_date asc offset 1
   `;
-  return sequelize
-    .query(sql, {
-      type: sequelize.QueryTypes.SELECT,
-      replacements: {
-        chartInterval,
-      },
-    });
+  return sequelize.query(sql, {
+    type: sequelize.QueryTypes.SELECT,
+    replacements: {
+      chartInterval,
+    },
+  });
 };
 
 statsDAL.zpRichList = async function() {
@@ -102,10 +105,23 @@ statsDAL.zpRichList = async function() {
   order by balance desc
   limit 100
   `;
-  return sequelize
-    .query(sql, {
+  return Promise.all([
+    sequelize.query(sql, {
       type: sequelize.QueryTypes.SELECT,
+    }),
+    statsDAL.totalZp(),
+  ]).then(([chartData, totalZp]) => {
+    let restZp = chartData.reduce((restAmount, curItem) => {
+      return restAmount - Number(curItem.balance);
+    }, Number(totalZp));
+    
+    chartData.push({
+      balance: String(restZp),
+      address: 'Rest',
     });
+
+    return chartData;
+  });
 };
 
 statsDAL.zpSupply = async function(chartInterval = maximumChartInterval) {
@@ -118,13 +134,12 @@ statsDAL.zpSupply = async function(chartInterval = maximumChartInterval) {
   GROUP BY "dt"
   ORDER BY "dt"
   `;
-  return sequelize
-    .query(sql, {
-      type: sequelize.QueryTypes.SELECT,
-      replacements: {
-        chartInterval,
-      },
-    });
+  return sequelize.query(sql, {
+    type: sequelize.QueryTypes.SELECT,
+    replacements: {
+      chartInterval,
+    },
+  });
 };
 
 module.exports = statsDAL;

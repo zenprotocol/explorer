@@ -11,8 +11,7 @@ const CHARTS = ['transactionsPerDay', 'blockDifficulty', 'networkHashRate', 'zpR
 
 const StatsFunctions = {
   totalZp: async function() {
-    const blocksCount = await blocksDAL.count();
-    return 20000000 + (blocksCount - 1) * 50;
+    return await statsDAL.totalZp();
   },
   totalKalapa: async function() {
     return Math.floor((await this.totalZp()) * 100000000);
