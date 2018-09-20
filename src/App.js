@@ -63,7 +63,7 @@ class App extends Component {
             <Route path="/search/:search" component={Search} />
             <Route path="/blockchain/info" component={Info} />
             <Route path="/charts/:name" component={Chart} />
-            <Route path="/pushTx" component={BroadcastTx} />
+            <Route path="/pushTx/:hex?" component={BroadcastTx} />
           </Switch>
         </div>
         <div className="container px-lg-5">

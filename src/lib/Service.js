@@ -26,7 +26,7 @@ function sendHttpRequest(config) {
       if(error.response) {
         const err = new Error(((error.response.data || {}).error || {}).message);
         err.status = error.response.status;
-        err.data = error.response.data;
+        err.data = error.response.data.error;
         throw err;
       }
       else {
@@ -127,8 +127,20 @@ export default {
     },
     broadcast(tx) {
       return cancelableHttpRequest({
-        url: `${Endpoints.transactions}/broadcast/${tx}`,
+        url: `${Endpoints.transactions}/broadcast`,
         method: 'post',
+        data: {
+          tx
+        }
+      });
+    },
+    rawToTx(hex) {
+      return cancelableHttpRequest({
+        url: `${Endpoints.transactions}/raw`,
+        method: 'post',
+        data: {
+          hex
+        }
       });
     },
   },

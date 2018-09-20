@@ -13,7 +13,7 @@ class TransactionAssetLoader extends Component {
     }
   }
   render() {
-    const { index, address, addressFoundIn, timestamp, transactionAssets, total } = this.props;
+    const { index, address, addressFoundIn, transactionAssets, total } = this.props;
     if (!this.transactionAssetAlreadyLoaded) {
       return <Loading />;
     }
@@ -25,7 +25,6 @@ class TransactionAssetLoader extends Component {
         showHeader={true}
         address={address}
         addressFoundIn={addressFoundIn}
-        timestamp={timestamp}
         total={total}
       />
     );
@@ -42,7 +41,6 @@ TransactionAssetLoader.propTypes = {
   index: PropTypes.number,
   address: PropTypes.string,
   addressFoundIn: PropTypes.array,
-  timestamp: PropTypes.string,
   total: PropTypes.number,
 };
 
