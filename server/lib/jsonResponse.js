@@ -15,6 +15,7 @@ const createJsonResponse = (statusCode, data = null, err = null) => {
   if (statusCode >= 400) {
     errorObj = {
       message: httpStatus[statusCode],
+      customMessage: err.customMessage,
       error: inspect(err, false, 1),
     };
   }
