@@ -28,6 +28,7 @@ class BroadcastTx extends Component {
       progress: false,
       broadcastResponse: '',
       error: '',
+      clipboardApiSupported: false,
     };
 
     this.handleInputChange = this.handleInputChange.bind(this);
@@ -37,6 +38,7 @@ class BroadcastTx extends Component {
   }
 
   componentDidMount() {
+    this.checkClipboardApiSupported();
     this.setHexFromRouteParam();
   }
 
@@ -101,7 +103,7 @@ class BroadcastTx extends Component {
               </div>
               <div className="col">
                 <ButtonToolbar className="d-flex justify-content-end">
-                  {BrowserUtils.clipboardApiSupported() && (
+                  {this.state.clipboardApiSupported && (
                     <Button onClick={this.pasteFromClipboard} type="dark-2">
                       <i className="fal fa-paste" /> Paste
                     </Button>
@@ -182,6 +184,10 @@ class BroadcastTx extends Component {
     if (this.currentDecodePromise && this.currentDecodePromise.cancel) {
       this.currentDecodePromise.cancel();
     }
+  }
+
+  checkClipboardApiSupported() {
+    this.setState({ clipboardApiSupported: BrowserUtils.clipboardApiSupported() });
   }
 
   pasteFromClipboard() {
