@@ -39,7 +39,7 @@ class BroadcastTx extends Component {
 
   componentDidMount() {
     this.checkClipboardApiSupported();
-    this.setHexFromRouteParam();
+    this.initHexFromRouteParam();
   }
 
   componentWillUnmount() {
@@ -120,7 +120,7 @@ class BroadcastTx extends Component {
     );
   }
 
-  setHexFromRouteParam() {
+  initHexFromRouteParam() {
     const { hex } = RouterUtils.getRouteParams(this.props);
     if (hex) {
       this.setState({ hex });
