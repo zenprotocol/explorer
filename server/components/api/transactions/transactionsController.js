@@ -1,14 +1,16 @@
 'use strict';
 
 const httpStatus = require('http-status');
+const zen = require('@zen/zenjs');
 const transactionsDAL = require('./transactionsDAL');
+const outputsDAL = require('../outputs/outputsDAL');
 const jsonResponse = require('../../../lib/jsonResponse');
 const HttpError = require('../../../lib/HttpError');
-const ValidationError = require('../../../lib/ValidationError');
 const createQueryObject = require('../../../lib/createQueryObject');
 const getTransactionAssets = require('./getTransactionAssets');
 const isCoinbaseTX = require('./isCoinbaseTX');
 const Service = require('../../../lib/Service');
+const BlockchainParser = require('../../../lib/BlockchainParser');
 
 module.exports = {
   // TODO - change to get all transactions - not assets
@@ -140,14 +142,67 @@ module.exports = {
     }
   },
   broadcast: async function(req, res) {
-    const tx = req.params.tx || '';
-
+    const tx = req.body.tx || '';
     if (!tx) {
-      throw new ValidationError(null, 'tx was not supplied');
+      throw new HttpError(httpStatus.BAD_REQUEST);
     }
     
     const response = await Service.wallet.broadcastTx(tx);
     res.status(httpStatus.OK).json(jsonResponse.create(httpStatus.OK, response));
+  },
+  getFromRaw: async function(req, res) {
+    const hex = req.body.hex;
+    if (!hex) {
+      throw new HttpError(httpStatus.BAD_REQUEST);
+    }
+
+    try {
+      const tx = zen.Transaction.fromHex(hex);
+      const blockchainParser = new BlockchainParser();
+      const txCustom = {
+        Inputs: [],
+        Outputs: [],
+      };
+
+      txCustom.Outputs = tx.outputs.map((output, index) => {
+        const { lockType, address } = blockchainParser.getLockValuesFromOutput(output);
+        const asset = output.spend.asset.asset;
+        const amount = output.spend.amount['0'];
+        const addressWallet = blockchainParser.getAddressFromBCAddress(address);
+        return {
+          id: index + 1, // fake id
+          lockType,
+          address: addressWallet,
+          addressBC: address,
+          asset,
+          amount
+        };
+      });
+
+      for (let i = 0; i < tx.inputs.length; i++) {
+        const input = tx.inputs[i];
+        const outpoint = {
+          txHash: input.input.txHash.hash,
+          index: input.input.index,
+        };
+        // search for this tx and index
+        const output = await outputsDAL.findOutpoint(outpoint.txHash, outpoint.index);
+
+        if (!output) {
+          throw new HttpError(httpStatus.BAD_REQUEST, 'One of the inputs is not yet in the blockchain');
+        }
+
+        txCustom.Inputs.push({
+          id: i + 1, // fake id
+          Output: output,
+        });
+      }
+
+      const assets = getTransactionAssets(txCustom);
+      res.status(httpStatus.OK).json(jsonResponse.create(httpStatus.OK, assets));
+    } catch (error) {
+      throw new HttpError(error.status || httpStatus.INTERNAL_SERVER_ERROR, error.customMessage);
+    }
   },
   create: async function(req, res) {
     const transaction = await transactionsDAL.create(req.body);

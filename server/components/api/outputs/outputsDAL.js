@@ -4,6 +4,23 @@ const dal = require('../../../lib/dal');
 
 const outputsDAL = dal.createDAL('Output');
 
+outputsDAL.findOutpoint = function(txHash, index) {
+  return outputsDAL.findOne({
+    where: {
+      index,
+    },
+    include: [
+      {
+        model: outputsDAL.db.Transaction,
+        attributes: [],
+        where: {
+          hash: txHash,
+        },
+      },
+    ],
+  });
+};
+
 outputsDAL.findByTransaction = function(transactionId) {
   return this.findAll({
     where: {

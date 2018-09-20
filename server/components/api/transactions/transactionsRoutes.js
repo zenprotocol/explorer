@@ -8,8 +8,11 @@ router.route('/')
 router.route('/id/:id')
   .get(wrapAsync(controller.getById));
 
-router.route('/broadcast/:tx')
+router.route('/broadcast')
   .post(wrapAsync(controller.broadcast));
+
+router.route('/raw')
+  .post(wrapAsync(controller.getFromRaw));
 
 router.route('/:hash')
   .get(wrapAsync(controller.show));
