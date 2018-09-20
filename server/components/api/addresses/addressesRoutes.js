@@ -15,4 +15,7 @@ router.route('/:address/asset-types')
 router.route('/:address/assets')
   .get(wrapAsync(transactionsController.assets));
 
+router.route('/:address/balance')
+  .get(wrapAsync(controller.balance));
+
 module.exports = router;
