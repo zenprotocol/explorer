@@ -66,12 +66,12 @@ module.exports = {
       throw new HttpError(httpStatus.NOT_FOUND);
     }
   },
-  balance: async function(req, res) {
+  balanceZp: async function(req, res) {
     const address = req.params.address;
     const balance = await addressesDAL.getZpBalance(address);
 
     if (balance.length > 0) {
-      res.status(httpStatus.OK).json(balance[0].balance * 100000000);
+      res.status(httpStatus.OK).json(Number(balance[0].balance));
     } else {
       throw new HttpError(httpStatus.NOT_FOUND);
     }

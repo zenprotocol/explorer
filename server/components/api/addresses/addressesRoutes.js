@@ -16,6 +16,6 @@ router.route('/:address/assets')
   .get(wrapAsync(transactionsController.assets));
 
 router.route('/:address/balance')
-  .get(wrapAsync(controller.balance));
+  .get(wrapAsync(controller.balanceZp));
 
 module.exports = router;
