@@ -15,7 +15,7 @@
     "docker:up": "docker-compose up -d",
     "docker:up:all": "docker-compose -f docker-compose.yml -f docker-compose.optional.yml up -d",
     "docker:stop": "docker-compose -f docker-compose.yml -f docker-compose.optional.yml stop",
-    "docker:logs": "docker-compose -f docker-compose.yml -f docker-compose.optional.yml logs -f",
+    "docker:logs": "docker-compose -f docker-compose.yml -f docker-compose.optional.yml logs -f --tail=20",
     "setup": "node build_scripts/setup.js && npm install",
     "setup:db": "npm run setup:db:test && npm run setup:db:development",
     "setup:db:test": "cross-env NODE_ENV=test npx sequelize db:create && cross-env NODE_ENV=test npx sequelize db:migrate",
