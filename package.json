@@ -46,6 +46,7 @@
   },
   "homepage": "http://mywebsite.com/public",
   "dependencies": {
+    "@zen/zenjs": "0.0.21",
     "asset-require-hook": "^1.2.0",
     "axios": "^0.18.0",
     "babel-preset-env": "^1.7.0",
