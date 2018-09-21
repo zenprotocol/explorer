@@ -46,6 +46,7 @@
   },
   "homepage": "http://mywebsite.com/public",
   "dependencies": {
+    "@zen/zenjs": "0.0.21",
     "asset-require-hook": "^1.2.0",
     "axios": "^0.18.0",
     "babel-preset-env": "^1.7.0",
@@ -77,8 +78,8 @@
     "pg": "^7.4.3",
     "pg-hstore": "^2.3.2",
     "prop-types": "^15.6.2",
-    "react": "^16.4.2",
-    "react-dom": "^16.4.2",
+    "react": "^16.5.2",
+    "react-dom": "^16.5.2",
     "react-highcharts": "^16.0.2",
     "react-infinite-scroller": "^1.2.0",
     "react-router-dom": "^4.3.1",

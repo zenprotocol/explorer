@@ -76,9 +76,9 @@ function getFilteredAssetsArray(transaction, assets, address) {
         addressFoundIn,
         total: assets[asset].total,
         addressTotal: assets[asset].addressTotal,
-        blockHash: transaction.Block.hash,
+        blockHash: (transaction.Block || {}).hash,
         txHash: transaction.hash,
-        timestamp: transaction.Block.timestamp,
+        timestamp: (transaction.Block || {}).timestamp,
         Inputs: assets[asset].inputs,
         Outputs: assets[asset].outputs,
       });

@@ -1,5 +1,6 @@
 import React from 'react';
 import { observer } from 'mobx-react';
+import { Link } from 'react-router-dom';
 import blockStore from '../../store/BlockStore';
 import Config from '../../lib/Config';
 import Logo from '../Logo/Logo.jsx';
@@ -50,6 +51,9 @@ function FooterLinks() {
     <div className="row FooterLinks">
       <div className="col-md-4">
         <ul className="nav flex-column">
+          <li className="nav-item">
+            <Link className="nav-link text-nowrap" to="/broadcastTx">Broadcast Raw Tx</Link>
+          </li>
           <li className="nav-item">
             <ExternalLink
               className="nav-link text-nowrap"

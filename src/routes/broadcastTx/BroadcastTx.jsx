@@ -1,44 +1,61 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
+import debounce from 'lodash.debounce';
 import Service from '../../lib/Service';
+import RouterUtils from '../../lib/RouterUtils';
+import BrowserUtils from '../../lib/BrowserUtils';
 import Loading from '../../components/Loading/Loading.jsx';
 import Button from '../../components/buttons/Button.jsx';
 import ButtonToolbar from '../../components/buttons/ButtonToolbar.jsx';
 import SuccessMessage from '../../components/messages/SuccessMessage.jsx';
 import ErrorMessage from '../../components/messages/ErrorMessage.jsx';
+import TransactionAsset from '../../components/Transactions/Asset/TransactionAsset.jsx';
 import './BroadcastTx.css';
 import '../page.css';
 
-const clipboardApiSupported = () => {
-  return (
-    typeof navigator !== 'undefined' &&
-    navigator.clipboard &&
-    !navigator.userAgent.toLowerCase().includes('opr')
-  );
-};
+const INVALID_TXT = 'Invalid transaction';
+const BROADCAST_FAILED_TXT = 'Oops! Something Went Wrong.';
 
 class BroadcastTx extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      tx: '',
+      hex: '',
+      hexReadOnly: false,
+      decodedTx: null,
+      decodedTxValid: false,
       progress: false,
-      response: '',
+      broadcastResponse: '',
       error: '',
+      clipboardApiSupported: false,
     };
 
-    this.handleChange = this.handleChange.bind(this);
+    this.handleInputChange = this.handleInputChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.pasteFromClipboard = this.pasteFromClipboard.bind(this);
+    this.handleHexChange = debounce(this.handleHexChange, 500);
+  }
+
+  componentDidMount() {
+    this.checkClipboardApiSupported();
+    this.initHexFromRouteParam();
   }
 
   componentWillUnmount() {
-    this.cancelCurrentRequest();
+    this.cancelCurrentSubmitRequest();
+    this.cancelCurrentDecodeRequest();
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    if (this.state.hex !== prevState.hex) {
+      this.handleHexChange(this.state.hex);
+    }
   }
 
   render() {
-    const { tx, progress, response, error } = this.state;
+    const { hex, progress, broadcastResponse, error } = this.state;
     return (
       <div className="BroadcastTx">
         <section>
@@ -53,33 +70,50 @@ class BroadcastTx extends Component {
               </label>
               <div className="textarea-container position-relative">
                 {progress && <Loading />}
-
-                <textarea className="form-control" value={tx} onChange={this.handleChange} />
+                <textarea
+                  className="form-control"
+                  value={hex}
+                  onChange={this.handleInputChange}
+                  readOnly={this.state.hexReadOnly}
+                />
               </div>
+            </div>
+            <div className="assets">
+              {(this.state.decodedTx || []).length > 0 &&
+                this.state.decodedTx.map((asset, assetIndex) => {
+                  return (
+                    <TransactionAsset
+                      transactionAsset={asset}
+                      asset={asset.asset}
+                      key={assetIndex}
+                      showHeader={assetIndex === 0}
+                      total={Number(asset.total)}
+                    />
+                  );
+                })}
             </div>
             <div className="row no-gutters">
               <div className="col">
-                {response && (
+                {broadcastResponse && (
                   <SuccessMessage>
                     Your tx was broadcasted successfully - once it is included in a block you can
                     view it here -{' '}
-                    <Link to={`/tx/${response}`} className="break-word">
+                    <Link to={`/tx/${broadcastResponse}`} className="break-word">
                       https://zp.io/tx/
-                      {response}
+                      {broadcastResponse}
                     </Link>
-                    
                   </SuccessMessage>
                 )}
                 {error && <ErrorMessage>{error}</ErrorMessage>}
               </div>
               <div className="col">
                 <ButtonToolbar className="d-flex justify-content-end">
-                  {clipboardApiSupported() && (
+                  {this.state.clipboardApiSupported && !this.state.hexReadOnly && (
                     <Button onClick={this.pasteFromClipboard} type="dark-2">
                       <i className="fal fa-paste" /> Paste
                     </Button>
                   )}
-                  <Button isSubmit={true} disabled={this.submitDisabled()}>
+                  <Button isSubmit={true} disabled={this.submitDisabled}>
                     Broadcast Tx
                   </Button>
                 </ButtonToolbar>
@@ -91,27 +125,61 @@ class BroadcastTx extends Component {
     );
   }
 
-  handleChange(event) {
-    this.setState({ tx: event.target.value.trim(), error: '', response: '' });
+  initHexFromRouteParam() {
+    const { hex } = RouterUtils.getRouteParams(this.props);
+    if (hex) {
+      this.setState({ hex, hexReadOnly: true });
+    }
+  }
+
+  handleInputChange(event) {
+    this.setState({
+      hex: event.target.value.trim(),
+      error: '',
+      broadcastResponse: '',
+    });
+  }
+
+  handleHexChange(hex) {
+    if (this.state.hex !== '') {
+      this.setState({ decodedTx: null, decodedTxValid: false, broadcastResponse: '', error: '' });
+      
+      if (this.hexValid(hex)) {
+        this.decodeHex(hex);
+      }
+    }
+  }
+
+  decodeHex(hex) {
+    this.cancelCurrentDecodeRequest();
+    this.currentDecodePromise = Service.transactions.rawToTx(hex);
+    this.currentDecodePromise
+      .then(res => {
+        this.setState({ decodedTx: res.data, decodedTxValid: true });
+        this.props.history.push(`/broadcastTx/${hex}`);
+      })
+      .catch(error => {
+        const message = error.data.customMessage ? error.data.customMessage : INVALID_TXT;
+        this.setState({ decodedTx: null, decodedTxValid: false, error: message, hexReadOnly: false, });
+      });
   }
 
   handleSubmit(event) {
     event.preventDefault();
-    const INVALID_TXT = 'Invalid transaction';
 
-    const { tx } = this.state;
-    if (!this.txValid(tx)) {
+    const { hex } = this.state;
+    if (!this.hexValid(hex)) {
       this.setState({ error: INVALID_TXT });
     } else {
-      this.setState({ progress: true, response: '', error: '' });
-      this.cancelCurrentRequest();
-      this.currentPromise = Service.transactions.broadcast(tx);
-      this.currentPromise
+      this.setState({ progress: true, broadcastResponse: '', error: '' });
+      this.cancelCurrentSubmitRequest();
+      this.currentSubmitPromise = Service.transactions.broadcast(hex);
+      this.currentSubmitPromise
         .then(res => {
-          this.setState({ response: res.data, tx: '' });
+          this.setState({ broadcastResponse: res.data, hex: '' });
         })
         .catch(() => {
-          this.setState({ error: INVALID_TXT });
+          this.setState({ error: BROADCAST_FAILED_TXT });
         })
         .then(() => {
           this.setState({ progress: false });
@@ -119,10 +187,20 @@ class BroadcastTx extends Component {
     }
   }
 
-  cancelCurrentRequest() {
-    if (this.currentPromise && this.currentPromise.cancel) {
-      this.currentPromise.cancel();
+  cancelCurrentSubmitRequest() {
+    if (this.currentSubmitPromise && this.currentSubmitPromise.cancel) {
+      this.currentSubmitPromise.cancel();
     }
+  }
+
+  cancelCurrentDecodeRequest() {
+    if (this.currentDecodePromise && this.currentDecodePromise.cancel) {
+      this.currentDecodePromise.cancel();
+    }
+  }
+
+  checkClipboardApiSupported() {
+    this.setState({ clipboardApiSupported: BrowserUtils.clipboardApiSupported() });
   }
 
   pasteFromClipboard() {
@@ -131,7 +209,7 @@ class BroadcastTx extends Component {
         navigator.clipboard
           .readText()
           .then(text => {
-            this.setState({ tx: text });
+            this.setState({ hex: text });
           })
           .catch(err => {
             console.log(err);
@@ -142,13 +220,17 @@ class BroadcastTx extends Component {
     }
   }
 
-  txValid(tx) {
-    return tx.length > 0 && /([^a-fA-F0-9])/g.test(tx) === false;
+  hexValid(hex) {
+    return hex.length > 0 && /([^a-fA-F0-9])/g.test(hex) === false;
   }
 
-  submitDisabled() {
-    return this.state.progress || !this.txValid(this.state.tx);
+  get submitDisabled() {
+    return this.state.progress || !this.hexValid(this.state.hex) || !this.state.decodedTxValid;
   }
 }
+
+BroadcastTx.propTypes = {
+  history: PropTypes.object,
+};
 
 export default BroadcastTx;

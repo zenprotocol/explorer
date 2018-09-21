@@ -1,12 +1,12 @@
 'use strict';
 
-const bech32 = require('bech32');
 const blocksDAL = require('../../../server/components/api/blocks/blocksDAL');
 const transactionsDAL = require('../../../server/components/api/transactions/transactionsDAL');
 const outputsDAL = require('../../../server/components/api/outputs/outputsDAL');
 const inputsDAL = require('../../../server/components/api/inputs/inputsDAL');
 const infosDAL = require('../../../server/components/api/infos/infosDAL');
 const logger = require('../../lib/logger');
+const BlockchainParser = require('../../../server/lib/BlockchainParser');
 
 /**
  * Get a key from the job data object
@@ -25,6 +25,7 @@ function getJobData(job, key) {
 class BlocksAdder {
   constructor(networkHelper) {
     this.networkHelper = networkHelper;
+    this.blockchainParser = new BlockchainParser();
   }
 
   async addNewBlocks(job) {
@@ -86,19 +87,6 @@ class BlocksAdder {
     const hrEnd = process.hrtime(startTime);
     logger.info(`AddNewBlocks Finished. Time elapsed = ${hrEnd[0]}s ${hrEnd[1] / 1000000}ms`);
     return addBlockPromiseResults.length;
-  }
-
-  getAddressFromBCAddress(addressBC) {
-    let pkHash = Buffer.from(addressBC, 'hex');
-
-    const words = bech32.toWords(pkHash);
-    const wordsBuffer = Buffer.from(words);
-    const withVersion = Buffer.alloc(words.length + 1);
-    withVersion.writeInt8(0, 0);
-    wordsBuffer.copy(withVersion, 1);
-
-    const address = bech32.encode('zen', withVersion);
-    return address;
   }
 
   async getLatestBlockNumberInDB() {
@@ -285,11 +273,11 @@ class BlocksAdder {
     logger.info(
       `Creating a new output for transactionId=#${transaction.id} with hash ${transaction.hash}...`
     );
-    const { lockType, address } = this.getLockValuesFromOutput(nodeOutput);
+    const { lockType, address } = this.blockchainParser.getLockValuesFromOutput(nodeOutput);
     const addressBC = address;
     let addressWallet = null;
     if (addressBC) {
-      addressWallet = this.getAddressFromBCAddress(addressBC);
+      addressWallet = this.blockchainParser.getAddressFromBCAddress(addressBC);
     }
     const output = await outputsDAL.create(
       {
@@ -322,34 +310,6 @@ class BlocksAdder {
     return output;
   }
 
-  getLockValuesFromOutput(nodeOutput) {
-    let lockType = null;
-    let address = null;
-    if (nodeOutput.lock && typeof nodeOutput.lock !== 'object') {
-      lockType = nodeOutput.lock;
-    } else if (nodeOutput.lock && Object.keys(nodeOutput.lock).length) {
-      lockType = Object.keys(nodeOutput.lock)[0];
-      const lockTypeValues = Object.values(nodeOutput.lock[lockType]);
-      if (lockTypeValues.length) {
-        if (lockTypeValues.length === 1) {
-          address = Object.values(nodeOutput.lock[lockType])[0];
-        } else {
-          const addressKeyOptions = ['hash', 'pkHash', 'id', 'data'];
-          const lockTypeKeys = Object.keys(nodeOutput.lock[lockType]);
-          for (let i = 0; i < lockTypeKeys.length; i++) {
-            const key = lockTypeKeys[i];
-            if (addressKeyOptions.includes(key)) {
-              address = nodeOutput.lock[lockType][key];
-              break;
-            }
-          }
-        }
-      }
-    }
-
-    return { lockType, address };
-  }
-
   async addInputToTransaction({ transaction, nodeInput, inputIndex, dbTransaction }) {
     let input = null;
 
@@ -377,7 +337,7 @@ class BlocksAdder {
   }
 
   async createMintInput({ transaction, nodeInput, inputIndex, dbTransaction }) {
-    if (!this.isMintInputValid(nodeInput)) {
+    if (!this.blockchainParser.isMintInputValid(nodeInput)) {
       throw new Error(`Mint input not valid in transaction with hash=${transaction.hash}`);
     }
 
@@ -404,14 +364,8 @@ class BlocksAdder {
     return input;
   }
 
-  isMintInputValid(nodeInput) {
-    const asset = nodeInput.mint.asset;
-    const amount = nodeInput.mint.amount;
-    return asset && typeof amount !== 'undefined' && amount !== null && !isNaN(Number(amount));
-  }
-
   async createOutpointInput({ transaction, nodeInput, inputIndex, dbTransaction }) {
-    if (!this.isOutpointInputValid(nodeInput)) {
+    if (!this.blockchainParser.isOutpointInputValid(nodeInput)) {
       throw new Error(
         `Outpoint input with index=${inputIndex} not valid in transaction with hash=${
           transaction.hash
@@ -440,12 +394,6 @@ class BlocksAdder {
     );
 
     return input;
-  }
-
-  isOutpointInputValid(nodeInput) {
-    const txHash = nodeInput.outpoint.txHash;
-    const index = nodeInput.outpoint.index;
-    return txHash && typeof index !== 'undefined' && index !== null && !isNaN(Number(index));
   }
 
   /**

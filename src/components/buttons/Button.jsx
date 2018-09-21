@@ -4,7 +4,7 @@ import classNames from 'classnames';
 import './buttons.css';
 
 export default function Button(props) {
-  const {title, isSubmit, className, type, size, ...rest} = props;
+  const {title, isSubmit, className, type, size, children, ...rest} = props;
   return (
     <button
       data-balloon={title}
@@ -18,7 +18,7 @@ export default function Button(props) {
       )}
       {...rest}
     >
-      {props.children}
+      {children}
     </button>
   );
 }
