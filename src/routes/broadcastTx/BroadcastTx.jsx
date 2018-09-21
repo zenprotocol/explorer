@@ -16,6 +16,7 @@ import '../page.css';
 
 const INVALID_TXT = 'Invalid transaction';
 const BROADCAST_FAILED_TXT = 'Oops! Something Went Wrong.';
+const PAGE_TITLE = 'Broadcast raw tx';
 
 class BroadcastTx extends Component {
   constructor(props) {
@@ -60,7 +61,7 @@ class BroadcastTx extends Component {
       <div className="BroadcastTx">
         <section>
           <h1 className="d-block d-sm-inline-block text-white mb-3 mb-lg-5">
-            Broadcast raw transaction
+            {PAGE_TITLE}
           </h1>
           <form onSubmit={this.handleSubmit}>
             <div className="form-group">
