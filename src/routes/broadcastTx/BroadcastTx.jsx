@@ -23,6 +23,7 @@ class BroadcastTx extends Component {
 
     this.state = {
       hex: '',
+      hexReadOnly: false,
       decodedTx: null,
       decodedTxValid: false,
       progress: false,
@@ -34,7 +35,7 @@ class BroadcastTx extends Component {
     this.handleInputChange = this.handleInputChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.pasteFromClipboard = this.pasteFromClipboard.bind(this);
-    this.decodeHex = debounce(this.decodeHex, 500);
+    this.handleHexChange = debounce(this.handleHexChange, 500);
   }
 
   componentDidMount() {
@@ -48,9 +49,8 @@ class BroadcastTx extends Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    if (this.state.hex !== prevState.hex && this.state.hex !== '') {
-      this.setState({ decodedTx: null, decodedTxValid: false, broadcastResponse: '', error: '' });
-      this.decodeHex(this.state.hex);
+    if (this.state.hex !== prevState.hex) {
+      this.handleHexChange(this.state.hex);
     }
   }
 
@@ -70,7 +70,12 @@ class BroadcastTx extends Component {
               </label>
               <div className="textarea-container position-relative">
                 {progress && <Loading />}
-                <textarea className="form-control" value={hex} onChange={this.handleInputChange} />
+                <textarea
+                  className="form-control"
+                  value={hex}
+                  onChange={this.handleInputChange}
+                  readOnly={this.state.hexReadOnly}
+                />
               </div>
             </div>
             <div className="assets">
@@ -103,7 +108,7 @@ class BroadcastTx extends Component {
               </div>
               <div className="col">
                 <ButtonToolbar className="d-flex justify-content-end">
-                  {this.state.clipboardApiSupported && (
+                  {this.state.clipboardApiSupported && !this.state.hexReadOnly && (
                     <Button onClick={this.pasteFromClipboard} type="dark-2">
                       <i className="fal fa-paste" /> Paste
                     </Button>
@@ -123,7 +128,7 @@ class BroadcastTx extends Component {
   initHexFromRouteParam() {
     const { hex } = RouterUtils.getRouteParams(this.props);
     if (hex) {
-      this.setState({ hex });
+      this.setState({ hex, hexReadOnly: true });
     }
   }
 
@@ -135,20 +140,28 @@ class BroadcastTx extends Component {
     });
   }
 
-  decodeHex(hex) {
-    if (this.hexValid(hex)) {
-      this.cancelCurrentDecodeRequest();
-      this.currentDecodePromise = Service.transactions.rawToTx(hex);
-      this.currentDecodePromise
-        .then(res => {
-          this.setState({ decodedTx: res.data, decodedTxValid: true });
-          this.props.history.push(`/pushTx/${hex}`);
-        })
-        .catch(error => {
-          const message = error.data.customMessage ? error.data.customMessage : INVALID_TXT;
-          this.setState({ decodedTx: null, decodedTxValid: false, error: message });
-        });
+  handleHexChange(hex) {
+    if (this.state.hex !== '') {
+      this.setState({ decodedTx: null, decodedTxValid: false, broadcastResponse: '', error: '' });
+      
+      if (this.hexValid(hex)) {
+        this.decodeHex(hex);
+      }
     }
+  }
+
+  decodeHex(hex) {
+    this.cancelCurrentDecodeRequest();
+    this.currentDecodePromise = Service.transactions.rawToTx(hex);
+    this.currentDecodePromise
+      .then(res => {
+        this.setState({ decodedTx: res.data, decodedTxValid: true });
+        this.props.history.push(`/broadcastTx/${hex}`);
+      })
+      .catch(error => {
+        const message = error.data.customMessage ? error.data.customMessage : INVALID_TXT;
+        this.setState({ decodedTx: null, decodedTxValid: false, error: message, hexReadOnly: false, });
+      });
   }
 
   handleSubmit(event) {

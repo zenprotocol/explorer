@@ -52,7 +52,7 @@ function FooterLinks() {
       <div className="col-md-4">
         <ul className="nav flex-column">
           <li className="nav-item">
-            <Link className="nav-link text-nowrap" to="/pushTx">Broadcast Raw Tx</Link>
+            <Link className="nav-link text-nowrap" to="/broadcastTx">Broadcast Raw Tx</Link>
           </li>
           <li className="nav-item">
             <ExternalLink
