@@ -1,6 +1,9 @@
 .TransactionAsset {
   margin-bottom: 40px;
 }
+.TransactionAsset:last-child {
+  margin-bottom: 10px;
+}
 .TransactionAsset .outputs .total {
   display: inline-block;
   padding: 5px;
