@@ -40,6 +40,7 @@ class BroadcastTx extends Component {
   }
 
   componentDidMount() {
+    console.log(this.props);
     this.checkClipboardApiSupported();
     this.initHexFromRouteParam();
   }
@@ -157,12 +158,19 @@ class BroadcastTx extends Component {
     this.currentDecodePromise
       .then(res => {
         this.setState({ decodedTx: res.data, decodedTxValid: true });
-        this.props.history.push(`/broadcastTx/${hex}`);
+        this.setPageLocation(hex);
       })
       .catch(error => {
         const message = error.data.customMessage ? error.data.customMessage : INVALID_TXT;
         this.setState({ decodedTx: null, decodedTxValid: false, error: message, hexReadOnly: false, });
       });
+  }
+
+  setPageLocation(hexToSet) {
+    const { hex } = RouterUtils.getRouteParams(this.props);
+    if(hexToSet !== hex) {
+      this.props.history.replace(`/broadcastTx/${hexToSet}`);
+    }
   }
 
   handleSubmit(event) {
