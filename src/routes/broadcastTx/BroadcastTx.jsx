@@ -40,7 +40,6 @@ class BroadcastTx extends Component {
   }
 
   componentDidMount() {
-    console.log(this.props);
     this.checkClipboardApiSupported();
     this.initHexFromRouteParam();
   }
