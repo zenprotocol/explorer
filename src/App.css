@@ -4,12 +4,6 @@
   border-bottom: 1px solid #303030;
 }
 
-@media (min-width: 992px) {
-  .App-separator {
-    margin-bottom: 68px !important;
-  }
-}
-
 section {
   margin-bottom: 70px;
   position: relative;

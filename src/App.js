@@ -45,7 +45,7 @@ class App extends Component {
         <div className="container px-lg-5">
           <Navbar />
         </div>
-        <div className="App-separator mb-3" />
+        <div className="App-separator mb-3 mb-lg-5" />
         <div className="container px-lg-5">
           <MainRoutes />
         </div>
