@@ -42,15 +42,21 @@ class App extends Component {
   render() {
     return (
       <div className="App">
-        <div className="container px-lg-5">
-          <Navbar />
+        <div className="navbar-container">
+          <div className="container px-lg-5">
+            <Navbar />
+          </div>
         </div>
         <div className="App-separator mb-3 mb-lg-5" />
-        <div className="container px-lg-5">
-          <MainRoutes />
+        <div className="body-container">
+          <div className="container px-lg-5">
+            <MainRoutes />
+          </div>
         </div>
-        <div className="container px-lg-5">
-          <Footer />
+        <div className="footer-container">
+          <div className="container px-lg-5">
+            <Footer />
+          </div>
         </div>
       </div>
     );

@@ -1,20 +1,25 @@
 @import url('https://fonts.googleapis.com/css?family=Roboto+Mono|Roboto:400,500');
+@import 'style/colors';
 
-.App-separator {
-  border-bottom: 1px solid #303030;
-}
+.App {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  
+  .App-separator {
+    border-bottom: 0 solid $dark;
+  }
 
-section {
-  margin-bottom: 70px;
-  position: relative;
-}
+  .body-container {
+    flex: 1;
+  }
 
-select, input, textarea {
-  background-color: transparent !important;
-  color: #999999 !important;
-  border-color: #303030 !important;
-}
+  .navbar-container,
+  .footer-container {
+    background-color: $gray-800;
+  }
 
-textarea {
-  min-height: 150px;
+  .footer-container {
+    flex-shrink: 0;
+  }
 }
