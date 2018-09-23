@@ -29,8 +29,8 @@
     "client:build": "npm-run-all client:css:build client:js:build",
     "client:test": "react-scripts test --env=jsdom",
     "client:lib:test": "babel-tape-runner src/lib/**/**/*.test.js | tap-bail | tap-spec",
-    "client:css:build": "node-sass-chokidar src/ -o src/",
-    "client:css:watch": "npm run client:css:build && node-sass-chokidar src/ -o src/ --watch --recursive",
+    "client:css:build": "node-sass-chokidar --include-path ./src --include-path ./node_modules src/ -o src/",
+    "client:css:watch": "npm run client:css:build && node-sass-chokidar --include-path ./src --include-path ./node_modules src/ -o src/ --watch --recursive",
     "client:js:start": "react-scripts start",
     "client:js:build": "react-scripts build",
     "client:eject": "react-scripts eject"
