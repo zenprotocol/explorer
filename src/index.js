@@ -5,7 +5,6 @@ import App from './App.js';
 import ScrollToTop from './components/scroll/ScrollToTop.jsx';
 import './polyfills';
 import './style/index.css';
-import './index.css';
 // import registerServiceWorker from './registerServiceWorker';
 
 ReactDOM.render(
