@@ -1,0 +1,31 @@
+@import 'colors';
+
+html {
+  font-size: 0.9rem;
+}
+
+.no-text-transform {
+  text-transform: initial !important;
+}
+
+.break-word {
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  word-break: break-all;
+  word-break: break-word;
+}
+
+section {
+  margin-bottom: 70px;
+  position: relative;
+}
+
+select, input, textarea {
+  background-color: transparent !important;
+  color: $gray-500 !important;
+  border-color: $border-color !important;
+}
+
+textarea {
+  min-height: 150px;
+}

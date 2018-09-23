@@ -1,0 +1,31 @@
+$grid-breakpoints: (
+  xs: 0,
+  sm: 576px,
+  md: 768px,
+  lg: 992px,
+  xl: 1200px
+);
+
+$font-size-base: 1rem;
+$h1-font-size: $font-size-base * 2;
+$h2-font-size: $font-size-base * 1.8;
+$h3-font-size: $font-size-base * 1.6;
+$h4-font-size: $font-size-base * 1.4;
+$h5-font-size: $font-size-base * 1.2;
+$h6-font-size: $font-size-base;
+
+$spacer: 1rem;
+$spacers: ();
+$spacers: map-merge(
+  (
+    0: 0,
+    1: ($spacer * .25),
+    2: ($spacer * .5),
+    3: $spacer,
+    4: ($spacer * 1.5),
+    5: ($spacer * 3)
+  ),
+  $spacers
+);
+
+$border-width: 1px;
