@@ -69,6 +69,8 @@ class TransactionPage extends Component {
               </table>
             </div>
           </div>
+        </section>
+        <section>
           <Transaction transaction={transaction} disableTXLinks={true} />
         </section>
       </div>
