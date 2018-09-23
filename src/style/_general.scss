@@ -20,12 +20,6 @@ section {
   position: relative;
 }
 
-select, input, textarea {
-  background-color: transparent !important;
-  color: $gray-500 !important;
-  border-color: $border-color !important;
-}
-
 textarea {
   min-height: 150px;
 }

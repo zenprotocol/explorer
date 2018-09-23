@@ -117,7 +117,7 @@ class BlockPage extends Component {
               <table className="table">
                 <thead>
                   <tr>
-                    <th scope="col" colSpan="2" className="text-white border-0">
+                    <th scope="col" colSpan="2">
                       SUMMARY
                     </th>
                   </tr>

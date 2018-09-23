@@ -1,3 +1,5 @@
+@import 'style/colors';
+
 .TransactionAsset {
   margin-bottom: 40px;
 }
@@ -7,30 +9,29 @@
 .TransactionAsset .outputs .total {
   display: inline-block;
   padding: 5px;
-  color: #bfbfbf;
-  border: solid 1px #bfbfbf;
+  border: solid 1px $body-color;
 }
 .TransactionAsset.output .arrow,
 .TransactionAsset.output .outputs .total {
-  color: #7bcc3a;
-  border-color: #7bcc3a;
+  color: $green;
+  border-color: $green;
   
 }
 .TransactionAsset.input .arrow,
 .TransactionAsset.input .outputs .total {
-  color: #fd3a3a;
-  border-color: #fd3a3a;
+  color: $red;
+  border-color: $red;
 }
 .TransactionAsset.input.output .arrow,
 .TransactionAsset.input.output .outputs .total {
-  color: #fd3a3a;
-  border-color: #fd3a3a;
+  color: $red;
+  border-color: $red;
 }
 
 .TransactionAsset div[class^="col"],
 .TransactionAsset .address {
   padding: 0.75rem;
-  border-color: #303030 !important;
+  border-color: $border-color;
 }
 
 .TransactionAsset .address {
@@ -47,5 +48,5 @@
   top: 0;
   right: 0;
   padding: 0.75rem;
-  background-color: #010203;
+  background-color: $table-bg;
 }

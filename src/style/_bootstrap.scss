@@ -23,6 +23,35 @@ $table-cell-padding-sm:       .3rem !default;
 $table-border-width:          $border-width !default;
 $table-border-color:          $border-color !default;
 
+// Pagination
+$pagination-padding-y:              .5rem !default;
+$pagination-padding-x:              .75rem !default;
+$pagination-padding-y-sm:           .5rem !default;
+$pagination-padding-x-sm:           .5rem !default;
+$pagination-padding-y-lg:           .75rem !default;
+$pagination-padding-x-lg:           1.5rem !default;
+$pagination-line-height:            1.25 !default;
+
+$pagination-color:                  $gray;
+$pagination-bg:                     $gray-700;
+$pagination-border-width:           0;
+$pagination-border-color:           $black;
+
+$pagination-focus-box-shadow:       0;
+$pagination-focus-outline:          0;
+
+$pagination-hover-color:            $white;
+$pagination-hover-bg:               $gray-600;
+$pagination-hover-border-color:     $black;
+
+$pagination-active-color:           $white;
+$pagination-active-bg:              $pagination-hover-bg;
+$pagination-active-border-color:    $pagination-hover-border-color;
+
+$pagination-disabled-color:         $gray-600;
+$pagination-disabled-bg:            $white;
+$pagination-disabled-border-color:  $black;
+
 @import '../../node_modules/bootstrap/scss/functions';
 @import '../../node_modules/bootstrap/scss/variables';
 
@@ -59,29 +88,33 @@ $table-border-color:          $border-color !default;
 @import '../../node_modules/bootstrap/scss/utilities';
 @import '../../node_modules/bootstrap/scss/print';
 
-.page-link {
-  background-color: transparent;
-  color: #a6a6a6 !important;
-  user-select: none;
-  font-size: 1rem;
-  text-transform: uppercase;
-  border-color: $border-color !important;
+.page-item {
+  .page-link {
+    user-select: none;
+    border-right-width: 1px;
+  }
+  &:last-child .page-link {
+    border-right-width: 0;
+  }
+  &.active .page-link {
+    font-weight: $font-weight-bold;
+  }
 }
 
-.page-item.active .page-link {
-  z-index: 1;
-  color: $white !important;
-  background-color: #a6a6a6;
-  border-color: $border-color !important;
-}
+// .page-item.active .page-link {
+//   z-index: 1;
+//   color: $white !important;
+//   background-color: #a6a6a6;
+//   border-color: $border-color !important;
+// }
 
-.page-item.disabled .page-link {
-  color: #6c757d;
-  pointer-events: none;
-  cursor: auto;
-  background-color: transparent;
-  border-color: $border-color !important;
-}
+// .page-item.disabled .page-link {
+//   color: #6c757d;
+//   pointer-events: none;
+//   cursor: auto;
+//   background-color: transparent;
+//   border-color: $border-color !important;
+// }
 
 .table {
   thead th {

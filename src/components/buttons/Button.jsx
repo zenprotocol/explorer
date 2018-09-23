@@ -33,6 +33,6 @@ Button.propTypes = {
 };
 
 Button.defaultProps = {
-  type: 'primary-strong',
+  type: 'primary',
   size: 'lg',
 };

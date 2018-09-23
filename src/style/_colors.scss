@@ -8,6 +8,7 @@ $gray-600: #1b2024;
 $gray-700: #14171a;
 $gray-800: #0f1113;
 $gray-900: #08090a;
+$gray: $gray-500;
 $black : #000000;
 $black-accent: $gray-900;
 
@@ -38,7 +39,7 @@ $colors: map-merge((
   "white":      $white,
   "black":      $black,
   "black-accent": $black-accent,
-  "gray":       $gray-500,
+  "gray":       $gray,
   "gray-dark":  $gray-600
 ), $colors);
 
@@ -74,5 +75,11 @@ $table-head-bg: $gray-800;
 $table-head-color: $white;
 $table-bg: $gray-900;
 $table-accent-bg:rgba($black, .05) !default;
-$table-hover-bg: rgba($black, .075) !default;
-$table-active-bg: $table-hover-bg !default;
+$table-hover-bg: $gray-700;
+$table-active-bg: $table-hover-bg;
+
+$input-bg: transparent;
+$input-disabled-bg: transparent;
+$input-color: $gray-500;
+$input-border-color: $border-color;
+$input-focus-border-color: lighten($border-color, 5%);

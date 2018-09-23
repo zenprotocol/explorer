@@ -29,6 +29,6 @@ LinkButton.propTypes = {
 
 LinkButton.defaultProps = {
   target: '_self',
-  type: 'primary-strong',
+  type: 'primary',
   size: 'lg',
 };

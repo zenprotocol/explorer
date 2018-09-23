@@ -1,5 +1,7 @@
+@import 'style/colors';
+
 .Chart {
-  background-color: #0e0e0e;
+  background-color: $gray-900;
 }
 
 .Chart .title {

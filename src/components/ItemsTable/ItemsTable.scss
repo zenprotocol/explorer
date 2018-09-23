@@ -1,26 +1,37 @@
-.ItemsTable .negative {
-  color: #fd3a3a;
-}
+@import 'style/colors';
 
-.ItemsTable .positive {
-  color: #7bcc3a;
-}
-
-.ItemsTable .expand {
-  cursor: 'pointer';
-  padding: 0;
-  text-align: center;
-  user-select: none;
-}
-
-.ItemsTable .rt-tr.expandable {
-  cursor: pointer;
-}
-.ItemsTable .rt-tr.expandable:hover {
-  background-color: rgba(255, 255, 255, 0.1);
-}
-.ItemsTable .rt-tr.-padRow,
-.ItemsTable .rt-tr.-padRow:hover {
-  background-color: transparent;
-  cursor: default;
+.ItemsTable {
+  .negative {
+    color: #fd3a3a;
+  }
+  
+  .positive {
+    color: #7bcc3a;
+  }
+  
+  .expand {
+    cursor: 'pointer';
+    padding: 0;
+    text-align: center;
+    user-select: none;
+  }
+  
+  .rt-tr.expandable {
+    cursor: pointer;
+  }
+  .rt-tr.expandable:hover {
+    background-color: $table-hover-bg;
+  }
+  .rt-tr.-padRow,
+  .rt-tr.-padRow:hover {
+    background-color: transparent;
+    cursor: default;
+  }
+  
+  .ItemsTable-pageSizes {
+    color: $gray;
+    select {
+      background-color: $gray-700;
+    }
+  }
 }

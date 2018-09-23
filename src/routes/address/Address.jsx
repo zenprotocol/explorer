@@ -61,7 +61,7 @@ class AddressPage extends Component {
                 <table className="table">
                   <thead>
                     <tr>
-                      <th scope="col" colSpan="2" className="text-white border-0">
+                      <th scope="col" colSpan="2">
                         SUMMARY
                       </th>
                     </tr>
@@ -94,15 +94,15 @@ class AddressPage extends Component {
                 <table className="table">
                   <thead>
                     <tr>
-                      <th scope="col" colSpan="2" className="text-white border-0">
+                      <th scope="col" colSpan="2">
                         BALANCES
                       </th>
                     </tr>
                     <tr>
-                      <th scope="col" className="text-white border-bottom-0">
+                      <th scope="col">
                         ASSET
                       </th>
-                      <th scope="col" className="text-white border-bottom-0">
+                      <th scope="col">
                         AMOUNT
                       </th>
                     </tr>

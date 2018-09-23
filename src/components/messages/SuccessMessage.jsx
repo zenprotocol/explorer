@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import Message from './Message.jsx';
 
 export default function SuccessMessage(props) {
-  return <Message theme="primary-strong" icon={<i className="fal fa-check-circle"></i>}>{props.children}</Message>;
+  return <Message theme="primary" icon={<i className="fal fa-check-circle"></i>}>{props.children}</Message>;
 }
 
 SuccessMessage.propTypes = {
