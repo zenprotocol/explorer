@@ -1,52 +1,46 @@
 @import 'style/colors';
-
 .TransactionAsset {
   margin-bottom: 40px;
-}
-.TransactionAsset:last-child {
-  margin-bottom: 10px;
-}
-.TransactionAsset .outputs .total {
-  display: inline-block;
-  padding: 5px;
-  border: solid 1px $body-color;
-}
-.TransactionAsset.output .arrow,
-.TransactionAsset.output .outputs .total {
-  color: $green;
-  border-color: $green;
-  
-}
-.TransactionAsset.input .arrow,
-.TransactionAsset.input .outputs .total {
-  color: $red;
-  border-color: $red;
-}
-.TransactionAsset.input.output .arrow,
-.TransactionAsset.input.output .outputs .total {
-  color: $red;
-  border-color: $red;
-}
-
-.TransactionAsset div[class^="col"],
-.TransactionAsset .address {
-  padding: 0.75rem;
-  border-color: $border-color;
-}
-
-.TransactionAsset .address {
-  border-bottom-width: 1px;
-  border-bottom-style: solid;
-}
-
-.TransactionAsset .inputs .address {
-  border-color: transparent !important;
-}
-
-.TransactionAsset .arrow {
-  position: absolute;
-  top: 0;
-  right: 0;
-  padding: 0.75rem;
-  background-color: $table-bg;
+  &:last-child {
+    margin-bottom: 10px;
+  }
+  .outputs .total {
+    display: inline-block;
+    padding: 5px;
+    border: solid 1px $body-color;
+  }
+  &.output .arrow,
+  &.output .outputs .total {
+    color: $green;
+    border-color: $green;
+  }
+  &.input .arrow,
+  &.input .outputs .total {
+    color: $red;
+    border-color: $red;
+  }
+  &.input.output .arrow,
+  &.input.output .outputs .total {
+    color: $red;
+    border-color: $red;
+  }
+  div[class^="col"],
+  .address {
+    padding: 0.75rem;
+    border-color: $border-color;
+  }
+  .address {
+    border-bottom-width: 1px;
+    border-bottom-style: solid;
+  }
+  .inputs .address {
+    border-color: transparent !important;
+  }
+  .arrow {
+    position: absolute;
+    top: 0;
+    right: 0;
+    padding: 0.75rem;
+    background-color: $table-bg;
+  }
 }

@@ -1,18 +1,15 @@
 @import 'style/colors';
-
 .Chart {
   background-color: $gray-900;
-}
-
-.Chart .title {
-  border-width: 0;
-  border-bottom-width: 1px;
-  border-style: solid;
-  padding: 25px;
-  margin-bottom: 40px;
-}
-
-.Chart .title a {
-  color: inherit;
-  text-decoration: none;
+  .title {
+    border-width: 0;
+    border-bottom-width: 1px;
+    border-style: solid;
+    padding: 25px;
+    margin-bottom: 40px;
+  }
+  .title a {
+    color: inherit;
+    text-decoration: none;
+  }
 }

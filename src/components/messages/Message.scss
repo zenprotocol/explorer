@@ -9,14 +9,13 @@
   display: inline-block;
   font-size: 1.4rem;
   color: #808080;
-}
-.Message.has-icon {
-  padding-left: 100px;
-}
-
-.Message .Message-icon {
-  position: absolute;
-  top: 20px;
-  left: 36px;
-  font-size: 2.8rem;
+  &.has-icon {
+    padding-left: 100px;
+  }
+  .Message-icon {
+    position: absolute;
+    top: 20px;
+    left: 36px;
+    font-size: 2.8rem;
+  }
 }
