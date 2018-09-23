@@ -30,5 +30,5 @@ coverage
 /logs
 
 # generated
-src/*.css
+*.css
 /build
