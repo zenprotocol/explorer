@@ -18,10 +18,10 @@ $link-hover-color: darken($link-color, 15%);
 $link-hover-decoration: underline;
 
 // Tables
-$table-cell-padding:          .75rem !default;
-$table-cell-padding-sm:       .3rem !default;
-$table-border-width:          $border-width !default;
-$table-border-color:          $border-color !default;
+$table-cell-padding : $table-padding-y $table-padding-x;
+$table-cell-padding-sm : .3rem !default;
+$table-border-width : $border-width !default;
+$table-border-color : $border-color !default;
 
 // Pagination
 $pagination-padding-y : .5rem !default;

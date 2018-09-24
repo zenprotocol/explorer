@@ -1,4 +1,5 @@
 @import 'style/colors';
+@import 'style/sizes';
 
 .GenericTable .ReactTable {
   .rt-thead .rt-tr {
@@ -28,7 +29,7 @@
     text-transform: uppercase;
     color: $table-head-color;
     text-align: left;
-    padding: 16px 12px;
+    padding: $table-header-padding-y $table-header-padding-x;
   }
   
   .rt-tbody {
@@ -39,7 +40,7 @@
     font-weight: 400;
     font-size: 0.9rem;
     letter-spacing: -0.5px;
-    padding: 12px 12px;
+    padding: $table-padding-y $table-padding-x;
     overflow: visible;
   }
   
