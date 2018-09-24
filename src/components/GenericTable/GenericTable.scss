@@ -42,7 +42,7 @@
   }
   
   .pagination-bottom {
-    margin-top: 30px;
+    margin-top: map-get($spacers, 4);
   }
   .-pagination {
     justify-content: flex-end;
