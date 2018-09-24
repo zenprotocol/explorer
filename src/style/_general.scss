@@ -1,4 +1,13 @@
-@import 'colors';
+@import 'sizes';
+
+section {
+  margin-bottom: 70px;
+  position: relative;
+}
+
+textarea {
+  min-height: 150px;
+}
 
 .no-text-transform {
   text-transform: initial !important;
@@ -11,11 +20,12 @@
   word-break: break-word;
 }
 
-section {
-  margin-bottom: 70px;
-  position: relative;
+.font-size-sm {
+  font-size: $font-size-sm;
 }
-
-textarea {
-  min-height: 150px;
+.font-size-md {
+  font-size: $font-size-md;
+}
+.font-size-lg {
+  font-size: $font-size-lg;
 }

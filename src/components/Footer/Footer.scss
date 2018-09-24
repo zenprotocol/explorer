@@ -2,7 +2,6 @@
 
 .Footer {
   color: $gray;
-  font-size: 0.9rem;
   padding: 10px 0;
   img.logo {
     height: 40px;
@@ -13,9 +12,6 @@
   }
   .FooterLinks a:hover {
     color: $white;
-  }
-  .FooterSocial {
-    font-size: 1rem;
   }
   .separator {
     border-style: solid;

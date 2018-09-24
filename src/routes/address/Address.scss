@@ -1,8 +1,10 @@
+@import 'style/colors';
+@import 'style/sizes';
 .Address {
   h1 .address {
-    font-size: 1rem;
-    font-weight: normal;
-    color: #bfbfbf;
+    font-size: $font-size-md;
+    font-weight: $font-weight-normal;
+    color: $gray-400;
     margin-top: 10px;
   }
 }

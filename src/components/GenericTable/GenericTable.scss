@@ -5,9 +5,6 @@
   .rt-thead .rt-tr {
     border-bottom: 1px solid $black;
   }
-  .rt-thead .rt-th {
-    border-right-color: transparent;
-  }
   .rt-tbody .rt-tr-group {
     border-bottom: none;
   }
@@ -24,12 +21,13 @@
     background-color: $table-head-bg;
   }
   .rt-thead .rt-th {
-    font-weight: 500;
-    font-size: 1rem;
+    font-size: $font-size-md;
+    font-weight: $font-weight-bold;
     text-transform: uppercase;
     color: $table-head-color;
     text-align: left;
     padding: $table-header-padding-y $table-header-padding-x;
+    border-right-color: transparent;
   }
   
   .rt-tbody {
@@ -37,8 +35,7 @@
     background-color: $table-bg;
   }
   .rt-td {
-    font-weight: 400;
-    font-size: 0.9rem;
+    font-weight: $font-weight-normal;
     letter-spacing: -0.5px;
     padding: $table-padding-y $table-padding-x;
     overflow: visible;

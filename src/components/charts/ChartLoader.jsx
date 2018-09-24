@@ -156,7 +156,7 @@ export default class ChartLoader extends PureComponent {
 
     return (
       <div className="Chart">
-        {showTitle && <h5 className="title text-white border-dark">{title}</h5>}
+        {showTitle && <div className="title display-4 text-white border-dark">{title}</div>}
         {React.createElement(componentType, {
           data: Mappers[chartName](this.state.data),
           ...chartConfig,

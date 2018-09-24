@@ -12,7 +12,6 @@ import SuccessMessage from '../../components/messages/SuccessMessage.jsx';
 import ErrorMessage from '../../components/messages/ErrorMessage.jsx';
 import TransactionAsset from '../../components/Transactions/Asset/TransactionAsset.jsx';
 import './BroadcastTx.css';
-import '../page.css';
 
 const INVALID_TXT = 'Invalid transaction';
 const BROADCAST_FAILED_TXT = 'Oops! Something Went Wrong.';

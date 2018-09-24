@@ -1,4 +1,7 @@
+@import 'style/sizes';
 .Navbar {
+  font-size: $font-size-lg;
+  
   .navbar-brand img.logo {
     height: 50px;
     width: auto;

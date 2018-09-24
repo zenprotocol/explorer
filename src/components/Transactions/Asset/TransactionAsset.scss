@@ -1,6 +1,10 @@
 @import 'style/colors';
+@import 'style/sizes';
 .TransactionAsset {
   margin-bottom: 40px;
+  .th {
+    font-size: $font-size-md;
+  }
   &:last-child {
     margin-bottom: 10px;
   }

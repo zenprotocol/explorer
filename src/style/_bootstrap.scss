@@ -7,8 +7,7 @@
   @include bg-variant(".bg-#{$color}", $value);
 }
 
-$btn-font-weight: 500;
-$font-weight-bold: 500;
+$btn-font-weight: $font-weight-bold;
 $input-btn-focus-box-shadow: 0;
 $font-family-sans-serif: 'Roboto', -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol" !default;
 $font-family-monospace: 'Roboto Mono', SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace !default;
@@ -54,6 +53,15 @@ $navbar-dark-active-color:          $white !default;
 $navbar-dark-disabled-color:        rgba($white, .25) !default;
 $navbar-dark-toggler-icon-bg:       str-replace(url("data:image/svg+xml;charset=utf8,%3Csvg viewBox='0 0 30 30' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath stroke='#{$navbar-dark-color}' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E"), "#", "%23") !default;
 $navbar-dark-toggler-border-color:  rgba($white, .1) !default;
+
+$display1-size : 1.5rem;
+$display2-size : 1.25rem;
+$display3-size : 1.125rem;
+$display4-size : 1rem;
+$display1-weight : 400;
+$display2-weight : 400;
+$display3-weight : 400;
+$display4-weight : 400;
 
 @import '../../node_modules/bootstrap/scss/functions';
 @import '../../node_modules/bootstrap/scss/variables';
@@ -112,10 +120,12 @@ $navbar-dark-toggler-border-color:  rgba($white, .1) !default;
 .table {
   thead th {
     color: $table-head-color;
+    font-size: $font-size-md;
     font-weight: $font-weight-bold;
     background-color: $table-head-bg;
     border-top: none;
     border-bottom: 1px solid $black;
+    padding: $table-header-padding-y $table-header-padding-x;
   }
 
   tbody td {
