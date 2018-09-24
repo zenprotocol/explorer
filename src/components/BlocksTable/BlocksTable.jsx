@@ -14,8 +14,6 @@ class BlocksTable extends Component {
       {
         Header: 'Timestamp',
         accessor: 'timestamp',
-        minWidth: 120,
-        maxWidth: 120,
         Cell: function(data) {
           return TextUtils.getDateStringFromTimestamp(data.value);
         },
@@ -23,7 +21,6 @@ class BlocksTable extends Component {
       {
         Header: 'Block',
         accessor: 'blockNumber',
-        width: 80,
         Cell: data => <Link to={`/blocks/${data.value}`}>{data.value}</Link>,
       },
       {
@@ -41,7 +38,7 @@ class BlocksTable extends Component {
         },
       },
       {
-        Header: 'Transactions',
+        Header: 'Txs',
         accessor: 'transactionCount',
       },
     ];
