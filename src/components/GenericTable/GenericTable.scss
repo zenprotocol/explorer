@@ -30,12 +30,6 @@
     text-align: left;
     padding: 16px 12px;
   }
-  .rt-thead .rt-th:first-child {
-    padding-left: 0 !important;
-  }
-  .rt-thead .rt-th:last-child {
-    padding-right: 0 !important;
-  }
   
   .rt-tbody {
     overflow: visible;
@@ -47,13 +41,6 @@
     letter-spacing: -0.5px;
     padding: 12px 12px;
     overflow: visible;
-  }
-  
-  .rt-td:first-child {
-    padding-left: 0 !important;
-  }
-  .rt-td:last-child {
-    padding-right: 0 !important;
   }
   
   .pagination-bottom {

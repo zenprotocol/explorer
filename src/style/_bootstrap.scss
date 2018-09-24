@@ -24,33 +24,36 @@ $table-border-width:          $border-width !default;
 $table-border-color:          $border-color !default;
 
 // Pagination
-$pagination-padding-y:              .5rem !default;
-$pagination-padding-x:              .75rem !default;
-$pagination-padding-y-sm:           .5rem !default;
-$pagination-padding-x-sm:           .5rem !default;
-$pagination-padding-y-lg:           .75rem !default;
-$pagination-padding-x-lg:           1.5rem !default;
-$pagination-line-height:            1.25 !default;
+$pagination-padding-y : .5rem !default;
+$pagination-padding-x : .75rem !default;
+$pagination-padding-y-sm : .5rem !default;
+$pagination-padding-x-sm : .5rem !default;
+$pagination-padding-y-lg : .75rem !default;
+$pagination-padding-x-lg : 1.5rem !default;
+$pagination-line-height : 1.25 !default;
+$pagination-color : $gray;
+$pagination-bg : $gray-700;
+$pagination-border-width : 0;
+$pagination-border-color : $black;
+$pagination-focus-box-shadow : 0;
+$pagination-focus-outline : 0;
+$pagination-hover-color : $white;
+$pagination-hover-bg : $gray-600;
+$pagination-hover-border-color : $black;
+$pagination-active-color : $white;
+$pagination-active-bg : $pagination-hover-bg;
+$pagination-active-border-color : $pagination-hover-border-color;
+$pagination-disabled-color : $pagination-color;
+$pagination-disabled-bg : $pagination-bg;
+$pagination-disabled-border-color : $black;
 
-$pagination-color:                  $gray;
-$pagination-bg:                     $gray-700;
-$pagination-border-width:           0;
-$pagination-border-color:           $black;
-
-$pagination-focus-box-shadow:       0;
-$pagination-focus-outline:          0;
-
-$pagination-hover-color:            $white;
-$pagination-hover-bg:               $gray-600;
-$pagination-hover-border-color:     $black;
-
-$pagination-active-color:           $white;
-$pagination-active-bg:              $pagination-hover-bg;
-$pagination-active-border-color:    $pagination-hover-border-color;
-
-$pagination-disabled-color:         $gray-600;
-$pagination-disabled-bg:            $white;
-$pagination-disabled-border-color:  $black;
+// Navbar
+$navbar-dark-color:                 rgba($white, .5) !default;
+$navbar-dark-hover-color:           rgba($white, .75) !default;
+$navbar-dark-active-color:          $white !default;
+$navbar-dark-disabled-color:        rgba($white, .25) !default;
+$navbar-dark-toggler-icon-bg:       str-replace(url("data:image/svg+xml;charset=utf8,%3Csvg viewBox='0 0 30 30' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath stroke='#{$navbar-dark-color}' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E"), "#", "%23") !default;
+$navbar-dark-toggler-border-color:  rgba($white, .1) !default;
 
 @import '../../node_modules/bootstrap/scss/functions';
 @import '../../node_modules/bootstrap/scss/variables';
@@ -89,32 +92,22 @@ $pagination-disabled-border-color:  $black;
 @import '../../node_modules/bootstrap/scss/print';
 
 .page-item {
-  .page-link {
+  a.page-link {
     user-select: none;
     border-right-width: 1px;
+    color: $pagination-color;
   }
-  &:last-child .page-link {
+  &:last-child a.page-link {
     border-right-width: 0;
   }
-  &.active .page-link {
+  &.active a.page-link {
     font-weight: $font-weight-bold;
+    
+    &:hover {
+      color: $white;
+    } 
   }
 }
-
-// .page-item.active .page-link {
-//   z-index: 1;
-//   color: $white !important;
-//   background-color: #a6a6a6;
-//   border-color: $border-color !important;
-// }
-
-// .page-item.disabled .page-link {
-//   color: #6c757d;
-//   pointer-events: none;
-//   cursor: auto;
-//   background-color: transparent;
-//   border-color: $border-color !important;
-// }
 
 .table {
   thead th {
@@ -128,11 +121,6 @@ $pagination-disabled-border-color:  $black;
   tbody td {
     border-top: none;
     border-bottom: 1px solid $border-color;
-  }
-
-  td:first-child,
-  th:first-child {
-    padding-left: 0;
   }
 }
 

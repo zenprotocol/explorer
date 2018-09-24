@@ -1,3 +1,5 @@
+@import 'style/colors';
+
 .Info {
   .row .col {
     padding: 11px 10px;
@@ -11,14 +13,14 @@
     font-size: 1.08rem;
   }
   .content-box.chain .icon {
-    color: #fd3a3a !important;
+    color: $red !important;
     font-size: 3rem;
   }
   .content-box.chain .content .value {
     font-family: 'Roboto';
   }
   .content-box.blocks .icon {
-    color: #3384f3 !important;
+    color: $blue !important;
     font-size: 3.5rem;
   }
   .content-box.transactions .icon {
