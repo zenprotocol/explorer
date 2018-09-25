@@ -44,7 +44,7 @@ class SearchBar extends Component {
 
   render() {
     return (
-      <form onSubmit={this.handleSubmit} className="form-search my-3 my-lg-0">
+      <form onSubmit={this.handleSubmit} className="SearchBar form-search my-3 my-lg-0">
         <div className="input-group">
           <input
             value={blockStore.searchString}

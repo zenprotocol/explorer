@@ -78,8 +78,9 @@ $table-accent-bg:rgba($black, .05) !default;
 $table-hover-bg: $gray-700;
 $table-active-bg: $table-hover-bg;
 
-$input-bg: transparent;
+$input-bg: $black;
 $input-disabled-bg: transparent;
-$input-color: $gray-500;
+$input-color: $gray-400;
 $input-border-color: $border-color;
 $input-focus-border-color: lighten($border-color, 5%);
+$input-placeholder-color: $input-color;

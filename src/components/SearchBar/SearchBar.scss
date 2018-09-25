@@ -1,13 +1,15 @@
-.btn-search {
-  color: #808080;
-}
-
-.form-search .input-group {
-  width: 100%;
-}
-
-@media (min-width: 992px) {
-  .form-search {
-    width: 50%;
+.SearchBar {
+  .btn-outline-dark {
+    color: inherit;
+  }
+  
+  &.form-search .input-group {
+    width: 100%;
+  }
+  
+  @media (min-width: 992px) {
+    &.form-search {
+      width: 50%;
+    }
   }
 }
