@@ -12,7 +12,7 @@ class ItemsTable extends Component {
     super(props);
 
     this.state = {
-      windowWidth: 0,
+      windowWidth: 1000,
       expanded: {},
     };
 
