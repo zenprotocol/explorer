@@ -104,7 +104,7 @@ class Navbar extends Component {
     const { isCollapsing, collapsed } = this.state;
     return (
       <div className={classnames(this.props.className, 'Navbar')}>
-        <nav className="navbar navbar-dark navbar-expand-lg px-0">
+        <nav className="navbar navbar-dark navbar-expand-lg py-0 px-0">
           <Logo />
           <button
             className="navbar-toggler"
@@ -131,7 +131,9 @@ class Navbar extends Component {
           >
             <ul className="navbar-nav mr-auto">
               <li className="nav-item">
-                <NavLink className="nav-link" to="/blocks">
+                <NavLink className="nav-link" to="/blocks" isActive={(match, location) => {
+                  return location.pathname === '/' || location.pathname === '/blocks';
+                }}>
                   Blocks
                 </NavLink>
               </li>
