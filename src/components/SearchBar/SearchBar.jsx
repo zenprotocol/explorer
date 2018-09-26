@@ -16,13 +16,16 @@ class SearchBar extends Component {
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.submit = this.submit.bind(this);
+    this.clear = this.clear.bind(this);
     this.canSearchImmediately = this.canSearchImmediately.bind(this);
   }
 
   handleChange(event) {
     blockStore.setSearchString(SearchUtils.formatSearchString(event.target.value));
     clearTimeout(this.timeout);
-    const time = this.canSearchImmediately(blockStore.searchString) ? SUBMIT_IMMEDIATE_MS : SUBMIT_AFTER_MS;
+    const time = this.canSearchImmediately(blockStore.searchString)
+      ? SUBMIT_IMMEDIATE_MS
+      : SUBMIT_AFTER_MS;
     this.timeout = setTimeout(this.submit, time);
   }
 
@@ -36,6 +39,10 @@ class SearchBar extends Component {
     if (blockStore.searchStringValid && blockStore.searchString !== blockStore.searchStringPrev) {
       this.props.history.push(`/search/${blockStore.searchString}`);
     }
+  }
+
+  clear() {
+    blockStore.setSearchString('');
   }
 
   canSearchImmediately(search) {
@@ -55,9 +62,15 @@ class SearchBar extends Component {
             aria-label="Search"
           />
           <div className="input-group-append">
-            <button className="btn btn-outline-dark btn-search" type="submit">
-              <i className="fas fa-search" />
-            </button>
+            {blockStore.searchString ? (
+              <button className="btn btn-outline-dark btn-clear" type="button" onClick={this.clear}>
+                <i className="fas fa-times" />
+              </button>
+            ) : (
+              <button className="btn btn-outline-dark btn-search" type="submit">
+                <i className="fas fa-search" />
+              </button>
+            )}
           </div>
         </div>
       </form>
