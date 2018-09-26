@@ -3,8 +3,14 @@
   font-size: $font-size-lg;
   
   .navbar-brand img.logo {
-    height: 50px;
+    height: 40px;
     width: auto;
     margin-right: 10px;
+  }
+
+  @media (min-width: map-get($grid-breakpoints, "md")) {
+    .navbar-brand img.logo {
+      height: 50px;
+    }
   }
 }

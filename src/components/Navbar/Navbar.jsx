@@ -104,7 +104,7 @@ class Navbar extends Component {
     const { isCollapsing, collapsed } = this.state;
     return (
       <div className={classnames(this.props.className, 'Navbar')}>
-        <nav className="navbar navbar-dark navbar-expand-lg py-1 py-lg-3 px-0">
+        <nav className="navbar navbar-dark navbar-expand-lg px-0">
           <Logo />
           <button
             className="navbar-toggler"
@@ -116,7 +116,7 @@ class Navbar extends Component {
             aria-label="Toggle navigation"
             onClick={this.toggle}
           >
-            <span className="navbar-toggler-icon" />
+            <i className="fas fa-bars"></i>
           </button>
 
           <div
@@ -130,17 +130,18 @@ class Navbar extends Component {
             id="navbarSupportedContent"
           >
             <ul className="navbar-nav mr-auto">
-              <li className="nav-item active">
+              <li className="nav-item">
+                <NavLink className="nav-link" to="/blocks">
+                  Blocks
+                </NavLink>
+              </li>
+              <li className="nav-item">
                 <NavLink className="nav-link" to="/blockchain/info">
                   Stats
                 </NavLink>
               </li>
               {/*
-                <li className="nav-item active">
-                <NavLink className="nav-link" to="/blocks">
-                Blocks
-                </NavLink>
-                </li>
+                
                 <li className="nav-item">
                   <NavLink className="nav-link" to="/tx">Transactions</NavLink>
                 </li>
