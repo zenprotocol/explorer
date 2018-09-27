@@ -32,6 +32,10 @@
     color: $gray;
     select {
       background-color: $gray-700;
+
+      &:hover {
+        background-color: $gray-600;
+      }
     }
   }
 }
