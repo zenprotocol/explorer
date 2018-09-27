@@ -107,10 +107,12 @@ class BlockStore {
     return Service.transactions
       .findByHash(hash)
       .then(response => {
+        const transaction = response.data;
         runInAction(() => {
-          this.transaction = response.data;
+          this.transaction = transaction;
           this.loading.transaction = false;
         });
+        return transaction;
       })
       .catch(() => {
         runInAction(() => {
