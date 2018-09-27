@@ -1,14 +1,18 @@
+@import 'style/colors';
 .Message {
   position: relative;
-  border-left-color: #303030 !important;
-  border-right-color: #303030 !important;
-  border-bottom-color: #303030 !important;
-  border-top-width: 4px !important;
+  border-left-color: $border-color;
+  border-right-color: $border-color;
+  border-bottom-color: $border-color;
+  border-top-color: inherit;
+  border-width: 1px;
+  border-style: solid;
+  border-top-width: 4px;
   padding: 35px 72px;
-  background-color: #08090a;
+  background-color: $gray-900;
   display: inline-block;
   font-size: 1.4rem;
-  color: #808080;
+  color: $gray;
   &.has-icon {
     padding-left: 100px;
   }
