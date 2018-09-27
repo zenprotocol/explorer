@@ -15,7 +15,7 @@
   @media (min-width: map-get($grid-breakpoints, "lg")) {
     .navbar-expand-lg .navbar-nav .nav-link {
       $border-size: 2px;
-      padding: 2.4rem 0;
+      padding: 1.6rem 0;
       margin-right: 2rem;
       border-top: $border-size solid transparent;
       border-bottom: $border-size solid transparent;
