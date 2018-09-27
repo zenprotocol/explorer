@@ -10,11 +10,6 @@
       width: auto;
       margin-right: 10px;
     }
-    @media (min-width: map-get($grid-breakpoints, "md")) {
-      img.logo {
-        height: 50px;
-      }
-    }
   }
 
   @media (min-width: map-get($grid-breakpoints, "lg")) {
