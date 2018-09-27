@@ -8,6 +8,7 @@ import Search from './routes/search/Search.jsx';
 import Info from './routes/info/Info.jsx';
 import Chart from './routes/chart/Chart.jsx';
 import BroadcastTx from './routes/broadcastTx/BroadcastTx.jsx';
+import NotFound from './routes/notFound/NotFound.jsx';
 
 export default function MainRoutes() {
   return (
@@ -21,6 +22,7 @@ export default function MainRoutes() {
         <Route path="/blockchain/info" component={Info} />
         <Route path="/charts/:name" component={Chart} />
         <Route path="/broadcastTx/:hex?" component={BroadcastTx} />
+        <Route component={NotFound} />
       </Switch>
     </React.Fragment>
   );
