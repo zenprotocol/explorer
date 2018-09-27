@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import Service from '../../lib/Service';
 import TextUtils from '../../lib/TextUtils.js';
 import Loading from '../../components/Loading/Loading.jsx';
-import LinkButton from '../../components/buttons/LinkButton.jsx';
+import Button from '../../components/buttons/Button.jsx';
 import ChartLoader from '../../components/charts/ChartLoader.jsx';
 import './Info.css';
 
@@ -127,9 +127,9 @@ class InfoPage extends Component {
               content={walletVersion}
               iconClass="fal fa-wallet fa-fw"
             >
-              <LinkButton href="https://docs.zenprotocol.com/preparation/installers">
+              <Button href="https://docs.zenprotocol.com/preparation/installers">
                 Download wallet
-              </LinkButton>
+              </Button>
             </ContentBox>
             <ContentBox
               className="node"
@@ -137,9 +137,9 @@ class InfoPage extends Component {
               content={nodeVersion}
               iconClass="fal fa-server fa-fw"
             >
-              <LinkButton href="https://docs.zenprotocol.com/headless" type="dark-2">
+              <Button href="https://docs.zenprotocol.com/headless" type="dark-2">
                 Download node
-              </LinkButton>
+              </Button>
             </ContentBox>
           </div>
         </section>
