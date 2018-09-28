@@ -91,7 +91,7 @@ class InfoPage extends Component {
             <ContentBox
               className="chain"
               title="Chain"
-              content={`${TextUtils.capitalize(chain)}`}
+              content={`${TextUtils.capitalize(addNetToChainName(chain))}`}
               iconClass="fal fa-link fa-fw"
             />
             <ContentBox
@@ -173,5 +173,13 @@ class InfoPage extends Component {
     );
   }
 }
+
+const addNetToChainName = (chain) => {
+  if (!chain || typeof chain !== 'string') {
+    return chain;
+  }
+  const append = 'net';
+  return chain.endsWith(append) ? chain : chain + append;
+};
 
 export default InfoPage;
