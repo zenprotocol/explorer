@@ -16,6 +16,8 @@ class TransactionPage extends Component {
       hash: '',
       polling: false,
     };
+
+    this.pollIntervalAddition = 1; // will change over time
   }
 
   componentDidMount() {
@@ -46,7 +48,13 @@ class TransactionPage extends Component {
           this.setState({ polling: false });
         }
       });
-    }, 10000);
+    }, this.getExponentialPollInterval());
+  }
+
+  getExponentialPollInterval() {
+    const interval = Math.max(this.pollIntervalAddition, 10); // not below 10 seconds
+    this.pollIntervalAddition *= 2;
+    return interval * 1000;
   }
 
   render() {
