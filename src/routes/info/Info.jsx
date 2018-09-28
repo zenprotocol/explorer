@@ -91,7 +91,7 @@ class InfoPage extends Component {
             <ContentBox
               className="chain"
               title="Chain"
-              content={`${TextUtils.capitalize(chain)}net`}
+              content={`${TextUtils.capitalize(chain)}`}
               iconClass="fal fa-link fa-fw"
             />
             <ContentBox
