@@ -2,6 +2,8 @@
 
 const bech32 = require('bech32');
 
+const LOCK_VALUE_KEY_OPTIONS = ['hash', 'pkHash', 'id', 'data'];
+
 class BlockchainParser {
   getAddressFromBCAddress(addressBC) {
     let pkHash = Buffer.from(addressBC, 'hex');
@@ -18,30 +20,27 @@ class BlockchainParser {
 
   getLockValuesFromOutput(output) {
     let lockType = null;
+    let lockValue = null; // contains hash/id/pkHash
     let address = null;
     if (output.lock && typeof output.lock !== 'object') {
+      // output lock is a primitive - just take it as it is
       lockType = output.lock;
     } else if (output.lock && Object.keys(output.lock).length) {
       lockType = Object.keys(output.lock)[0];
-      const lockTypeValues = Object.values(output.lock[lockType]);
-      if (lockTypeValues.length) {
-        if (lockTypeValues.length === 1) {
-          address = Object.values(output.lock[lockType])[0];
-        } else {
-          const addressKeyOptions = ['hash', 'pkHash', 'id', 'data'];
-          const lockTypeKeys = Object.keys(output.lock[lockType]);
-          for (let i = 0; i < lockTypeKeys.length; i++) {
-            const key = lockTypeKeys[i];
-            if (addressKeyOptions.includes(key)) {
-              address = output.lock[lockType][key];
-              break;
+      const lock = output.lock[lockType];
+      const lockKeys = Object.keys(lock);
+      if (lockKeys.length) {
+        address = lock.address || null; // some lock types contain the address
+        // lockValue should be one of LOCK_VALUE_KEY_OPTIONS
+        lockValue =
+          lockKeys.reduce(key => {
+            if (LOCK_VALUE_KEY_OPTIONS.includes(key)) {
+              return lock[key];
             }
-          }
-        }
+          }) || null;
       }
     }
-
-    return { lockType, address };
+    return { lockType, lockValue, address };
   }
 
   isMintInputValid(input) {
