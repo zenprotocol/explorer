@@ -273,16 +273,15 @@ class BlocksAdder {
     logger.info(
       `Creating a new output for transactionId=#${transaction.id} with hash ${transaction.hash}...`
     );
-    const { lockType, address } = this.blockchainParser.getLockValuesFromOutput(nodeOutput);
-    const addressBC = address;
-    let addressWallet = null;
-    if (addressBC) {
-      addressWallet = this.blockchainParser.getAddressFromBCAddress(addressBC);
+    const { lockType, lockValue, address } = this.blockchainParser.getLockValuesFromOutput(nodeOutput);
+    let addressWallet = address;
+    if (!addressWallet && lockValue) {
+      addressWallet = this.blockchainParser.getAddressFromBCAddress(lockValue);
     }
     const output = await outputsDAL.create(
       {
         lockType,
-        addressBC,
+        lockValue,
         address: addressWallet,
         contractLockVersion: 0,
         asset: nodeOutput.spend ? nodeOutput.spend.asset : null,

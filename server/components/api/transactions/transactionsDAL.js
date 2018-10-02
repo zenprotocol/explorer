@@ -346,7 +346,7 @@ transactionsDAL.findTransactionAssetInputsOutputs = async function(id, asset) {
   //     "Inputs->Output"."lockType" AS "Inputs.Output.lockType",
   //     "Inputs->Output"."contractLockVersion" AS "Inputs.Output.contractLockVersion",
   //     "Inputs->Output"."address" AS "Inputs.Output.address",
-  //     "Inputs->Output"."addressBC" AS "Inputs.Output.addressBC",
+  //     "Inputs->Output"."lockValue" AS "Inputs.Output.lockValue",
   //     "Inputs->Output"."asset" AS "Inputs.Output.asset",
   //     "Inputs->Output"."amount" AS "Inputs.Output.amount",
   //     "Inputs->Output"."index" AS "Inputs.Output.index",
