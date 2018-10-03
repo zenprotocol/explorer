@@ -1,21 +1,26 @@
 'use strict';
 
 const bech32 = require('bech32');
+const zen = require('@zen/zenjs');
 
 const LOCK_VALUE_KEY_OPTIONS = ['hash', 'pkHash', 'id', 'data'];
 
 class BlockchainParser {
-  getAddressFromBCAddress(addressBC) {
-    let pkHash = Buffer.from(addressBC, 'hex');
+  constructor(chain = 'main') {
+    this.setChain(chain);
+  }
 
-    const words = bech32.toWords(pkHash);
-    const wordsBuffer = Buffer.from(words);
-    const withVersion = Buffer.alloc(words.length + 1);
-    withVersion.writeInt8(0, 0);
-    wordsBuffer.copy(withVersion, 1);
+  setChain(chain) {
+    this.chain = this.getChainBaseName(chain);
+  }
 
-    const address = bech32.encode('zen', withVersion);
-    return address;
+  getChainBaseName(chain) {
+    const append = 'net'; // remove this append text
+    return chain.endsWith(append) ? chain.substring(0, chain.length - append.length) : chain;
+  }
+
+  getPublicKeyHashAddress(pkHash) {
+    return zen.Address.getPublicKeyHashAddress(this.chain, pkHash);
   }
 
   getLockValuesFromOutput(output) {
@@ -30,14 +35,18 @@ class BlockchainParser {
       const lock = output.lock[lockType];
       const lockKeys = Object.keys(lock);
       if (lockKeys.length) {
-        address = lock.address || null; // some lock types contain the address
         // lockValue should be one of LOCK_VALUE_KEY_OPTIONS
         lockValue =
-          lockKeys.reduce(key => {
-            if (LOCK_VALUE_KEY_OPTIONS.includes(key)) {
-              return lock[key];
-            }
-          }) || null;
+          lockKeys.reduce((value, key) => LOCK_VALUE_KEY_OPTIONS.includes(key)? lock[key] : value, null);
+        address = lock.address || null;
+        if (!address && lockValue) {
+          try {
+            // try to parse the address
+            address = this.getPublicKeyHashAddress(lockValue);
+          } catch (error) {
+            address = null;
+          }
+        }
       }
     }
     return { lockType, lockValue, address };

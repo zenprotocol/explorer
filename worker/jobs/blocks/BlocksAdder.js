@@ -48,9 +48,9 @@ class BlocksAdder {
 
     if (latestBlockNumberToAdd > latestBlockNumberInDB) {
       await this.setSyncingStatus({ syncing: true });
-      await this.updateInfos();
+      const infos = await this.updateInfos();
+      this.blockchainParser.setChain(infos.chain);
 
-      logger.info('Creating a database transaction');
       const dbTransaction = await blocksDAL.db.sequelize.transaction();
 
       try {
@@ -122,8 +122,8 @@ class BlocksAdder {
         })()
       );
     });
-    const results = await Promise.all(promises);
-    return results;
+    await Promise.all(promises);
+    return infos;
   }
 
   async setSyncingStatus({ syncing = false } = {}) {
@@ -274,15 +274,11 @@ class BlocksAdder {
       `Creating a new output for transactionId=#${transaction.id} with hash ${transaction.hash}...`
     );
     const { lockType, lockValue, address } = this.blockchainParser.getLockValuesFromOutput(nodeOutput);
-    let addressWallet = address;
-    if (!addressWallet && lockValue) {
-      addressWallet = this.blockchainParser.getAddressFromBCAddress(lockValue);
-    }
     const output = await outputsDAL.create(
       {
         lockType,
         lockValue,
-        address: addressWallet,
+        address,
         contractLockVersion: 0,
         asset: nodeOutput.spend ? nodeOutput.spend.asset : null,
         amount: nodeOutput.spend ? nodeOutput.spend.amount : null,
