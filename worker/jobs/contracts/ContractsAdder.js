@@ -13,6 +13,7 @@ class ContractsAdder {
       logger.info('Updating active contracts');
       const numOfRowsAffected = await this.processActiveContracts();
       logger.info(`Active contracts updated - ${numOfRowsAffected} number of rows affected`);
+      return numOfRowsAffected;
     } catch (error) {
       logger.error(`An Error has occurred when processing contracts: ${error.message}`);
       throw error;
@@ -21,6 +22,7 @@ class ContractsAdder {
 
   async processActiveContracts() {
     const contracts = await this.networkHelper.getActiveContractsFromNode();
+    logger.info(`Got ${contracts.length} active contracts from node`);
     return await this.createOrUpdateContracts(contracts);
   }
 
@@ -33,12 +35,15 @@ class ContractsAdder {
     const dbContracts = await contractsDAL.findAllActive();
     dbContracts.forEach(dbContract => {
       if (Object.keys(activeContractsDictionary).includes(dbContract.id)) {
-        // update expiryBlock
-        promises.push(
-          contractsDAL.update(dbContract.id, {
-            expiryBlock: activeContractsDictionary[dbContract.id].expire,
-          })
-        );
+        const expiryBlock = activeContractsDictionary[dbContract.id].expire;
+        if(dbContract.expiryBlock !== expiryBlock) {
+          // update expiryBlock
+          promises.push(
+            contractsDAL.update(dbContract.id, {
+              expiryBlock,
+            })
+          );
+        }
         // mark as processed
         activeContractsDictionary[dbContract.id].processed = true;
       } else {
@@ -54,10 +59,10 @@ class ContractsAdder {
       const { contractId, address, expire, code } = contract;
       promises.push(
         (async () => {
-          const contract = await contractsDAL.findById(contractId);
-          if (contract) {
+          const contractDb = await contractsDAL.findById(contractId);
+          if (contractDb) {
             // if contract was found in this stage it means that it was re-activated
-            await contractsDAL.update(contract.id, {
+            await contractsDAL.update(contractDb.id, {
               expiryBlock: expire,
             });
           } else {
