@@ -11,8 +11,8 @@ class ContractsAdder {
   async doJob(job) {
     try {
       logger.info('Updating active contracts');
-      await this.processActiveContracts();
-      logger.info('Active contracts updated');
+      const numOfRowsAffected = await this.processActiveContracts();
+      logger.info(`Active contracts updated - ${numOfRowsAffected} number of rows affected`);
     } catch (error) {
       logger.error(`An Error has occurred when processing contracts: ${error.message}`);
       throw error;
@@ -21,17 +21,15 @@ class ContractsAdder {
 
   async processActiveContracts() {
     const contracts = await this.networkHelper.getActiveContractsFromNode();
-    await this.createOrUpdateContracts(contracts);
+    return await this.createOrUpdateContracts(contracts);
   }
 
   async createOrUpdateContracts(activeContracts) {
-    // all active contracts should be created if not exists, if exist update expiryBlock
-    // all existing contracts in db with expiryBlock != null, which are not in active contracts, should be updated to expiryBlock = null
     const promises = [];
     const activeContractsDictionary = this.getContractsDictionaryFromArray(activeContracts);
-    // const notProcessedActiveContracts = activeContracts.slice();
-    // process db contracts and mark in notProcessedActiveContracts
     const setToNullIds = [];
+
+    // go over the contracts in db and update expiryBlock or set it to null
     const dbContracts = await contractsDAL.findAllActive();
     dbContracts.forEach(dbContract => {
       if (Object.keys(activeContractsDictionary).includes(dbContract.id)) {
@@ -48,9 +46,7 @@ class ContractsAdder {
       }
     });
 
-    // add the set to null update
-    promises.push(contractsDAL.setExpired(setToNullIds));
-
+    // go over the rest of the active contracts and update or create them in db
     const notProcessedActiveContracts = Object.values(activeContractsDictionary).filter(
       contract => !contract.processed
     );
@@ -76,7 +72,13 @@ class ContractsAdder {
       );
     });
 
-    return Promise.all(promises);
+    const numOfRowsAffected = promises.length + setToNullIds.length;
+
+    // add the set to null update
+    promises.push(contractsDAL.setExpired(setToNullIds));
+
+    await Promise.all(promises);
+    return numOfRowsAffected;
   }
 
   getContractsDictionaryFromArray(contracts) {
