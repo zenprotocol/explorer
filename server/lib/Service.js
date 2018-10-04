@@ -12,6 +12,9 @@ const Endpoints = {
     info: '/blockchain/info',
     block: '/blockchain/block?blockNumber=',
   },
+  contracts: {
+    active: '/contract/active',
+  },
 };
 
 let globalMute = false;
@@ -53,6 +56,14 @@ module.exports = {
         method: 'get',
       }).then(response => response.data);
     },
+  },
+  contracts: {
+    async getActiveContracts() {
+      return sendHttpRequest({
+        url: Endpoints.contracts.active,
+        method: 'get',
+      }).then(response => response.data);
+    }
   },
   zen: {
     async getZenNodeTags() {
