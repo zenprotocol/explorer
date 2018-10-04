@@ -58,7 +58,7 @@ class SearchBar extends Component {
             onChange={this.handleChange}
             className="input-search form-control"
             type="search"
-            placeholder="Search"
+            placeholder="Search by Address/Txhash/Block"
             aria-label="Search"
           />
           <div className="input-group-append">
