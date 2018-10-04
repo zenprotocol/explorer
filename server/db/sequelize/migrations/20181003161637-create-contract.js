@@ -14,7 +14,7 @@ module.exports = {
         allowNull: false,
       },
       code: {
-        type: Sequelize.STRING,
+        type: Sequelize.TEXT,
         allowNull: false,
       },
       expiryBlock: {
