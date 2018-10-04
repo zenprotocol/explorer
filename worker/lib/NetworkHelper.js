@@ -18,6 +18,10 @@ class NetworkHelper {
     return await Service.blocks.getChainInfo();
   }
 
+  async getActiveContractsFromNode() {
+    return await Service.contracts.getActiveContracts();
+  }
+
   async getZenNodeLatestTag() {
     const tags = await Service.zen.getZenNodeTags();
     return tags.length ? tags[0].name : 'v0.9';
