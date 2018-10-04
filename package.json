@@ -80,6 +80,7 @@
     "prop-types": "^15.6.2",
     "react": "^16.5.2",
     "react-dom": "^16.5.2",
+    "react-dropdown": "^1.6.2",
     "react-highcharts": "^16.0.2",
     "react-infinite-scroller": "^1.2.0",
     "react-router-dom": "^4.3.1",
