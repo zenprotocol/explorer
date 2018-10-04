@@ -7,3 +7,4 @@
 
 require('./blocksQueue');
 require('./infosQueue');
+require('./contractsQueue');
