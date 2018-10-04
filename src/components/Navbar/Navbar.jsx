@@ -26,7 +26,6 @@ class Navbar extends Component {
   }
 
   componentDidMount() {
-    this.elementHeight = document.getElementById('navbarSupportedContent').scrollHeight;
     this.setState({ prevPathname: this.props.location.pathname });
   }
 
@@ -116,7 +115,7 @@ class Navbar extends Component {
             aria-label="Toggle navigation"
             onClick={this.toggle}
           >
-            <i className="fas fa-bars"></i>
+            <i className="fas fa-bars" />
           </button>
 
           <div
@@ -131,9 +130,18 @@ class Navbar extends Component {
           >
             <ul className="navbar-nav mr-auto">
               <li className="nav-item">
-                <NavLink className="nav-link" to="/blocks" isActive={(match, location) => {
-                  return location.pathname === '/' || location.pathname === '/blocks';
-                }}>
+                <NavLink
+                  className="nav-link"
+                  to="/blocks"
+                  isActive={(match, location) => {
+                    const MATCHED_ROUTES = ['blocks', 'tx', 'address'];
+                    const pathname = location.pathname.startsWith('/')
+                      ? location.pathname
+                      : `/${location.pathname}`;
+                    const path = pathname.split('/')[1];
+                    return location.pathname === '/' || MATCHED_ROUTES.includes(path);
+                  }}
+                >
                   Blocks
                 </NavLink>
               </li>
