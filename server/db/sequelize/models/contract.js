@@ -8,7 +8,7 @@ module.exports = (sequelize, DataTypes) => {
         primaryKey: true,
       },
       address: DataTypes.STRING,
-      code: DataTypes.STRING,
+      code: DataTypes.TEXT,
       expiryBlock: DataTypes.INTEGER,
     },
     {}
