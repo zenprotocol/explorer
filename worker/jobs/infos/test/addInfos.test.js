@@ -11,6 +11,8 @@ test.onFinish(() => {
   infosDAL.db.sequelize.close();
 });
 
+test('INFOS ----------------------------------------------------------------------', async function() {});
+
 test('Add software versions', async function(t) {
   await truncate();
   const networkHelper = new NetworkHelper();
