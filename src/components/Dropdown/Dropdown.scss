@@ -2,6 +2,8 @@
 @import 'style/sizes';
 
 .Dropdown {
+  $dd-padding-y: 8px;
+
   &.Dropdown-root {
     position: relative;
   }
@@ -15,7 +17,7 @@
     color: $white;
     cursor: default;
     outline: none;
-    padding: 8px 52px 8px $text-icon-padding;
+    padding: $dd-padding-y 52px $dd-padding-y $text-icon-padding;
     transition: all 150ms ease;
   }
   
@@ -25,7 +27,7 @@
   
   .Dropdown-arrow-wrapper {
     position: absolute;
-    top: 8px;  
+    top: $dd-padding-y;  
     right: $text-icon-padding;
   }
   
@@ -44,7 +46,7 @@
   }
   
   .Dropdown-menu .Dropdown-group > .Dropdown-title {
-    padding: 8px 10px;
+    padding: $dd-padding-y $text-icon-padding;
     color: $white;
     font-weight: bold;
     text-transform: capitalize;
@@ -55,7 +57,7 @@
     color: $white;
     cursor: pointer;
     display: block;
-    padding: 8px 10px;
+    padding: $dd-padding-y $text-icon-padding;
   }
   
   .Dropdown-option:last-child {
@@ -76,7 +78,7 @@
     color: #ccc;
     cursor: default;
     display: block;
-    padding: 8px 10px;
+    padding: $dd-padding-y $text-icon-padding;
   }
 
   
