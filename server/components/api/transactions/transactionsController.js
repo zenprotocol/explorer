@@ -165,15 +165,14 @@ module.exports = {
       };
 
       txCustom.Outputs = tx.outputs.map((output, index) => {
-        const { lockType, address } = blockchainParser.getLockValuesFromOutput(output);
+        const { lockType, lockValue, address } = blockchainParser.getLockValuesFromOutput(output);
         const asset = output.spend.asset.asset;
         const amount = output.spend.amount['0'];
-        const addressWallet = blockchainParser.getAddressFromBCAddress(address);
         return {
           id: index + 1, // fake id
           lockType,
-          address: addressWallet,
-          addressBC: address,
+          address,
+          lockValue,
           asset,
           amount
         };

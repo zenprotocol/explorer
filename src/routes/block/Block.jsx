@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import blockStore from '../../store/BlockStore';
+import RouterUtils from '../../lib/RouterUtils';
 import uiStore from '../../store/UIStore';
 import TextUtils from '../../lib/TextUtils';
 import BlockUtils from '../../lib/BlockUtils';
@@ -21,23 +22,24 @@ class BlockPage extends Component {
     };
   }
   componentDidMount() {
-    const {
-      match: { params },
-    } = this.props;
-    blockStore.fetchBlock(params.id).then(block => {
+    blockStore.fetchBlock(this.hashOrBlockNumber).then(block => {
       this.switchBlock(block.blockNumber);
     });
-    this.setBlockInUiTable(params.id);
+    this.setBlockInUiTable(this.hashOrBlockNumber);
   }
 
   componentDidUpdate(prevProps) {
-    const {id} = this.props.match.params;
-    if (id !== prevProps.match.params.id) {
-      blockStore.fetchBlock(id).then(block => {
+    const prevHashOrBlockNumber = RouterUtils.getRouteParams(prevProps).id;
+    if (this.hashOrBlockNumber !== prevHashOrBlockNumber) {
+      blockStore.fetchBlock(this.hashOrBlockNumber).then(block => {
         this.switchBlock(block.blockNumber);
       });
-      this.setBlockInUiTable(id);
+      this.setBlockInUiTable(this.hashOrBlockNumber);
     }
+  }
+
+  get hashOrBlockNumber() {
+    return RouterUtils.getRouteParams(this.props).id;
   }
 
   setBlockInUiTable(hashOrBlockNumber) {
@@ -45,15 +47,9 @@ class BlockPage extends Component {
   }
 
   renderPagination() {
-    const blockNumber = this.state.blockNumber;
-    let prevDisabled = false;
-    let nextDisabled = false;
-    if (blockNumber <= 1) {
-      prevDisabled = true;
-    }
-    if (blockNumber >= blockStore.blocksCount) {
-      nextDisabled = true;
-    }
+    const {blockNumber} = this.state;
+    let prevDisabled = blockNumber <= 1;
+    let nextDisabled = blockNumber >= blockStore.blocksCount;
 
     return (
       <nav aria-label="Page navigation" className="float-sm-right">

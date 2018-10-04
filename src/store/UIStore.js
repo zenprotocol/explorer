@@ -2,15 +2,6 @@ import { observable, decorate, action, autorun, toJS } from 'mobx';
 import blockStore from './BlockStore';
 import localStore from '../lib/localStore';
 
-function hashOrBlockNumberNotEmpty(hashOrBlockNumber) {
-  return (
-    typeof hashOrBlockNumber !== 'undefined' &&
-    hashOrBlockNumber !== '' &&
-    hashOrBlockNumber !== '0' &&
-    hashOrBlockNumber !== 0
-  );
-}
-
 class UIStore {
   constructor() {
     this.blocksTable = {
@@ -165,5 +156,14 @@ decorate(UIStore, {
   setAddressTxTableData: action,
   loadFromStorage: action,
 });
+
+function hashOrBlockNumberNotEmpty(hashOrBlockNumber) {
+  return (
+    typeof hashOrBlockNumber !== 'undefined' &&
+    hashOrBlockNumber !== '' &&
+    hashOrBlockNumber !== '0' &&
+    hashOrBlockNumber !== 0
+  );
+}
 
 export default new UIStore();

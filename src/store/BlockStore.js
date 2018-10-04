@@ -213,11 +213,7 @@ class BlockStore {
   fetchSyncing() {
     return Service.infos.findByName('syncing').then(response => {
       runInAction(() => {
-        if (response.success) {
-          this.syncing = response.data.value === 'true';
-        } else {
-          this.syncing = false;
-        }
+        this.syncing = response.success && response.data.value === 'true';
       });
     });
   }
@@ -283,7 +279,7 @@ class BlockStore {
   }
 
   confirmations(blockNumber) {
-    if (isNaN(blockNumber)) {
+    if (!blockNumber) {
       return 0;
     }
 
