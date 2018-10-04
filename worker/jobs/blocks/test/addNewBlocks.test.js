@@ -17,6 +17,8 @@ test.onFinish(() => {
   blocksDAL.db.sequelize.close();
 });
 
+test('BLOCKS ----------------------------------------------------------------------', async function() {});
+
 test('Add New Blocks When 0 in DB', async function(t) {
   await truncate();
   const networkHelper = new NetworkHelper();

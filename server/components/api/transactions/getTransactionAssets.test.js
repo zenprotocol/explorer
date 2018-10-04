@@ -3,6 +3,8 @@
 const test = require('tape');
 const getTransactionAssets = require('./getTransactionAssets');
 
+test('getTransactionAssets ----------------------------------------------------------------------', function(t) {t.end();});
+
 test('Test assets array length', function(t) {
   const assets = getTransactionAssets(testTX);
   t.equals(assets.length, 2, 'There should be 2 assets');

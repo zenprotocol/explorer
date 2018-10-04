@@ -3,6 +3,8 @@
 const test = require('tape');
 const BlockchainParser = require('./BlockchainParser');
 
+test('BlockchainParser ----------------------------------------------------------------------', function(t) {t.end();});
+
 test('getLockValuesFromOutput - no lock value', function(t) {
   const blockchainParser = new BlockchainParser();
   const output = {

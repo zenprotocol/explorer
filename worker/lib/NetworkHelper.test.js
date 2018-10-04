@@ -5,6 +5,8 @@ const Service = require('../../server/lib/Service');
 const NetworkHelper = require('./NetworkHelper');
 const Config = require('../../server/config/Config');
 
+test('NETWORK HELPER ----------------------------------------------------------------------', async function() {});
+
 test('Get number of blocks from chain', async function(t) {
   Service.config.setTimeout(2000);
   try {
