@@ -58,7 +58,7 @@ class AddressPage extends Component {
           ) : !is404 ? (
             <div className="row">
               <div className="col-lg-6">
-                <table className="table">
+                <table className="table table-zen">
                   <thead>
                     <tr>
                       <th scope="col" colSpan="2">
@@ -91,7 +91,7 @@ class AddressPage extends Component {
                 </table>
               </div>
               <div className="col-lg-6">
-                <table className="table">
+                <table className="table table-zen">
                   <thead>
                     <tr>
                       <th scope="col" colSpan="2">

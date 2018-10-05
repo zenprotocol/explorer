@@ -83,7 +83,7 @@ class TransactionPage extends Component {
           </div>
           <div className="row">
             <div className="col">
-              <table className="table">
+              <table className="table table-zen">
                 <thead>
                   <tr>
                     <th scope="col" colSpan="2" className="text-white border-0">

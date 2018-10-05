@@ -120,7 +120,7 @@ $display4-weight : 400;
   }
 }
 
-.table {
+.table-zen {
   thead th {
     color: $table-head-color;
     font-size: $font-size-md;
@@ -128,12 +128,22 @@ $display4-weight : 400;
     background-color: $table-head-bg;
     border-top: none;
     border-bottom: 1px solid $black;
-    padding: $table-header-padding-y $table-header-padding-x;
+    padding: $table-header-padding-y $table-padding-x;
+    text-transform: uppercase;
+    text-align: left;
   }
 
   tbody td {
     border-top: none;
     border-bottom: 1px solid $border-color;
+  }
+
+  @media (min-width: map-get($grid-breakpoints, "lg")) {
+    thead th,
+    tbody td {
+      padding-left: $table-padding-x-lg;
+      padding-right: $table-padding-x-lg;
+    }
   }
 }
 
