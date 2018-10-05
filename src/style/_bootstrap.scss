@@ -137,6 +137,9 @@ $display4-weight : 400;
     border-top: none;
     border-bottom: 1px solid $border-color;
   }
+  tbody tr:last-child td {
+    border-bottom-color: transparent
+  }
 
   @media (min-width: map-get($grid-breakpoints, "lg")) {
     thead th,

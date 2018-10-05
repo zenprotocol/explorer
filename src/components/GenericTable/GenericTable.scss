@@ -12,6 +12,10 @@
   .rt-td {
     border-bottom: 1px solid $border-color;
   }
+
+  .rt-tr-group.last .rt-td {
+    border-bottom-color: transparent;
+  }
   
   .rt-tr.-padRow .rt-td {
     border-color: transparent;

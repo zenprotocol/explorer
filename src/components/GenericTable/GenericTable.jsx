@@ -55,7 +55,15 @@ export default function GenericTable(props) {
           return { className: 'table-zen' };
         }}
         getTrProps={getTrProps}
-        getTrGroupProps={getTrGroupProps}
+        getTrGroupProps={(state, rowInfo, column, instance) => {
+          if (!rowInfo) {
+            return {};
+          }
+          // mark last data row before pad rows
+          const dataLength = state.data.length;
+          const rowIndex = rowInfo.index;
+          return { className: rowIndex === dataLength - 1 ? 'last' : '' };
+        }}
       />
     </div>
   );
@@ -78,7 +86,6 @@ GenericTable.propTypes = {
   pivotBy: PropTypes.array,
   expanded: PropTypes.object,
   getTrProps: PropTypes.func,
-  getTrGroupProps: PropTypes.func,
 };
 
 GenericTable.defaultProps = {
