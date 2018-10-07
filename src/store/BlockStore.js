@@ -192,7 +192,7 @@ class BlockStore {
         .catch(error => {
           runInAction(() => {
             this.loading.address = false;
-            if (error.response.status === 404) {
+            if (error.status === 404) {
               this.address = { status: 404 };
             }
           });
