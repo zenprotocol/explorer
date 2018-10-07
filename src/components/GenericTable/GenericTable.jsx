@@ -24,7 +24,6 @@ export default function GenericTable(props) {
     pivotBy,
     expanded,
     getTrProps,
-    getTrGroupProps,
   } = props;
   return (
     <div className="GenericTable">

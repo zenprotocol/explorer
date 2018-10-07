@@ -11,6 +11,7 @@ const Endpoints = {
   info: '/api/infos',
   search: '/api/search',
   stats: '/api/stats',
+  contracts: '/api/contracts',
 };
 
 let globalMute = false;
@@ -171,6 +172,14 @@ export default {
     charts(name) {
       return cancelableHttpRequest({
         url: `${Endpoints.stats}/charts/${name}`,
+        method: 'get',
+      });
+    },
+  },
+  contracts: {
+    findByAddress(address) {
+      return cancelableHttpRequest({
+        url: `${Endpoints.contracts}/${address}`,
         method: 'get',
       });
     },
