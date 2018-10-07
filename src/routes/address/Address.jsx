@@ -6,10 +6,11 @@ import uiStore from '../../store/UIStore';
 import RouterUtils from '../../lib/RouterUtils';
 import AssetUtils from '../../lib/AssetUtils';
 import TextUtils from '../../lib/TextUtils';
-import AddressTxsTable from '../../components/AddressTxsTable/AddressTxsTable.jsx';
-import Loading from '../../components/Loading/Loading.jsx';
-import HashLink from '../../components/HashLink/HashLink.jsx';
-import ItemNotFound from '../../components/ItemNotFound/ItemNotFound.jsx';
+import AddressTxsTable from '../../components/AddressTxsTable';
+import Loading from '../../components/Loading';
+import HashLink from '../../components/HashLink';
+import ItemNotFound from '../../components/ItemNotFound';
+import AssetsBalancesTable from '../../components/AssetsBalancesTable';
 import './Address.css';
 
 class AddressPage extends Component {
@@ -91,24 +92,7 @@ class AddressPage extends Component {
                 </table>
               </div>
               <div className="col-lg-6">
-                <table className="table table-zen">
-                  <thead>
-                    <tr>
-                      <th scope="col" colSpan="2">
-                        BALANCES
-                      </th>
-                    </tr>
-                    <tr>
-                      <th scope="col">
-                        ASSET
-                      </th>
-                      <th scope="col">
-                        AMOUNT
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody>{this.getBalanceTableRows()}</tbody>
-                </table>
+                <AssetsBalancesTable balance={blockStore.address.balance} />
               </div>
             </div>
           ) : (
@@ -121,21 +105,6 @@ class AddressPage extends Component {
         </section>
       </div>
     );
-  }
-
-  getBalanceTableRows() {
-    if (!blockStore.address.balance) return null;
-
-    return blockStore.address.balance.map((assetBalance, index) => {
-      return (
-        <tr key={index}>
-          <td>
-            <HashLink hash={AssetUtils.getAssetNameFromCode(assetBalance.asset)} value={assetBalance.asset} />
-          </td>
-          <td>{AssetUtils.getAmountString(assetBalance.asset, assetBalance.total)}</td>
-        </tr>
-      );
-    });
   }
 }
 
