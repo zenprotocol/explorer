@@ -1,0 +1,11 @@
+@import 'style/colors';
+@import 'style/sizes';
+.PageTitle {
+  h1 .subtitle {
+    font-size: $font-size-md;
+    font-weight: $font-weight-normal;
+    color: $gray-400;
+    margin-top: 10px;
+    line-height: initial;
+  }
+}
