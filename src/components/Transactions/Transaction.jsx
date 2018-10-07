@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import TransactionAsset from './Asset/TransactionAsset';
-import HashLink from '../HashLink/HashLink.jsx';
+import HashLink from '../HashLink';
 import TextUtils from '../../lib/TextUtils.js';
 
 export default function Transaction(props) {

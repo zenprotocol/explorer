@@ -1,4 +1,4 @@
-import React from 'react-dom';
+import React from 'react';
 import PropTypes from 'prop-types';
 
 export default function PageTitle({ title, subtitle }) {

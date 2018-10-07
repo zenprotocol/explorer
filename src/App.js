@@ -2,9 +2,9 @@ import React, { Component } from 'react';
 import Service from './lib/Service';
 import blockStore from './store/BlockStore';
 import MainRoutes from './MainRoutes.jsx';
-import Page from './components/Page/Page.jsx';
-import Navbar from './components/Navbar/Navbar.jsx';
-import Footer from './components/Footer/Footer.jsx';
+import Page from './components/Page';
+import Navbar from './components/Navbar';
+import Footer from './components/Footer';
 
 import './App.css';
 

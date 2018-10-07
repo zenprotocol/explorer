@@ -3,8 +3,8 @@ import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import Service from '../../lib/Service';
 import TextUtils from '../../lib/TextUtils.js';
-import Loading from '../../components/Loading/Loading.jsx';
-import Button from '../../components/buttons/Button.jsx';
+import Loading from '../../components/Loading';
+import Button from '../../components/buttons/Button';
 import ChartLoader from '../../components/charts/ChartLoader.jsx';
 import './Info.css';
 

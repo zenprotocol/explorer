@@ -2,8 +2,8 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { NavLink, withRouter } from 'react-router-dom';
 import classnames from 'classnames';
-import Logo from '../Logo/Logo.jsx';
-import SearchBar from '../SearchBar/SearchBar.jsx';
+import Logo from '../Logo';
+import SearchBar from '../SearchBar';
 import './Navbar.css';
 
 const ANIMATION_TIME = 350;

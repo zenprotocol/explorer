@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import AssetUtils from '../../../lib/AssetUtils';
 import Output from '../../../lib/OutputUtils';
-import HashLink from '../../../components/HashLink/HashLink.jsx';
+import HashLink from '../../../components/HashLink';
 import './TransactionAsset.css';
 
 class TransactionAsset extends Component {

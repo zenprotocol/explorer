@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import debounce from 'lodash.debounce';
 import classNames from 'classnames';
 import Config from '../../lib/Config';
-import GenericTable from '../GenericTable/GenericTable.jsx';
+import GenericTable from '../GenericTable';
 import Dropdown from '../Dropdown';
 import './ItemsTable.css';
 

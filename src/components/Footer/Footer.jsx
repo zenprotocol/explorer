@@ -3,8 +3,8 @@ import { observer } from 'mobx-react';
 import { Link } from 'react-router-dom';
 import blockStore from '../../store/BlockStore';
 import Config from '../../lib/Config';
-import Logo from '../Logo/Logo.jsx';
-import ExternalLink from '../ExternalLink/ExternalLink.jsx';
+import Logo from '../Logo';
+import ExternalLink from '../ExternalLink';
 import './Footer.css';
 
 export default function Footer(props) {

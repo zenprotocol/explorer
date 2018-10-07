@@ -3,7 +3,7 @@ import {observer} from 'mobx-react';
 import PropTypes from 'prop-types';
 import blockStore from '../../../store/BlockStore';
 import TransactionAsset from './TransactionAsset';
-import Loading from '../../Loading/Loading.jsx';
+import Loading from '../../Loading';
 
 class TransactionAssetLoader extends Component {
   componentDidMount() {

@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import Loading from '../Loading/Loading.jsx';
+import Loading from '../Loading';
 import './LoadingWithBG.css';
 
 export default function LoadingWithBG(props) {

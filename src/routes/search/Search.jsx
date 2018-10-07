@@ -7,8 +7,8 @@ import RouterUtils from '../../lib/RouterUtils';
 import TextUtils from '../../lib/TextUtils';
 import SearchUtils from '../../lib/SearchUtils';
 import AssetUtils from '../../lib/AssetUtils';
-import Loading from '../../components/Loading/Loading.jsx';
-import SearchResultsTable from '../../components/SearchResultsTable/SearchResultsTable.jsx';
+import Loading from '../../components/Loading';
+import SearchResultsTable from '../../components/SearchResultsTable';
 import './Search.css';
 
 class SearchResultsPage extends Component {

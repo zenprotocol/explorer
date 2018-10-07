@@ -6,8 +6,8 @@ import uiStore from '../../store/UIStore';
 import AssetUtils from '../../lib/AssetUtils';
 import TextUtils from '../../lib/TextUtils';
 import blockStore from '../../store/BlockStore';
-import HashLink from '../HashLink/HashLink.jsx';
-import ItemsTable from '../ItemsTable/ItemsTable.jsx';
+import HashLink from '../HashLink';
+import ItemsTable from '../ItemsTable';
 import TransactionAssetLoader from '../Transactions/Asset/TransactionAssetLoader.jsx';
 
 class AddressTxsTable extends Component {

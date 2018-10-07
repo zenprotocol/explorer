@@ -5,8 +5,8 @@ import TextUtils from '../../lib/TextUtils';
 import uiStore from '../../store/UIStore';
 import blockStore from '../../store/BlockStore';
 import BlockUtils from '../../lib/BlockUtils';
-import HashLink from '../HashLink/HashLink.jsx';
-import ItemsTable from '../ItemsTable/ItemsTable.jsx';
+import HashLink from '../HashLink';
+import ItemsTable from '../ItemsTable';
 
 class BlocksTable extends Component {
   getTableColumns() {

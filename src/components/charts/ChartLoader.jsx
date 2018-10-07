@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import Service from '../../lib/Service';
 import TextUtils from '../../lib/TextUtils';
-import Loading from '../Loading/Loading.jsx';
+import Loading from '../Loading';
 import LineChart from './LineChart.jsx';
 import PieChart from './PieChart.jsx';
 import './ChartLoader.css';

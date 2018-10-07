@@ -8,9 +8,9 @@ import RouterUtils from '../../lib/RouterUtils';
 import uiStore from '../../store/UIStore';
 import TextUtils from '../../lib/TextUtils';
 import BlockUtils from '../../lib/BlockUtils';
-import BlockTxsTable from '../../components/BlockTxsTable/BlockTxsTable.jsx';
-import Loading from '../../components/Loading/Loading.jsx';
-import HashLink from '../../components/HashLink/HashLink.jsx';
+import BlockTxsTable from '../../components/BlockTxsTable';
+import Loading from '../../components/Loading';
+import HashLink from '../../components/HashLink';
 import './Block.css';
 
 class BlockPage extends Component {

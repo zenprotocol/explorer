@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import blockStore from '../../store/BlockStore';
 import Service from '../../lib/Service.js';
-import BlocksTable from '../../components/BlocksTable/BlocksTable.jsx';
+import BlocksTable from '../../components/BlocksTable';
 
 class BlocksPage extends Component {
   constructor(props) {
