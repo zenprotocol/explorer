@@ -10,7 +10,6 @@ import AddressTxsTable from '../../components/AddressTxsTable/AddressTxsTable';
 import Loading from '../../components/Loading/Loading';
 import HashLink from '../../components/HashLink/HashLink';
 import ItemNotFound from '../../components/ItemNotFound/ItemNotFound';
-import './Contract.css';
 
 class ContractPage extends Component {
   componentDidMount() {
