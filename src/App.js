@@ -17,7 +17,6 @@ class App extends Component {
 
   componentDidMount() {
     this.fetchBlocksCount();
-    blockStore.fetchMedianTime();
     this.fetchSyncingTimeout();
   }
 
