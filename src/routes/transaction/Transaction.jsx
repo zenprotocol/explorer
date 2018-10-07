@@ -77,13 +77,13 @@ class TransactionPage extends Component {
         <section>
           <div className="row">
             <div className="col-sm">
-              <div className="medianTime mb-1 mb-lg-2">{blockDateStr}</div>
+              <div className="font-size-md mb-1 mb-lg-2">{blockDateStr}</div>
               <h1 className="d-block d-sm-inline-block text-white mb-3 mb-lg-5">Transaction</h1>
             </div>
           </div>
           <div className="row">
             <div className="col">
-              <table className="table">
+              <table className="table table-zen">
                 <thead>
                   <tr>
                     <th scope="col" colSpan="2" className="text-white border-0">
@@ -110,6 +110,8 @@ class TransactionPage extends Component {
               </table>
             </div>
           </div>
+        </section>
+        <section>
           <Transaction transaction={transaction} disableTXLinks={true} />
         </section>
       </div>

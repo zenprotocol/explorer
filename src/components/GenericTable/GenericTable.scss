@@ -1,0 +1,69 @@
+@import 'style/colors';
+@import 'style/sizes';
+
+.GenericTable .ReactTable {
+  .rt-thead .rt-tr {
+    border-bottom: 1px solid $black;
+  }
+  .rt-tbody .rt-tr-group {
+    border-bottom: none;
+  }
+  
+  .rt-td {
+    border-bottom: 1px solid $border-color;
+  }
+
+  .rt-tr-group.last .rt-td {
+    border-bottom-color: transparent;
+  }
+  
+  .rt-tr.-padRow .rt-td {
+    border-color: transparent;
+  }
+  
+  .rt-thead {
+    background-color: $table-head-bg;
+  }
+  .rt-thead .rt-th {
+    font-size: $font-size-md;
+    font-weight: $font-weight-bold;
+    text-transform: uppercase;
+    color: $table-head-color;
+    text-align: left;
+    padding: $table-header-padding-y $table-padding-x;
+    border-right-color: transparent;
+  }
+  
+  .rt-tbody {
+    overflow: visible;
+    background-color: $table-bg;
+  }
+  .rt-td {
+    font-weight: $font-weight-normal;
+    padding: $table-padding-y $table-padding-x;
+    overflow: visible;
+  }
+  
+  .pagination-bottom {
+    margin-top: map-get($spacers, 4);
+  }
+  .-pagination {
+    justify-content: flex-end;
+  }
+  
+  .pagination-bottom .pagination {
+    margin-bottom: 0;
+  }
+  
+  .loading .rt-noData {
+    display: none;
+  }
+
+  @media (min-width: map-get($grid-breakpoints, "lg")) {
+    .rt-thead .rt-th,
+    .rt-td {
+      padding-left: $table-padding-x-lg;
+      padding-right: $table-padding-x-lg;
+    }
+  }
+}

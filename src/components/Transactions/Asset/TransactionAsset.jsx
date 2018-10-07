@@ -20,12 +20,12 @@ class TransactionAsset extends Component {
       <div className={classNames('TransactionAsset', addressFoundIn)}>
         {showHeader ? (
           <div className="row mx-0">
-            <div className="col-2 border-bottom">ASSET</div>
-            <div className="col-4 border-bottom">INPUT</div>
+            <div className="col-2 border-bottom th">ASSET</div>
+            <div className="col-4 border-bottom th">INPUT</div>
             <div className="col-6 border-bottom">
               <div className="row mx-0">
-                <div className="col-6 p-0">OUTPUT</div>
-                <div className="col-6 p-0">TOTAL</div>
+                <div className="col-6 p-0 th">OUTPUT</div>
+                <div className="col-6 p-0 th">TOTAL</div>
               </div>
             </div>
           </div>

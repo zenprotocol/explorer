@@ -4,10 +4,9 @@ import PropTypes from 'prop-types';
 import Service from '../../lib/Service';
 import TextUtils from '../../lib/TextUtils.js';
 import Loading from '../../components/Loading/Loading.jsx';
-import LinkButton from '../../components/buttons/LinkButton.jsx';
+import Button from '../../components/buttons/Button.jsx';
 import ChartLoader from '../../components/charts/ChartLoader.jsx';
 import './Info.css';
-import '../page.css';
 
 function ContentBox(props) {
   return (
@@ -21,7 +20,7 @@ function ContentBox(props) {
           </div>
           <div className="content">
             <div className="title text-secondary">{props.title}</div>
-            <div className="value text-white text-monospace">{props.content}</div>
+            <div className="value display-2 text-white text-monospace">{props.content}</div>
           </div>
         </div>
         {props.children ? <div className="body">{props.children}</div> : null}
@@ -128,9 +127,9 @@ class InfoPage extends Component {
               content={walletVersion}
               iconClass="fal fa-wallet fa-fw"
             >
-              <LinkButton href="https://docs.zenprotocol.com/preparation/installers">
+              <Button href="https://docs.zenprotocol.com/preparation/installers">
                 Download wallet
-              </LinkButton>
+              </Button>
             </ContentBox>
             <ContentBox
               className="node"
@@ -138,14 +137,14 @@ class InfoPage extends Component {
               content={nodeVersion}
               iconClass="fal fa-server fa-fw"
             >
-              <LinkButton href="https://docs.zenprotocol.com/headless" type="dark-2">
+              <Button href="https://docs.zenprotocol.com/headless" type="dark-2">
                 Download node
-              </LinkButton>
+              </Button>
             </ContentBox>
           </div>
         </section>
         <section className="charts">
-          <h2 className="d-block text-white mb-5">CHARTS</h2>
+          <h1 className="d-block text-white mb-5">CHARTS</h1>
           <div className="row">
             <div className="col-lg-6">
               <ChartLoader chartName="transactionsPerDay" showTitle={true} titleLinkTo="/charts/transactions" />

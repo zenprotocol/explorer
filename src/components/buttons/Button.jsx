@@ -1,26 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
-import './buttons.css';
+import './Button.css';
 
 export default function Button(props) {
-  const {title, isSubmit, className, type, size, children, ...rest} = props;
-  return (
-    <button
-      data-balloon={title}
-      data-balloon-pos="up-left"
-      type={isSubmit ? 'submit' : 'button'}
-      className={classNames(
-        'Button btn',
-        `btn-${type}`,
-        `btn-size-${size}`,
-        className
-      )}
-      {...rest}
-    >
-      {children}
-    </button>
-  );
+  return props.href ? <LinkButton {...props} /> : <InputButton {...props} />;
 }
 
 Button.propTypes = {
@@ -33,6 +17,29 @@ Button.propTypes = {
 };
 
 Button.defaultProps = {
-  type: 'primary-strong',
+  type: 'primary',
   size: 'lg',
 };
+
+const LinkButton = ({ title, type, size, className, children, ...rest }) => (
+  <a
+    data-balloon={title}
+    data-balloon-pos="up-left"
+    className={classNames('Button btn', `btn-${type}`, `btn-size-${size}`, className)}
+    {...rest}
+  >
+    {children}
+  </a>
+);
+
+const InputButton = ({ title, isSubmit, type, size, className, children, ...rest }) => (
+  <button
+    data-balloon={title}
+    data-balloon-pos="up-left"
+    type={isSubmit ? 'submit' : 'button'}
+    className={classNames('Button btn', `btn-${type}`, `btn-size-${size}`, className)}
+    {...rest}
+  >
+    {children}
+  </button>
+);

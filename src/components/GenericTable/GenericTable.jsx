@@ -1,5 +1,5 @@
 import React from 'react';
-import ReactTable, {ReactTableDefaults} from 'react-table';
+import ReactTable, { ReactTableDefaults } from 'react-table';
 import PropTypes from 'prop-types';
 import 'react-table/react-table.css';
 import PaginationComponent from './Pagination.jsx';
@@ -28,13 +28,13 @@ export default function GenericTable(props) {
   } = props;
   return (
     <div className="GenericTable">
-      <ReactTable 
+      <ReactTable
         manual
         loading={loading}
         resizable={resizable}
         sortable={sortable}
         data={data}
-        column={{...ReactTableDefaults.column, minWidth: 130}}
+        column={{ ...ReactTableDefaults.column, minWidth: 130 }}
         columns={columns}
         onFetchData={onFetchData}
         showPaginationBottom={true}
@@ -51,8 +51,19 @@ export default function GenericTable(props) {
         SubComponent={SubComponent}
         pivotBy={pivotBy}
         expanded={expanded}
+        getTableProps={(state, rowInfo, column, instance) => {
+          return { className: 'table-zen' };
+        }}
         getTrProps={getTrProps}
-        getTrGroupProps={getTrGroupProps}
+        getTrGroupProps={(state, rowInfo, column, instance) => {
+          if (!rowInfo) {
+            return {};
+          }
+          // mark last data row before pad rows
+          const dataLength = state.data.length;
+          const rowIndex = rowInfo.index;
+          return { className: rowIndex === dataLength - 1 ? 'last' : '' };
+        }}
       />
     </div>
   );
@@ -75,7 +86,6 @@ GenericTable.propTypes = {
   pivotBy: PropTypes.array,
   expanded: PropTypes.object,
   getTrProps: PropTypes.func,
-  getTrGroupProps: PropTypes.func,
 };
 
 GenericTable.defaultProps = {

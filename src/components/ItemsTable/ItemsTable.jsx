@@ -5,6 +5,7 @@ import debounce from 'lodash.debounce';
 import classNames from 'classnames';
 import Config from '../../lib/Config';
 import GenericTable from '../GenericTable/GenericTable.jsx';
+import Dropdown from '../Dropdown';
 import './ItemsTable.css';
 
 class ItemsTable extends Component {
@@ -12,7 +13,7 @@ class ItemsTable extends Component {
     super(props);
 
     this.state = {
-      windowWidth: 0,
+      windowWidth: 1000,
       expanded: {},
     };
 
@@ -65,9 +66,9 @@ class ItemsTable extends Component {
     return columns;
   }
 
-  setPageSize(event) {
+  setPageSize(selected) {
     const { pageSize, curPage, tableDataSetter } = this.props;
-    const newPageSize = Number(event.target.value);
+    const newPageSize = Number(selected.value);
     const newCurPage = Math.floor((pageSize * curPage) / newPageSize);
     tableDataSetter({ pageSize: newPageSize, curPage: newCurPage });
   }
@@ -79,26 +80,18 @@ class ItemsTable extends Component {
   render() {
     const { loading, itemsCount, items, pageSize, curPage, SubComponent, title } = this.props;
     const numOfPages = Math.ceil(itemsCount / pageSize);
-
+    
     return (
       <div className={classNames('ItemsTable', { loading })}>
         <div className="clearfix">
           <h1 className="d-block d-sm-inline-block text-white mb-3 mb-lg-5">{title}</h1>
           <div className="ItemsTable-pageSizes form-inline float-sm-right">
             <span className="mr-2 d-none d-md-inline-block">SHOW</span>
-            <select
-              value={pageSize}
+            <Dropdown 
+              options={Config.ui.table.pageSizes}
+              value={String(pageSize)}
               onChange={this.setPageSize}
-              className="form-control d-block d-md-inline-block"
-            >
-              {Config.ui.table.pageSizes.map(pageSize => {
-                return (
-                  <option key={pageSize} value={pageSize}>
-                    {pageSize}
-                  </option>
-                );
-              })}
-            </select>
+            />
             <span className="ml-2 d-none d-md-inline-block">ENTRIES</span>
           </div>
         </div>

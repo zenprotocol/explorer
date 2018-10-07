@@ -1,0 +1,25 @@
+@import url('https://fonts.googleapis.com/css?family=Roboto+Mono|Roboto:400,500');
+@import 'style/colors';
+
+.App {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  
+  .App-separator {
+    border-bottom: 0 solid $dark;
+  }
+
+  .body-container {
+    flex: 1;
+  }
+
+  .navbar-container,
+  .footer-container {
+    background-color: $gray-800;
+  }
+
+  .footer-container {
+    flex-shrink: 0;
+  }
+}

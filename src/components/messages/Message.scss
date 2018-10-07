@@ -1,0 +1,25 @@
+@import 'style/colors';
+.Message {
+  position: relative;
+  border-left-color: $border-color;
+  border-right-color: $border-color;
+  border-bottom-color: $border-color;
+  border-top-color: inherit;
+  border-width: 1px;
+  border-style: solid;
+  border-top-width: 4px;
+  padding: 35px 72px;
+  background-color: $gray-900;
+  display: inline-block;
+  font-size: 1.4rem;
+  color: $gray;
+  &.has-icon {
+    padding-left: 100px;
+  }
+  .Message-icon {
+    position: absolute;
+    top: 20px;
+    left: 36px;
+    font-size: 2.8rem;
+  }
+}

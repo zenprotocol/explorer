@@ -1,0 +1,8 @@
+.ButtonToolbar {
+  .Button {
+    margin-right: 10px;
+  }
+  .Button:last-child {
+    margin-right: 0;
+  }
+}

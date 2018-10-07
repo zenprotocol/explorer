@@ -1,0 +1,31 @@
+@import 'sizes';
+
+section {
+  margin-bottom: 70px;
+  position: relative;
+}
+
+textarea {
+  min-height: 150px;
+}
+
+.no-text-transform {
+  text-transform: initial !important;
+}
+
+.break-word {
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  word-break: break-all;
+  word-break: break-word;
+}
+
+.font-size-sm {
+  font-size: $font-size-sm;
+}
+.font-size-md {
+  font-size: $font-size-md;
+}
+.font-size-lg {
+  font-size: $font-size-lg;
+}

@@ -1,0 +1,86 @@
+$white: #f2f2f2;
+$gray-100: #f8f9fa;
+$gray-200: #e9ecef;
+$gray-300: #dee2e6;
+$gray-400: #cccccc;
+$gray-500: #999999;
+$gray-600: #1b2024;
+$gray-700: #14171a;
+$gray-800: #0f1113;
+$gray-900: #08090a;
+$gray: $gray-500;
+$black : #000000;
+$black-accent: $gray-900;
+
+$blue-soft: #83d3ee;
+$blue: #3384f3;
+$indigo : #6610f2;
+$purple : #6f42c1;
+$pink : #e83e8c;
+$red : #f63d3d;
+$orange : #fd7e14;
+$yellow : #ffc107;
+$green : #50d166;
+$teal : #20c997;
+$cyan : #17a2b8;
+
+$colors: ();
+$colors: map-merge((
+  "blue":       $blue,
+  "indigo":     $indigo,
+  "purple":     $purple,
+  "pink":       $pink,
+  "red":        $red,
+  "orange":     $orange,
+  "yellow":     $yellow,
+  "green":      $green,
+  "teal":       $teal,
+  "cyan":       $cyan,
+  "white":      $white,
+  "black":      $black,
+  "black-accent": $black-accent,
+  "gray":       $gray,
+  "gray-dark":  $gray-600
+), $colors);
+
+$primary : $blue;
+$secondary : $gray-500;
+$success : $green;
+$info : $cyan;
+$warning : $yellow;
+$danger : $red;
+$light : $gray-400;
+$dark : $gray-600;
+$dark-2 : #242424;
+
+$theme-colors: ();
+$theme-colors: map-merge((
+  "primary":    $primary,
+  "secondary":  $secondary,
+  "success":    $success,
+  "info":       $info,
+  "warning":    $warning,
+  "danger":     $danger,
+  "light":      $light,
+  "dark":       $dark,
+  "dark-2":     $dark-2
+), $theme-colors);
+
+$body-bg: $black;
+$body-color: $gray-400;
+$mark-bg: $yellow;
+$border-color: $dark;
+
+$table-head-bg: $gray-800;
+$table-head-color: $gray-400;
+$table-bg: $gray-900;
+$table-accent-bg:rgba($black, .05) !default;
+$table-hover-bg: $gray-700;
+$table-active-bg: $table-hover-bg;
+
+$input-bg: $black;
+$input-disabled-bg: transparent;
+$input-color: $white;
+$input-border-color: $border-color;
+$input-focus-border-color: lighten($border-color, 5%);
+$input-placeholder-color: $gray;

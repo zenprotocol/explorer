@@ -36,6 +36,9 @@ export default class ReactTablePagination extends Component {
       className,
     } = this.props;
     
+    if(pages < 2) {
+      return null;
+    }
     return (
       <div className={classnames(className, '-pagination')} style={this.props.style}>
         <nav aria-label="Page navigation">

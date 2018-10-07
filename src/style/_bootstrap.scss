@@ -1,98 +1,70 @@
 @import '../../node_modules/bootstrap/scss/mixins';
-
 // custom vars
-$font-size-base: 1rem;
-$h1-font-size: $font-size-base * 2;
-$h2-font-size: $font-size-base * 1.8;
-$h3-font-size: $font-size-base * 1.6;
-$h4-font-size: $font-size-base * 1.4;
-$h5-font-size: $font-size-base * 1.2;
-$h6-font-size: $font-size-base;
-
-$white: #f2f2f2;
-$gray-100: #f8f9fa;
-$gray-200: #e9ecef;
-$gray-300: #dee2e6;
-$gray-400: #bfbfbf;
-$gray-500: #999999;
-$gray-600: #6c757d;
-$gray-700: #495057;
-$gray-800: #303030;
-$gray-900: #212529;
-$black : #000;
-$black-accent: #0e0e0e;
-
-$blue: #84D1ED;
-$blue-strong: #3384f3;
-$indigo : #6610f2;
-$purple : #6f42c1;
-$pink : #e83e8c;
-$red : #dc3545;
-$orange : #fd7e14;
-$yellow : #ffc107;
-$green : #28a745;
-$teal : #20c997;
-$cyan : #17a2b8;
-
-$colors: ();
-$colors: map-merge((
-  "blue":       $blue,
-  "indigo":     $indigo,
-  "purple":     $purple,
-  "pink":       $pink,
-  "red":        $red,
-  "orange":     $orange,
-  "yellow":     $yellow,
-  "green":      $green,
-  "teal":       $teal,
-  "cyan":       $cyan,
-  "white":      $white,
-  "black":      $black,
-  "black-accent": $black-accent,
-  "gray":       $gray-600,
-  "gray-dark":  $gray-800
-), $colors);
+@import 'colors';
+@import 'sizes';
 
 @each $color, $value in $colors {
   @include bg-variant(".bg-#{$color}", $value);
 }
 
-$primary : $blue;
-$primary-strong : $blue-strong;
-$secondary : $gray-500;
-$success : $green;
-$info : $cyan;
-$warning : $yellow;
-$danger : $red;
-$light : $gray-400;
-$dark : $gray-800;
-$dark-2 : #242424;
-
-$btn-font-weight: 500;
-// $btn-padding-y:  9px;
-// $btn-padding-x:  14px;
-
-$theme-colors: ();
-$theme-colors: map-merge((
-  "primary":    $primary,
-  "primary-strong":    $primary-strong,
-  "secondary":  $secondary,
-  "success":    $success,
-  "info":       $info,
-  "warning":    $warning,
-  "danger":     $danger,
-  "light":      $light,
-  "dark":       $dark,
-  "dark-2":     $dark-2
-), $theme-colors);
-
-$body-bg: $black;
-$body-color: $gray-400;
-$mark-bg: $yellow;
+$btn-font-weight: $font-weight-bold;
 $input-btn-focus-box-shadow: 0;
-
 $font-family-sans-serif: 'Roboto', -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol" !default;
 $font-family-monospace: 'Roboto Mono', SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace !default;
+$link-color: $blue-soft;
+$link-decoration: none;
+$link-hover-color: darken($link-color, 15%);
+$link-hover-decoration: underline;
+
+// Tables
+$table-cell-padding : $table-padding-y $table-padding-x;
+$table-cell-padding-sm : .3rem !default;
+$table-border-width : $border-width !default;
+$table-border-color : $border-color !default;
+
+// Pagination
+$pagination-padding-y : .5rem !default;
+$pagination-padding-x : .75rem !default;
+$pagination-padding-y-sm : .5rem !default;
+$pagination-padding-x-sm : .5rem !default;
+$pagination-padding-y-lg : .75rem !default;
+$pagination-padding-x-lg : 1.5rem !default;
+$pagination-line-height : 1.25 !default;
+$pagination-color : $gray;
+$pagination-bg : $gray-700;
+$pagination-border-width : 0;
+$pagination-border-color : $black;
+$pagination-focus-box-shadow : 0;
+$pagination-focus-outline : 0;
+$pagination-hover-color : $white;
+$pagination-hover-bg : $gray-600;
+$pagination-hover-border-color : $black;
+$pagination-active-color : $white;
+$pagination-active-bg : $pagination-hover-bg;
+$pagination-active-border-color : $pagination-hover-border-color;
+$pagination-disabled-color : $pagination-color;
+$pagination-disabled-bg : $pagination-bg;
+$pagination-disabled-border-color : $black;
+
+// Navbar
+$navbar-dark-color:                 $gray;
+$navbar-dark-hover-color:           $white;
+$navbar-dark-active-color:          $gray-400;
+$navbar-dark-disabled-color:        rgba($white, .25) !default;
+$navbar-dark-toggler-icon-bg:       str-replace(url("data:image/svg+xml;charset=utf8,%3Csvg viewBox='0 0 30 30' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath stroke='#{$navbar-dark-color}' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E"), "#", "%23") !default;
+$navbar-dark-toggler-border-color:  $border-color;
+$navbar-toggler-padding-y:          .5rem;
+$navbar-toggler-padding-x:          .75rem;
+$navbar-toggler-font-size:          $font-size-lg;
+
+$display1-size : 1.5rem;
+$display2-size : 1.25rem;
+$display3-size : 1.125rem;
+$display4-size : 1rem;
+$display1-weight : 400;
+$display2-weight : 400;
+$display3-weight : 400;
+$display4-weight : 400;
 
 @import '../../node_modules/bootstrap/scss/functions';
 @import '../../node_modules/bootstrap/scss/variables';
@@ -130,47 +102,57 @@ $font-family-monospace: 'Roboto Mono', SFMono-Regular, Menlo, Monaco, Consolas, 
 @import '../../node_modules/bootstrap/scss/utilities';
 @import '../../node_modules/bootstrap/scss/print';
 
-.page-link {
-  background-color: transparent;
-  border-color: $dark;
-  color: #a6a6a6 !important;
-  user-select: none;
-  font-size: 1rem;
-  text-transform: uppercase;
+.page-item {
+  a.page-link {
+    user-select: none;
+    border-right-width: 1px;
+    color: $pagination-color;
+  }
+  &:last-child a.page-link {
+    border-right-width: 0;
+  }
+  &.active a.page-link {
+    font-weight: $font-weight-bold;
+    
+    &:hover {
+      color: $white;
+    } 
+  }
 }
 
-.page-item.active .page-link {
-  z-index: 1;
-  color: $white !important;
-  background-color: #a6a6a6;
-  border-color: $dark;
-}
-
-.page-item.disabled .page-link {
-  color: #6c757d;
-  pointer-events: none;
-  cursor: auto;
-  background-color: transparent;
-  border-color: $dark;
-}
-
-.table {
-  th {
-    color: $white;
+.table-zen {
+  thead th {
+    color: $table-head-color;
+    font-size: $font-size-md;
+    font-weight: $font-weight-bold;
+    background-color: $table-head-bg;
+    border-top: none;
+    border-bottom: 1px solid $black;
+    padding: $table-header-padding-y $table-padding-x;
+    text-transform: uppercase;
+    text-align: left;
   }
 
-  td,
-  th {
-    border-color: $dark !important;
+  tbody td {
+    border-top: none;
+    border-bottom: 1px solid $border-color;
   }
-  td:first-child,
-  th:first-child {
-    padding-left: 0;
+  tbody tr:last-child td {
+    border-bottom-color: transparent
+  }
+
+  @media (min-width: map-get($grid-breakpoints, "lg")) {
+    thead th,
+    tbody td {
+      padding-left: $table-padding-x-lg;
+      padding-right: $table-padding-x-lg;
+    }
   }
 }
 
 h1 {
   text-transform: uppercase;
+  line-height: 0.9;
 
   * {
     text-transform: none;

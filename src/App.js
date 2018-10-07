@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import Service from './lib/Service';
 import blockStore from './store/BlockStore';
 import MainRoutes from './MainRoutes.jsx';
+import Page from './components/Page/Page.jsx';
 import Navbar from './components/Navbar/Navbar.jsx';
 import Footer from './components/Footer/Footer.jsx';
 
@@ -42,15 +43,23 @@ class App extends Component {
   render() {
     return (
       <div className="App">
-        <div className="container px-lg-5">
-          <Navbar />
+        <div className="navbar-container">
+          <div className="container">
+            <Navbar />
+          </div>
         </div>
-        <div className="App-separator mb-3 mb-lg-5" />
-        <div className="container px-lg-5">
-          <MainRoutes />
+        <div className="App-separator mb-3 mb-lg-7" />
+        <div className="body-container">
+          <div className="container">
+            <Page>
+              <MainRoutes />
+            </Page>
+          </div>
         </div>
-        <div className="container px-lg-5">
-          <Footer />
+        <div className="footer-container">
+          <div className="container">
+            <Footer />
+          </div>
         </div>
       </div>
     );

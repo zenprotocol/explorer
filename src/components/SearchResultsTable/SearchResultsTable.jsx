@@ -10,7 +10,7 @@ export default class SearchResultsTable extends Component {
 
     return (
       <div className="search-results-group">
-        <table className="table">
+        <table className="table table-zen">
           <thead>
             <tr>
               <th colSpan={columns.length} className="border-0">{title}</th>

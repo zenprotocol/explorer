@@ -1,0 +1,17 @@
+@import 'style/colors';
+@import 'style/sizes';
+.Chart {
+  background-color: $gray-900;
+  .title {
+    border-width: 0;
+    font-weight: $font-weight-bold;
+    border-bottom-width: 1px;
+    border-style: solid;
+    padding: 25px;
+    margin-bottom: 40px;
+  }
+  .title a {
+    color: inherit;
+    text-decoration: none;
+  }
+}

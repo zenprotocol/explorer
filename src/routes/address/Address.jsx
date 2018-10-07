@@ -58,10 +58,10 @@ class AddressPage extends Component {
           ) : !is404 ? (
             <div className="row">
               <div className="col-lg-6">
-                <table className="table">
+                <table className="table table-zen">
                   <thead>
                     <tr>
-                      <th scope="col" colSpan="2" className="text-white border-0">
+                      <th scope="col" colSpan="2">
                         SUMMARY
                       </th>
                     </tr>
@@ -91,18 +91,18 @@ class AddressPage extends Component {
                 </table>
               </div>
               <div className="col-lg-6">
-                <table className="table">
+                <table className="table table-zen">
                   <thead>
                     <tr>
-                      <th scope="col" colSpan="2" className="text-white border-0">
+                      <th scope="col" colSpan="2">
                         BALANCES
                       </th>
                     </tr>
                     <tr>
-                      <th scope="col" className="text-white border-bottom-0">
+                      <th scope="col">
                         ASSET
                       </th>
-                      <th scope="col" className="text-white border-bottom-0">
+                      <th scope="col">
                         AMOUNT
                       </th>
                     </tr>
