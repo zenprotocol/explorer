@@ -34,12 +34,13 @@ class ContractStore {
 decorate(ContractStore, {
   contract: observable,
   loadContract: action,
+  loading: observable,
 });
 
 export default new ContractStore();
 
 export class Contract {
-  constructor({id = '', address = '', code = '', expiryBlock = 0} = {}) {
+  constructor({id = '', address = '', code = '', expiryBlock = null} = {}) {
     this.id = id;
     this.address = address;
     this.code = code;
