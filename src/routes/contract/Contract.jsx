@@ -7,9 +7,9 @@ import uiStore from '../../store/UIStore';
 import RouterUtils from '../../lib/RouterUtils';
 import AssetUtils from '../../lib/AssetUtils';
 import TextUtils from '../../lib/TextUtils';
-import Loading from '../../components/Loading/Loading';
-import HashLink from '../../components/HashLink/HashLink';
-import ItemNotFound from '../../components/ItemNotFound/ItemNotFound';
+import Loading from '../../components/Loading';
+import HashLink from '../../components/HashLink';
+import ItemNotFound from '../../components/ItemNotFound';
 import AssetsBalancesTable from '../../components/AssetsBalancesTable';
 import PageTitle from '../../components/PageTitle';
 
