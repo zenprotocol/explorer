@@ -10,6 +10,7 @@ import AddressTxsTable from '../../components/AddressTxsTable';
 import Loading from '../../components/Loading';
 import HashLink from '../../components/HashLink';
 import ItemNotFound from '../../components/ItemNotFound';
+import PageTitle from '../../components/PageTitle';
 import AssetsBalancesTable from '../../components/AssetsBalancesTable';
 import './Address.css';
 
@@ -44,16 +45,7 @@ class AddressPage extends Component {
     return (
       <div className="Address">
         <section>
-          <div className="row">
-            <div className="col-sm">
-              <h1 className="d-block d-sm-inline-block text-white mb-3 mb-lg-5">
-                ADDRESS
-                <div className="address break-word">
-                  <HashLink hash={params.address} truncate={false} />
-                </div>
-              </h1>
-            </div>
-          </div>
+          <PageTitle title="ADDRESS" subtitle={<HashLink hash={params.address} truncate={false} />} />
           {blockStore.loading.address ? (
             <Loading />
           ) : !is404 ? (
