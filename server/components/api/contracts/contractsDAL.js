@@ -5,6 +5,14 @@ const Op = require('sequelize').Op;
 
 const contractsDAL = dal.createDAL('Contract');
 
+contractsDAL.findByAddress = function(address) {
+  return this.findOne({
+    where: {
+      address,
+    },
+  });
+};
+
 contractsDAL.findAllActive = function() {
   return this.findAll({
     where: {
