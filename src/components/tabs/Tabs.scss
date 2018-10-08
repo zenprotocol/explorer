@@ -1,0 +1,24 @@
+@import 'style/colors';
+@import 'style/sizes';
+.Tabs {
+  .Tab {
+    a {
+      color: $body-color;
+    }
+    margin-left: -1px;
+
+    &:first-child {
+      margin-left: 0; 
+    }
+  }
+  .Tabs-body {
+    padding: $content-padding-x;
+    border: solid 1px $border-color;
+    border-top: none;
+    min-height: 50px;
+
+    @media (min-width: map-get($grid-breakpoints, "lg")) {
+      padding: $content-padding-x-lg;
+    }
+  }
+}

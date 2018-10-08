@@ -30,7 +30,7 @@
     text-transform: uppercase;
     color: $table-head-color;
     text-align: left;
-    padding: $table-header-padding-y $table-padding-x;
+    padding: $table-header-padding-y $content-padding-x;
     border-right-color: transparent;
   }
   
@@ -40,7 +40,7 @@
   }
   .rt-td {
     font-weight: $font-weight-normal;
-    padding: $table-padding-y $table-padding-x;
+    padding: $table-padding-y $content-padding-x;
     overflow: visible;
   }
   
@@ -62,8 +62,8 @@
   @media (min-width: map-get($grid-breakpoints, "lg")) {
     .rt-thead .rt-th,
     .rt-td {
-      padding-left: $table-padding-x-lg;
-      padding-right: $table-padding-x-lg;
+      padding-left: $content-padding-x-lg;
+      padding-right: $content-padding-x-lg;
     }
   }
 }
