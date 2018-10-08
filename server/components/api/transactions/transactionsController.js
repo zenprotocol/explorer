@@ -13,13 +13,11 @@ const Service = require('../../../lib/Service');
 const BlockchainParser = require('../../../lib/BlockchainParser');
 
 module.exports = {
-  // TODO - change to get all transactions - not assets
   index: async function(req, res) {
     // find by blockNumber or address
     const { blockNumber, address } = req.query;
     const page = req.query.page || 0;
     const pageSize = req.query.pageSize || 10;
-    const firstTransactionId = req.query.firstTransactionId || 0;
     const ascending = req.query.order === 'asc'; // descending by default
     const sorted =
       req.query.sorted && req.query.sorted != '[]'
@@ -34,6 +32,10 @@ module.exports = {
       findPromise = transactionsDAL.findAllByBlockNumber(Number(blockNumber), query);
       countPromise = transactionsDAL.countByBlockNumber(Number(blockNumber));
     }
+    else if (address) {
+      findPromise = transactionsDAL.findAllByAddress(address, {limit: query.limit, offset: query.offset, ascending});
+      countPromise = transactionsDAL.countByAddress(address);
+    }
     else {
       findPromise = transactionsDAL.findAll(query);
       countPromise = transactionsDAL.count();
@@ -41,24 +43,10 @@ module.exports = {
 
     const [count, transactions] = await Promise.all([countPromise, findPromise]);
 
-    const customTXs = [];
-
-    transactions.forEach(transaction => {
-      const customTX = transactionsDAL.toJSON(transaction);
-      customTX.isCoinbase = isCoinbaseTX(transaction);
-
-      customTX['assets'] = getTransactionAssets(transaction, address);
-      delete customTX.Inputs;
-      delete customTX.Outputs;
-      delete customTX.AddressTransactions;
-
-      customTXs.push(customTX);
-    });
-
     res.status(httpStatus.OK).json(
       jsonResponse.create(httpStatus.OK, {
         total: count,
-        items: customTXs,
+        items: transactions,
       })
     );
   },
