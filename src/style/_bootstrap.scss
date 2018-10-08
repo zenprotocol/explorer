@@ -17,7 +17,7 @@ $link-hover-color: darken($link-color, 15%);
 $link-hover-decoration: underline;
 
 // Tables
-$table-cell-padding : $table-padding-y $table-padding-x;
+$table-cell-padding : $table-padding-y $content-padding-x;
 $table-cell-padding-sm : .3rem !default;
 $table-border-width : $border-width !default;
 $table-border-color : $border-color !default;
@@ -56,6 +56,14 @@ $navbar-dark-toggler-border-color:  $border-color;
 $navbar-toggler-padding-y:          .5rem;
 $navbar-toggler-padding-x:          .75rem;
 $navbar-toggler-font-size:          $font-size-lg;
+
+$nav-tabs-border-color:             $border-color;
+$nav-tabs-border-width:             $border-width;
+$nav-tabs-border-radius:            0;
+$nav-tabs-link-hover-border-color:  $border-color;
+$nav-tabs-link-active-color:        $white;
+$nav-tabs-link-active-bg:           $table-bg;
+$nav-tabs-link-active-border-color: $border-color;
 
 $display1-size : 1.5rem;
 $display2-size : 1.25rem;
@@ -128,7 +136,7 @@ $display4-weight : 400;
     background-color: $table-head-bg;
     border-top: none;
     border-bottom: 1px solid $black;
-    padding: $table-header-padding-y $table-padding-x;
+    padding: $table-header-padding-y $content-padding-x;
     text-transform: uppercase;
     text-align: left;
   }
@@ -144,8 +152,8 @@ $display4-weight : 400;
   @media (min-width: map-get($grid-breakpoints, "lg")) {
     thead th,
     tbody td {
-      padding-left: $table-padding-x-lg;
-      padding-right: $table-padding-x-lg;
+      padding-left: $content-padding-x-lg;
+      padding-right: $content-padding-x-lg;
     }
   }
 }
