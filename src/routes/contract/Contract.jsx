@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { Route, Switch, Redirect, Link } from 'react-router-dom';
 import classNames from 'classnames';
+import Highlight from 'react-highlight';
 import contractStore from '../../store/ContractStore';
 import blockStore from '../../store/BlockStore';
 import uiStore from '../../store/UIStore';
@@ -16,6 +17,7 @@ import PageTitle from '../../components/PageTitle';
 import ItemsTable from '../../components/ItemsTable';
 import Page from '../../components/Page';
 import { Tabs, TabHead, TabBody, Tab, TabPanel } from '../../components/tabs';
+import './Contract.css';
 
 class ContractPage extends Component {
   componentDidMount() {
@@ -42,7 +44,7 @@ class ContractPage extends Component {
     const is404 = blockStore.address.status === 404;
 
     return (
-      <Page className="Address">
+      <Page className="Contract">
         <section>
           <PageTitle
             title="Contract"
@@ -148,7 +150,6 @@ const TransactionsTab = observer(props => {
         pageSize={uiStore.addressTxsTable.pageSize}
         curPage={uiStore.addressTxsTable.curPage}
         tableDataSetter={uiStore.setAddressTxsTableData.bind(uiStore)}
-        title="Transactions"
       />
     </TabPanel>
   );
@@ -165,7 +166,12 @@ function CodeTab() {
   if (contractStore.loading.contract) {
     return <Loading />;
   }
-  return <TabPanel>{contractStore.contract.code}</TabPanel>;
+  console.log(contractStore.contract.code);
+  return (
+    <TabPanel>
+      <Highlight className="fsharp">{contractStore.contract.code}</Highlight>
+    </TabPanel>
+  );
 }
 
 function AssetsTab(props) {
