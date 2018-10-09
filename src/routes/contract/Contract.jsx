@@ -166,6 +166,7 @@ function CodeTab() {
   if (contractStore.loading.contract) {
     return <Loading />;
   }
+  console.log(contractStore.contract.code);
   return (
     <TabPanel>
       <Highlight className="fsharp">{contractStore.contract.code}</Highlight>
