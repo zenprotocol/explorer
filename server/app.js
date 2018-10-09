@@ -21,8 +21,13 @@ const app = express();
 app.use(compression());
 
 // middleware
-app.use(morgan(':remote-addr ":method :url HTTP/:http-version" :status :res[content-length] ":referrer" ":user-agent"', { stream: logger.stream }));
-if(process.env.NODE_ENV === 'development') {
+app.use(
+  morgan(
+    ':remote-addr ":method :url HTTP/:http-version" :status :res[content-length] ":referrer" ":user-agent"',
+    { stream: logger.stream }
+  )
+);
+if (process.env.NODE_ENV === 'development') {
   app.use(cors());
 }
 app.use(bodyParser.json({ limit: config.get('http:request:limit') }));
