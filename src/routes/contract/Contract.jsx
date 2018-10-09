@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
-import { Route, Switch, Redirect } from 'react-router-dom';
+import { Route, Switch, Redirect, Link } from 'react-router-dom';
 import classNames from 'classnames';
 import contractStore from '../../store/ContractStore';
 import blockStore from '../../store/BlockStore';
@@ -13,6 +13,8 @@ import HashLink from '../../components/HashLink';
 import ItemNotFound from '../../components/ItemNotFound';
 import AssetsBalancesTable from '../../components/AssetsBalancesTable';
 import PageTitle from '../../components/PageTitle';
+import ItemsTable from '../../components/ItemsTable';
+import Page from '../../components/Page';
 import { Tabs, TabHead, TabBody, Tab, TabPanel } from '../../components/tabs';
 
 class ContractPage extends Component {
@@ -40,7 +42,7 @@ class ContractPage extends Component {
     const is404 = blockStore.address.status === 404;
 
     return (
-      <div className="Address">
+      <Page className="Address">
         <section>
           <PageTitle
             title="Contract"
@@ -49,7 +51,7 @@ class ContractPage extends Component {
           {is404 ? <ItemNotFound item="Contract" /> : this.renderTopTables()}
         </section>
         {!is404 && <section>{this.renderTabs()}</section>}
-      </div>
+      </Page>
     );
   }
 
@@ -107,7 +109,7 @@ class ContractPage extends Component {
         </TabHead>
         <TabBody>
           <Switch>
-            <Route path={`${currentPath}/txns`} component={TransactionsTab} />
+            <Route path={`${currentPath}/txns`} component={TransactionsTabReactive} />
             <Route path={`${currentPath}/commands`} component={CommandsTab} />
             <Route path={`${currentPath}/code`} component={CodeTab} />
             <Route path={`${currentPath}/assets`} component={AssetsTab} />
@@ -119,9 +121,41 @@ class ContractPage extends Component {
   }
 }
 
-function TransactionsTab(props) {
-  return <TabPanel>transactions</TabPanel>;
-}
+const TransactionsTab = observer(props => {
+  return (
+    <TabPanel>
+      <ItemsTable
+        columns={[
+          {
+            Header: 'TX HASH',
+            accessor: 'hash',
+            Cell: data => <HashLink url={`/tx/${data.value}`} hash={data.value} />,
+          },
+          {
+            Header: 'Timestamp',
+            accessor: 'Block.timestamp',
+            Cell: data => TextUtils.getDateStringFromTimestamp(data.value),
+          },
+          {
+            Header: 'Block',
+            accessor: 'Block.blockNumber',
+            Cell: data => <Link to={`/blocks/${data.value}`}>{data.value}</Link>,
+          },
+        ]}
+        loading={blockStore.loading.addressTransactions}
+        itemsCount={blockStore.addressTransactionsCount}
+        items={blockStore.addressTransactions}
+        pageSize={uiStore.addressTxsTable.pageSize}
+        curPage={uiStore.addressTxsTable.curPage}
+        tableDataSetter={uiStore.setAddressTxsTableData.bind(uiStore)}
+        title="Transactions"
+      />
+    </TabPanel>
+  );
+});
+const TransactionsTabReactive = observer(
+  WithSetAddressOnUiStore(TransactionsTab, 'setAddressTxsTableData')
+);
 
 function CommandsTab(props) {
   return <TabPanel>commands</TabPanel>;
@@ -136,6 +170,33 @@ function CodeTab() {
 
 function AssetsTab(props) {
   return <TabPanel>assets</TabPanel>;
+}
+
+function WithSetAddressOnUiStore(WrappedComponent, uiStoreFunctionName) {
+  return class HOC extends Component {
+    componentDidMount() {
+      this.setAddress();
+    }
+
+    componentDidUpdate(prevProps) {
+      const prevParams = RouterUtils.getRouteParams(prevProps);
+      if (this.addressProp !== prevParams.address) {
+        this.setAddress();
+      }
+    }
+
+    get addressProp() {
+      return RouterUtils.getRouteParams(this.props).address;
+    }
+
+    setAddress() {
+      uiStore[uiStoreFunctionName]({ address: this.addressProp });
+    }
+
+    render() {
+      return <WrappedComponent {...this.props} />;
+    }
+  };
 }
 
 export default observer(ContractPage);

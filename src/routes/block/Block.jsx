@@ -11,6 +11,7 @@ import BlockUtils from '../../lib/BlockUtils';
 import BlockTxsTable from '../../components/BlockTxsTable';
 import Loading from '../../components/Loading';
 import HashLink from '../../components/HashLink';
+import Page from '../../components/Page';
 import './Block.css';
 
 class BlockPage extends Component {
@@ -97,7 +98,7 @@ class BlockPage extends Component {
     if (!block.id) return <Loading />;
 
     return (
-      <div className="Block">
+      <Page className="Block">
         <section>
           <div className="row">
             <div className="col-sm">
@@ -171,7 +172,7 @@ class BlockPage extends Component {
         <section>
           <BlockTxsTable />
         </section>
-      </div>
+      </Page>
     );
   }
 }

@@ -12,6 +12,7 @@ import HashLink from '../../components/HashLink';
 import ItemNotFound from '../../components/ItemNotFound';
 import PageTitle from '../../components/PageTitle';
 import AssetsBalancesTable from '../../components/AssetsBalancesTable';
+import Page from '../../components/Page';
 import './Address.css';
 
 class AddressPage extends Component {
@@ -30,7 +31,7 @@ class AddressPage extends Component {
   }
 
   setAddress(address) {
-    uiStore.setAddressTxTableData({address});
+    uiStore.setAddressTxAssetsTableData({address});
   }
 
   render() {
@@ -43,7 +44,7 @@ class AddressPage extends Component {
     const is404 = blockStore.address.status === 404;
 
     return (
-      <div className="Address">
+      <Page className="Address">
         <section>
           <PageTitle title="ADDRESS" subtitle={<HashLink hash={params.address} truncate={false} />} />
           {blockStore.loading.address ? (
@@ -95,7 +96,7 @@ class AddressPage extends Component {
         <section className={classNames({'d-none': is404})}>
           <AddressTxsTable address={params.address} />
         </section>
-      </div>
+      </Page>
     );
   }
 }

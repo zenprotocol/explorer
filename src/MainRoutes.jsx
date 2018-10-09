@@ -13,19 +13,17 @@ import NotFound from './routes/notFound/NotFound.jsx';
 
 export default function MainRoutes() {
   return (
-    <React.Fragment>
-      <Switch>
-        <Route exact path="/(|blocks)" component={Blocks} />
-        <Route path="/blocks/:id" component={Block} />
-        <Route path="/tx/:hash" component={Transaction} />
-        <Route path="/address/:address" component={Address} />
-        <Route path="/contract/:address" component={Contract} />
-        <Route path="/search/:search" component={Search} />
-        <Route path="/blockchain/info" component={Info} />
-        <Route path="/charts/:name" component={Chart} />
-        <Route path="/broadcastTx/:hex?" component={BroadcastTx} />
-        <Route component={NotFound} />
-      </Switch>
-    </React.Fragment>
+    <Switch>
+      <Route exact path="/(|blocks)" component={Blocks} />
+      <Route path="/blocks/:id" component={Block} />
+      <Route path="/tx/:hash" component={Transaction} />
+      <Route path="/address/:address" component={Address} />
+      <Route path="/contract/:address" component={Contract} />
+      <Route path="/search/:search" component={Search} />
+      <Route path="/blockchain/info" component={Info} />
+      <Route path="/charts/:name" component={Chart} />
+      <Route path="/broadcastTx/:hex?" component={BroadcastTx} />
+      <Route component={NotFound} />
+    </Switch>
   );
 }

@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import RouterUtils from '../../lib/RouterUtils';
 import ChartLoader from '../../components/charts/ChartLoader.jsx';
+import Page from '../../components/Page';
 import './Chart.css';
 
 const PARAM_TO_CHART_MAP = {
@@ -34,12 +35,12 @@ class Chart extends Component {
     }
 
     return (
-      <div className="ChartPage">
+      <Page className="ChartPage">
         <section>
           <h1 className="d-block d-sm-inline-block text-white mb-3 mb-lg-5">{chartConfig.title}</h1>
           <ChartLoader chartName={chartConfig.name} />
         </section>
-      </div>
+      </Page>
     );
   }
 

@@ -15,6 +15,8 @@ class BlockStore {
     this.transactions = [];
     this.transactionsCount = 0;
     this.address = {};
+    this.addressTransactions = [];
+    this.addressTransactionsCount = 0;
     this.addressTransactionAssets = [];
     this.addressTransactionAssetsCount = 0;
     this.searchString = '';
@@ -29,6 +31,7 @@ class BlockStore {
       transaction: false,
       transactions: false,
       address: false,
+      addressTransactions: false,
       addressTransactionAssets: false,
       searchResults: false,
     };
@@ -40,7 +43,7 @@ class BlockStore {
     this.blocksCount = count;
   }
 
-  fetchBlocks(params = {pageSize: 10, page: 0}) {
+  fetchBlocks(params = { pageSize: 10, page: 0 }) {
     this.loading.blocks = true;
 
     return Service.blocks
@@ -200,6 +203,24 @@ class BlockStore {
     }
   }
 
+  loadAddressTransactions(address, params = {}) {
+    this.loading.addressTransactions = true;
+    return Service.transactions
+      .find(Object.assign({ address }, params))
+      .then(response => {
+        runInAction(() => {
+          this.addressTransactions = response.data.items;
+          this.addressTransactionsCount = Number(response.data.total);
+        });
+      })
+      .catch(() => {})
+      .then(() => {
+        runInAction(() => {
+          this.loading.addressTransactions = false;
+        });
+      });
+  }
+
   fetchMedianTime() {
     return Service.infos.findByName('medianTime').then(response => {
       runInAction(() => {
@@ -299,6 +320,8 @@ decorate(BlockStore, {
   address: observable,
   addressTransactionAssets: observable,
   addressTransactionAssetsCount: observable,
+  addressTransactions: observable,
+  addressTransactionsCount: observable,
   searchString: observable,
   searchStringPrev: observable,
   searchResults: observable,
@@ -315,6 +338,7 @@ decorate(BlockStore, {
   fetchTransactions: action,
   fetchAddress: action,
   fetchAddressTransactionAssets: action,
+  loadAddressTransactions: action,
   fetchTransactionAsset: action,
   fetchMedianTime: action,
   fetchSyncing: action,

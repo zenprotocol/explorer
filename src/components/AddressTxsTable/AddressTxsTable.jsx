@@ -71,9 +71,9 @@ class AddressTxsTable extends Component {
         loading={blockStore.loading.addressTransactionAssets}
         itemsCount={blockStore.addressTransactionAssetsCount}
         items={blockStore.addressTransactionAssets}
-        pageSize={uiStore.addressTxTable.pageSize}
-        curPage={uiStore.addressTxTable.curPage}
-        tableDataSetter={uiStore.setAddressTxTableData.bind(uiStore)}
+        pageSize={uiStore.addressTxAssetsTable.pageSize}
+        curPage={uiStore.addressTxAssetsTable.curPage}
+        tableDataSetter={uiStore.setAddressTxAssetsTableData.bind(uiStore)}
         title="Transactions"
         SubComponent={row => {
           const addressFoundIn = [];

@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import blockStore from '../../store/BlockStore';
 import Service from '../../lib/Service.js';
 import BlocksTable from '../../components/BlocksTable';
+import Page from '../../components/Page';
 
 class BlocksPage extends Component {
   constructor(props) {
@@ -28,9 +29,11 @@ class BlocksPage extends Component {
 
   render() {
     return (
-      <section>
-        <BlocksTable title="LATEST BLOCKS" />
-      </section>
+      <Page className="Blocks">
+        <section>
+          <BlocksTable title="LATEST BLOCKS" />
+        </section>
+      </Page>
     );
   }
 }

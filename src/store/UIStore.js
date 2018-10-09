@@ -7,21 +7,24 @@ class UIStore {
     this.blocksTable = {
       pageSize: 10,
       curPage: 0,
-      prevPage: -1,
     };
 
-    this.addressTxTable = {
+    this.addressTxAssetsTable = {
       address: '',
       pageSize: 10,
       curPage: 0,
-      prevPage: -1,
+    };
+
+    this.addressTxsTable = {
+      address: '',
+      pageSize: 10,
+      curPage: 0,
     };
 
     this.blockTxTable = {
       hashOrBlockNumber: '0',
       pageSize: 10,
       curPage: 0,
-      prevPage: -1,
     };
 
     let firstRun = true;
@@ -50,7 +53,11 @@ class UIStore {
     });
 
     autorun(() => {
-      this.fetchAddressTransactionsOnChange();
+      this.fetchAddressTxAssetsOnChange();
+    });
+
+    autorun(() => {
+      this.fetchAddressTxsOnChange();
     });
   }
 
@@ -72,18 +79,27 @@ class UIStore {
     }
   }
 
-  fetchAddressTransactionsOnChange() {
-    if (this.addressTxTable.address) {
-      blockStore.fetchAddressTransactionAssets(this.addressTxTable.address, {
-        page: this.addressTxTable.curPage,
-        pageSize: this.addressTxTable.pageSize,
+  fetchAddressTxAssetsOnChange() {
+    if (this.addressTxAssetsTable.address) {
+      blockStore.fetchAddressTransactionAssets(this.addressTxAssetsTable.address, {
+        page: this.addressTxAssetsTable.curPage,
+        pageSize: this.addressTxAssetsTable.pageSize,
+      });
+    }
+  }
+
+  fetchAddressTxsOnChange() {
+    if (this.addressTxsTable.address) {
+      blockStore.loadAddressTransactions(this.addressTxsTable.address, {
+        page: this.addressTxsTable.curPage,
+        pageSize: this.addressTxsTable.pageSize,
       });
     }
   }
 
   runOnAddressChange() {
-    blockStore.resetAddressTransactionAssets(this.addressTxTable.address);
-    blockStore.fetchAddress(this.addressTxTable.address);
+    blockStore.resetAddressTransactionAssets(this.addressTxAssetsTable.address);
+    blockStore.fetchAddress(this.addressTxAssetsTable.address);
   }
 
   runOnBlockChange() {
@@ -95,7 +111,6 @@ class UIStore {
       this.blocksTable.pageSize = pageSize;
     }
     if (curPage !== undefined) {
-      this.blocksTable.prevPage = this.blocksTable.curPage;
       this.blocksTable.curPage = curPage;
     }
   }
@@ -108,22 +123,33 @@ class UIStore {
       this.blockTxTable.pageSize = pageSize;
     }
     if (curPage !== undefined) {
-      this.blockTxTable.prevPage = this.blockTxTable.curPage;
       this.blockTxTable.curPage = curPage;
     }
   }
 
-  setAddressTxTableData({ address, pageSize, curPage } = {}) {
-    if (address && address !== this.addressTxTable.address) {
-      this.addressTxTable.address = address;
-      this.addressTxTable.curPage = 0;
+  setAddressTxAssetsTableData({ address, pageSize, curPage } = {}) {
+    if (address && address !== this.addressTxAssetsTable.address) {
+      this.addressTxAssetsTable.address = address;
+      this.addressTxAssetsTable.curPage = 0;
     }
     if (pageSize) {
-      this.addressTxTable.pageSize = pageSize;
+      this.addressTxAssetsTable.pageSize = pageSize;
     }
     if (curPage !== undefined) {
-      this.addressTxTable.prevPage = this.addressTxTable.curPage;
-      this.addressTxTable.curPage = curPage;
+      this.addressTxAssetsTable.curPage = curPage;
+    }
+  }
+
+  setAddressTxsTableData({ address, pageSize, curPage } = {}) {
+    if (address && address !== this.addressTxsTable.address) {
+      this.addressTxsTable.address = address;
+      this.addressTxsTable.curPage = 0;
+    }
+    if (pageSize) {
+      this.addressTxsTable.pageSize = pageSize;
+    }
+    if (curPage !== undefined) {
+      this.addressTxsTable.curPage = curPage;
     }
   }
 
@@ -137,8 +163,11 @@ class UIStore {
       if (data.blocksTable) {
         this.blocksTable.pageSize = data.blocksTable.pageSize;
       }
-      if (data.addressTxTable) {
-        this.addressTxTable.pageSize = data.addressTxTable.pageSize;
+      if (data.addressTxAssetsTable) {
+        this.addressTxAssetsTable.pageSize = data.addressTxAssetsTable.pageSize;
+      }
+      if (data.addressTxsTable) {
+        this.addressTxsTable.pageSize = data.addressTxsTable.pageSize;
       }
       if (data.blockTxTable) {
         this.blockTxTable.pageSize = data.blockTxTable.pageSize;
@@ -149,11 +178,13 @@ class UIStore {
 
 decorate(UIStore, {
   blocksTable: observable,
-  addressTxTable: observable,
+  addressTxAssetsTable: observable,
+  addressTxsTable: observable,
   blockTxTable: observable,
   setBlocksTableData: action,
   setBlockTxTableData: action,
-  setAddressTxTableData: action,
+  setAddressTxAssetsTableData: action,
+  setAddressTxsTableData: action,
   loadFromStorage: action,
 });
 

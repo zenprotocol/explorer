@@ -6,6 +6,7 @@ import blockStore from '../../store/BlockStore';
 import TextUtils from '../../lib/TextUtils';
 import Transaction from '../../components/Transactions/Transaction.jsx';
 import Loading from '../../components/Loading';
+import Page from '../../components/Page';
 import './Transaction.css';
 
 class TransactionPage extends Component {
@@ -73,7 +74,7 @@ class TransactionPage extends Component {
       : '';
 
     return (
-      <div className="Transaction">
+      <Page className="Transaction">
         <section>
           <div className="row">
             <div className="col-sm">
@@ -114,7 +115,7 @@ class TransactionPage extends Component {
         <section>
           <Transaction transaction={transaction} disableTXLinks={true} />
         </section>
-      </div>
+      </Page>
     );
   }
 }

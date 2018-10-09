@@ -11,6 +11,7 @@ import ButtonToolbar from '../../components/buttons/ButtonToolbar';
 import SuccessMessage from '../../components/messages/SuccessMessage.jsx';
 import ErrorMessage from '../../components/messages/ErrorMessage.jsx';
 import TransactionAsset from '../../components/Transactions/Asset/TransactionAsset.jsx';
+import Page from '../../components/Page';
 import './BroadcastTx.css';
 
 const INVALID_TXT = 'Invalid transaction';
@@ -57,7 +58,7 @@ class BroadcastTx extends Component {
   render() {
     const { hex, progress, broadcastResponse, error } = this.state;
     return (
-      <div className="BroadcastTx">
+      <Page className="BroadcastTx">
         <section>
           <h1 className="d-block d-sm-inline-block text-white mb-3 mb-lg-5">
             {PAGE_TITLE}
@@ -121,7 +122,7 @@ class BroadcastTx extends Component {
             </div>
           </form>
         </section>
-      </div>
+      </Page>
     );
   }
 

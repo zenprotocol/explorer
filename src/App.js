@@ -50,9 +50,7 @@ class App extends Component {
         <div className="App-separator mb-3 mb-lg-7" />
         <div className="body-container">
           <div className="container">
-            <Page>
-              <MainRoutes />
-            </Page>
+            <MainRoutes />
           </div>
         </div>
         <div className="footer-container">

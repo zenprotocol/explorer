@@ -6,6 +6,7 @@ import TextUtils from '../../lib/TextUtils.js';
 import Loading from '../../components/Loading';
 import Button from '../../components/buttons/Button';
 import ChartLoader from '../../components/charts/ChartLoader.jsx';
+import Page from '../../components/Page';
 import './Info.css';
 
 function ContentBox(props) {
@@ -84,7 +85,7 @@ class InfoPage extends Component {
     } = this.state.infos;
 
     return (
-      <div className="Info">
+      <Page className="Info">
         <section className="container">
           <div className="row">
             <ContentBox
@@ -168,7 +169,7 @@ class InfoPage extends Component {
             <div className="col-lg-6" />
           </div>
         </section>
-      </div>
+      </Page>
     );
   }
 }

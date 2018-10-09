@@ -9,6 +9,7 @@ import SearchUtils from '../../lib/SearchUtils';
 import AssetUtils from '../../lib/AssetUtils';
 import Loading from '../../components/Loading';
 import SearchResultsTable from '../../components/SearchResultsTable';
+import Page from '../../components/Page';
 import './Search.css';
 
 class SearchResultsPage extends Component {
@@ -83,7 +84,7 @@ class SearchResultsPage extends Component {
     }
 
     return (
-      <div className="SearchResults">
+      <Page className="SearchResults">
         <section>
           <div className="row">
             <div className="col-sm">
@@ -197,7 +198,7 @@ class SearchResultsPage extends Component {
             </div>
           </div>
         </section>
-      </div>
+      </Page>
     );
   }
 
