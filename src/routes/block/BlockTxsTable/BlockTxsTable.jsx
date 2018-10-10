@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
-import uiStore from '../../store/UIStore';
-import blockStore from '../../store/BlockStore';
-import TextUtils from '../../lib/TextUtils';
-import AssetUtils from '../../lib/AssetUtils';
-import HashLink from '../HashLink/HashLink';
-import ItemsTable from '../ItemsTable/ItemsTable';
-import TransactionAssetLoader from '../Transactions/Asset/TransactionAssetLoader';
+import uiStore from '../../../store/UIStore';
+import blockStore from '../../../store/BlockStore';
+import TextUtils from '../../../lib/TextUtils';
+import AssetUtils from '../../../lib/AssetUtils';
+import HashLink from '../../../components/HashLink/HashLink';
+import ItemsTable from '../../../components/ItemsTable/ItemsTable';
+import TransactionAssetLoader from '../../../components/Transactions/Asset/TransactionAssetLoader';
 
 class BlockTxsTable extends Component {
   getTableColumns() {

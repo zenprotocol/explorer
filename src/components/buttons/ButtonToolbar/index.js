@@ -1,2 +1,1 @@
-import Component from './ButtonToolbar.jsx';
-export default Component;
+export { default } from './ButtonToolbar.jsx';

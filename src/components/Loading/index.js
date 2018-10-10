@@ -1,2 +1,1 @@
-import Component from './Loading.jsx';
-export default Component;
+export { default } from './Loading.jsx';

@@ -6,7 +6,7 @@ import uiStore from '../../store/UIStore';
 import RouterUtils from '../../lib/RouterUtils';
 import AssetUtils from '../../lib/AssetUtils';
 import TextUtils from '../../lib/TextUtils';
-import AddressTxsTable from '../../components/AddressTxsTable';
+import AddressTxsTable from './AddressTxsTable';
 import Loading from '../../components/Loading';
 import HashLink from '../../components/HashLink';
 import ItemNotFound from '../../components/ItemNotFound';

@@ -1,2 +1,1 @@
-import Component from './Dropdown.jsx';
-export default Component;
+export { default } from './Dropdown.jsx';

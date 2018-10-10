@@ -1,2 +1,1 @@
-import Component from './Logo.jsx';
-export default Component;
+export { default } from './Logo.jsx';

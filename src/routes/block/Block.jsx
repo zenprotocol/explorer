@@ -8,7 +8,7 @@ import RouterUtils from '../../lib/RouterUtils';
 import uiStore from '../../store/UIStore';
 import TextUtils from '../../lib/TextUtils';
 import BlockUtils from '../../lib/BlockUtils';
-import BlockTxsTable from '../../components/BlockTxsTable';
+import BlockTxsTable from './BlockTxsTable';
 import Loading from '../../components/Loading';
 import HashLink from '../../components/HashLink';
 import Page from '../../components/Page';

@@ -1,2 +1,1 @@
-import Component from './SearchBar.jsx';
-export default Component;
+export { default } from './SearchBar.jsx';

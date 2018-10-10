@@ -2,13 +2,13 @@ import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
-import uiStore from '../../store/UIStore';
-import AssetUtils from '../../lib/AssetUtils';
-import TextUtils from '../../lib/TextUtils';
-import blockStore from '../../store/BlockStore';
-import HashLink from '../HashLink';
-import ItemsTable from '../ItemsTable';
-import TransactionAssetLoader from '../Transactions/Asset/TransactionAssetLoader.jsx';
+import uiStore from '../../../store/UIStore';
+import AssetUtils from '../../../lib/AssetUtils';
+import TextUtils from '../../../lib/TextUtils';
+import blockStore from '../../../store/BlockStore';
+import HashLink from '../../../components/HashLink';
+import ItemsTable from '../../../components/ItemsTable';
+import TransactionAssetLoader from '../../../components/Transactions/Asset/TransactionAssetLoader.jsx';
 
 class AddressTxsTable extends Component {
   getTableColumns() {

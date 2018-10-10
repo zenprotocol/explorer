@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { Link } from 'react-router-dom';
-import TextUtils from '../../lib/TextUtils';
-import uiStore from '../../store/UIStore';
-import blockStore from '../../store/BlockStore';
-import BlockUtils from '../../lib/BlockUtils';
-import HashLink from '../HashLink';
-import ItemsTable from '../ItemsTable';
+import TextUtils from '../../../lib/TextUtils';
+import uiStore from '../../../store/UIStore';
+import blockStore from '../../../store/BlockStore';
+import BlockUtils from '../../../lib/BlockUtils';
+import HashLink from '../../../components/HashLink';
+import ItemsTable from '../../../components/ItemsTable';
 
 class BlocksTable extends Component {
   getTableColumns() {

@@ -1,2 +1,1 @@
-import Component from './GenericTable.jsx';
-export default Component;
+export { default } from './GenericTable.jsx';

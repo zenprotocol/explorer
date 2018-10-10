@@ -1,2 +1,1 @@
-import Component from './Footer.jsx';
-export default Component;
+export { default } from './Footer.jsx';

@@ -1,2 +1,1 @@
-import Component from './Page.jsx';
-export default Component;
+export { default } from './Page.jsx';

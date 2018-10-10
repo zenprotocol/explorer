@@ -1,13 +1,11 @@
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { Route, Switch, Redirect, Link } from 'react-router-dom';
-import classNames from 'classnames';
 import Highlight from 'react-highlight';
 import contractStore from '../../store/ContractStore';
 import blockStore from '../../store/BlockStore';
 import uiStore from '../../store/UIStore';
 import RouterUtils from '../../lib/RouterUtils';
-import AssetUtils from '../../lib/AssetUtils';
 import TextUtils from '../../lib/TextUtils';
 import Loading from '../../components/Loading';
 import HashLink from '../../components/HashLink';

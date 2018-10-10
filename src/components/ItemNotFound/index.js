@@ -1,2 +1,1 @@
-import Component from './ItemNotFound.jsx';
-export default Component;
+export { default } from './ItemNotFound.jsx';

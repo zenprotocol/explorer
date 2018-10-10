@@ -1,2 +1,1 @@
-import Component from './HashLink.jsx';
-export default Component;
+export { default } from './HashLink.jsx';

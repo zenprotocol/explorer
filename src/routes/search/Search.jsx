@@ -8,7 +8,7 @@ import TextUtils from '../../lib/TextUtils';
 import SearchUtils from '../../lib/SearchUtils';
 import AssetUtils from '../../lib/AssetUtils';
 import Loading from '../../components/Loading';
-import SearchResultsTable from '../../components/SearchResultsTable';
+import SearchResultsTable from './SearchResultsTable';
 import Page from '../../components/Page';
 import './Search.css';
 

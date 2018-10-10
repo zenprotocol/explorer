@@ -1,2 +1,1 @@
-import Component from './ItemsTable.jsx';
-export default Component;
+export { default } from './ItemsTable.jsx';
