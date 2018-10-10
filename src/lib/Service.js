@@ -24,13 +24,14 @@ function sendHttpRequest(config) {
     .request(config)
     .then(response => response.data)
     .catch(error => {
-      if(error.response) {
+      if (error.response) {
         const err = new Error(((error.response.data || {}).error || {}).message);
         err.status = error.response.status;
         err.data = error.response.data.error;
         throw err;
-      }
-      else {
+      } else if (axios.isCancel(error)) {
+        throw error;
+      } else {
         const err = new Error(error.message);
         err.status = -1;
         err.data = {};
@@ -131,8 +132,8 @@ export default {
         url: `${Endpoints.transactions}/broadcast`,
         method: 'post',
         data: {
-          tx
-        }
+          tx,
+        },
       });
     },
     rawToTx(hex) {
@@ -140,8 +141,8 @@ export default {
         url: `${Endpoints.transactions}/raw`,
         method: 'post',
         data: {
-          hex
-        }
+          hex,
+        },
       });
     },
   },
