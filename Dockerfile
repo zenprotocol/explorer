@@ -4,12 +4,12 @@ FROM node:8.12.0-alpine
 RUN addgroup -g 1001 app \
     && adduser -u 1001 -G app -s /bin/sh -D app
 
-RUN apk update && apk upgrade && apk add python g++ make && rm -rf /var/cache/apk/* && npm i -g npm
+RUN apk update && apk upgrade && apk --no-cache add curl && apk add python g++ make && rm -rf /var/cache/apk/* && npm i -g npm
 
 ENV HOME=/home/app
 ENV APP_ROOT=$HOME/explorer
 
-COPY package*.json $APP_ROOT/
+COPY package*.json .npmrc $APP_ROOT/
 RUN chown -R app:app $HOME/
 
 USER app
