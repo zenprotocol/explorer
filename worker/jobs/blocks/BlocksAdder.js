@@ -59,7 +59,6 @@ class BlocksAdder {
           blockNumber <= latestBlockNumberToAdd;
           blockNumber++
         ) {
-          logger.info(`Getting block #${blockNumber} from NODE...`);
           const nodeBlock = await this.networkHelper.getBlockFromNode(blockNumber);
           logger.info(`Got block #${nodeBlock.header.blockNumber} from NODE...`);
 
@@ -146,6 +145,7 @@ class BlocksAdder {
     // TODO - check here if the block already exist in the db, then if a 'force' param is true, delete and re cache
     const startTime = process.hrtime();
     const block = await this.createBlock({ nodeBlock, dbTransaction });
+    logger.info(`Block #${block.blockNumber} created. id=${block.id} hash=${block.hash}`);
     const skipTransactions = getJobData(job, 'skipTransactions');
 
     if (!skipTransactions) {
@@ -154,7 +154,6 @@ class BlocksAdder {
       const transactionsToAdd = getJobData(job, 'limitTransactions')
         ? Math.min(getJobData(job, 'limitTransactions'), transactionHashes.length)
         : transactionHashes.length;
-      logger.info(`${transactionsToAdd} transactions to add`);
       for (let transactionIndex = 0; transactionIndex < transactionsToAdd; transactionIndex++) {
         const transactionHash = transactionHashes[transactionIndex];
         const nodeTransaction = nodeBlock.transactions[transactionHash];
@@ -165,11 +164,19 @@ class BlocksAdder {
           transactionIndex,
           dbTransaction,
         });
+        logger.info(
+          `Transaction created and added to block #${block.blockNumber} blockHash=${
+            block.hash
+          }. txHash=${transaction.hash}, transactionId=${transaction.id}`
+        );
 
         // all outputs and inputs can be added simultaneously because they are not related at this point
         const outputsInputsPromises = [];
 
         // add outputs
+        logger.info(
+          `Adding ${nodeTransaction.outputs.length} outputs to block #${block.blockNumber} txHash=${transaction.hash}`
+        );
         for (let outputIndex = 0; outputIndex < nodeTransaction.outputs.length; outputIndex++) {
           const nodeOutput = nodeTransaction.outputs[outputIndex];
 
@@ -184,6 +191,9 @@ class BlocksAdder {
         }
 
         // add inputs
+        logger.info(
+          `Adding ${nodeTransaction.inputs.length} inputs to block #${block.blockNumber} txHash=${transaction.hash}`
+        );
         for (let inputIndex = 0; inputIndex < nodeTransaction.inputs.length; inputIndex++) {
           const nodeInput = nodeTransaction.inputs[inputIndex];
 
@@ -192,6 +202,9 @@ class BlocksAdder {
           );
         }
         await Promise.all(outputsInputsPromises);
+        logger.info(
+          `All ${outputsInputsPromises.length} inputs and outputs where added to block #${block.blockNumber} txHash=${transaction.hash}`
+        );
       }
     }
     const hrEnd = process.hrtime(startTime);
@@ -205,7 +218,6 @@ class BlocksAdder {
   }
 
   async createBlock({ nodeBlock, dbTransaction } = {}) {
-    logger.info(`Creating a new block with blockNumber ${nodeBlock.header.blockNumber}...`);
     const block = await blocksDAL.create(
       {
         version: nodeBlock.header.version,
@@ -221,9 +233,6 @@ class BlocksAdder {
       },
       { transaction: dbTransaction }
     );
-    logger.info(
-      `Block #${nodeBlock.header.blockNumber} created. id=${block.id} hash=${block.hash}`
-    );
     return block;
   }
 
@@ -234,11 +243,6 @@ class BlocksAdder {
     transactionIndex,
     dbTransaction,
   } = {}) {
-    logger.info(
-      `Creating a new transaction for block. blockNumber=#${block.blockNumber}, blockHash = ${
-        block.hash
-      }, block id=${block.id}...`
-    );
     const transaction = await transactionsDAL.create(
       {
         version: nodeTransaction.version,
@@ -249,31 +253,15 @@ class BlocksAdder {
       },
       { transaction: dbTransaction }
     );
-    logger.info(
-      `Transaction created for block #${block.blockNumber} blockHash = ${
-        block.hash
-      }. Transaction hash=${transaction.hash}, transactionId=${transaction.id}`
-    );
 
-    logger.info(
-      `Adding transaction with hash=${transaction.hash} to block blockNumber=${
-        block.blockNumber
-      }, blockHash=${block.hash}...`
-    );
     await blocksDAL.addTransaction(block, transaction, { transaction: dbTransaction });
-    logger.info(
-      `Transaction with hash=${transaction.hash} added to block blockNumber=${
-        block.blockNumber
-      }, blockHash=${block.hash}`
-    );
     return transaction;
   }
 
   async addOutputToTransaction({ transaction, nodeOutput, outputIndex, dbTransaction }) {
-    logger.info(
-      `Creating a new output for transactionId=#${transaction.id} with hash ${transaction.hash}...`
+    const { lockType, lockValue, address } = this.blockchainParser.getLockValuesFromOutput(
+      nodeOutput
     );
-    const { lockType, lockValue, address } = this.blockchainParser.getLockValuesFromOutput(nodeOutput);
     const output = await outputsDAL.create(
       {
         lockType,
@@ -286,22 +274,8 @@ class BlocksAdder {
       },
       { transaction: dbTransaction }
     );
-    logger.info(
-      `Output created for transactionId=#${transaction.id} with hash ${transaction.hash}.`
-    );
 
-    logger.info(
-      `Adding output with id=${output.id} and index=${output.index} to transaction id=${
-        transaction.id
-      } hash=${transaction.hash}...`
-    );
     await transactionsDAL.addOutput(transaction, output, { transaction: dbTransaction });
-    logger.info(
-      `Output with id=${output.id} and index=${output.index} added to transaction id=${
-        transaction.id
-      } hash=${transaction.hash}.`
-    );
-
     return output;
   }
 
@@ -313,34 +287,18 @@ class BlocksAdder {
     } else if (nodeInput.mint) {
       input = await this.createMintInput({ transaction, nodeInput, inputIndex, dbTransaction });
     } else {
-      throw new Error('Input is invalid');
+      throw new Error(`Input is invalid! txHash=${transaction.hash} inputIndex=${inputIndex}`);
     }
 
-    logger.info(
-      `Adding input with id=${input.id} and index=${input.index} to transaction id=${
-        transaction.id
-      } hash=${transaction.hash}...`
-    );
     await transactionsDAL.addInput(transaction, input, { transaction: dbTransaction });
-    logger.info(
-      `Input with id=${input.id} and index=${input.index} added to transaction id=${
-        transaction.id
-      } hash=${transaction.hash}.`
-    );
-
     return input;
   }
 
   async createMintInput({ transaction, nodeInput, inputIndex, dbTransaction }) {
     if (!this.blockchainParser.isMintInputValid(nodeInput)) {
-      throw new Error(`Mint input not valid in transaction with hash=${transaction.hash}`);
+      throw new Error(`Mint input not valid! txHash=${transaction.hash} inputIndex=${inputIndex}`);
     }
 
-    logger.info(
-      `Creating a new mint input index=${inputIndex} for transaction with id=${
-        transaction.id
-      } hash=${transaction.hash}...`
-    );
     const input = await inputsDAL.create(
       {
         index: inputIndex,
@@ -350,29 +308,16 @@ class BlocksAdder {
       },
       { transaction: dbTransaction }
     );
-    logger.info(
-      `Mint input with id=${input.id} index=${input.index} created for transaction with id=${
-        transaction.id
-      } hash=${transaction.hash}.`
-    );
-
     return input;
   }
 
   async createOutpointInput({ transaction, nodeInput, inputIndex, dbTransaction }) {
     if (!this.blockchainParser.isOutpointInputValid(nodeInput)) {
       throw new Error(
-        `Outpoint input with index=${inputIndex} not valid in transaction with hash=${
-          transaction.hash
-        }`
+        `Outpoint input not valid! txHash=${transaction.hash} inputIndex=${inputIndex}`
       );
     }
 
-    logger.info(
-      `Creating a new outpoint input with index=${inputIndex} for transactionId=#${
-        transaction.id
-      } with hash ${transaction.hash}...`
-    );
     const input = await inputsDAL.create(
       {
         index: inputIndex,
@@ -382,12 +327,6 @@ class BlocksAdder {
       },
       { transaction: dbTransaction }
     );
-    logger.info(
-      `Outpoint input with id=${input.id} index=${input.index} created for transactionId=#${
-        transaction.id
-      } with hash ${transaction.hash}.`
-    );
-
     return input;
   }
 
@@ -395,7 +334,7 @@ class BlocksAdder {
    * Should run after all the blocks are already in the database
    */
   async relateAllOutpointInputsToOutputs({ dbTransaction, blockIds } = {}) {
-    logger.info(`Searching for all outpoint inputs in blocks ${blockIds}`);
+    logger.info(`Searching for all outpoint inputs in blocks ids=[${blockIds}]`);
     const inputs = await inputsDAL.findAll({
       where: {
         isMint: false,
@@ -413,7 +352,7 @@ class BlocksAdder {
       ],
       transaction: dbTransaction,
     });
-    logger.info(`Found ${inputs.length} outpoint inputs that need to be related to outputs`);
+    logger.info(`Found ${inputs.length} outpoint inputs that need to be related to outputs. relating...`);
     for (let i = 0; i < inputs.length; i++) {
       const input = inputs[i];
       await this.relateInputToOutput({ input, dbTransaction });
@@ -421,12 +360,6 @@ class BlocksAdder {
   }
 
   async relateInputToOutput({ input, dbTransaction } = {}) {
-    const startTime = process.hrtime();
-    logger.info(
-      `Searching for the relevant output for input id=${input.id} index=${
-        input.index
-      } in outpoint transaction: hash=${input.outpointTXHash} and index=${input.outpointIndex}...`
-    );
     const output = await outputsDAL.findOne({
       where: {
         index: input.outpointIndex,
@@ -443,30 +376,17 @@ class BlocksAdder {
       transaction: dbTransaction,
     });
     if (output) {
-      logger.info(
-        `Setting the found output with id=${output.id} (outpoint: hash=${
-          input.outpointTXHash
-        } index=${input.outpointIndex}) on the input with id=${input.id} index=${
-          input.index
-        } in transaction with id=${input.TransactionId}...`
-      );
       await inputsDAL.setOutput(input, output, { transaction: dbTransaction });
-      const hrEnd = process.hrtime(startTime);
-      logger.info(
-        `relateInputToOutput Finished. Time elapsed = ${(hrEnd[0] * 1e9 + hrEnd[1]) / 1000000}ms`
-      );
-      logger.info(
-        `Output with id=${output.id} (outpoint: hash=${input.outpointTXHash} index=${
-          input.outpointIndex
-        }) was set on the input with id=${input.id} index=${input.index} in transaction with id=${
-          input.TransactionId
-        }.`
-      );
       return true;
     } else {
-      const errorMsg = `Did not find an output for input with id=${input.id}, index=${
-        input.index
-      } in transaction with id=${input.TransactionId}`;
+      // get transaction and block for a better error message
+      const transaction = await transactionsDAL.findById(input.TransactionId, {
+        transaction: dbTransaction,
+      });
+      const block = await blocksDAL.findById(transaction.BlockId, { transaction: dbTransaction });
+      const errorMsg = `Did not find an output for an outpoint input! txHash=${
+        transaction.hash
+      } inputIndex=${input.index} blockNumber=${block.blockNumber}`;
       throw new Error(errorMsg);
     }
   }
