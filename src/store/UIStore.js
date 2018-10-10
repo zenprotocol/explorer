@@ -1,10 +1,20 @@
-import { observable, decorate, action, autorun, toJS } from 'mobx';
+import { observable, decorate, action, autorun, toJS, runInAction } from 'mobx';
 import blockStore from './BlockStore';
+import addressStore from './AddressStore';
 import localStore from '../lib/localStore';
+import Service from '../lib/Service';
 
 class UIStore {
   constructor() {
+    this.syncing = false;
+
     this.blocksTable = {
+      pageSize: 10,
+      curPage: 0,
+    };
+
+    this.blockTxTable = {
+      hashOrBlockNumber: '0',
       pageSize: 10,
       curPage: 0,
     };
@@ -17,12 +27,6 @@ class UIStore {
 
     this.addressTxsTable = {
       address: '',
-      pageSize: 10,
-      curPage: 0,
-    };
-
-    this.blockTxTable = {
-      hashOrBlockNumber: '0',
       pageSize: 10,
       curPage: 0,
     };
@@ -61,6 +65,14 @@ class UIStore {
     });
   }
 
+  fetchSyncing() {
+    return Service.infos.findByName('syncing').then(response => {
+      runInAction(() => {
+        this.syncing = response.success && response.data.value === 'true';
+      });
+    });
+  }
+
   fetchBlocksOnChange() {
     if (this.blocksTable.curPage * this.blocksTable.pageSize < blockStore.blocksCount) {
       blockStore.fetchBlocks({
@@ -81,7 +93,7 @@ class UIStore {
 
   fetchAddressTxAssetsOnChange() {
     if (this.addressTxAssetsTable.address) {
-      blockStore.fetchAddressTransactionAssets(this.addressTxAssetsTable.address, {
+      addressStore.fetchAddressTransactionAssets(this.addressTxAssetsTable.address, {
         page: this.addressTxAssetsTable.curPage,
         pageSize: this.addressTxAssetsTable.pageSize,
       });
@@ -90,7 +102,7 @@ class UIStore {
 
   fetchAddressTxsOnChange() {
     if (this.addressTxsTable.address) {
-      blockStore.loadAddressTransactions(this.addressTxsTable.address, {
+      addressStore.loadAddressTransactions(this.addressTxsTable.address, {
         page: this.addressTxsTable.curPage,
         pageSize: this.addressTxsTable.pageSize,
       });
@@ -98,8 +110,8 @@ class UIStore {
   }
 
   runOnAddressChange() {
-    blockStore.resetAddressTransactionAssets(this.addressTxAssetsTable.address);
-    blockStore.fetchAddress(this.addressTxAssetsTable.address);
+    addressStore.resetAddressTransactionAssets(this.addressTxAssetsTable.address);
+    addressStore.fetchAddress(this.addressTxAssetsTable.address);
   }
 
   runOnBlockChange() {
@@ -177,10 +189,12 @@ class UIStore {
 }
 
 decorate(UIStore, {
+  syncing: observable,
   blocksTable: observable,
   addressTxAssetsTable: observable,
   addressTxsTable: observable,
   blockTxTable: observable,
+  fetchSyncing: action,
   setBlocksTableData: action,
   setBlockTxTableData: action,
   setAddressTxAssetsTableData: action,

@@ -1,7 +1,7 @@
 import React from 'react';
 import { observer } from 'mobx-react';
 import { Link } from 'react-router-dom';
-import blockStore from '../../store/BlockStore';
+import uiStore from '../../store/UIStore';
 import Config from '../../lib/Config';
 import Logo from '../Logo';
 import ExternalLink from '../ExternalLink';
@@ -33,7 +33,7 @@ export default function Footer(props) {
 const SyncNotification = observer(function() {
   return (
     <div className="SyncNotification">
-      {blockStore.syncing ? (
+      {uiStore.syncing ? (
         <span className="syncing">
           <i className="icon fa fa-spinner fa-spin" /> Syncing...
         </span>

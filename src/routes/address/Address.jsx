@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import classNames from 'classnames';
-import blockStore from '../../store/BlockStore';
+import addressStore from '../../store/AddressStore';
 import uiStore from '../../store/UIStore';
 import RouterUtils from '../../lib/RouterUtils';
 import AssetUtils from '../../lib/AssetUtils';
@@ -37,17 +37,17 @@ class AddressPage extends Component {
   render() {
     const params = RouterUtils.getRouteParams(this.props);
     let zpBalance = {
-      received: getAssetTotal(blockStore.address.received, '00'),
-      sent: getAssetTotal(blockStore.address.sent, '00'),
-      balance: getAssetTotal(blockStore.address.balance, '00'),
+      received: getAssetTotal(addressStore.address.received, '00'),
+      sent: getAssetTotal(addressStore.address.sent, '00'),
+      balance: getAssetTotal(addressStore.address.balance, '00'),
     };
-    const is404 = blockStore.address.status === 404;
+    const is404 = addressStore.address.status === 404;
 
     return (
       <Page className="Address">
         <section>
           <PageTitle title="ADDRESS" subtitle={<HashLink hash={params.address} truncate={false} />} />
-          {blockStore.loading.address ? (
+          {addressStore.loading.address ? (
             <Loading />
           ) : !is404 ? (
             <div className="row">
@@ -67,7 +67,7 @@ class AddressPage extends Component {
                     </tr>
                     <tr>
                       <td>TRANSACTIONS</td>
-                      <td>{TextUtils.formatNumber(blockStore.address.totalTxs)}</td>
+                      <td>{TextUtils.formatNumber(addressStore.address.totalTxs)}</td>
                     </tr>
                     <tr>
                       <td>TOTAL RECEIVED</td>
@@ -79,13 +79,13 @@ class AddressPage extends Component {
                     </tr>
                     <tr>
                       <td>NO. ASSET TYPES</td>
-                      <td>{blockStore.address.assets ? blockStore.address.assets.length : ''}</td>
+                      <td>{addressStore.address.assets ? addressStore.address.assets.length : ''}</td>
                     </tr>
                   </tbody>
                 </table>
               </div>
               <div className="col-lg-6">
-                <AssetsBalancesTable balance={blockStore.address.balance} />
+                <AssetsBalancesTable balance={addressStore.address.balance} />
               </div>
             </div>
           ) : (

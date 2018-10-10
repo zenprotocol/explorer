@@ -1,15 +1,15 @@
 import React, { Component } from 'react';
 import {observer} from 'mobx-react';
 import PropTypes from 'prop-types';
-import blockStore from '../../../store/BlockStore';
-import TransactionAsset from './TransactionAsset';
+import transactionStore from '../../../store/TransactionStore';
+import TransactionAsset from './TransactionAsset.jsx';
 import Loading from '../../Loading';
 
 class TransactionAssetLoader extends Component {
   componentDidMount() {
     const { transactionAssets, index } = this.props;
     if (!this.transactionAssetAlreadyLoaded) {
-      blockStore.fetchTransactionAsset(transactionAssets, index);
+      transactionStore.fetchTransactionAsset(transactionAssets, index);
     }
   }
   render() {

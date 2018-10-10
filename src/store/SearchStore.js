@@ -1,0 +1,77 @@
+import { observable, decorate, action, runInAction, computed } from 'mobx';
+import Service from '../lib/Service';
+import SearchUtils from '../lib/SearchUtils';
+
+class SearchStore {
+  constructor() {
+    this.searchString = '';
+    this.searchStringPrev = '';
+    this.searchResults = {};
+    this.loading = {
+      searchResults: false,
+    };
+
+    this.resetSearchResults();
+  }
+
+  setSearchString(search) {
+    this.searchString = search;
+  }
+
+  clearSearchString() {
+    this.searchString = '';
+    this.searchStringPrev = '';
+  }
+
+  search(value) {
+    if (!SearchUtils.validateSearchString(value) || value === this.searchStringPrev) {
+      return Promise.resolve();
+    }
+
+    this.resetSearchResults();
+    this.searchStringPrev = this.searchString;
+    this.searchString = value;
+    this.loading.searchResults = true;
+
+    return Service.search
+      .searchAll(value)
+      .then(response => {
+        runInAction(() => {
+          this.loading.searchResults = false;
+          if (response.success) {
+            this.searchResults = response.data;
+          }
+        });
+      })
+      .catch(() => {
+        runInAction(() => {
+          this.loading.searchResults = false;
+        });
+      });
+  }
+
+  resetSearchResults() {
+    this.searchResults = {
+      total: 0,
+      items: [],
+    };
+  }
+
+  get searchStringValid() {
+    return SearchUtils.validateSearchString(this.searchString);
+  }
+}
+
+decorate(SearchStore, {
+  searchString: observable,
+  searchStringPrev: observable,
+  searchResults: observable,
+  loading: observable,
+  setSearchString: action,
+  clearSearchString: action,
+  search: action,
+  searchStringValid: computed,
+  resetSearchResults: action,
+});
+
+export default new SearchStore();

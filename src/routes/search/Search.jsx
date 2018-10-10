@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { Link, Redirect } from 'react-router-dom';
 import classNames from 'classnames';
-import blockStore from '../../store/BlockStore';
+import searchStore from '../../store/SearchStore';
 import RouterUtils from '../../lib/RouterUtils';
 import TextUtils from '../../lib/TextUtils';
 import SearchUtils from '../../lib/SearchUtils';
@@ -34,13 +34,13 @@ class SearchResultsPage extends Component {
   }
 
   componentWillUnmount() {
-    blockStore.clearSearchString();
+    searchStore.clearSearchString();
   }
 
   search(value) {
     const search = SearchUtils.formatSearchString(value);
     this.redirectBeforeSearch(search);
-    blockStore.search(search);
+    searchStore.search(search);
     this.setState({ initialSearchDone: true });
   }
 
@@ -54,14 +54,14 @@ class SearchResultsPage extends Component {
     if (!this.state.initialSearchDone) {
       return null;
     }
-    if (blockStore.loading.searchResults) {
+    if (searchStore.loading.searchResults) {
       return <Loading />;
     }
 
     let { search } = RouterUtils.getRouteParams(this.props);
     search = SearchUtils.formatSearchString(search);
 
-    const results = blockStore.searchResults;
+    const results = searchStore.searchResults;
     const total = results.total;
     const { blocks, transactions, addresses, outputs } = results.items;
 

@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 import uiStore from '../../../store/UIStore';
 import AssetUtils from '../../../lib/AssetUtils';
 import TextUtils from '../../../lib/TextUtils';
-import blockStore from '../../../store/BlockStore';
+import addressStore from '../../../store/AddressStore';
 import HashLink from '../../../components/HashLink';
 import ItemsTable from '../../../components/ItemsTable';
 import TransactionAssetLoader from '../../../components/Transactions/Asset/TransactionAssetLoader.jsx';
@@ -68,9 +68,9 @@ class AddressTxsTable extends Component {
       <ItemsTable
         columns={this.getTableColumns()}
         hideOnMobile={['blockHash', 'isCoinbaseTx']}
-        loading={blockStore.loading.addressTransactionAssets}
-        itemsCount={blockStore.addressTransactionAssetsCount}
-        items={blockStore.addressTransactionAssets}
+        loading={addressStore.loading.addressTransactionAssets}
+        itemsCount={addressStore.addressTransactionAssetsCount}
+        items={addressStore.addressTransactionAssets}
         pageSize={uiStore.addressTxAssetsTable.pageSize}
         curPage={uiStore.addressTxAssetsTable.curPage}
         tableDataSetter={uiStore.setAddressTxAssetsTableData.bind(uiStore)}
@@ -83,7 +83,7 @@ class AddressTxsTable extends Component {
           }
           return (
             <TransactionAssetLoader
-              transactionAssets={blockStore.addressTransactionAssets}
+              transactionAssets={addressStore.addressTransactionAssets}
               index={row.index}
               timestamp={row.original.timestamp}
               total={Number(row.original.totalSum)}

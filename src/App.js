@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import Service from './lib/Service';
 import blockStore from './store/BlockStore';
+import uiStore from './store/UIStore';
 import MainRoutes from './MainRoutes.jsx';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
@@ -33,7 +34,7 @@ class App extends Component {
 
 
   fetchSyncingTimeout() {
-    blockStore.fetchSyncing().then(() => {
+    uiStore.fetchSyncing().then(() => {
       this.syncingTimer = setTimeout(this.fetchSyncingTimeout, 60000);
     });
   }

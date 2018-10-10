@@ -3,6 +3,7 @@ import { observer } from 'mobx-react';
 import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import blockStore from '../../store/BlockStore';
+import transactionStore from '../../store/TransactionStore';
 import TextUtils from '../../lib/TextUtils';
 import Transaction from '../../components/Transactions/Transaction.jsx';
 import Loading from '../../components/Loading';
@@ -26,7 +27,7 @@ class TransactionPage extends Component {
       match: { params },
     } = this.props;
     this.setState({ hash: Number(params.hash) });
-    blockStore.fetchTransaction(params.hash).then(transaction => {
+    transactionStore.fetchTransaction(params.hash).then(transaction => {
       if (!transaction) {
         // In case the tx is new and will be included soon in a block
         this.setState({ polling: true });
@@ -42,7 +43,7 @@ class TransactionPage extends Component {
   pollForTx(hash) {
     clearTimeout(this.txPollingTimeout);
     this.txPollingTimeout = setTimeout(() => {
-      blockStore.fetchTransaction(hash).then(transaction => {
+      transactionStore.fetchTransaction(hash).then(transaction => {
         if (!transaction) {
           this.pollForTx(hash);
         } else {
@@ -59,9 +60,9 @@ class TransactionPage extends Component {
   }
 
   render() {
-    const transaction = blockStore.transaction;
+    const transaction = transactionStore.transaction;
 
-    if (blockStore.loading.transaction && !this.state.polling) {
+    if (transactionStore.loading.transaction && !this.state.polling) {
       return <Loading />;
     }
 
