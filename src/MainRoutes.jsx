@@ -1,5 +1,6 @@
 import React from 'react';
 import { Route, Switch } from 'react-router-dom';
+import NotFound from './pages/notFound/NotFound.jsx';
 import Blocks from './pages/blocks/Blocks.jsx';
 import Block from './pages/block/Block.jsx';
 import Transaction from './pages/transaction/Transaction.jsx';
@@ -9,7 +10,7 @@ import Search from './pages/search/Search.jsx';
 import Info from './pages/info/Info.jsx';
 import Chart from './pages/chart/Chart.jsx';
 import BroadcastTx from './pages/broadcastTx/BroadcastTx.jsx';
-import NotFound from './pages/notFound/NotFound.jsx';
+import Oracle from './pages/oracle/Oracle.jsx';
 
 export default function MainRoutes() {
   return (
@@ -23,6 +24,7 @@ export default function MainRoutes() {
       <Route path="/blockchain/info" component={Info} />
       <Route path="/charts/:name" component={Chart} />
       <Route path="/broadcastTx/:hex?" component={BroadcastTx} />
+      <Route path="/oracle" component={Oracle} />
       <Route component={NotFound} />
     </Switch>
   );
