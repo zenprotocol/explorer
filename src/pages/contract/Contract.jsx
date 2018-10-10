@@ -3,7 +3,7 @@ import { observer } from 'mobx-react';
 import { Route, Switch, Redirect, Link } from 'react-router-dom';
 import Highlight from 'react-highlight';
 import contractStore from '../../store/ContractStore';
-import blockStore from '../../store/BlockStore';
+import addressStore from '../../store/AddressStore';
 import uiStore from '../../store/UIStore';
 import RouterUtils from '../../lib/RouterUtils';
 import TextUtils from '../../lib/TextUtils';
@@ -31,7 +31,7 @@ class ContractPage extends Component {
 
   setAddress(address) {
     contractStore.loadContract(address);
-    blockStore.fetchAddress(address);
+    addressStore.fetchAddress(address);
   }
 
   get addressProp() {
@@ -39,7 +39,7 @@ class ContractPage extends Component {
   }
 
   render() {
-    const is404 = blockStore.address.status === 404;
+    const is404 = addressStore.address.status === 404;
 
     return (
       <Page className="Contract">
@@ -56,11 +56,11 @@ class ContractPage extends Component {
   }
 
   renderTopTables() {
-    if (contractStore.loading.contract || blockStore.loading.address) {
+    if (contractStore.loading.contract || addressStore.loading.address) {
       return <Loading />;
     }
     const contract = contractStore.contract;
-    const address = blockStore.address;
+    const address = addressStore.address;
     return (
       <div className="row">
         <div className="col-lg-6">
@@ -142,9 +142,9 @@ const TransactionsTab = observer(props => {
             Cell: data => <Link to={`/blocks/${data.value}`}>{data.value}</Link>,
           },
         ]}
-        loading={blockStore.loading.addressTransactions}
-        itemsCount={blockStore.addressTransactionsCount}
-        items={blockStore.addressTransactions}
+        loading={addressStore.loading.addressTransactions}
+        itemsCount={addressStore.addressTransactionsCount}
+        items={addressStore.addressTransactions}
         pageSize={uiStore.addressTxsTable.pageSize}
         curPage={uiStore.addressTxsTable.curPage}
         tableDataSetter={uiStore.setAddressTxsTableData.bind(uiStore)}
