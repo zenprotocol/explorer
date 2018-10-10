@@ -1,0 +1,9 @@
+@import 'style/sizes';
+.Oracle {
+  @media (min-width: map-get($grid-breakpoints, "lg")) {
+    .SummaryTable,
+    .DescriptionTable {
+      height: 100%;
+    }
+  }
+}
