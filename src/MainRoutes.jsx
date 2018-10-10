@@ -1,15 +1,15 @@
 import React from 'react';
 import { Route, Switch } from 'react-router-dom';
-import Blocks from './routes/blocks/Blocks.jsx';
-import Block from './routes/block/Block.jsx';
-import Transaction from './routes/transaction/Transaction.jsx';
-import Address from './routes/address/Address.jsx';
-import Contract from './routes/contract/Contract.jsx';
-import Search from './routes/search/Search.jsx';
-import Info from './routes/info/Info.jsx';
-import Chart from './routes/chart/Chart.jsx';
-import BroadcastTx from './routes/broadcastTx/BroadcastTx.jsx';
-import NotFound from './routes/notFound/NotFound.jsx';
+import Blocks from './pages/blocks/Blocks.jsx';
+import Block from './pages/block/Block.jsx';
+import Transaction from './pages/transaction/Transaction.jsx';
+import Address from './pages/address/Address.jsx';
+import Contract from './pages/contract/Contract.jsx';
+import Search from './pages/search/Search.jsx';
+import Info from './pages/info/Info.jsx';
+import Chart from './pages/chart/Chart.jsx';
+import BroadcastTx from './pages/broadcastTx/BroadcastTx.jsx';
+import NotFound from './pages/notFound/NotFound.jsx';
 
 export default function MainRoutes() {
   return (
