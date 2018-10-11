@@ -12,6 +12,7 @@ const Endpoints = {
   search: '/api/search',
   stats: '/api/stats',
   contracts: '/api/contracts',
+  oracle: '/api/oracle',
 };
 
 let globalMute = false;
@@ -184,5 +185,25 @@ export default {
         method: 'get',
       });
     },
+  },
+  oracle: {
+    tickerByDate(ticker, date) {
+      return cancelableHttpRequest({
+        url: `${Endpoints.oracle}/data?date=${date}&ticker=${ticker}`,
+        method: 'get',
+      });
+    },
+    tickersByDate(date) {
+      return cancelableHttpRequest({
+        url: `${Endpoints.oracle}/data?date=${date}`,
+        method: 'get',
+      });
+    },
+    proof(ticker, date) {
+      return cancelableHttpRequest({
+        url: `${Endpoints.oracle}/proof?date=${date}&ticker=${ticker}`,
+        method: 'get',
+      });
+    }
   },
 };
