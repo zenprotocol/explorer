@@ -3,7 +3,7 @@ import { observer } from 'mobx-react';
 import PropTypes from 'prop-types';
 import debounce from 'lodash.debounce';
 import classNames from 'classnames';
-import Config from '../../lib/Config';
+import config from '../../lib/Config';
 import GenericTable from '../GenericTable';
 import Dropdown from '../Dropdown';
 import './ItemsTable.css';
@@ -55,7 +55,7 @@ class ItemsTable extends Component {
 
     const columns = this.props.columns.map(column => {
       const hideOnMobileObj = this.props.hideOnMobile.includes(column.accessor)
-        ? { show: this.state.windowWidth >= Config.ui.sizes.breakpointMd }
+        ? { show: this.state.windowWidth >= config.ui.sizes.breakpointMd }
         : {};
       return Object.assign({}, column, hideOnMobileObj);
     });
@@ -88,7 +88,7 @@ class ItemsTable extends Component {
           <div className="ItemsTable-pageSizes form-inline float-sm-right">
             <span className="mr-2 d-none d-md-inline-block">SHOW</span>
             <Dropdown 
-              options={Config.ui.table.pageSizes}
+              options={config.ui.table.pageSizes}
               value={String(pageSize)}
               onChange={this.setPageSize}
             />
@@ -102,7 +102,7 @@ class ItemsTable extends Component {
           defaultPageSize={pageSize}
           pages={numOfPages}
           page={curPage}
-          pageSizes={Config.ui.table.pageSizes}
+          pageSizes={config.ui.table.pageSizes}
           onPageChange={this.onPageChange}
           pageSize={pageSize}
           SubComponent={SubComponent}
@@ -133,7 +133,7 @@ class ItemsTable extends Component {
 
 ItemsTable.defaultProps = {
   hideOnMobile: [],
-  pageSize: 10,
+  pageSize: config.ui.table.defaultPageSize,
   curPage: 0,
 };
 

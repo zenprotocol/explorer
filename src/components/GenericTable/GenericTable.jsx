@@ -1,9 +1,10 @@
 import React from 'react';
 import ReactTable, { ReactTableDefaults } from 'react-table';
 import PropTypes from 'prop-types';
-import 'react-table/react-table.css';
+import config from '../../lib/Config';
 import PaginationComponent from './Pagination.jsx';
 import LoadingWithBG from './LoadingWithBG.jsx';
+import 'react-table/react-table.css';
 import './GenericTable.css';
 
 export default function GenericTable(props) {
@@ -88,9 +89,9 @@ GenericTable.propTypes = {
 };
 
 GenericTable.defaultProps = {
-  pageSizes: [5, 10, 20, 50, 100],
+  pageSizes: config.ui.table.pageSizes,
   resizable: false,
   sortable: false,
-  defaultPageSize: 10,
+  defaultPageSize: config.ui.table.defaultPageSize,
   page: 0,
 };
