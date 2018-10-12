@@ -1,12 +1,16 @@
 import React, { Component } from 'react';
 import { observable, decorate, computed, runInAction, action, autorun } from 'mobx';
 import { observer } from 'mobx-react';
+import PropTypes from 'prop-types';
+import localStore from '../../lib/localStore';
 import config from '../../lib/Config';
 import service from '../../lib/Service';
 import Page from '../../components/Page';
 import PageTitle from '../../components/PageTitle';
 import ExternalLink from '../../components/ExternalLink';
+import HashLink from '../../components/HashLink';
 import TickersTable from './components/TickersTable';
+import Filters from './components/Filters';
 import './Oracle.css';
 
 class OraclePage extends Component {
@@ -21,23 +25,85 @@ class OraclePage extends Component {
     };
     this.filterState = {
       date: getYesterday(),
-      ticker: '',
+      tickers: [],
     };
+    this.allTickers = [];
+    this.lastUpdated = '';
+
+    let firstRun = true;
+    autorun(() => {
+      if (firstRun) {
+        this.loadFromStorage();
+      }
+      this.saveToStorage(this.tableState);
+    });
+    firstRun = false;
 
     autorun(() => {
       this.loadTickersTableOnFilterChange();
     });
 
+    this.bindHandlers();
+  }
+
+  bindHandlers() {
     this.setTickersTableData = this.setTickersTableData.bind(this);
+    this.setFiltersData = this.setFiltersData.bind(this);
+    this.resetFilters = this.resetFilters.bind(this);
+  }
+
+  saveToStorage(data) {
+    localStore.set('oracle-data', data);
+  }
+
+  loadFromStorage() {
+    const data = localStore.get('oracle-data');
+    if (data) {
+      this.tableState.pageSize = data.pageSize;
+    }
   }
 
   get curPageTableItems() {
     const { curPage, pageSize } = this.tableState;
-    return this.tableState.items.slice(curPage * pageSize, (curPage + 1) * pageSize);
+    const { tickers } = this.filterState;
+    const items = tickers.length
+      ? this.tableState.items.filter(item => tickers.includes(item.ticker))
+      : this.tableState.items;
+    return items.slice(curPage * pageSize, (curPage + 1) * pageSize);
+  }
+
+  get totalItems() {
+    const { tickers } = this.filterState;
+    const items = tickers.length
+      ? this.tableState.items.filter(item => tickers.includes(item.ticker))
+      : this.tableState.items;
+    return items.length;
+  }
+
+  componentDidMount() {
+    this.loadInitialData();
+  }
+
+  loadInitialData() {
+    // get all tickers & last updated
+    Promise.all([service.oracle.lastUpdated(), service.oracle.data('', getYesterday())])
+      .then(results => {
+        const lastUpdated = results[0].data;
+        const allTickers = results[1].data.map(item => item.ticker);
+        runInAction(() => {
+          this.lastUpdated = lastUpdated;
+          this.allTickers = allTickers;
+        });
+      })
+      .catch(error => {
+        console.log(error);
+      });
   }
 
   loadTickersTableOnFilterChange() {
-    if (this.filterState.date || this.filterState.ticker) {
+    // explicit use of attributes for better mobx recognition
+    const { date } = this.filterState;
+    if (date) {
       this.loadTickersTableData();
     }
   }
@@ -45,13 +111,17 @@ class OraclePage extends Component {
   loadTickersTableData() {
     this.loading = true;
     service.oracle
-      .tickersByDate(this.filterState.date)
+      .data('', this.filterState.date)
       .then(res => {
         this.setTickersTableData({
-          items: res.data,
+          items: res.data || [],
         });
       })
-      .catch(() => {})
+      .catch(error => {
+        if (error.status === 404) {
+          this.tableState.items = [];
+        }
+      })
       .then(() => {
         runInAction(() => {
           this.loading = false;
@@ -65,15 +135,28 @@ class OraclePage extends Component {
     });
   }
 
+  setFiltersData(data = {}) {
+    console.log(data);
+    Object.keys(data).forEach(key => {
+      this.filterState[key] = data[key];
+    });
+    console.log(this.filterState);
+  }
+
+  resetFilters() {
+    this.filterState.date = getYesterday();
+    this.filterState.tickers = [];
+  }
+
   render() {
-    const { items, pageSize, curPage } = this.tableState;
+    const { pageSize, curPage } = this.tableState;
     return (
       <Page className="Oracle">
         <section>
           <PageTitle title="OFFICIAL ZEN ORACLE" />
           <div className="row">
             <div className="col-lg-6">
-              <SummaryTable />
+              <SummaryTable lastUpdated={this.lastUpdated} />
             </div>
             <div className="col-lg-6">
               <DescriptionTable />
@@ -82,9 +165,14 @@ class OraclePage extends Component {
         </section>
 
         <section>
+          <Filters
+            filterState={this.filterState}
+            allTickers={this.allTickers}
+            onReset={this.resetFilters}
+          />
           <TickersTable
             items={this.curPageTableItems}
-            count={items.length}
+            count={this.totalItems}
             pageSize={pageSize}
             curPage={curPage}
             tableDataSetter={this.setTickersTableData}
@@ -100,17 +188,21 @@ decorate(OraclePage, {
   loading: observable,
   tableState: observable,
   filterState: observable,
+  allTickers: observable,
+  lastUpdated: observable,
   curPageTableItems: computed,
+  totalItems: computed,
   loadTickersTableData: action,
+  setFiltersData: action,
+  setTickersTableData: action,
+  resetFilters: action,
 });
 
 function getYesterday() {
-  const d = new Date();
-  d.setDate(d.getDate() - 1);
-  return d.toISOString().split('T')[0];
+  return new Date(Date.now() - 86400000).toISOString().split('T')[0];
 }
 
-function SummaryTable() {
+function SummaryTable({ lastUpdated }) {
   return (
     <table className="SummaryTable table table-zen">
       <thead>
@@ -127,11 +219,16 @@ function SummaryTable() {
         </tr>
         <tr>
           <td>CONTRACT HASH</td>
-          <td />
+          <td>
+            <HashLink
+              hash="00000000ca055cc0af4d25ea1c8bbbf41444aadd68a168558397516b2f64727d87e72f97"
+              copy={true}
+            />
+          </td>
         </tr>
         <tr>
           <td>LAST UPDATE</td>
-          <td>???</td>
+          <td>{lastUpdated}</td>
         </tr>
         <tr>
           <td>WEBSITE</td>
@@ -143,6 +240,9 @@ function SummaryTable() {
     </table>
   );
 }
+SummaryTable.propTypes = {
+  lastUpdated: PropTypes.string,
+};
 
 function DescriptionTable() {
   return (

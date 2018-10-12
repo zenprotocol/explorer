@@ -1,0 +1,19 @@
+@import 'style/sizes';
+
+.Filters {
+  @include mixin-content-padding-x();
+  
+  .Dropdown {
+    display: inline-block;
+    min-width: 150px;
+  }
+
+  .FilterItem {
+    margin-right: 5px;
+    button {
+      background-color: transparent;
+      border: none;
+      cursor: pointer;
+    }
+  }
+}

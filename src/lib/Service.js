@@ -187,23 +187,35 @@ export default {
     },
   },
   oracle: {
-    tickerByDate(ticker, date) {
+    data(ticker, date) {
+      ticker = ticker || null;
+      date = date || null;
       return cancelableHttpRequest({
-        url: `${Endpoints.oracle}/data?date=${date}&ticker=${ticker}`,
+        url: `${Endpoints.oracle}/data`,
         method: 'get',
-      });
-    },
-    tickersByDate(date) {
-      return cancelableHttpRequest({
-        url: `${Endpoints.oracle}/data?date=${date}`,
-        method: 'get',
+        params: {
+          ticker,
+          date,
+        },
       });
     },
     proof(ticker, date) {
+      ticker = ticker || null;
+      date = date || null;
       return cancelableHttpRequest({
-        url: `${Endpoints.oracle}/proof?date=${date}&ticker=${ticker}`,
+        url: `${Endpoints.oracle}/proof`,
+        method: 'get',
+        params: {
+          ticker,
+          date,
+        },
+      });
+    },
+    lastUpdated() {
+      return cancelableHttpRequest({
+        url: `${Endpoints.oracle}/lastUpdated`,
         method: 'get',
       });
-    }
+    },
   },
 };

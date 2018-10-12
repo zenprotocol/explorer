@@ -46,3 +46,13 @@ $table-padding-y: 12px;
 $table-header-padding-y: 16px;
 
 $text-icon-padding: 14px;
+
+@mixin mixin-content-padding-x() {
+  padding-left: $content-padding-x;
+  padding-right: $content-padding-x;
+
+  @media (min-width: map-get($grid-breakpoints, "lg")) {
+    padding-left: $content-padding-x-lg;
+    padding-right: $content-padding-x-lg;
+  }
+}
