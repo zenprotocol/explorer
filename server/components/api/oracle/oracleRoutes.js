@@ -8,4 +8,7 @@ router.route('/data')
 router.route('/proof')
   .get(wrapAsync(oracleController.proof));
 
+router.route('/lastUpdated')
+  .get(wrapAsync(oracleController.lastUpdated));
+
 module.exports = router;
