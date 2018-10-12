@@ -6,6 +6,7 @@ import TextUtils from '../../../lib/TextUtils';
 import AssetUtils from '../../../lib/AssetUtils';
 import HashLink from '../../../components/HashLink/HashLink';
 import ItemsTable from '../../../components/ItemsTable/ItemsTable';
+import PageTitle from '../../../components/PageTitle';
 import TransactionAssetLoader from '../../../components/Transactions/Asset/TransactionAssetLoader';
 
 class BlockTxsTable extends Component {
@@ -57,7 +58,7 @@ class BlockTxsTable extends Component {
         pageSize={uiStore.blockTxTable.pageSize}
         curPage={uiStore.blockTxTable.curPage}
         tableDataSetter={uiStore.setBlockTxTableData.bind(uiStore)}
-        title="Transactions"
+        topContent={<PageTitle title="Transactions" margin={false} />}
         SubComponent={row => {
           return (
             <TransactionAssetLoader

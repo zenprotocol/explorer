@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import ItemsTable from '../../../../components/ItemsTable';
 
-export default function TickersTable({items, count, pageSize, curPage, tableDataSetter, loading}) {
+export default function TickersTable({items, count, pageSize, curPage, tableDataSetter, loading, filters}) {
   return (
     <ItemsTable
       columns={TABLE_COLUMNS}
@@ -13,15 +13,18 @@ export default function TickersTable({items, count, pageSize, curPage, tableData
       pageSize={pageSize}
       curPage={curPage}
       tableDataSetter={tableDataSetter}
+      topContent={filters}
     />
   );
 }
 TickersTable.propTypes = {
+  loading: PropTypes.bool,
   items: PropTypes.array,
   count: PropTypes.number,
   pageSize: PropTypes.number,
   curPage: PropTypes.number,
   tableDataSetter: PropTypes.func,
+  filters: PropTypes.any,
 };
 
 const TABLE_COLUMNS = [

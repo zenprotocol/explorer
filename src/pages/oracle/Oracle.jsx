@@ -165,11 +165,6 @@ class OraclePage extends Component {
         </section>
 
         <section>
-          <Filters
-            filterState={this.filterState}
-            allTickers={this.allTickers}
-            onReset={this.resetFilters}
-          />
           <TickersTable
             items={this.curPageTableItems}
             count={this.totalItems}
@@ -177,6 +172,13 @@ class OraclePage extends Component {
             curPage={curPage}
             tableDataSetter={this.setTickersTableData}
             loading={this.loading}
+            filters={
+              <Filters
+                filterState={this.filterState}
+                allTickers={this.allTickers}
+                onReset={this.resetFilters}
+              />
+            }
           />
         </section>
       </Page>

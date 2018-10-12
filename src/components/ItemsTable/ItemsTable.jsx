@@ -78,21 +78,27 @@ class ItemsTable extends Component {
   }
 
   render() {
-    const { loading, itemsCount, items, pageSize, curPage, SubComponent, title } = this.props;
+    const { loading, itemsCount, items, pageSize, curPage, SubComponent, topContent } = this.props;
     const numOfPages = Math.ceil(itemsCount / pageSize);
-    
+
     return (
       <div className={classNames('ItemsTable', { loading })}>
-        <div className="clearfix">
-          <h1 className="d-block d-sm-inline-block text-white mb-3 mb-lg-5">{title}</h1>
-          <div className="ItemsTable-pageSizes form-inline float-sm-right">
-            <span className="mr-2 d-none d-md-inline-block">SHOW</span>
-            <Dropdown 
-              options={config.ui.table.pageSizes}
-              value={String(pageSize)}
-              onChange={this.setPageSize}
-            />
-            <span className="ml-2 d-none d-md-inline-block">ENTRIES</span>
+        <div>
+          <div className="row align-items-end mb-3 mb-lg-5">
+            <div className="col-md-8">
+              {topContent}
+            </div>
+            <div className="col-md-4">
+              <div className="ItemsTable-pageSizes form-inline float-sm-right">
+                <span className="mr-2 d-none d-md-inline-block">SHOW</span>
+                <Dropdown
+                  options={config.ui.table.pageSizes}
+                  value={String(pageSize)}
+                  onChange={this.setPageSize}
+                />
+                <span className="ml-2 d-none d-md-inline-block">ENTRIES</span>
+              </div>
+            </div>
           </div>
         </div>
         <GenericTable
@@ -124,7 +130,6 @@ class ItemsTable extends Component {
               },
             };
           }}
-          
         />
       </div>
     );
@@ -147,7 +152,7 @@ ItemsTable.propTypes = {
   curPage: PropTypes.number,
   tableDataSetter: PropTypes.func.isRequired,
   SubComponent: PropTypes.any,
-  title: PropTypes.any,
+  topContent: PropTypes.any,
 };
 
 export default observer(ItemsTable);
