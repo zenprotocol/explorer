@@ -16,7 +16,7 @@ export default function PageTitle({ title, subtitle, tagline, margin }) {
 }
 
 PageTitle.propTypes = {
-  title: PropTypes.string,
+  title: PropTypes.any,
   subtitle: PropTypes.oneOfType([PropTypes.string, PropTypes.element]),
   tagline: PropTypes.string,
   margin: PropTypes.bool,

@@ -154,7 +154,14 @@ class OraclePage extends Component {
     return (
       <Page className="Oracle">
         <section>
-          <PageTitle title="OFFICIAL ZEN ORACLE" />
+          <PageTitle
+            title={
+              <React.Fragment>
+                OFFICIAL ZEN ORACLE -{' '}
+                <ExternalLink url="https://intrinio.com/">INTRINIO</ExternalLink>
+              </React.Fragment>
+            }
+          />
           <div className="row">
             <div className="col-lg-6">
               <SummaryTable lastUpdated={this.lastUpdated} />
