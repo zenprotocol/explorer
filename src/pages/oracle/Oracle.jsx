@@ -35,7 +35,6 @@ class OraclePage extends Component {
 
   bindHandlers() {
     this.setTickersTableData = this.setTickersTableData.bind(this);
-    this.setFiltersData = this.setFiltersData.bind(this);
     this.resetFilters = this.resetFilters.bind(this);
   }
 
@@ -69,12 +68,17 @@ class OraclePage extends Component {
 
   componentDidMount() {
     this.loadFromStorage();
+
     autorun(() => {
       this.saveToStorage(this.tableState);
     });
 
     autorun(() => {
-      this.loadTickersTableOnFilterChange();
+      this.loadTickersTableOnDateChange();
+    });
+
+    autorun(() => {
+      this.resetTablePageOnTickersChanged();
     });
 
     this.loadInitialData();
@@ -96,11 +100,20 @@ class OraclePage extends Component {
       });
   }
 
-  loadTickersTableOnFilterChange() {
+  loadTickersTableOnDateChange() {
     // explicit use of attributes for better mobx recognition
     const { date } = this.filterState;
     if (date) {
       this.loadTickersTableData();
+    }
+  }
+
+  resetTablePageOnTickersChanged() {
+    const { tickers } = this.filterState;
+    if (tickers.length) {
+      runInAction(() => {
+        this.tableState.curPage = 0;
+      });
     }
   }
 
@@ -129,14 +142,6 @@ class OraclePage extends Component {
     Object.keys(data).forEach(key => {
       this.tableState[key] = data[key];
     });
-  }
-
-  setFiltersData(data = {}) {
-    console.log(data);
-    Object.keys(data).forEach(key => {
-      this.filterState[key] = data[key];
-    });
-    console.log(this.filterState);
   }
 
   resetFilters() {
@@ -191,7 +196,6 @@ decorate(OraclePage, {
   curPageTableItems: computed,
   totalItems: computed,
   loadTickersTableData: action,
-  setFiltersData: action,
   setTickersTableData: action,
   resetFilters: action,
 });
