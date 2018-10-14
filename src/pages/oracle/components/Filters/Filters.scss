@@ -8,6 +8,10 @@
     min-width: 150px;
   }
 
+  .selected-filters {
+    width: calc(100% - 80px);
+  }
+
   .FilterItem {
     margin-right: 5px;
     button {

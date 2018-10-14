@@ -61,7 +61,7 @@ class Filters extends Component {
       <div className="Filters">
         <div>
           <h3 className="text-white d-inline-block mr-2">Filters:</h3>
-          <div className="filters d-inline-block">
+          <div className="selected-filters d-inline-block">
             {tickers.map(ticker => (
               <FilterItem
                 key={ticker}
@@ -74,8 +74,8 @@ class Filters extends Component {
         </div>
         <div>
           <form className="form">
-            <div className="row align-items-end">
-              <div className="col">
+            <div className="d-flex align-items-end justify-content-start">
+              <div className="mr-3">
                 <div>
                   <label>SYMBOL</label>
                 </div>
@@ -87,7 +87,7 @@ class Filters extends Component {
                   />
                 </div>
               </div>
-              <div className="col">
+              <div className="mr-3">
                 <div>
                   <label>DATE (CLOSED PRICE)</label>
                 </div>
@@ -95,7 +95,7 @@ class Filters extends Component {
                   <DatePicker value={date} onDateChange={this.onDateChange} />
                 </div>
               </div>
-              <div className="col">
+              <div>
                 <Button size="sm" type="dark-2" onClick={this.resetHandler}>
                   Reset all
                 </Button>
