@@ -30,19 +30,6 @@ class OraclePage extends Component {
     this.allTickers = [];
     this.lastUpdated = '';
 
-    let firstRun = true;
-    autorun(() => {
-      if (firstRun) {
-        this.loadFromStorage();
-      }
-      this.saveToStorage(this.tableState);
-    });
-    firstRun = false;
-
-    autorun(() => {
-      this.loadTickersTableOnFilterChange();
-    });
-
     this.bindHandlers();
   }
 
@@ -81,6 +68,15 @@ class OraclePage extends Component {
   }
 
   componentDidMount() {
+    this.loadFromStorage();
+    autorun(() => {
+      this.saveToStorage(this.tableState);
+    });
+
+    autorun(() => {
+      this.loadTickersTableOnFilterChange();
+    });
+
     this.loadInitialData();
   }
 
