@@ -3,6 +3,7 @@ import { computed, decorate } from 'mobx';
 import { observer } from 'mobx-react';
 import PropTypes from 'prop-types';
 import debounce from 'lodash.debounce';
+import getYesterday from '../../getYesterday';
 import DatePicker from '../../../../components/DatePicker';
 import Dropdown from '../../../../components/Dropdown';
 import Button from '../../../../components/buttons/Button';
@@ -48,15 +49,13 @@ class Filters extends Component {
   }
 
   resetHandler() {
-    const { onReset } = this.props;
-    if (onReset) {
-      onReset();
-    }
+    this.props.filterState.date = getYesterday();
+    this.props.filterState.tickers = [];
   }
 
   render() {
     const { date, tickers } = this.props.filterState;
-    const tickersValue = tickers.length ? '' : 'ALL';
+    const tickersValue = tickers.length ? '' : 'ALL'; // multi select
     return (
       <div className="Filters">
         <div>
@@ -65,7 +64,6 @@ class Filters extends Component {
             {tickers.map(ticker => (
               <FilterItem
                 key={ticker}
-                text={ticker}
                 value={ticker}
                 onDismiss={this.onDismissTicker}
               />
@@ -118,7 +116,6 @@ Filters.propTypes = {
     tickers: PropTypes.array.isRequired,
   }),
   allTickers: PropTypes.array.isRequired,
-  onReset: PropTypes.func,
 };
 
 export default observer(Filters);

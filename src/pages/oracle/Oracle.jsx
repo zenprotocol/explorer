@@ -5,6 +5,7 @@ import PropTypes from 'prop-types';
 import localStore from '../../lib/localStore';
 import config from '../../lib/Config';
 import service from '../../lib/Service';
+import getYesterday from './getYesterday';
 import Page from '../../components/Page';
 import PageTitle from '../../components/PageTitle';
 import ExternalLink from '../../components/ExternalLink';
@@ -33,22 +34,6 @@ class OraclePage extends Component {
     this.bindHandlers();
   }
 
-  bindHandlers() {
-    this.setTickersTableData = this.setTickersTableData.bind(this);
-    this.resetFilters = this.resetFilters.bind(this);
-  }
-
-  saveToStorage(data) {
-    localStore.set('oracle-data', data);
-  }
-
-  loadFromStorage() {
-    const data = localStore.get('oracle-data');
-    if (data) {
-      this.tableState.pageSize = data.pageSize;
-    }
-  }
-
   get curPageTableItems() {
     const { curPage, pageSize } = this.tableState;
     const { tickers } = this.filterState;
@@ -64,6 +49,10 @@ class OraclePage extends Component {
       ? this.tableState.items.filter(item => tickers.includes(item.ticker))
       : this.tableState.items;
     return items.length;
+  }
+
+  bindHandlers() {
+    this.setTickersTableData = this.setTickersTableData.bind(this);
   }
 
   componentDidMount() {
@@ -82,6 +71,17 @@ class OraclePage extends Component {
     });
 
     this.loadInitialData();
+  }
+
+  saveToStorage(data) {
+    localStore.set('oracle-data', data);
+  }
+
+  loadFromStorage() {
+    const data = localStore.get('oracle-data');
+    if (data) {
+      this.tableState.pageSize = data.pageSize;
+    }
   }
 
   loadInitialData() {
@@ -144,11 +144,6 @@ class OraclePage extends Component {
     });
   }
 
-  resetFilters() {
-    this.filterState.date = getYesterday();
-    this.filterState.tickers = [];
-  }
-
   render() {
     const { pageSize, curPage } = this.tableState;
     return (
@@ -209,10 +204,6 @@ decorate(OraclePage, {
 });
 
 export default observer(OraclePage);
-
-function getYesterday() {
-  return new Date(Date.now() - 86400000).toISOString().split('T')[0];
-}
 
 function SummaryTable({ lastUpdated }) {
   return (
