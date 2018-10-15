@@ -7,6 +7,7 @@ import blockStore from '../../../store/BlockStore';
 import BlockUtils from '../../../lib/BlockUtils';
 import HashLink from '../../../components/HashLink';
 import ItemsTable from '../../../components/ItemsTable';
+import PageTitle from '../../../components/PageTitle';
 
 class BlocksTable extends Component {
   getTableColumns() {
@@ -14,6 +15,7 @@ class BlocksTable extends Component {
       {
         Header: 'Timestamp',
         accessor: 'timestamp',
+        minWidth: 130,
         Cell: function(data) {
           return TextUtils.getDateStringFromTimestamp(data.value);
         },
@@ -26,6 +28,7 @@ class BlocksTable extends Component {
       {
         Header: 'Parent',
         accessor: 'parent',
+        minWidth: 130,
         Cell: data => {
           return <HashLink url={`/blocks/${data.original.parent}`} hash={data.value} />;
         },
@@ -55,7 +58,7 @@ class BlocksTable extends Component {
         pageSize={uiStore.blocksTable.pageSize}
         curPage={uiStore.blocksTable.curPage}
         tableDataSetter={uiStore.setBlocksTableData.bind(uiStore)}
-        title="Blocks"
+        topContent={<PageTitle title="Blocks" margin={false} />}
       />
     );
   }

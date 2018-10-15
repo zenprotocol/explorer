@@ -55,6 +55,9 @@ function FooterLinks() {
             <Link className="nav-link text-nowrap" to="/broadcastTx">Broadcast Raw Tx</Link>
           </li>
           <li className="nav-item">
+            <Link className="nav-link text-nowrap" to="/oracle">Oracle</Link>
+          </li>
+          <li className="nav-item">
             <ExternalLink
               className="nav-link text-nowrap"
               url="https://www.zenprotocol.com/deck/zen_protocol_deck_en.pdf"
@@ -80,15 +83,15 @@ function FooterLinks() {
               Technical Paper
             </ExternalLink>
           </li>
+        </ul>
+      </div>
+      <div className="col-md-4">
+        <ul className="nav flex-column">
           <li className="nav-item">
             <ExternalLink className="nav-link text-nowrap" url="https://docs.zenprotocol.com/">
               Documentation
             </ExternalLink>
           </li>
-        </ul>
-      </div>
-      <div className="col-md-4">
-        <ul className="nav flex-column">
           <li className="nav-item">
             <ExternalLink
               className="nav-link text-nowrap"

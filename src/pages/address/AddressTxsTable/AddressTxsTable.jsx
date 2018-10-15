@@ -8,6 +8,7 @@ import TextUtils from '../../../lib/TextUtils';
 import addressStore from '../../../store/AddressStore';
 import HashLink from '../../../components/HashLink';
 import ItemsTable from '../../../components/ItemsTable';
+import PageTitle from '../../../components/PageTitle';
 import TransactionAssetLoader from '../../../components/Transactions/Asset/TransactionAssetLoader.jsx';
 
 class AddressTxsTable extends Component {
@@ -16,6 +17,7 @@ class AddressTxsTable extends Component {
       {
         Header: 'Asset',
         accessor: 'asset',
+        minWidth: 130,
         Cell: function(data) {
           return <HashLink hash={AssetUtils.getAssetNameFromCode(data.value)} value={data.value} />;
         },
@@ -23,6 +25,7 @@ class AddressTxsTable extends Component {
       {
         Header: 'Timestamp',
         accessor: 'timestamp',
+        minWidth: 130,
         Cell: function(data) {
           return TextUtils.getDateStringFromTimestamp(data.value);
         },
@@ -37,6 +40,7 @@ class AddressTxsTable extends Component {
       {
         Header: 'TX',
         accessor: 'txHash',
+        minWidth: 130,
         Cell: data => {
           return <HashLink url={`/tx/${data.value}`} hash={data.value} />;
         },
@@ -74,7 +78,7 @@ class AddressTxsTable extends Component {
         pageSize={uiStore.addressTxAssetsTable.pageSize}
         curPage={uiStore.addressTxAssetsTable.curPage}
         tableDataSetter={uiStore.setAddressTxAssetsTableData.bind(uiStore)}
-        title="Transactions"
+        topContent={<PageTitle title="Transactions" margin={false} />}
         SubComponent={row => {
           const addressFoundIn = [];
           if (address) {

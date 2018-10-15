@@ -1,0 +1,30 @@
+@import 'style/sizes';
+@import 'style/colors';
+.Oracle {
+  @media (min-width: map-get($grid-breakpoints, "lg")) {
+    .SummaryTable,
+    .DescriptionTable {
+      height: 100%;
+    }
+  }
+
+  .Filters {
+    display: inline-block;
+    position: relative;
+
+  }
+
+  .CopyProof {
+    position: relative;
+    a {
+      cursor: pointer;
+    }
+  
+    input {
+      width: 100%;
+      position: absolute;
+      top: -7.5px;
+      left: 0;
+    }
+  }
+}

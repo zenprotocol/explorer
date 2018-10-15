@@ -6,6 +6,7 @@ import TextUtils from '../../../lib/TextUtils';
 import AssetUtils from '../../../lib/AssetUtils';
 import HashLink from '../../../components/HashLink/HashLink';
 import ItemsTable from '../../../components/ItemsTable/ItemsTable';
+import PageTitle from '../../../components/PageTitle';
 import TransactionAssetLoader from '../../../components/Transactions/Asset/TransactionAssetLoader';
 
 class BlockTxsTable extends Component {
@@ -14,6 +15,7 @@ class BlockTxsTable extends Component {
       {
         Header: 'Hash',
         accessor: 'txHash',
+        minWidth: 130,
         Cell: data => {
           return <HashLink url={`/tx/${data.value}`} hash={data.value} />;
         },
@@ -21,6 +23,7 @@ class BlockTxsTable extends Component {
       {
         Header: 'Asset',
         accessor: 'asset',
+        minWidth: 130,
         Cell: function(data) {
           return <HashLink hash={AssetUtils.getAssetNameFromCode(data.value)} value={data.value} />;
         },
@@ -28,6 +31,7 @@ class BlockTxsTable extends Component {
       {
         Header: 'Timestamp',
         accessor: 'timestamp',
+        minWidth: 130,
         Cell: function(data) {
           return TextUtils.getDateStringFromTimestamp(data.value);
         },
@@ -57,7 +61,7 @@ class BlockTxsTable extends Component {
         pageSize={uiStore.blockTxTable.pageSize}
         curPage={uiStore.blockTxTable.curPage}
         tableDataSetter={uiStore.setBlockTxTableData.bind(uiStore)}
-        title="Transactions"
+        topContent={<PageTitle title="Transactions" margin={false} />}
         SubComponent={row => {
           return (
             <TransactionAssetLoader

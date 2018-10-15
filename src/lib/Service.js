@@ -12,6 +12,7 @@ const Endpoints = {
   search: '/api/search',
   stats: '/api/stats',
   contracts: '/api/contracts',
+  oracle: '/api/oracle',
 };
 
 let globalMute = false;
@@ -181,6 +182,38 @@ export default {
     findByAddress(address) {
       return cancelableHttpRequest({
         url: `${Endpoints.contracts}/${address}`,
+        method: 'get',
+      });
+    },
+  },
+  oracle: {
+    data(ticker, date) {
+      ticker = ticker || null;
+      date = date || null;
+      return cancelableHttpRequest({
+        url: `${Endpoints.oracle}/data`,
+        method: 'get',
+        params: {
+          ticker,
+          date,
+        },
+      });
+    },
+    proof(ticker, date) {
+      ticker = ticker || null;
+      date = date || null;
+      return cancelableHttpRequest({
+        url: `${Endpoints.oracle}/proof`,
+        method: 'get',
+        params: {
+          ticker,
+          date,
+        },
+      });
+    },
+    lastUpdated() {
+      return cancelableHttpRequest({
+        url: `${Endpoints.oracle}/lastUpdated`,
         method: 'get',
       });
     },

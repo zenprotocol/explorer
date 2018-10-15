@@ -3,31 +3,32 @@ import blockStore from './BlockStore';
 import addressStore from './AddressStore';
 import localStore from '../lib/localStore';
 import Service from '../lib/Service';
+import config from '../lib/Config';
 
 class UIStore {
   constructor() {
     this.syncing = false;
 
     this.blocksTable = {
-      pageSize: 10,
+      pageSize: config.ui.table.defaultPageSize,
       curPage: 0,
     };
 
     this.blockTxTable = {
       hashOrBlockNumber: '0',
-      pageSize: 10,
+      pageSize: config.ui.table.defaultPageSize,
       curPage: 0,
     };
 
     this.addressTxAssetsTable = {
       address: '',
-      pageSize: 10,
+      pageSize: config.ui.table.defaultPageSize,
       curPage: 0,
     };
 
     this.addressTxsTable = {
       address: '',
-      pageSize: 10,
+      pageSize: config.ui.table.defaultPageSize,
       curPage: 0,
     };
 

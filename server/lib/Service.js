@@ -15,6 +15,7 @@ const Endpoints = {
   contracts: {
     active: '/contract/active',
   },
+  oracle: 'http://oracle.zp.io',
 };
 
 let globalMute = false;
@@ -63,7 +64,7 @@ module.exports = {
         url: Endpoints.contracts.active,
         method: 'get',
       }).then(response => response.data);
-    }
+    },
   },
   zen: {
     async getZenNodeTags() {
@@ -89,12 +90,34 @@ module.exports = {
         url: 'https://remote-node.zp.io/api/publishtransaction',
         method: 'post',
         data: {
-          tx
-        }
+          tx,
+        },
       }).then(response => {
         console.log(response);
         return response.data;
       });
+    },
+  },
+  oracle: {
+    data(ticker, date) {
+      return sendHttpRequest({
+        url: `${Endpoints.oracle}/data`,
+        method: 'get',
+        params: {
+          ticker,
+          date,
+        },
+      }).then(response => response.data);
+    },
+    proof(ticker, date) {
+      return sendHttpRequest({
+        url: `${Endpoints.oracle}/proof`,
+        method: 'get',
+        params: {
+          ticker,
+          date,
+        },
+      }).then(response => response.data);
     },
   },
 };
