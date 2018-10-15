@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { observable, decorate, computed, runInAction, action, autorun } from 'mobx';
 import { observer } from 'mobx-react';
 import PropTypes from 'prop-types';
-import clipboard from 'clipboard-polyfill/build/clipboard-polyfill.promise';
 import localStore from '../../lib/localStore';
 import config from '../../lib/Config';
 import service from '../../lib/Service';
@@ -37,7 +36,6 @@ class OraclePage extends Component {
   bindHandlers() {
     this.setTickersTableData = this.setTickersTableData.bind(this);
     this.resetFilters = this.resetFilters.bind(this);
-    this.handleCopyProof = this.handleCopyProof.bind(this);
   }
 
   saveToStorage(data) {
@@ -151,14 +149,6 @@ class OraclePage extends Component {
     this.filterState.tickers = [];
   }
 
-  handleCopyProof(ticker) {
-    return service.oracle
-      .proof(ticker, this.filterState.date)
-      .then(response => {
-        return clipboard.writeText(response.data);
-      });
-  }
-
   render() {
     const { pageSize, curPage } = this.tableState;
     return (
@@ -197,7 +187,7 @@ class OraclePage extends Component {
                 onReset={this.resetFilters}
               />
             }
-            onCopyProof={this.handleCopyProof}
+            date={this.filterState.date}
           />
         </section>
       </Page>

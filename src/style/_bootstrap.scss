@@ -16,6 +16,11 @@ $link-decoration: none;
 $link-hover-color: darken($link-color, 15%);
 $link-hover-decoration: underline;
 
+$input-bg: $gray-700;
+$input-disabled-bg: $gray-800;
+$input-color: $body-color;
+$input-border-color: $border-color;
+
 // Tables
 $table-cell-padding : $table-padding-y $content-padding-x;
 $table-cell-padding-sm : .3rem !default;

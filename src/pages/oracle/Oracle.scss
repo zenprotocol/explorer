@@ -1,4 +1,5 @@
 @import 'style/sizes';
+@import 'style/colors';
 .Oracle {
   @media (min-width: map-get($grid-breakpoints, "lg")) {
     .SummaryTable,
@@ -13,7 +14,17 @@
 
   }
 
-  .CopyProof a {
-    cursor: pointer;
+  .CopyProof {
+    position: relative;
+    a {
+      cursor: pointer;
+    }
+  
+    input {
+      width: 100%;
+      position: absolute;
+      top: -7px;
+      left: 0;
+    }
   }
 }

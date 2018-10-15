@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import clipboard from 'clipboard-polyfill/build/clipboard-polyfill.promise';
+import service from '../../../../lib/Service';
 import ItemsTable from '../../../../components/ItemsTable';
 
 export default class TickersTable extends Component {
@@ -21,7 +23,7 @@ export default class TickersTable extends Component {
   }
 
   getColumns() {
-    const { onCopyProof } = this.props;
+    const { date } = this.props;
     return [
       {
         Header: 'SYMBOL',
@@ -37,7 +39,7 @@ export default class TickersTable extends Component {
       {
         Header: 'ORACLE PROOF',
         accessor: 'ticker',
-        Cell: data => <CopyProof ticker={data.value} onClick={onCopyProof} />,
+        Cell: data => <CopyProof ticker={data.value} date={date} />,
       },
     ];
   }
@@ -50,7 +52,7 @@ TickersTable.propTypes = {
   curPage: PropTypes.number,
   tableDataSetter: PropTypes.func,
   filters: PropTypes.any,
-  onCopyProof: PropTypes.func.isRequired,
+  date: PropTypes.string.isRequired,
 };
 
 class CopyProof extends Component {
@@ -59,34 +61,65 @@ class CopyProof extends Component {
 
     this.state = {
       copied: false,
+      copyFailed: false,
+      proof: '',
     };
 
     this.handleClick = this.handleClick.bind(this);
-    this.resetCopied = this.resetCopied.bind(this);
+    this.handleInputFocus = this.handleInputFocus.bind(this);
+    this.reset = this.reset.bind(this);
   }
 
   handleClick() {
-    const { ticker, onClick } = this.props;
-    if (onClick && typeof onClick === 'function') {
-      onClick(ticker)
-        .then(() => {
-          this.setState({
-            copied: true,
-          }, () => {
-            this.timeout = setTimeout(this.resetCopied, 2000);
-          });
-        })
-        .catch(() => {});
-    }
+    const { ticker, date } = this.props;
+    service.oracle
+      .proof(ticker, date)
+      .then(response => {
+        return response.data;
+      })
+      .then(proof => {
+        this.setState({ proof });
+        this.copyToClipboard(proof);
+      });
   }
 
-  resetCopied() {
-    this.setState({ copied: false });
+  handleInputFocus(event) {
+    event.target.select();
+    this.copyToClipboard(this.state.proof);
+  }
+
+  copyToClipboard(proof) {
+    clipboard
+      .writeText(proof)
+      .then(() => {
+        this.setState(
+          {
+            copied: true,
+          },
+          () => {
+            this.timeout = setTimeout(() => {
+              this.setState({ copied: false });
+            }, 2000);
+          }
+        );
+      })
+      .catch(() => {
+        this.setState({ copyFailed: true });
+      });
+  }
+
+  reset() {
+    this.setState({
+      copied: false,
+      copyFailed: false,
+      proof: '',
+    });
   }
 
   componentDidUpdate(prevProps) {
-    if(this.props.ticker !== prevProps.ticker) {
-      this.resetCopied();
+    const { ticker, date } = this.props;
+    if (ticker !== prevProps.ticker || date !== prevProps.date) {
+      this.reset();
     }
   }
 
@@ -95,17 +128,30 @@ class CopyProof extends Component {
   }
 
   render() {
-    const aProps = {
-      onClick: this.handleClick,
-    };
-    if (this.state.copied) {
-      aProps['data-balloon'] = 'Copied to clipboard';
-      aProps['data-balloon-pos'] = 'right';
-      aProps['data-balloon-visible'] = true;
-    }
+    const balloonProps = this.state.copied
+      ? {
+          'data-balloon': 'Copied to clipboard',
+          'data-balloon-pos': 'up-left',
+          'data-balloon-visible': true,
+        }
+      : {};
+
     return (
       <div className="CopyProof">
-        <a {...aProps}>Copy proof</a>
+        <div className="balloon" {...balloonProps} />
+        <div>
+          {this.state.proof ? (
+            <input
+              type="text"
+              className="form-control"
+              defaultValue={this.state.proof}
+              readOnly
+              onFocus={this.handleInputFocus}
+            />
+          ) : (
+            <a onClick={this.handleClick}>Copy proof</a>
+          )}
+        </div>
       </div>
     );
   }
@@ -113,5 +159,5 @@ class CopyProof extends Component {
 
 CopyProof.propTypes = {
   ticker: PropTypes.string,
-  onClick: PropTypes.func,
+  date: PropTypes.string,
 };
