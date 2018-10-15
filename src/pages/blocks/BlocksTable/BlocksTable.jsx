@@ -15,6 +15,7 @@ class BlocksTable extends Component {
       {
         Header: 'Timestamp',
         accessor: 'timestamp',
+        minWidth: 130,
         Cell: function(data) {
           return TextUtils.getDateStringFromTimestamp(data.value);
         },
@@ -27,6 +28,7 @@ class BlocksTable extends Component {
       {
         Header: 'Parent',
         accessor: 'parent',
+        minWidth: 130,
         Cell: data => {
           return <HashLink url={`/blocks/${data.original.parent}`} hash={data.value} />;
         },

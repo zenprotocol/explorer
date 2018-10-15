@@ -1,5 +1,5 @@
 import React from 'react';
-import ReactTable, { ReactTableDefaults } from 'react-table';
+import ReactTable from 'react-table';
 import PropTypes from 'prop-types';
 import config from '../../lib/Config';
 import PaginationComponent from './Pagination.jsx';
@@ -34,7 +34,6 @@ export default function GenericTable(props) {
         resizable={resizable}
         sortable={sortable}
         data={data}
-        column={{ ...ReactTableDefaults.column, minWidth: 130 }}
         columns={columns}
         onFetchData={onFetchData}
         showPaginationBottom={true}

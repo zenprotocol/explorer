@@ -17,6 +17,7 @@ class AddressTxsTable extends Component {
       {
         Header: 'Asset',
         accessor: 'asset',
+        minWidth: 130,
         Cell: function(data) {
           return <HashLink hash={AssetUtils.getAssetNameFromCode(data.value)} value={data.value} />;
         },
@@ -24,6 +25,7 @@ class AddressTxsTable extends Component {
       {
         Header: 'Timestamp',
         accessor: 'timestamp',
+        minWidth: 130,
         Cell: function(data) {
           return TextUtils.getDateStringFromTimestamp(data.value);
         },
@@ -38,6 +40,7 @@ class AddressTxsTable extends Component {
       {
         Header: 'TX',
         accessor: 'txHash',
+        minWidth: 130,
         Cell: data => {
           return <HashLink url={`/tx/${data.value}`} hash={data.value} />;
         },
