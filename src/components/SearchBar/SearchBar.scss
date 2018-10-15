@@ -1,0 +1,41 @@
+@import 'style/colors';
+.SearchBar {
+  .btn-outline-dark {
+    color: $gray;
+
+    &:focus,
+    &:active {
+      box-shadow: none;
+    }
+  }
+
+  .input-group {
+    .btn-outline-dark,
+    .input-search {
+      background-color: $gray-700;
+      transition: background-color 0.15s;
+      border: 0;
+    }
+    &:hover {
+      .btn-outline-dark,
+      .input-search {
+        background-color: $gray-600;
+      }
+
+      .btn-outline-dark {
+        color: $gray-400;
+      }
+    }
+
+  }
+  
+  &.form-search .input-group {
+    width: 100%;
+  }
+  
+  @media (min-width: 992px) {
+    &.form-search {
+      width: 50%;
+    }
+  }
+}

@@ -1,14 +1,15 @@
 import React from 'react';
 import { observer } from 'mobx-react';
-import blockStore from '../../store/BlockStore';
+import { Link } from 'react-router-dom';
+import uiStore from '../../store/UIStore';
 import Config from '../../lib/Config';
-import Logo from '../Logo/Logo.jsx';
-import ExternalLink from '../ExternalLink/ExternalLink.jsx';
+import Logo from '../Logo';
+import ExternalLink from '../ExternalLink';
 import './Footer.css';
 
 export default function Footer(props) {
   return (
-    <footer className="Footer">
+    <footer className="Footer container">
       <div className="row">
         <div className="col-12">
           <Logo hideSubtitle={true} />
@@ -32,7 +33,7 @@ export default function Footer(props) {
 const SyncNotification = observer(function() {
   return (
     <div className="SyncNotification">
-      {blockStore.syncing ? (
+      {uiStore.syncing ? (
         <span className="syncing">
           <i className="icon fa fa-spinner fa-spin" /> Syncing...
         </span>
@@ -50,6 +51,12 @@ function FooterLinks() {
     <div className="row FooterLinks">
       <div className="col-md-4">
         <ul className="nav flex-column">
+          <li className="nav-item">
+            <Link className="nav-link text-nowrap" to="/broadcastTx">Broadcast Raw Tx</Link>
+          </li>
+          <li className="nav-item">
+            <Link className="nav-link text-nowrap" to="/oracle">Oracle</Link>
+          </li>
           <li className="nav-item">
             <ExternalLink
               className="nav-link text-nowrap"
@@ -76,15 +83,15 @@ function FooterLinks() {
               Technical Paper
             </ExternalLink>
           </li>
+        </ul>
+      </div>
+      <div className="col-md-4">
+        <ul className="nav flex-column">
           <li className="nav-item">
             <ExternalLink className="nav-link text-nowrap" url="https://docs.zenprotocol.com/">
               Documentation
             </ExternalLink>
           </li>
-        </ul>
-      </div>
-      <div className="col-md-4">
-        <ul className="nav flex-column">
           <li className="nav-item">
             <ExternalLink
               className="nav-link text-nowrap"

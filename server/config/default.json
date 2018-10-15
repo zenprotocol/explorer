@@ -8,6 +8,9 @@
     },
     "updateGeneralInfos": {
       "name": "Update General Infos"
+    },
+    "contracts": {
+      "name": "Contracts"
     }
   }
 }

@@ -4,6 +4,7 @@ const path = require('path');
 const Queue = require('bull');
 const Config = require('../server/config/Config');
 const logger = require('./lib/logger');
+const slackLogger = require('../server/lib/slackLogger');
 const NUM_OF_BLOCKS_IN_CHUNK = Config.get('queues:addBlocks:limitBlocks');
 
 const addBlocksQueue = new Queue(
@@ -33,7 +34,8 @@ addBlocksQueue.on('completed', function(job, result) {
 });
 
 addBlocksQueue.on('failed', function(job, error) {
-  logger.info(`An AddBlocksQueue job has failed. ID=${job.id}, error=${error}`);
+  logger.error(`An AddBlocksQueue job has failed. ID=${job.id}, error=${error}`);
+  slackLogger.error(`An AddBlocks job has failed, error=${error}`);
 });
 
 addBlocksQueue.on('cleaned', function(jobs, type) {

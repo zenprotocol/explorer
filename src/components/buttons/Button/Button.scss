@@ -1,0 +1,17 @@
+@import 'style/sizes';
+.Button {
+  &.btn {
+    font-size: $font-size-base * 1.15;
+    border: none;
+  }
+  &.btn-size-lg {
+    padding: 1.1rem 1.7rem;
+  }
+  &.btn-size-sm {
+    padding: $content-padding-x (2 * $content-padding-x);
+    font-size: $font-size-base;
+  }
+  &.btn-dark-2:hover {
+    background-color: #202020;
+  }
+}

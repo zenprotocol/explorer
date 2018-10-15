@@ -5,13 +5,10 @@ import logo from '../../assets/logo.png';
 import logoAll from '../../assets/logo_all.png';
 
 export default function Logo(props) {
+  const imgSrc = props.hideSubtitle ? logo : logoAll;
   return (
     <Link className="navbar-brand text-primary" to="/">
-      {!props.hideSubtitle? (
-        <img src={logoAll} className="logo d-inline-block align-middle" alt="" />
-      ): (
-        <img src={logo} className="logo d-inline-block align-middle" alt="" />
-      )}
+      <img src={imgSrc} className="logo d-inline-block align-middle" alt="Zen Protocol Explorer" />
     </Link>
   );
 }

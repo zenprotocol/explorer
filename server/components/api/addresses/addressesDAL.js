@@ -141,4 +141,48 @@ addressesDAL.getReceivedSums = async function(address) {
   });
 };
 
+addressesDAL.getZpBalance = async function(address) {
+  const db = outputsDAL.db;
+  const sequelize = db.sequelize;
+  const sql = `
+  select
+  (output_sum - input_sum) / 100000000 as balance
+  from
+    (select
+      coalesce(osums.address, isums.address) as address,
+      osums.output_sum,
+      case
+      when isums.input_sum is null
+      then 0
+      else isums.input_sum
+      end
+    from
+      (select
+        o.address,
+        sum(o.amount) as output_sum
+      from "Outputs" o
+      where o.asset = '00' AND o.address = :address
+      group by address) as osums
+      full outer join
+      (select
+        io.address,
+        sum(io.amount) as input_sum
+      from
+        "Outputs" io
+        join "Inputs" i
+        on i."OutputId" = io.id
+      where io.asset = '00' AND io.address = :address
+      group by io.address) as isums
+      on osums.address = isums.address) as bothsums
+  where output_sum <> input_sum
+  `;
+
+  return sequelize.query(sql, {
+    type: sequelize.QueryTypes.SELECT,
+    replacements: {
+      address,
+    },
+  });
+};
+
 module.exports = addressesDAL;

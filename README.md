@@ -15,34 +15,41 @@ Client side was bootstrapped with [create-react-app](https://github.com/facebook
 1. Make sure docker is running
 2. Open a terminal in the root folder of the project.
 3. **AS AN ADMINISTRATOR** - `npm run setup` - to create your env file and needed directories and to install dependencies.
-4. Inside the created env file, fill in the block chain node url. _The password can stay the same as this is a development password_.
-5. `docker-compose up` - this will:
+4. `npm run docker:up` - this will:
    - Download all the needed images
    - Create all the containers. 
    - Start the web server.
-6. **In another terminal** -
+5. **In another terminal** -
    1. `docker-compose exec web sh` - to run a shell inside of the web container. 
    2. `npm run setup:db`
    3. `exit` - to exit the container
-7. Start caching the db or copy the staging db   
+6. Start caching the db or copy the staging db   
    - **Option 1** - run the worker to cache your db   
       1. `docker-compose exec web sh`
       2. `node worker/worker.js` - start the worker
       3. let it work
    - **Option 2** - copy the db from staging   
       1. Follow the steps in [Heroku to local](#heroku-to-local)
-8. Start the client dev environment - `npm run client:start`
+8. Setup is done - shut down server - `npm run docker:stop`
 
 ## Normal development workflow
-1. Terminal A - `docker-compose up`
-2. Terminal B - `npm run client:start`
+1. **Option A** - Server + Client
+   - `npm run dev`
+2. **Option B** - Server + Zen node + Client
+   - `npm run dev:all`
+3. Watch server/worker/other **logs**
+   - `npm run docker:logs -- [service]`
+   - `npm run docker:logs` - all services
+   - `npm run docker:logs -- web` - just web server
+4. When done - `npm run docker:stop` to stop all containers
 
 ## Load client from server
 1. `npm run client:build` - creates the build folder
-2. `docker-compose up`
+2. `npm run docker:up`
 3. now load http://localhost:3000
 
 ### General Docker commands:
+1. `docker-compose logs` - Watch logs from the containers - https://docs.docker.com/compose/reference/logs/
 1. `docker-compose up` - start the server
 2. `docker-compose exec <service name> sh` - start a shell inside once of the services. Replace `<service name>` with the wanted service.   
 For example -   
@@ -66,6 +73,10 @@ in the docker web container, run `npx sequelize` to see all cli options.
 - Client is built automatically with the npm script `heroku-postbuild`
 - start web: `heroku ps:scale web=1 -a <app name>`
 - start worker: `heroku ps:scale worker=1 -a <app name>`
+- Set environment variables:
+  - **DATABASE_URL**
+  - **REDISCLOUD_URL**
+  - **zp__node** - The remote node url
 
 ## DB Copy/Backup, copy db from staging to production
 ### Heroku

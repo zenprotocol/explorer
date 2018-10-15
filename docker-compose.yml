@@ -2,7 +2,7 @@ version: "3"
 services:
   web: 
     build: .
-    command: npm run dev
+    command: npm run server:dev
     volumes:
       - .:/home/app/explorer
       - /home/app/explorer/node_modules
@@ -22,4 +22,4 @@ services:
     volumes:
       - './data/redis:/data'
     ports:
-      - '6379:6379'
+      - 6379:6379

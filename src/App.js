@@ -1,18 +1,11 @@
 import React, { Component } from 'react';
-import { Route, Switch } from 'react-router-dom';
-
-import DevTools from './DevTools';
-
 import Service from './lib/Service';
 import blockStore from './store/BlockStore';
-import Navbar from './components/Navbar/Navbar.jsx';
-import Footer from './components/Footer/Footer.jsx';
-import Blocks from './routes/blocks/Blocks.jsx';
-import Block from './routes/block/Block.jsx';
-import Transaction from './routes/transaction/Transaction.jsx';
-import Address from './routes/address/Address.jsx';
-import Search from './routes/search/Search.jsx';
-import Info from './routes/info/Info.jsx';
+import uiStore from './store/UIStore';
+import MainRoutes from './MainRoutes.jsx';
+import Navbar from './components/Navbar';
+import Footer from './components/Footer';
+
 import './App.css';
 
 class App extends Component {
@@ -24,7 +17,6 @@ class App extends Component {
 
   componentDidMount() {
     this.fetchBlocksCount();
-    blockStore.fetchMedianTime();
     this.fetchSyncingTimeout();
   }
 
@@ -42,7 +34,7 @@ class App extends Component {
 
 
   fetchSyncingTimeout() {
-    blockStore.fetchSyncing().then(() => {
+    uiStore.fetchSyncing().then(() => {
       this.syncingTimer = setTimeout(this.fetchSyncingTimeout, 60000);
     });
   }
@@ -50,24 +42,22 @@ class App extends Component {
   render() {
     return (
       <div className="App">
-        <div className="container px-lg-5">
-          <Navbar />
+        <div className="navbar-container">
+          <div className="container">
+            <Navbar />
+          </div>
         </div>
-        <div className="App-separator" />
-        <div className="container px-lg-5">
-          <Switch>
-            <Route exact path="/(|blocks)" component={Blocks} />
-            <Route path="/blocks/:id" component={Block} />
-            <Route path="/tx/:hash" component={Transaction} />
-            <Route path="/address/:address/:asset?" component={Address} />
-            <Route path="/search/:search" component={Search} />
-            <Route path="/blockchain/info" component={Info} />
-          </Switch>
+        <div className="App-separator mb-3 mb-lg-7" />
+        <div className="body-container">
+          <div className="container">
+            <MainRoutes />
+          </div>
         </div>
-        <div className="container px-lg-5">
-          <Footer />
+        <div className="footer-container">
+          <div className="container">
+            <Footer />
+          </div>
         </div>
-        <DevTools />
       </div>
     );
   }

@@ -1,36 +1,35 @@
-import { observable, decorate, action, autorun, toJS } from 'mobx';
+import { observable, decorate, action, autorun, toJS, runInAction } from 'mobx';
 import blockStore from './BlockStore';
+import addressStore from './AddressStore';
 import localStore from '../lib/localStore';
-
-function hashOrBlockNumberNotEmpty(hashOrBlockNumber) {
-  return (
-    typeof hashOrBlockNumber !== 'undefined' &&
-    hashOrBlockNumber !== '' &&
-    hashOrBlockNumber !== '0' &&
-    hashOrBlockNumber !== 0
-  );
-}
+import Service from '../lib/Service';
+import config from '../lib/Config';
 
 class UIStore {
   constructor() {
-    this.blocksTable = {
-      pageSize: 10,
-      curPage: 0,
-      prevPage: -1,
-    };
+    this.syncing = false;
 
-    this.addressTxTable = {
-      address: '',
-      pageSize: 10,
+    this.blocksTable = {
+      pageSize: config.ui.table.defaultPageSize,
       curPage: 0,
-      prevPage: -1,
     };
 
     this.blockTxTable = {
       hashOrBlockNumber: '0',
-      pageSize: 10,
+      pageSize: config.ui.table.defaultPageSize,
       curPage: 0,
-      prevPage: -1,
+    };
+
+    this.addressTxAssetsTable = {
+      address: '',
+      pageSize: config.ui.table.defaultPageSize,
+      curPage: 0,
+    };
+
+    this.addressTxsTable = {
+      address: '',
+      pageSize: config.ui.table.defaultPageSize,
+      curPage: 0,
     };
 
     let firstRun = true;
@@ -59,7 +58,19 @@ class UIStore {
     });
 
     autorun(() => {
-      this.fetchAddressTransactionsOnChange();
+      this.fetchAddressTxAssetsOnChange();
+    });
+
+    autorun(() => {
+      this.fetchAddressTxsOnChange();
+    });
+  }
+
+  fetchSyncing() {
+    return Service.infos.findByName('syncing').then(response => {
+      runInAction(() => {
+        this.syncing = response.success && response.data.value === 'true';
+      });
     });
   }
 
@@ -81,18 +92,27 @@ class UIStore {
     }
   }
 
-  fetchAddressTransactionsOnChange() {
-    if (this.addressTxTable.address) {
-      blockStore.fetchAddressTransactionAssets(this.addressTxTable.address, {
-        page: this.addressTxTable.curPage,
-        pageSize: this.addressTxTable.pageSize,
+  fetchAddressTxAssetsOnChange() {
+    if (this.addressTxAssetsTable.address) {
+      addressStore.fetchAddressTransactionAssets(this.addressTxAssetsTable.address, {
+        page: this.addressTxAssetsTable.curPage,
+        pageSize: this.addressTxAssetsTable.pageSize,
+      });
+    }
+  }
+
+  fetchAddressTxsOnChange() {
+    if (this.addressTxsTable.address) {
+      addressStore.loadAddressTransactions(this.addressTxsTable.address, {
+        page: this.addressTxsTable.curPage,
+        pageSize: this.addressTxsTable.pageSize,
       });
     }
   }
 
   runOnAddressChange() {
-    blockStore.resetAddressTransactionAssets(this.addressTxTable.address);
-    blockStore.fetchAddress(this.addressTxTable.address);
+    addressStore.resetAddressTransactionAssets(this.addressTxAssetsTable.address);
+    addressStore.fetchAddress(this.addressTxAssetsTable.address);
   }
 
   runOnBlockChange() {
@@ -104,7 +124,6 @@ class UIStore {
       this.blocksTable.pageSize = pageSize;
     }
     if (curPage !== undefined) {
-      this.blocksTable.prevPage = this.blocksTable.curPage;
       this.blocksTable.curPage = curPage;
     }
   }
@@ -117,22 +136,33 @@ class UIStore {
       this.blockTxTable.pageSize = pageSize;
     }
     if (curPage !== undefined) {
-      this.blockTxTable.prevPage = this.blockTxTable.curPage;
       this.blockTxTable.curPage = curPage;
     }
   }
 
-  setAddressTxTableData({ address, pageSize, curPage } = {}) {
-    if (address && address !== this.addressTxTable.address) {
-      this.addressTxTable.address = address;
-      this.addressTxTable.curPage = 0;
+  setAddressTxAssetsTableData({ address, pageSize, curPage } = {}) {
+    if (address && address !== this.addressTxAssetsTable.address) {
+      this.addressTxAssetsTable.address = address;
+      this.addressTxAssetsTable.curPage = 0;
     }
     if (pageSize) {
-      this.addressTxTable.pageSize = pageSize;
+      this.addressTxAssetsTable.pageSize = pageSize;
     }
     if (curPage !== undefined) {
-      this.addressTxTable.prevPage = this.addressTxTable.curPage;
-      this.addressTxTable.curPage = curPage;
+      this.addressTxAssetsTable.curPage = curPage;
+    }
+  }
+
+  setAddressTxsTableData({ address, pageSize, curPage } = {}) {
+    if (address && address !== this.addressTxsTable.address) {
+      this.addressTxsTable.address = address;
+      this.addressTxsTable.curPage = 0;
+    }
+    if (pageSize) {
+      this.addressTxsTable.pageSize = pageSize;
+    }
+    if (curPage !== undefined) {
+      this.addressTxsTable.curPage = curPage;
     }
   }
 
@@ -146,8 +176,11 @@ class UIStore {
       if (data.blocksTable) {
         this.blocksTable.pageSize = data.blocksTable.pageSize;
       }
-      if (data.addressTxTable) {
-        this.addressTxTable.pageSize = data.addressTxTable.pageSize;
+      if (data.addressTxAssetsTable) {
+        this.addressTxAssetsTable.pageSize = data.addressTxAssetsTable.pageSize;
+      }
+      if (data.addressTxsTable) {
+        this.addressTxsTable.pageSize = data.addressTxsTable.pageSize;
       }
       if (data.blockTxTable) {
         this.blockTxTable.pageSize = data.blockTxTable.pageSize;
@@ -157,13 +190,26 @@ class UIStore {
 }
 
 decorate(UIStore, {
+  syncing: observable,
   blocksTable: observable,
-  addressTxTable: observable,
+  addressTxAssetsTable: observable,
+  addressTxsTable: observable,
   blockTxTable: observable,
+  fetchSyncing: action,
   setBlocksTableData: action,
   setBlockTxTableData: action,
-  setAddressTxTableData: action,
+  setAddressTxAssetsTableData: action,
+  setAddressTxsTableData: action,
   loadFromStorage: action,
 });
+
+function hashOrBlockNumberNotEmpty(hashOrBlockNumber) {
+  return (
+    typeof hashOrBlockNumber !== 'undefined' &&
+    hashOrBlockNumber !== '' &&
+    hashOrBlockNumber !== '0' &&
+    hashOrBlockNumber !== 0
+  );
+}
 
 export default new UIStore();

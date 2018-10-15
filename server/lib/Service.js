@@ -12,16 +12,20 @@ const Endpoints = {
     info: '/blockchain/info',
     block: '/blockchain/block?blockNumber=',
   },
+  contracts: {
+    active: '/contract/active',
+  },
+  oracle: 'http://oracle.zp.io',
 };
 
 let globalMute = false;
 
 function sendHttpRequest(config) {
-  if(globalMute) {
-    return Promise.resolve({data: {}});
+  if (globalMute) {
+    return Promise.resolve({ data: {} });
   }
-  return request.request(config).catch((error) => {
-    throw new NetworkError(error);
+  return request.request(config).catch(error => {
+    throw new NetworkError(error, error.message, (error.response || {}).status);
   });
 }
 
@@ -54,6 +58,14 @@ module.exports = {
       }).then(response => response.data);
     },
   },
+  contracts: {
+    async getActiveContracts() {
+      return sendHttpRequest({
+        url: Endpoints.contracts.active,
+        method: 'get',
+      }).then(response => response.data);
+    },
+  },
   zen: {
     async getZenNodeTags() {
       return sendHttpRequest({
@@ -70,6 +82,42 @@ module.exports = {
       }).then(response => {
         return response.data;
       });
-    }
-  }
+    },
+  },
+  wallet: {
+    async broadcastTx(tx) {
+      return sendHttpRequest({
+        url: 'https://remote-node.zp.io/api/publishtransaction',
+        method: 'post',
+        data: {
+          tx,
+        },
+      }).then(response => {
+        console.log(response);
+        return response.data;
+      });
+    },
+  },
+  oracle: {
+    data(ticker, date) {
+      return sendHttpRequest({
+        url: `${Endpoints.oracle}/data`,
+        method: 'get',
+        params: {
+          ticker,
+          date,
+        },
+      }).then(response => response.data);
+    },
+    proof(ticker, date) {
+      return sendHttpRequest({
+        url: `${Endpoints.oracle}/proof`,
+        method: 'get',
+        params: {
+          ticker,
+          date,
+        },
+      }).then(response => response.data);
+    },
+  },
 };

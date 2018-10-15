@@ -1,9 +1,10 @@
 import React from 'react';
-import ReactTable, {ReactTableDefaults} from 'react-table';
+import ReactTable from 'react-table';
 import PropTypes from 'prop-types';
-import 'react-table/react-table.css';
+import config from '../../lib/Config';
 import PaginationComponent from './Pagination.jsx';
 import LoadingWithBG from './LoadingWithBG.jsx';
+import 'react-table/react-table.css';
 import './GenericTable.css';
 
 export default function GenericTable(props) {
@@ -24,17 +25,15 @@ export default function GenericTable(props) {
     pivotBy,
     expanded,
     getTrProps,
-    getTrGroupProps,
   } = props;
   return (
     <div className="GenericTable">
-      <ReactTable 
+      <ReactTable
         manual
         loading={loading}
         resizable={resizable}
         sortable={sortable}
         data={data}
-        column={{...ReactTableDefaults.column, minWidth: 130}}
         columns={columns}
         onFetchData={onFetchData}
         showPaginationBottom={true}
@@ -51,8 +50,19 @@ export default function GenericTable(props) {
         SubComponent={SubComponent}
         pivotBy={pivotBy}
         expanded={expanded}
+        getTableProps={(state, rowInfo, column, instance) => {
+          return { className: 'table-zen' };
+        }}
         getTrProps={getTrProps}
-        getTrGroupProps={getTrGroupProps}
+        getTrGroupProps={(state, rowInfo, column, instance) => {
+          if (!rowInfo) {
+            return {};
+          }
+          // mark last data row before pad rows
+          const dataLength = state.data.length;
+          const rowIndex = rowInfo.index;
+          return { className: rowIndex === dataLength - 1 ? 'last' : '' };
+        }}
       />
     </div>
   );
@@ -75,13 +85,12 @@ GenericTable.propTypes = {
   pivotBy: PropTypes.array,
   expanded: PropTypes.object,
   getTrProps: PropTypes.func,
-  getTrGroupProps: PropTypes.func,
 };
 
 GenericTable.defaultProps = {
-  pageSizes: [5, 10, 20, 50, 100],
+  pageSizes: config.ui.table.pageSizes,
   resizable: false,
   sortable: false,
-  defaultPageSize: 10,
+  defaultPageSize: config.ui.table.defaultPageSize,
   page: 0,
 };

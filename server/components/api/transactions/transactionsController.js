@@ -1,21 +1,23 @@
 'use strict';
 
 const httpStatus = require('http-status');
+const zen = require('@zen/zenjs');
 const transactionsDAL = require('./transactionsDAL');
+const outputsDAL = require('../outputs/outputsDAL');
 const jsonResponse = require('../../../lib/jsonResponse');
 const HttpError = require('../../../lib/HttpError');
 const createQueryObject = require('../../../lib/createQueryObject');
 const getTransactionAssets = require('./getTransactionAssets');
 const isCoinbaseTX = require('./isCoinbaseTX');
+const Service = require('../../../lib/Service');
+const BlockchainParser = require('../../../lib/BlockchainParser');
 
 module.exports = {
-  // TODO - change to get all transactions - not assets
   index: async function(req, res) {
     // find by blockNumber or address
     const { blockNumber, address } = req.query;
     const page = req.query.page || 0;
     const pageSize = req.query.pageSize || 10;
-    const firstTransactionId = req.query.firstTransactionId || 0;
     const ascending = req.query.order === 'asc'; // descending by default
     const sorted =
       req.query.sorted && req.query.sorted != '[]'
@@ -30,6 +32,10 @@ module.exports = {
       findPromise = transactionsDAL.findAllByBlockNumber(Number(blockNumber), query);
       countPromise = transactionsDAL.countByBlockNumber(Number(blockNumber));
     }
+    else if (address) {
+      findPromise = transactionsDAL.findAllByAddress(address, {limit: query.limit, offset: query.offset, ascending});
+      countPromise = transactionsDAL.countByAddress(address);
+    }
     else {
       findPromise = transactionsDAL.findAll(query);
       countPromise = transactionsDAL.count();
@@ -37,24 +43,10 @@ module.exports = {
 
     const [count, transactions] = await Promise.all([countPromise, findPromise]);
 
-    const customTXs = [];
-
-    transactions.forEach(transaction => {
-      const customTX = transactionsDAL.toJSON(transaction);
-      customTX.isCoinbase = isCoinbaseTX(transaction);
-
-      customTX['assets'] = getTransactionAssets(transaction, address);
-      delete customTX.Inputs;
-      delete customTX.Outputs;
-      delete customTX.AddressTransactions;
-
-      customTXs.push(customTX);
-    });
-
     res.status(httpStatus.OK).json(
       jsonResponse.create(httpStatus.OK, {
         total: count,
-        items: customTXs,
+        items: transactions,
       })
     );
   },
@@ -135,6 +127,68 @@ module.exports = {
       res.status(httpStatus.OK).json(jsonResponse.create(httpStatus.OK, transaction));
     } else {
       throw new HttpError(httpStatus.NOT_FOUND);
+    }
+  },
+  broadcast: async function(req, res) {
+    const tx = req.body.tx || '';
+    if (!tx) {
+      throw new HttpError(httpStatus.BAD_REQUEST);
+    }
+    
+    const response = await Service.wallet.broadcastTx(tx);
+    res.status(httpStatus.OK).json(jsonResponse.create(httpStatus.OK, response));
+  },
+  getFromRaw: async function(req, res) {
+    const hex = req.body.hex;
+    if (!hex) {
+      throw new HttpError(httpStatus.BAD_REQUEST);
+    }
+
+    try {
+      const tx = zen.Transaction.fromHex(hex);
+      const blockchainParser = new BlockchainParser();
+      const txCustom = {
+        Inputs: [],
+        Outputs: [],
+      };
+
+      txCustom.Outputs = tx.outputs.map((output, index) => {
+        const { lockType, lockValue, address } = blockchainParser.getLockValuesFromOutput(output);
+        const asset = output.spend.asset.asset;
+        const amount = output.spend.amount['0'];
+        return {
+          id: index + 1, // fake id
+          lockType,
+          address,
+          lockValue,
+          asset,
+          amount
+        };
+      });
+
+      for (let i = 0; i < tx.inputs.length; i++) {
+        const input = tx.inputs[i];
+        const outpoint = {
+          txHash: input.input.txHash.hash,
+          index: input.input.index,
+        };
+        // search for this tx and index
+        const output = await outputsDAL.findOutpoint(outpoint.txHash, outpoint.index);
+
+        if (!output) {
+          throw new HttpError(httpStatus.BAD_REQUEST, 'One of the inputs is not yet in the blockchain');
+        }
+
+        txCustom.Inputs.push({
+          id: i + 1, // fake id
+          Output: output,
+        });
+      }
+
+      const assets = getTransactionAssets(txCustom);
+      res.status(httpStatus.OK).json(jsonResponse.create(httpStatus.OK, assets));
+    } catch (error) {
+      throw new HttpError(error.status || httpStatus.INTERNAL_SERVER_ERROR, error.customMessage);
     }
   },
   create: async function(req, res) {

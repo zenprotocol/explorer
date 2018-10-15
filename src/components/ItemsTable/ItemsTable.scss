@@ -1,0 +1,37 @@
+@import 'style/colors';
+
+.ItemsTable {
+  .negative {
+    color: $red;
+  }
+  
+  .positive {
+    color: $green;
+  }
+  
+  .expand {
+    cursor: 'pointer';
+    padding: 0;
+    text-align: center;
+    user-select: none;
+  }
+  
+  .rt-tr.expandable {
+    cursor: pointer;
+  }
+  .rt-tr.expandable:hover {
+    background-color: $table-hover-bg;
+  }
+  .rt-tr.-padRow,
+  .rt-tr.-padRow:hover {
+    background-color: transparent;
+    cursor: default;
+  }
+  
+  .ItemsTable-pageSizes {
+    color: $gray;
+    .Dropdown-control {
+      min-width: 88px;
+    }
+  }
+}

@@ -1,19 +1,19 @@
 import React, { Component } from 'react';
 import {observer} from 'mobx-react';
 import PropTypes from 'prop-types';
-import blockStore from '../../../store/BlockStore';
-import TransactionAsset from './TransactionAsset';
-import Loading from '../../Loading/Loading.jsx';
+import transactionStore from '../../../store/TransactionStore';
+import TransactionAsset from './TransactionAsset.jsx';
+import Loading from '../../Loading';
 
 class TransactionAssetLoader extends Component {
   componentDidMount() {
     const { transactionAssets, index } = this.props;
     if (!this.transactionAssetAlreadyLoaded) {
-      blockStore.fetchTransactionAsset(transactionAssets, index);
+      transactionStore.fetchTransactionAsset(transactionAssets, index);
     }
   }
   render() {
-    const { index, address, addressFoundIn, timestamp, transactionAssets, total } = this.props;
+    const { index, address, addressFoundIn, transactionAssets, total } = this.props;
     if (!this.transactionAssetAlreadyLoaded) {
       return <Loading />;
     }
@@ -25,7 +25,6 @@ class TransactionAssetLoader extends Component {
         showHeader={true}
         address={address}
         addressFoundIn={addressFoundIn}
-        timestamp={timestamp}
         total={total}
       />
     );
@@ -42,7 +41,6 @@ TransactionAssetLoader.propTypes = {
   index: PropTypes.number,
   address: PropTypes.string,
   addressFoundIn: PropTypes.array,
-  timestamp: PropTypes.string,
   total: PropTypes.number,
 };
 

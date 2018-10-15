@@ -2,6 +2,7 @@ const axios = require('axios');
 const request = axios.create({
   baseURL: process.env.NODE_ENV === 'development' ? 'http://localhost:3000' : '',
 });
+const CancelToken = axios.CancelToken;
 
 const Endpoints = {
   blocks: '/api/blocks',
@@ -9,6 +10,9 @@ const Endpoints = {
   addresses: '/api/addresses',
   info: '/api/infos',
   search: '/api/search',
+  stats: '/api/stats',
+  contracts: '/api/contracts',
+  oracle: '/api/oracle',
 };
 
 let globalMute = false;
@@ -17,7 +21,35 @@ function sendHttpRequest(config) {
   if (globalMute) {
     return Promise.resolve({ data: {} });
   }
-  return request.request(config);
+  return request
+    .request(config)
+    .then(response => response.data)
+    .catch(error => {
+      if (error.response) {
+        const err = new Error(((error.response.data || {}).error || {}).message);
+        err.status = error.response.status;
+        err.data = error.response.data.error;
+        throw err;
+      } else if (axios.isCancel(error)) {
+        throw error;
+      } else {
+        const err = new Error(error.message);
+        err.status = -1;
+        err.data = {};
+        throw err;
+      }
+    });
+}
+
+function cancelableHttpRequest(config) {
+  const source = CancelToken.source();
+  const promise = sendHttpRequest(
+    Object.assign({}, config, {
+      cancelToken: source.token,
+    })
+  );
+  promise.cancel = source.cancel;
+  return promise;
 }
 
 export default {
@@ -35,18 +67,23 @@ export default {
       request.defaults.timeout = timeout;
     },
   },
+  utils: {
+    isCancel(error) {
+      return axios.isCancel(error);
+    },
+  },
   infos: {
     async find() {
       return sendHttpRequest({
         url: `${Endpoints.info}`,
         method: 'get',
-      }).then(response => response.data);
+      });
     },
     async findByName(name) {
       return sendHttpRequest({
         url: `${Endpoints.info}/${name}`,
         method: 'get',
-      }).then(response => response.data);
+      });
     },
   },
   blocks: {
@@ -55,20 +92,20 @@ export default {
         url: Endpoints.blocks,
         method: 'get',
         params: params,
-      }).then(response => response.data);
+      });
     },
     async findById(id) {
       return sendHttpRequest({
         url: `${Endpoints.blocks}/${id}`,
         method: 'get',
-      }).then(response => response.data);
+      });
     },
     async findTransactionsAssets(blockNumber, params) {
       return sendHttpRequest({
         url: `${Endpoints.blocks}/${blockNumber}/assets`,
         method: 'get',
         params: params,
-      }).then(response => response.data);
+      });
     },
   },
   transactions: {
@@ -77,19 +114,37 @@ export default {
         url: Endpoints.transactions,
         method: 'get',
         params: params,
-      }).then(response => response.data);
+      });
     },
     async findByHash(hash) {
       return sendHttpRequest({
         url: `${Endpoints.transactions}/${hash}`,
         method: 'get',
-      }).then(response => response.data);
+      });
     },
     async findAsset(id, asset) {
       return sendHttpRequest({
         url: `${Endpoints.transactions}/${id}/${asset}`,
         method: 'get',
-      }).then(response => response.data);
+      });
+    },
+    broadcast(tx) {
+      return cancelableHttpRequest({
+        url: `${Endpoints.transactions}/broadcast`,
+        method: 'post',
+        data: {
+          tx,
+        },
+      });
+    },
+    rawToTx(hex) {
+      return cancelableHttpRequest({
+        url: `${Endpoints.transactions}/raw`,
+        method: 'post',
+        data: {
+          hex,
+        },
+      });
     },
   },
   addresses: {
@@ -97,14 +152,14 @@ export default {
       return sendHttpRequest({
         url: `${Endpoints.addresses}/${address}`,
         method: 'get',
-      }).then(response => response.data);
+      });
     },
     async findTransactionsAssets(address, params) {
       return sendHttpRequest({
         url: `${Endpoints.addresses}/${address}/assets`,
         method: 'get',
         params: params,
-      }).then(response => response.data);
+      });
     },
   },
   search: {
@@ -112,7 +167,55 @@ export default {
       return sendHttpRequest({
         url: `${Endpoints.search}/${search}`,
         method: 'get',
-      }).then(response => response.data);
-    }
-  }
+      });
+    },
+  },
+  stats: {
+    charts(name) {
+      return cancelableHttpRequest({
+        url: `${Endpoints.stats}/charts/${name}`,
+        method: 'get',
+      });
+    },
+  },
+  contracts: {
+    findByAddress(address) {
+      return cancelableHttpRequest({
+        url: `${Endpoints.contracts}/${address}`,
+        method: 'get',
+      });
+    },
+  },
+  oracle: {
+    data(ticker, date) {
+      ticker = ticker || null;
+      date = date || null;
+      return cancelableHttpRequest({
+        url: `${Endpoints.oracle}/data`,
+        method: 'get',
+        params: {
+          ticker,
+          date,
+        },
+      });
+    },
+    proof(ticker, date) {
+      ticker = ticker || null;
+      date = date || null;
+      return cancelableHttpRequest({
+        url: `${Endpoints.oracle}/proof`,
+        method: 'get',
+        params: {
+          ticker,
+          date,
+        },
+      });
+    },
+    lastUpdated() {
+      return cancelableHttpRequest({
+        url: `${Endpoints.oracle}/lastUpdated`,
+        method: 'get',
+      });
+    },
+  },
 };

@@ -20,5 +20,8 @@
     "request": {
       "limit": "10mb"
     }
+  },
+  "zp": {
+    "node": "http://zen-node:5050"
   }
 }

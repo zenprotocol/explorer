@@ -3,6 +3,8 @@
 import test from 'tape';
 import TextUtils from '../TextUtils';
 
+test('TextUtils ----------------------------------------------------------------------', function(t) {t.end();});
+
 test('formatNumber - normal number', function(t) {
   let number = 1000000.123456;
   let expected = '1,000,000.123456';

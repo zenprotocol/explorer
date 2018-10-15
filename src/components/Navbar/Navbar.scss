@@ -1,0 +1,32 @@
+@import 'style/colors';
+@import 'style/sizes';
+.Navbar {
+  font-size: $font-size-lg;
+  
+  .navbar-brand {
+    padding: 0.5rem 0;
+    img.logo {
+      height: 40px;
+      width: auto;
+      margin-right: 10px;
+    }
+  }
+
+  @media (min-width: map-get($grid-breakpoints, "lg")) {
+    .navbar-brand {
+      margin-right: 2rem;
+    }
+    .navbar-expand-lg .navbar-nav .nav-link {
+      $border-size: 2px;
+      padding: 1.6rem 0;
+      margin-right: 2rem;
+      border-top: $border-size solid transparent;
+      border-bottom: $border-size solid transparent;
+      
+      &.active {
+        border-bottom-color: $blue-soft;
+        font-weight: $font-weight-bold;
+      }
+    }
+  }
+}

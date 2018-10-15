@@ -3,8 +3,9 @@ import { observer } from 'mobx-react';
 import PropTypes from 'prop-types';
 import debounce from 'lodash.debounce';
 import classNames from 'classnames';
-import Config from '../../lib/Config';
-import GenericTable from '../GenericTable/GenericTable.jsx';
+import config from '../../lib/Config';
+import GenericTable from '../GenericTable';
+import Dropdown from '../Dropdown';
 import './ItemsTable.css';
 
 class ItemsTable extends Component {
@@ -12,7 +13,7 @@ class ItemsTable extends Component {
     super(props);
 
     this.state = {
-      windowWidth: 0,
+      windowWidth: 1000,
       expanded: {},
     };
 
@@ -54,7 +55,7 @@ class ItemsTable extends Component {
 
     const columns = this.props.columns.map(column => {
       const hideOnMobileObj = this.props.hideOnMobile.includes(column.accessor)
-        ? { show: this.state.windowWidth >= Config.ui.sizes.breakpointMd }
+        ? { show: this.state.windowWidth >= config.ui.sizes.breakpointMd }
         : {};
       return Object.assign({}, column, hideOnMobileObj);
     });
@@ -65,9 +66,9 @@ class ItemsTable extends Component {
     return columns;
   }
 
-  setPageSize(event) {
+  setPageSize(selected) {
     const { pageSize, curPage, tableDataSetter } = this.props;
-    const newPageSize = Number(event.target.value);
+    const newPageSize = Number(selected.value);
     const newCurPage = Math.floor((pageSize * curPage) / newPageSize);
     tableDataSetter({ pageSize: newPageSize, curPage: newCurPage });
   }
@@ -77,29 +78,27 @@ class ItemsTable extends Component {
   }
 
   render() {
-    const { loading, itemsCount, items, pageSize, curPage, SubComponent, title } = this.props;
+    const { loading, itemsCount, items, pageSize, curPage, SubComponent, topContent } = this.props;
     const numOfPages = Math.ceil(itemsCount / pageSize);
 
     return (
       <div className={classNames('ItemsTable', { loading })}>
-        <div className="clearfix">
-          <h1 className="d-block d-sm-inline-block text-white mb-3 mb-lg-5">{title}</h1>
-          <div className="ItemsTable-pageSizes form-inline float-sm-right">
-            <span className="mr-2 d-none d-md-inline-block">SHOW</span>
-            <select
-              value={pageSize}
-              onChange={this.setPageSize}
-              className="form-control d-block d-md-inline-block"
-            >
-              {Config.ui.table.pageSizes.map(pageSize => {
-                return (
-                  <option key={pageSize} value={pageSize}>
-                    {pageSize}
-                  </option>
-                );
-              })}
-            </select>
-            <span className="ml-2 d-none d-md-inline-block">ENTRIES</span>
+        <div>
+          <div className="row align-items-end mb-3 mb-lg-5">
+            <div className="col-md-8 mb-3 mb-lg-0">
+              {topContent}
+            </div>
+            <div className="col-md-4">
+              <div className="ItemsTable-pageSizes form-inline float-right">
+                <span className="mr-2 d-none d-md-inline-block">SHOW</span>
+                <Dropdown
+                  options={config.ui.table.pageSizes}
+                  value={String(pageSize)}
+                  onChange={this.setPageSize}
+                />
+                <span className="ml-2 d-none d-md-inline-block">ENTRIES</span>
+              </div>
+            </div>
           </div>
         </div>
         <GenericTable
@@ -109,7 +108,7 @@ class ItemsTable extends Component {
           defaultPageSize={pageSize}
           pages={numOfPages}
           page={curPage}
-          pageSizes={Config.ui.table.pageSizes}
+          pageSizes={config.ui.table.pageSizes}
           onPageChange={this.onPageChange}
           pageSize={pageSize}
           SubComponent={SubComponent}
@@ -131,7 +130,6 @@ class ItemsTable extends Component {
               },
             };
           }}
-          
         />
       </div>
     );
@@ -140,7 +138,7 @@ class ItemsTable extends Component {
 
 ItemsTable.defaultProps = {
   hideOnMobile: [],
-  pageSize: 10,
+  pageSize: config.ui.table.defaultPageSize,
   curPage: 0,
 };
 
@@ -154,7 +152,7 @@ ItemsTable.propTypes = {
   curPage: PropTypes.number,
   tableDataSetter: PropTypes.func.isRequired,
   SubComponent: PropTypes.any,
-  title: PropTypes.any,
+  topContent: PropTypes.any,
 };
 
 export default observer(ItemsTable);

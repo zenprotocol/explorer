@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import AssetUtils from '../../../lib/AssetUtils';
 import Output from '../../../lib/OutputUtils';
-import HashLink from '../../../components/HashLink/HashLink.jsx';
+import HashLink from '../../../components/HashLink';
 import './TransactionAsset.css';
 
 class TransactionAsset extends Component {
@@ -20,12 +20,12 @@ class TransactionAsset extends Component {
       <div className={classNames('TransactionAsset', addressFoundIn)}>
         {showHeader ? (
           <div className="row mx-0">
-            <div className="col-2 border-bottom">ASSET</div>
-            <div className="col-4 border-bottom">INPUT</div>
+            <div className="col-2 border-bottom th">ASSET</div>
+            <div className="col-4 border-bottom th">INPUT</div>
             <div className="col-6 border-bottom">
               <div className="row mx-0">
-                <div className="col-6 p-0">OUTPUT</div>
-                <div className="col-6 p-0">TOTAL</div>
+                <div className="col-6 p-0 th">OUTPUT</div>
+                <div className="col-6 p-0 th">TOTAL</div>
               </div>
             </div>
           </div>

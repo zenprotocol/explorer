@@ -1,0 +1,30 @@
+.BroadcastTx {
+  position: relative;
+  .btn-paste {
+    display: none;
+    position: absolute;
+    top: 1px;
+    right: 1px;
+    background-color: rgba(0, 0, 0, 0.7);
+  }
+  .textarea-container:hover .btn-paste {
+    display: block;
+  }
+  .Loading {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(0, 0, 0, 0.5);
+  }
+  .Button {
+    min-width: 150px;
+  }
+  .Message {
+    margin-bottom: 1rem;
+  }
+}

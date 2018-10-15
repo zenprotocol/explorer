@@ -1,42 +1,23 @@
 import Config from '../lib/Config';
 
-function addPrecedingZero(number) {
-  if (Number(number) < 10) {
-    return `0${number}`;
-  }
-  return String(number);
-}
+const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
 export default {
   getDateStringFromTimestamp(timestamp) {
     return this.getDateString(new Date(Number(timestamp)));
   },
   getDateString(date) {
-    if (date && typeof date === 'object') {
-      const months = [
-        'Jan',
-        'Feb',
-        'Mar',
-        'Apr',
-        'May',
-        'Jun',
-        'Jul',
-        'Aug',
-        'Sep',
-        'Oct',
-        'Nov',
-        'Dec',
-      ];
-      const day = addPrecedingZero(date.getDate());
-      const month = months[date.getMonth()];
-      const year = date.getFullYear();
-      const hours = addPrecedingZero(date.getHours());
-      const minutes = addPrecedingZero(date.getMinutes());
-
-      return `${day} ${month} ${year} ${hours}:${minutes}`;
+    if(!date || typeof date !== 'object') {
+      return '';
     }
+    
+    const day = addPrecedingZero(date.getDate());
+    const month = months[date.getMonth()];
+    const year = date.getFullYear();
+    const hours = addPrecedingZero(date.getHours());
+    const minutes = addPrecedingZero(date.getMinutes());
 
-    return '';
+    return `${day} ${month} ${year} ${hours}:${minutes}`;
   },
   formatNumber(number, delimiter) {
     if (!number) return '0';
@@ -55,9 +36,13 @@ export default {
     return hash;
   },
   capitalize(text) {
-    if(text && typeof text === 'string') {
+    if (text && typeof text === 'string') {
       return text.substring(0, 1).toUpperCase() + text.substring(1);
     }
     return '';
   },
 };
+
+function addPrecedingZero(number) {
+  return Number(number) < 10 ? `0${number}` : `${number}`;
+}

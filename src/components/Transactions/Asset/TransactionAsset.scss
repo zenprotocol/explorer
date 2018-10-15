@@ -1,0 +1,50 @@
+@import 'style/colors';
+@import 'style/sizes';
+.TransactionAsset {
+  margin-bottom: 40px;
+  .th {
+    font-size: $font-size-md;
+  }
+  &:last-child {
+    margin-bottom: 10px;
+  }
+  .outputs .total {
+    display: inline-block;
+    padding: 5px;
+    border: solid 1px $body-color;
+  }
+  &.output .arrow,
+  &.output .outputs .total {
+    color: $green;
+    border-color: $green;
+  }
+  &.input .arrow,
+  &.input .outputs .total {
+    color: $red;
+    border-color: $red;
+  }
+  &.input.output .arrow,
+  &.input.output .outputs .total {
+    color: $red;
+    border-color: $red;
+  }
+  div[class^="col"],
+  .address {
+    padding: 0.75rem;
+    border-color: $border-color;
+  }
+  .address {
+    border-bottom-width: 1px;
+    border-bottom-style: solid;
+  }
+  .inputs .address {
+    border-color: transparent !important;
+  }
+  .arrow {
+    position: absolute;
+    top: 0;
+    right: 0;
+    padding: 0.75rem;
+    background-color: $table-bg;
+  }
+}

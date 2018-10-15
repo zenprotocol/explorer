@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import TransactionAsset from './Asset/TransactionAsset';
-import HashLink from '../HashLink/HashLink.jsx';
+import HashLink from '../HashLink';
 import TextUtils from '../../lib/TextUtils.js';
 
 export default function Transaction(props) {
@@ -9,7 +9,7 @@ export default function Transaction(props) {
   const timestamp = transaction.Block && transaction.Block.timestamp ? transaction.Block.timestamp : null;
   return (
     <div className="Transaction" key={transaction.id}>
-      <div className="hash mb-4 no-text-transform">
+      <div className="hash mb-4 no-text-transform font-size-md">
         {transaction.isCoinbase ? (
           <span className="coinbase d-inline-block mr-1 text-white font-weight-bold">Coinbase - </span>
         ) : null}
