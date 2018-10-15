@@ -85,11 +85,11 @@ class ItemsTable extends Component {
       <div className={classNames('ItemsTable', { loading })}>
         <div>
           <div className="row align-items-end mb-3 mb-lg-5">
-            <div className="col-md-8">
+            <div className="col-md-8 mb-3 mb-lg-0">
               {topContent}
             </div>
             <div className="col-md-4">
-              <div className="ItemsTable-pageSizes form-inline float-sm-right">
+              <div className="ItemsTable-pageSizes form-inline float-right">
                 <span className="mr-2 d-none d-md-inline-block">SHOW</span>
                 <Dropdown
                   options={config.ui.table.pageSizes}

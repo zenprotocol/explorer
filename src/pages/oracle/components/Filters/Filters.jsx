@@ -74,8 +74,8 @@ class Filters extends Component {
         </div>
         <div>
           <form className="form">
-            <div className="d-flex align-items-end justify-content-start">
-              <div className="mr-3">
+            <div className="d-flex flex-column flex-md-row align-items-start align-items-md-end">
+              <div className="mr-3 mb-3 mb-md-0">
                 <div>
                   <label>SYMBOL</label>
                 </div>
@@ -87,7 +87,7 @@ class Filters extends Component {
                   />
                 </div>
               </div>
-              <div className="mr-3">
+              <div className="mr-3 mb-3 mb-md-0">
                 <div>
                   <label>DATE (CLOSED PRICE)</label>
                 </div>
