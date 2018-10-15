@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { Link } from 'react-router-dom';
+import clipboard from 'clipboard-polyfill/build/clipboard-polyfill.promise';
 import TextUtils from '../../lib/TextUtils';
 import './HashLink.css';
 
@@ -42,21 +43,9 @@ export default class HashLink extends Component {
   }
 
   copyToClipboard(str) {
-    const el = document.createElement('textarea');
-    el.value = str;
-    el.setAttribute('readonly', '');
-    el.style.position = 'absolute';
-    el.style.left = '-9999px';
-    document.body.appendChild(el);
-    const selected = document.getSelection().rangeCount > 0 ? document.getSelection().getRangeAt(0) : false;
-    el.select();
-    document.execCommand('copy');
-    document.body.removeChild(el);
-    if (selected) {
-      document.getSelection().removeAllRanges();
-      document.getSelection().addRange(selected);
-    }
-    this.setCopied(true);
+    clipboard.writeText(str).then(() => {
+      this.setCopied(true);
+    });
   }
 
   setCopied(copied) {

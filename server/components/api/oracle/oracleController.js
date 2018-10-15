@@ -27,7 +27,7 @@ module.exports = {
       throw new HttpError(httpStatus.BAD_REQUEST, 'Both date and ticker must be supplied');
     }
     const data = await service.oracle.proof(ticker, date);
-    res.status(httpStatus.OK).json(jsonResponse.create(httpStatus.OK, toArray(data)));
+    res.status(httpStatus.OK).json(jsonResponse.create(httpStatus.OK, data));
   },
   lastUpdated: async function(req, res) {
     const data = await service.oracle.data('GOOG');
