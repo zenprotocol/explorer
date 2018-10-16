@@ -13,6 +13,7 @@ const Endpoints = {
   stats: '/api/stats',
   contracts: '/api/contracts',
   oracle: '/api/oracle',
+  contractTemplates: '/api/contractTemplates',
 };
 
 let globalMute = false;
@@ -214,6 +215,20 @@ export default {
     lastUpdated() {
       return cancelableHttpRequest({
         url: `${Endpoints.oracle}/lastUpdated`,
+        method: 'get',
+      });
+    },
+  },
+  contractTemplates: {
+    findAll() {
+      return cancelableHttpRequest({
+        url: `${Endpoints.contractTemplates}`,
+        method: 'get',
+      });
+    },
+    findById(id) {
+      return cancelableHttpRequest({
+        url: `${Endpoints.contractTemplates}/${id}`,
         method: 'get',
       });
     },

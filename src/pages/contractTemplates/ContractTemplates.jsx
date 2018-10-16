@@ -27,7 +27,7 @@ function ContractTemplates({ loading, itemsCount, items, pageSize, curPage, tabl
               Header: '',
               accessor: 'template',
               className: 'create',
-              Cell: data => <CreateButtonWithRouter active={!!data.value} />,
+              Cell: data => <CreateButtonWithRouter active={!!data.value} id={data.original.id} />,
             },
           ]}
           hideOnMobile={['description']}
