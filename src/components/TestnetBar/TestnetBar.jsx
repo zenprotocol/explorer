@@ -11,7 +11,7 @@ function TestnetBar() {
   return (
     <div className="TestnetBar container-fluid d-flex justify-content-center align-items-center">
       <div className="mr-3">You are currently exploring the TESTNET</div>
-      <Button size="sm" type="blue-hard" className="btn-thin btn-hover-border" href="https://testnet.zp.io">Switch to Mainnet</Button>
+      <Button size="sm" type="blue-hard" className="btn-thin btn-hover-border" href="https://zp.io">Switch to Mainnet</Button>
     </div>
   );
 }
