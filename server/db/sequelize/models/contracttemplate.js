@@ -7,7 +7,9 @@ module.exports = (sequelize, DataTypes) => {
       description: DataTypes.TEXT,
       template: DataTypes.TEXT,
     },
-    {}
+    {
+      timestamps: false,
+    }
   );
   return ContractTemplate;
 };
