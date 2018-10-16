@@ -63,7 +63,7 @@ $theme-colors: map-merge((
   "danger":     $danger,
   "light":      $light,
   "dark":       $dark,
-  "dark-2":     $dark-2
+  "dark-2":     $dark-2,
 ), $theme-colors);
 
 $body-bg: $black;

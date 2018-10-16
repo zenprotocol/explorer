@@ -46,6 +46,7 @@ $table-padding-y: 12px;
 $table-header-padding-y: 16px;
 
 $text-icon-padding: 14px;
+$border-radius: 0.15rem;
 
 @mixin mixin-content-padding-x() {
   padding-left: $content-padding-x;
