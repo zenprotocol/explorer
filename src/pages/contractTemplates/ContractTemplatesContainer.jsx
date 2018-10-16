@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import { observable, decorate, computed, runInAction, action, autorun } from 'mobx';
+import { observable, decorate, computed, runInAction, action } from 'mobx';
 import { observer } from 'mobx-react';
-import Service from '../../lib/Service';
+import service from '../../lib/Service';
 import config from '../../lib/Config';
 import LocalStoreContainer from '../../components/containers/LocalStoreContainer';
 import ContractTemplates from './ContractTemplates.jsx';
@@ -39,18 +39,35 @@ class ContractTemplatesContainer extends Component {
     });
   }
 
+  componentDidMount() {
+    this.data.loading = true;
+    service.contractTemplates
+      .findAll()
+      .then(response => {
+        runInAction(() => {
+          this.data.templates = response.data;
+        });
+      })
+      .catch(() => {})
+      .then(() => {
+        runInAction(() => {
+          this.data.loading = false;
+        });
+      });
+  }
+
   render() {
     return (
       <React.Fragment>
         <LocalStoreContainer name="contract-templates" data={this.tableData} keys={['pageSize']} />
-        <ContractTemplates 
-          loading={this.data.loading} 
+        <ContractTemplates
+          loading={this.data.loading}
           itemsCount={this.tableItemsCount}
           items={this.curPageTableItems}
           pageSize={this.tableData.pageSize}
           curPage={this.tableData.curPage}
           tableDataSetter={this.setTableData}
-        /> 
+        />
       </React.Fragment>
     );
   }
