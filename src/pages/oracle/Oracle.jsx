@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { observable, decorate, computed, runInAction, action, autorun } from 'mobx';
 import { observer } from 'mobx-react';
 import PropTypes from 'prop-types';
-import localStore from '../../lib/localStore';
 import config from '../../lib/Config';
 import service from '../../lib/Service';
 import getYesterday from './getYesterday';
@@ -12,6 +11,7 @@ import ExternalLink from '../../components/ExternalLink';
 import HashLink from '../../components/HashLink';
 import TickersTable from './components/TickersTable';
 import Filters from './components/Filters';
+import LocalStoreContainer from '../../components/containers/LocalStoreContainer';
 import './Oracle.css';
 
 class OraclePage extends Component {
@@ -56,12 +56,6 @@ class OraclePage extends Component {
   }
 
   componentDidMount() {
-    this.loadFromStorage();
-
-    autorun(() => {
-      this.saveToStorage(this.tableState);
-    });
-
     autorun(() => {
       this.loadTickersTableOnDateChange();
     });
@@ -71,17 +65,6 @@ class OraclePage extends Component {
     });
 
     this.loadInitialData();
-  }
-
-  saveToStorage(data) {
-    localStore.set('oracle-data', data);
-  }
-
-  loadFromStorage() {
-    const data = localStore.get('oracle-data');
-    if (data) {
-      this.tableState.pageSize = data.pageSize;
-    }
   }
 
   loadInitialData() {
@@ -168,6 +151,7 @@ class OraclePage extends Component {
         </section>
 
         <section>
+          <LocalStoreContainer name="oracle" data={this.tableState} keys={['pageSize']} />
           <TickersTable
             items={this.curPageTableItems}
             count={this.totalItems}
