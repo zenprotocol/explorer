@@ -11,7 +11,7 @@ import Info from './pages/info/Info.jsx';
 import Chart from './pages/chart/Chart.jsx';
 import BroadcastTx from './pages/broadcastTx/BroadcastTx.jsx';
 import Oracle from './pages/oracle/Oracle.jsx';
-import ContractTemplates from './pages/contractTemplates/ContractTemplates.jsx';
+import ContractTemplates from './pages/contractTemplates';
 
 export default function MainRoutes() {
   return (
