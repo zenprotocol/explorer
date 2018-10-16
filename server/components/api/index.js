@@ -10,6 +10,7 @@ const infosRouter = require('./infos/infosRoutes');
 const statsRouter = require('./stats/statsRoutes');
 const searchRouter = require('./search/searchRoutes');
 const oracleRouter = require('./oracle/oracleRoutes');
+const contractTemplatesRouter = require('./contractTemplates/contractTemplatesRoutes');
 
 router.use('/blocks', blocksRouter);
 router.use('/inputs', inputsRouter);
@@ -21,5 +22,6 @@ router.use('/infos', infosRouter);
 router.use('/stats', statsRouter);
 router.use('/search', searchRouter);
 router.use('/oracle', oracleRouter);
+router.use('/contractTemplates', contractTemplatesRouter);
 
 module.exports = router;
