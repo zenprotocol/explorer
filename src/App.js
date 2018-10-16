@@ -1,10 +1,12 @@
 import React, { Component } from 'react';
 import Service from './lib/Service';
+import rootStore from './store/RootStore';
 import blockStore from './store/BlockStore';
 import uiStore from './store/UIStore';
 import MainRoutes from './MainRoutes.jsx';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
+import TestnetBar from './components/TestnetBar';
 
 import './App.css';
 
@@ -16,6 +18,7 @@ class App extends Component {
   }
 
   componentDidMount() {
+    rootStore.loadChain();
     this.fetchBlocksCount();
     this.fetchSyncingTimeout();
   }
@@ -42,6 +45,7 @@ class App extends Component {
   render() {
     return (
       <div className="App">
+        <TestnetBar />
         <div className="navbar-container">
           <div className="container">
             <Navbar />
