@@ -1,4 +1,5 @@
 @import 'style/sizes';
+@import 'style/colors';
 .Button {
   &.btn {
     font-size: $font-size-base * 1.15;
@@ -11,7 +12,22 @@
     padding: $content-padding-x (2 * $content-padding-x);
     font-size: $font-size-base;
   }
+  &.btn-thin {
+    padding-top: $content-padding-x / 4;
+    padding-bottom: $content-padding-x / 4;
+  }
   &.btn-dark-2:hover {
     background-color: #202020;
+  }
+  &.btn-blue-hard {
+    background-color: #1663cc;
+    color: $white;
+
+    &.btn-hover-border {
+      border: 1px solid transparent;
+      &:hover {
+        border: 1px solid $white;
+      }
+    }
   }
 }

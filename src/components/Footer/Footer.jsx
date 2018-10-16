@@ -115,6 +115,11 @@ function FooterLinks() {
               Zen’s JS
             </ExternalLink>
           </li>
+          <li className="nav-item">
+            <ExternalLink className="nav-link text-nowrap" url="https://testnet.zp.io">
+              Testnet
+            </ExternalLink>
+          </li>
         </ul>
       </div>
       <div className="col-md-4">
