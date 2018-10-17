@@ -1,1 +1,1 @@
-module.exports = [require('./FixedPayoutDerivativeContract')];
+module.exports = [require('./FixedPayoutDerivative')];

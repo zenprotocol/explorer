@@ -27,7 +27,7 @@ function ContractTemplates({ loading, itemsCount, items, pageSize, curPage, tabl
               Header: '',
               accessor: 'template',
               className: 'create',
-              Cell: data => <CreateButtonWithRouter active={!!data.value} id={data.original.id} />,
+              Cell: data => <CreateButtonWithRouter active={!!data.value} slug={data.original.slug} />,
             },
           ]}
           hideOnMobile={['description']}
@@ -62,8 +62,8 @@ class CreateButton extends Component {
   }
 
   handleClick() {
-    const { id, history } = this.props;
-    history.push(`/templates/contract/${id}`);
+    const { slug, history } = this.props;
+    history.push(`/templates/contract/${slug}`);
   }
 
   render() {
@@ -87,7 +87,7 @@ class CreateButton extends Component {
   }
 }
 CreateButton.propTypes = {
-  id: PropTypes.number,
+  slug: PropTypes.string,
   active: PropTypes.bool,
   history: PropTypes.any,
 };

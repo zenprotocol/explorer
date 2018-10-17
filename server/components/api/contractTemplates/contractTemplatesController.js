@@ -14,11 +14,11 @@ module.exports = {
     );
   },
   show: async function(req, res) {
-    if(!req.params.id) {
+    if(!req.params.slug) {
       throw new HttpError(httpStatus.BAD_REQUEST);
     }
 
-    const template = await contractTemplatesDAL.findById(req.params.id);
+    const template = await contractTemplatesDAL.findBySlug(req.params.slug);
     if (template) {
       res.status(httpStatus.OK).json(jsonResponse.create(httpStatus.OK, template));
     } else {
