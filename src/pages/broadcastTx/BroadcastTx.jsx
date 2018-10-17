@@ -8,9 +8,9 @@ import BrowserUtils from '../../lib/BrowserUtils';
 import Loading from '../../components/Loading';
 import Button from '../../components/buttons/Button';
 import ButtonToolbar from '../../components/buttons/ButtonToolbar';
-import SuccessMessage from '../../components/messages/SuccessMessage.jsx';
-import ErrorMessage from '../../components/messages/ErrorMessage.jsx';
-import TransactionAsset from '../../components/Transactions/Asset/TransactionAsset.jsx';
+import { SuccessMessage } from '../../components/messages';
+import { ErrorMessage } from '../../components/messages';
+import { TransactionAsset } from '../../components/Transactions';
 import Page from '../../components/Page';
 import './BroadcastTx.css';
 
@@ -60,9 +60,7 @@ class BroadcastTx extends Component {
     return (
       <Page className="BroadcastTx">
         <section>
-          <h1 className="d-block d-sm-inline-block text-white mb-3 mb-lg-5">
-            {PAGE_TITLE}
-          </h1>
+          <h1 className="d-block d-sm-inline-block text-white mb-3 mb-lg-5">{PAGE_TITLE}</h1>
           <form onSubmit={this.handleSubmit}>
             <div className="form-group">
               <label>
@@ -109,11 +107,12 @@ class BroadcastTx extends Component {
               </div>
               <div className="col">
                 <ButtonToolbar className="d-flex justify-content-end">
-                  {this.state.clipboardApiSupported && !this.state.hexReadOnly && (
-                    <Button onClick={this.pasteFromClipboard} type="dark-2">
-                      <i className="fal fa-paste" /> Paste
-                    </Button>
-                  )}
+                  {this.state.clipboardApiSupported &&
+                    !this.state.hexReadOnly && (
+                      <Button onClick={this.pasteFromClipboard} type="dark-2">
+                        <i className="fal fa-paste" /> Paste
+                      </Button>
+                    )}
                   <Button isSubmit={true} disabled={this.submitDisabled}>
                     Broadcast Tx
                   </Button>
@@ -144,7 +143,7 @@ class BroadcastTx extends Component {
   handleHexChange(hex) {
     if (this.state.hex !== '') {
       this.setState({ decodedTx: null, decodedTxValid: false, broadcastResponse: '', error: '' });
-      
+
       if (this.hexValid(hex)) {
         this.decodeHex(hex);
       }
@@ -161,13 +160,18 @@ class BroadcastTx extends Component {
       })
       .catch(error => {
         const message = error.data.customMessage ? error.data.customMessage : INVALID_TXT;
-        this.setState({ decodedTx: null, decodedTxValid: false, error: message, hexReadOnly: false, });
+        this.setState({
+          decodedTx: null,
+          decodedTxValid: false,
+          error: message,
+          hexReadOnly: false,
+        });
       });
   }
 
   setPageLocation(hexToSet) {
     const { hex } = RouterUtils.getRouteParams(this.props);
-    if(hexToSet !== hex) {
+    if (hexToSet !== hex) {
       this.props.history.replace(`/broadcastTx/${hexToSet}`);
     }
   }
