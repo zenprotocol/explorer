@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import RouterUtils from '../../lib/RouterUtils';
-import ChartLoader from '../../components/charts/ChartLoader.jsx';
+import { ChartLoader } from '../../components/charts';
 import Page from '../../components/Page';
 import './Chart.css';
 
