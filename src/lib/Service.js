@@ -226,9 +226,9 @@ export default {
         method: 'get',
       });
     },
-    findById(id) {
+    findBySlug(slug) {
       return cancelableHttpRequest({
-        url: `${Endpoints.contractTemplates}/${id}`,
+        url: `${Endpoints.contractTemplates}/${slug}`,
         method: 'get',
       });
     },
