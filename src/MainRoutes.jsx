@@ -11,7 +11,7 @@ import Info from './pages/info';
 import Chart from './pages/chart';
 import BroadcastTx from './pages/broadcastTx';
 import Oracle from './pages/oracle';
-import ContractTemplates from './pages/contractTemplates';
+import {ContractTemplates, CreateContractTemplate} from './pages/contractTemplates';
 
 export default function MainRoutes() {
   return (
@@ -21,8 +21,8 @@ export default function MainRoutes() {
       <Route path="/tx/:hash" component={Transaction} />
       <Route path="/address/:address" component={Address} />
       <Route path="/contract/:address" component={Contract} />
-      <Route path="/templates/contract" component={ContractTemplates} />
-      <Route path="/templates/contract/:id" component={ContractTemplates} />
+      <Route path="/templates/contract" exact component={ContractTemplates} />
+      <Route path="/templates/contract/:slug" component={CreateContractTemplate} />
       <Route path="/search/:search" component={Search} />
       <Route path="/blockchain/info" component={Info} />
       <Route path="/charts/:name" component={Chart} />

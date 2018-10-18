@@ -19,6 +19,9 @@ export default {
 
     return `${day} ${month} ${year} ${hours}:${minutes}`;
   },
+  getISODateFromNow(daysToAdd = 0) {
+    return new Date(Date.now() + daysToAdd * 86400000).toISOString().split('T')[0];
+  },
   formatNumber(number, delimiter) {
     if (!number) return '0';
     delimiter = delimiter ? delimiter.toString() : Config.format.number.delimiter;

@@ -10,6 +10,7 @@ $font-size-base: .8125rem; // if browser base is 16px, then this is 13px
 $font-size-sm: ($font-size-base * .875);
 $font-size-md: ($font-size-base * 1.075);
 $font-size-lg: ($font-size-base * 1.23);
+$small-font-size: 85%;
 $h1-font-size: $font-size-base * 1.845;
 $h2-font-size: $font-size-base * 1.8;
 $h3-font-size: $font-size-base * 1.6;

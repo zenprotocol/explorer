@@ -23,7 +23,7 @@ export default class DatePicker extends Component {
     const { value } = this.props;
     return (
       <div className="DatePicker">
-        <DayPicker onDayChange={this.onDateChange} value={value} formatDate={formatDate}/>
+        <DayPicker onDayChange={this.onDateChange} value={value} formatDate={formatDate} inputProps={{className: 'form-control'}} />
       </div>
     );
   }
