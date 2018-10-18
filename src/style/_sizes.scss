@@ -14,8 +14,8 @@ $small-font-size: 85%;
 $h1-font-size: $font-size-base * 1.845;
 $h2-font-size: $font-size-base * 1.8;
 $h3-font-size: $font-size-base * 1.6;
-$h4-font-size: $font-size-base * 1.4;
-$h5-font-size: $font-size-base * 1.2;
+$h4-font-size: $font-size-lg;
+$h5-font-size: $font-size-md;
 $h6-font-size: $font-size-base;
 
 $font-weight-light: 400;
@@ -56,5 +56,13 @@ $border-radius: 0.15rem;
   @media (min-width: map-get($grid-breakpoints, "lg")) {
     padding-left: $content-padding-x-lg;
     padding-right: $content-padding-x-lg;
+  }
+}
+
+@mixin mixin-content-padding($add-x: 0, $add-y: 0, $add-x-lg: 0, $add-y-lg: 0) {
+  padding: $content-padding-x + $add-y $content-padding-x + $add-x;
+
+  @media (min-width: map-get($grid-breakpoints, "lg")) {
+    padding: $content-padding-x-lg + $add-y-lg $content-padding-x-lg + $add-x-lg;
   }
 }
