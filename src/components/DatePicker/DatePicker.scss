@@ -2,12 +2,7 @@
 @import 'style/sizes';
 
 .DatePicker {
-  display: inline-block;
   font-size: $font-size-base;
-
-  .DayPicker {
-    display: inline-block;
-  }
 
   .DayPicker-wrapper {
     position: relative;
@@ -208,7 +203,6 @@
   /* DayPickerInput */
 
   .DayPickerInput {
-    display: inline-block;
 
     input {
       background-color: $gray-700;

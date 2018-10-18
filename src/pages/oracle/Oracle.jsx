@@ -4,7 +4,7 @@ import { observer } from 'mobx-react';
 import PropTypes from 'prop-types';
 import config from '../../lib/Config';
 import service from '../../lib/Service';
-import getYesterday from './getYesterday';
+import TextUtils from '../../lib/TextUtils';
 import Page from '../../components/Page';
 import PageTitle from '../../components/PageTitle';
 import ExternalLink from '../../components/ExternalLink';
@@ -25,7 +25,7 @@ class OraclePage extends Component {
       curPage: 0,
     };
     this.filterState = {
-      date: getYesterday(),
+      date: TextUtils.getISODateFromNow(-1),
       tickers: [],
     };
     this.allTickers = [];
@@ -69,7 +69,10 @@ class OraclePage extends Component {
 
   loadInitialData() {
     // get all tickers & last updated
-    Promise.all([service.oracle.lastUpdated(), service.oracle.data('', getYesterday())])
+    Promise.all([
+      service.oracle.lastUpdated(),
+      service.oracle.data('', TextUtils.getISODateFromNow(-1)),
+    ])
       .then(results => {
         const lastUpdated = results[0].data;
         const allTickers = results[1].data.map(item => item.ticker);
