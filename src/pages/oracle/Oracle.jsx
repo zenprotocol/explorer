@@ -25,7 +25,7 @@ class OraclePage extends Component {
       curPage: 0,
     };
     this.filterState = {
-      date: TextUtils.getISODateFromNow(-1),
+      date: TextUtils.getISODateFromNow(),
       tickers: [],
     };
     this.allTickers = [];
@@ -71,7 +71,7 @@ class OraclePage extends Component {
     // get all tickers & last updated
     Promise.all([
       service.oracle.lastUpdated(),
-      service.oracle.data('', TextUtils.getISODateFromNow(-1)),
+      service.oracle.data('', TextUtils.getISODateFromNow()),
     ])
       .then(results => {
         const lastUpdated = results[0].data;

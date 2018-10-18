@@ -22,6 +22,7 @@ function ContractTemplates({ loading, itemsCount, items, pageSize, curPage, tabl
               Header: 'Description',
               accessor: 'description',
               className: 'description',
+              Cell: data => <p dangerouslySetInnerHTML={{__html: data.value}} />,
             },
             {
               Header: '',

@@ -49,7 +49,7 @@ class Filters extends Component {
   }
 
   resetHandler() {
-    this.props.filterState.date = TextUtils.getISODateFromNow(-1);
+    this.props.filterState.date = TextUtils.getISODateFromNow();
     this.props.filterState.tickers = [];
   }
 
