@@ -7,7 +7,6 @@ import PageTitle from '../../components/PageTitle';
 import Button from '../../components/buttons/Button';
 import Dropdown from '../../components/Dropdown';
 import DatePicker from '../../components/DatePicker';
-import { Object } from 'core-js';
 
 class CreateContractTemplate extends Component {
   constructor(props) {
