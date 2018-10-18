@@ -4,6 +4,7 @@ const httpStatus = require('http-status');
 const contractTemplatesDAL = require('./contractTemplatesDAL');
 const jsonResponse = require('../../../lib/jsonResponse');
 const HttpError = require('../../../lib/HttpError');
+const Service = require('../../../lib/Service');
 
 module.exports = {
   index: async function(req, res) {
@@ -45,7 +46,7 @@ module.exports = {
 
     if (valid) {
       const { template } = await contractTemplatesDAL.findById(templateId);
-      const timestamp = Math.round(new Date(date).getTime() / 1000 + 75600);
+      const timestamp = await Service.oracle.timestamp(date);
       const generated = template
         .replace(/%REPLACE_TICKER%/g, ticker)
         .replace(/%REPLACE_DATE%/g, date)
