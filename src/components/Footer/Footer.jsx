@@ -58,6 +58,9 @@ function FooterLinks() {
             <Link className="nav-link text-nowrap" to="/oracle">Oracle</Link>
           </li>
           <li className="nav-item">
+            <Link className="nav-link text-nowrap" to="/templates/contract">Contract templates</Link>
+          </li>
+          <li className="nav-item">
             <ExternalLink
               className="nav-link text-nowrap"
               url="https://www.zenprotocol.com/deck/zen_protocol_deck_en.pdf"
