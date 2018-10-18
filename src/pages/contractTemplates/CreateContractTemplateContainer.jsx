@@ -13,7 +13,7 @@ class CreateContractTemplateContainer extends Component {
     super(props);
 
     this.data = {
-      loading: false,
+      loading: true, // prevent render empty values before fetch
       template: {},
       tickers: {},
     };

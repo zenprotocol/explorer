@@ -48,8 +48,8 @@ export default {
     return str
       .split(' ')
       .map(word => this.capitalize(word))
-      .join()
-      .replace(/[^a-zA-Z0-9]/g, '');
+      .join('-')
+      .replace(/[^a-zA-Z0-9-]/g, '');
   },
 };
 
