@@ -232,5 +232,13 @@ export default {
         method: 'get',
       });
     },
+    download(data) {
+      return cancelableHttpRequest({
+        url: `${Endpoints.contractTemplates}/download`,
+        method: 'post',
+        data,
+        responseType: 'blob',
+      });
+    },
   },
 };
