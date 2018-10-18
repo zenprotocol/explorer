@@ -1,9 +1,4 @@
-(*
-This contract issues two tokens, for positive and negative outcomes.
-The tokens are redeemable for 1ZP in the event that their corresponding outcome occurs.
-
-This contract will require a z3rlimit of at least 3500000 in order to successfully record hints.
-*)
+(* NAME_START:Fixed Payout Contract - %REPLACE_TICKER% %REPLACE_DATE% - $%REPLACE_STRIKE%:NAME_END *)
 
 open Zen.Base
 open Zen.Cost
@@ -23,9 +18,9 @@ module U64 = FStar.UInt64
 module Wallet = Zen.Wallet
 
 let oracleContractID = "00000000ca055cc0af4d25ea1c8bbbf41444aadd68a168558397516b2f64727d87e72f97"
-let ticker = "GOOG"
-let strike = 1200000UL // USD price multiplied by 1000
-let unixtime = 1539205200UL
+let ticker = "%REPLACE_TICKER%"
+let strike = %REPLACE_STRIKE%000UL // USD price multiplied by 1000
+let unixtime = %REPLACE_TIMESTAMP%UL
 
 // gets a return Address from the message body
 val getReturnAddress: option data -> option lock `cost` 77

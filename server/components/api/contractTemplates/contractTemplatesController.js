@@ -45,15 +45,12 @@ module.exports = {
 
     if (valid) {
       const { template } = await contractTemplatesDAL.findById(templateId);
-      const timestamp = Math.round(new Date(date).getTime() / 1000);
-      const strikeMultiplied = strike * 1000;
-      const comment = `(* NAME_START:${name} - ${ticker} - ${timestamp}UL - ${strikeMultiplied}UL:NAME_END *)`;
-      const generated =
-        comment +
-        template
-          .replace('let ticker = "GOOG"', `let ticker = "${ticker}"`)
-          .replace('let unixtime = 1539205200UL', `let unixtime = ${timestamp}UL`)
-          .replace('let strike = 1200000UL', `let strike = ${strikeMultiplied}UL`);
+      const timestamp = Math.round(new Date(date).getTime() / 1000 + 75600);
+      const generated = template
+        .replace(/%REPLACE_TICKER%/g, ticker)
+        .replace(/%REPLACE_DATE%/g, date)
+        .replace(/%REPLACE_TIMESTAMP%/g, timestamp)
+        .replace(/%REPLACE_STRIKE%/g, strike);
 
       res.type('text/plain');
       res.set({ 'Content-Disposition': 'attachment; filename="template.fst"' });

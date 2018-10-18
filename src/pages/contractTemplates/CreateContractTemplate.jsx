@@ -10,6 +10,7 @@ import PageTitle from '../../components/PageTitle';
 import Button from '../../components/buttons/Button';
 import Dropdown from '../../components/Dropdown';
 import DatePicker from '../../components/DatePicker';
+import NotFound from '../notFound';
 import './CreateContractTemplate.css';
 
 class CreateContractTemplate extends Component {
@@ -75,6 +76,13 @@ class CreateContractTemplate extends Component {
         ];
   }
 
+  get dataFlattened() {
+    return Object.keys(this.data).reduce((all, key) => {
+      all[key] = this.data[key].value;
+      return all;
+    }, {});
+  }
+
   componentDidMount() {
     this.resetForm();
     this.validateOnDataChange();
@@ -128,7 +136,7 @@ class CreateContractTemplate extends Component {
     this.data.oracle.valid = true;
     this.data.ticker.value = '';
     this.data.ticker.valid = true;
-    this.data.date.value = '';
+    this.data.date.value = TextUtils.getISODateFromNow(7);
     this.data.date.valid = true;
     this.data.strike.value = 0;
     this.data.strike.valid = true;
@@ -147,13 +155,10 @@ class CreateContractTemplate extends Component {
 
   download() {
     // flatten the data to key:value pairs
-    const data = Object.keys(this.data).reduce((all, key) => {
-      all[key] = this.data[key].value;
-      return all;
-    }, {});
+    const data = this.dataFlattened;
     data.templateId = this.props.template.id;
     Service.contractTemplates.download(data).then(res => {
-      fileDownload(res, `${TextUtils.convertToFilename(this.data.name.value)}.fst`);
+      fileDownload(res, `${TextUtils.convertToFilename(data.name)}-Contract-${data.ticker}-${data.date}-$${data.strike}.fst`);
     }).catch(() => {});
   }
 
@@ -175,16 +180,20 @@ class CreateContractTemplate extends Component {
 
   render() {
     const { template } = this.props;
+    if(Object.keys(template).length === 0) {
+      return <NotFound />;
+    }
+
     return (
       <Page className="CreateContractTemplate">
         <section>
-          <PageTitle title={template.name} />
+          <PageTitle title={`${template.name} Contract`} />
           <div className="row">
             <div className="col-lg-7">{this.renderForm()}</div>
             <div className="col-lg-5 d-none d-lg-block">
               <div className="CreateContractTemplate-about">
                 <h5>About this contract</h5>
-                <p>{template.description}</p>
+                <p dangerouslySetInnerHTML={{__html: template.description}} />
               </div>
             </div>
           </div>
@@ -285,6 +294,7 @@ decorate(CreateContractTemplate, {
   resetForm: action,
   validate: action,
   tickers: computed,
+  dataFlattened: computed,
 });
 
 export default observer(CreateContractTemplate);
