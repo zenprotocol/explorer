@@ -8,4 +8,7 @@ router.route('/')
 router.route('/:slug')
   .get(wrapAsync(controller.show));
 
+router.route('/download')
+  .post(wrapAsync(controller.download));
+
 module.exports = router;

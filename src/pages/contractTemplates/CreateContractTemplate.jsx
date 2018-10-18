@@ -2,6 +2,9 @@ import React, { Component } from 'react';
 import { observable, action, reaction, decorate, computed } from 'mobx';
 import { observer } from 'mobx-react';
 import PropTypes from 'prop-types';
+import fileDownload from 'js-file-download';
+import Service from '../../lib/Service';
+import TextUtils from '../../lib/TextUtils';
 import Page from '../../components/Page';
 import PageTitle from '../../components/PageTitle';
 import Button from '../../components/buttons/Button';
@@ -77,11 +80,14 @@ class CreateContractTemplate extends Component {
   }
 
   validateOnDataChange() {
-    reaction(() => Object.values(this.data).map(data => data.value), () => {
-      if(!this.valid) {
-        this.validate();
+    reaction(
+      () => Object.values(this.data).map(data => data.value),
+      () => {
+        if (!this.valid) {
+          this.validate();
+        }
       }
-    });
+    );
   }
 
   handleNameChange(event) {
@@ -135,16 +141,24 @@ class CreateContractTemplate extends Component {
       return;
     }
 
-    const generatedTemplate = this.generateTemplate();
-    if (generatedTemplate) {
-      // download
-      console.log(generatedTemplate);
-    }
+    this.download();
+  }
+
+  download() {
+    // flatten the data to key:value pairs
+    const data = Object.keys(this.data).reduce((all, key) => {
+      all[key] = this.data[key].value;
+      return all;
+    }, {});
+    data.templateId = this.props.template.id;
+    Service.contractTemplates.download(data).then(res => {
+      fileDownload(res, `${TextUtils.convertToFilename(this.data.name.value)}.fst`);
+    }).catch(() => {});
   }
 
   validate() {
     const { name, oracle, ticker, date, strike } = this.data;
-    
+
     name.valid = !!name.value;
     oracle.valid = !!oracle.value;
     ticker.valid = !!ticker.value;
@@ -156,28 +170,6 @@ class CreateContractTemplate extends Component {
       Math.floor(strike.value) === strike.value;
 
     this.valid = name.valid && oracle.valid && ticker.valid && date.valid && strike.valid;
-  }
-
-  generateTemplate() {
-    const { template } = this.props.template;
-    if (!template) {
-      return '';
-    }
-
-    // TODO - do this on the server - create a route for that - download the generated file.
-    const timestamp = Math.round(new Date(this.data.date.value).getTime() / 1000);
-    const comment = `(* NAME_START:${this.data.name.value} - ${this.data.ticker.value} - ${
-      this.data.date.value
-    }UL - ${this.data.strike.value}UL:NAME_END *)`;
-    let generated =
-      comment +
-      '\n' +
-      template
-        .replace('let ticker = "GOOG"', `let ticker = "${this.data.ticker.value}"`)
-        .replace('let unixtime = 1539205200UL', `let unixtime = ${timestamp}UL`)
-        .replace('let strike = 1200000UL', `let strike = ${this.data.strike.value * 1000}UL`);
-
-    console.log({ generated });
   }
 
   render() {
