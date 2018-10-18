@@ -19,7 +19,7 @@ module Wallet = Zen.Wallet
 
 let oracleContractID = "00000000ca055cc0af4d25ea1c8bbbf41444aadd68a168558397516b2f64727d87e72f97"
 let ticker = "%REPLACE_TICKER%"
-let strike = %REPLACE_STRIKE%000UL // USD price multiplied by 1000
+let strike = %REPLACE_STRIKE_MULTIPLIED%UL // USD price multiplied by 1000
 let unixtime = %REPLACE_TIMESTAMP%UL
 
 // gets a return Address from the message body

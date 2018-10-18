@@ -34,7 +34,7 @@ module.exports = {
     validation.oracle = !!oracle;
     validation.ticker = !!ticker;
     validation.date = !!date && !isNaN(Date.parse(date));
-    validation.strike = strike && !isNaN(strike) && strike >= 0 && Math.floor(strike) === strike;
+    validation.strike = strike && !isNaN(strike) && Number(strike) >= 0;
 
     const valid =
       templateIdValid &&
@@ -51,7 +51,8 @@ module.exports = {
         .replace(/%REPLACE_TICKER%/g, ticker)
         .replace(/%REPLACE_DATE%/g, date)
         .replace(/%REPLACE_TIMESTAMP%/g, timestamp)
-        .replace(/%REPLACE_STRIKE%/g, strike);
+        .replace(/%REPLACE_STRIKE%/g, strike)
+        .replace(/%REPLACE_STRIKE_MULTIPLIED%/g, String(Number(strike) * 1000));
 
       res.type('text/plain');
       res.set({ 'Content-Disposition': 'attachment; filename="template.fst"' });
