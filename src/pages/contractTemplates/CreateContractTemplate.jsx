@@ -35,7 +35,7 @@ class CreateContractTemplate extends Component {
         valid: true,
       },
       strike: {
-        value: 0,
+        value: '0',
         valid: true,
       },
     };
@@ -117,12 +117,12 @@ class CreateContractTemplate extends Component {
   setStrikeByTicker(ticker) {
     const price = this.props.tickerPrices[ticker];
     if (price) {
-      this.data.strike.value = Math.round(price);
+      this.data.strike.value = String(price);
     }
   }
 
   handleStrikeChange(event) {
-    this.data.strike.value = Number(event.target.value.trim().replace(/[^\d]/, ''));
+    this.data.strike.value = event.target.value.replace(/[^\d.]/, '');
   }
 
   handleResetForm() {
@@ -138,7 +138,7 @@ class CreateContractTemplate extends Component {
     this.data.ticker.valid = true;
     this.data.date.value = TextUtils.getISODateFromNow(7);
     this.data.date.valid = true;
-    this.data.strike.value = 0;
+    this.data.strike.value = '0';
     this.data.strike.valid = true;
     this.valid = true;
   }
@@ -172,8 +172,7 @@ class CreateContractTemplate extends Component {
     strike.valid =
       strike.value &&
       !isNaN(strike.value) &&
-      strike.value >= 0 &&
-      Math.floor(strike.value) === strike.value;
+      Number(strike.value) >= 0;
 
     this.valid = name.valid && oracle.valid && ticker.valid && date.valid && strike.valid;
   }
@@ -258,7 +257,7 @@ class CreateContractTemplate extends Component {
               placeholder="Enter strike"
             />
             <div className="invalid-feedback" {...this.getValidationDisplayProp('strike')}>
-              Please provide a strike.
+              Please provide a valid strike.
             </div>
           </div>
         </div>
