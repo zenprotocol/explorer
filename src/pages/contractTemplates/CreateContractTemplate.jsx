@@ -158,7 +158,7 @@ class CreateContractTemplate extends Component {
     const data = this.dataFlattened;
     data.templateId = this.props.template.id;
     Service.contractTemplates.download(data).then(res => {
-      fileDownload(res, `${TextUtils.convertToFilename(data.name)}-Contract-${data.ticker}-${data.date}-$${data.strike}.fst`);
+      fileDownload(res, `${TextUtils.convertToFilename(data.name)}-${data.ticker}-${data.date}-$${data.strike}.fst`);
     }).catch(() => {});
   }
 
@@ -186,7 +186,7 @@ class CreateContractTemplate extends Component {
     return (
       <Page className="CreateContractTemplate">
         <section>
-          <PageTitle title={`${template.name} Contract`} />
+          <PageTitle title={`${template.name}`} />
           <div className="row">
             <div className="col-lg-7">{this.renderForm()}</div>
             <div className="col-lg-5 d-none d-lg-block">
