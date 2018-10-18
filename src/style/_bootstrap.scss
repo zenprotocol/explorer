@@ -1,7 +1,6 @@
 @import '../../node_modules/bootstrap/scss/mixins';
 // custom vars
-@import 'colors';
-@import 'sizes';
+@import 'variables';
 
 @each $color, $value in $colors {
   @include bg-variant(".bg-#{$color}", $value);
@@ -169,5 +168,19 @@ h1 {
 
   * {
     text-transform: none;
+  }
+}
+
+label {
+  font-size: $font-size-md;
+  font-weight: $font-weight-bold;
+}
+
+form.zen-form {
+  background-color: $table-bg;
+  @include mixin-content-padding();
+
+  &.primary {
+    border-top: 3px solid map-get($theme-colors, "primary");
   }
 }

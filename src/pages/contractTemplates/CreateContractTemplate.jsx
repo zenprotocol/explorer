@@ -10,6 +10,7 @@ import PageTitle from '../../components/PageTitle';
 import Button from '../../components/buttons/Button';
 import Dropdown from '../../components/Dropdown';
 import DatePicker from '../../components/DatePicker';
+import './CreateContractTemplate.css';
 
 class CreateContractTemplate extends Component {
   constructor(props) {
@@ -181,8 +182,10 @@ class CreateContractTemplate extends Component {
           <div className="row">
             <div className="col-lg-7">{this.renderForm()}</div>
             <div className="col-lg-5 d-none d-lg-block">
-              <h3>About this contract</h3>
-              <p>{template.description}</p>
+              <div className="CreateContractTemplate-about">
+                <h5>About this contract</h5>
+                <p>{template.description}</p>
+              </div>
             </div>
           </div>
         </section>
@@ -192,7 +195,7 @@ class CreateContractTemplate extends Component {
 
   renderForm() {
     return (
-      <form onSubmit={this.handleSubmit}>
+      <form className="zen-form primary" onSubmit={this.handleSubmit}>
         <div className="form-group d-none">
           <label>Name</label>
           <input
@@ -252,10 +255,10 @@ class CreateContractTemplate extends Component {
         </div>
 
         <div className="d-flex justify-content-between">
-          <Button type="dark-2" onClick={this.handleResetForm}>
+          <Button size="sm" type="dark-2" onClick={this.handleResetForm}>
             Reset form
           </Button>
-          <Button isSubmit={true}>Download template</Button>
+          <Button size="sm" isSubmit={true}>Download template</Button>
         </div>
       </form>
     );

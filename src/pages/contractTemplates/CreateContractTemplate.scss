@@ -1,0 +1,7 @@
+@import 'style/variables';
+
+.CreateContractTemplate {
+  .CreateContractTemplate-about {
+    @include mixin-content-padding(0, 3, 0 ,3);
+  }
+}
