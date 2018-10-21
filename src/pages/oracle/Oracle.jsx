@@ -4,7 +4,6 @@ import { observer } from 'mobx-react';
 import PropTypes from 'prop-types';
 import config from '../../lib/Config';
 import service from '../../lib/Service';
-import TextUtils from '../../lib/TextUtils';
 import Page from '../../components/Page';
 import PageTitle from '../../components/PageTitle';
 import ExternalLink from '../../components/ExternalLink';
@@ -25,7 +24,7 @@ class OraclePage extends Component {
       curPage: 0,
     };
     this.filterState = {
-      date: TextUtils.getISODateFromNow(),
+      date: '',
       tickers: [],
     };
     this.allTickers = [];
@@ -71,13 +70,14 @@ class OraclePage extends Component {
     // get all tickers & last updated
     Promise.all([
       service.oracle.lastUpdated(),
-      service.oracle.data('', TextUtils.getISODateFromNow()),
+      service.oracle.latestData(),
     ])
       .then(results => {
         const lastUpdated = results[0].data;
         const allTickers = results[1].data.map(item => item.ticker);
         runInAction(() => {
           this.lastUpdated = lastUpdated;
+          this.filterState.date = lastUpdated;
           this.allTickers = allTickers;
         });
       })
@@ -166,7 +166,6 @@ class OraclePage extends Component {
               <Filters
                 filterState={this.filterState}
                 allTickers={this.allTickers}
-                onReset={this.resetFilters}
               />
             }
             date={this.filterState.date}
@@ -187,7 +186,6 @@ decorate(OraclePage, {
   totalItems: computed,
   loadTickersTableData: action,
   setTickersTableData: action,
-  resetFilters: action,
 });
 
 export default observer(OraclePage);

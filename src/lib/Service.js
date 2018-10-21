@@ -218,6 +218,12 @@ export default {
         method: 'get',
       });
     },
+    latestData() {
+      return cancelableHttpRequest({
+        url: `${Endpoints.oracle}/latest`,
+        method: 'get',
+      });
+    },
   },
   contractTemplates: {
     findAll() {

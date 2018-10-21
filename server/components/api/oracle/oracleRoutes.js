@@ -11,4 +11,7 @@ router.route('/proof')
 router.route('/lastUpdated')
   .get(wrapAsync(oracleController.lastUpdated));
 
+router.route('/latest')
+  .get(wrapAsync(oracleController.latestData));
+
 module.exports = router;

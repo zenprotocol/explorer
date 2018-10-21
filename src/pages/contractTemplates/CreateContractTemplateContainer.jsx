@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { observable, decorate, runInAction } from 'mobx';
 import { observer } from 'mobx-react';
 import service from '../../lib/Service';
-import TextUtils from '../../lib/TextUtils';
 import RouterUtils from '../../lib/RouterUtils';
 import CreateContractTemplate from './CreateContractTemplate.jsx';
 import Loading from '../../components/Loading';
@@ -44,7 +43,7 @@ class CreateContractTemplateContainer extends Component {
   }
 
   fetchTickers() {
-    return service.oracle.data('', TextUtils.getISODateFromNow()).then(response => {
+    return service.oracle.latestData().then(response => {
       runInAction(() => {
         // convert the tickers array to a dictionary
         this.data.tickers = response.data.reduce((dictionary, cur) => {

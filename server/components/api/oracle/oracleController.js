@@ -32,10 +32,18 @@ module.exports = {
   lastUpdated: async function(req, res) {
     const data = await service.oracle.data('GOOG');
     if(data && Array.isArray(data) && data.length) {
-      res.status(httpStatus.OK).json(jsonResponse.create(httpStatus.OK, data[0].date));
+      res.status(httpStatus.OK).json(jsonResponse.create(httpStatus.OK, data[data.length - 1].date));
     }
     else {
       throw new HttpError(httpStatus.NOT_FOUND);
     }
+  },
+  latestData: async function(req, res) {
+    const tickerData = await service.oracle.data('GOOG');
+    if(!tickerData) {
+      throw new HttpError(httpStatus.NOT_FOUND);
+    }
+    const data = await service.oracle.data(null, tickerData[tickerData.length - 1].date);
+    res.status(httpStatus.OK).json(jsonResponse.create(httpStatus.OK, data));
   },
 };
