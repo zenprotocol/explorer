@@ -10,17 +10,19 @@ const slack = new Slack();
 slack.setWebhook(Config.get('SLACK_WEBHOOK'));
 
 function sendToSlack({ channel = DEFAULT_CHANNEL, text = '', important = false }) {
-  const pretext = important ? IMPORTANT_USERS + ' ' : '';
-  slack.webhook(
-    {
-      channel,
-      username: 'explorerBot',
-      text: `${pretext}${text}`,
-    },
-    function(err, response) {
-      // console.log({err,response});
-    }
-  );
+  if(Config.get('NODE_ENV') === 'production') {
+    const pretext = important ? IMPORTANT_USERS + ' ' : '';
+    slack.webhook(
+      {
+        channel,
+        username: 'explorerBot',
+        text: `${pretext}${text}`,
+      },
+      function(err, response) {
+        // console.log({err,response});
+      }
+    );
+  }
 }
 
 module.exports = {
