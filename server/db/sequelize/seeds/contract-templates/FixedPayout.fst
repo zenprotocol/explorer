@@ -17,7 +17,7 @@ module TX = Zen.TxSkeleton
 module U64 = FStar.UInt64
 module Wallet = Zen.Wallet
 
-let oracleContractID = "00000000ca055cc0af4d25ea1c8bbbf41444aadd68a168558397516b2f64727d87e72f97"
+let oracleContractID = "%REPLACE_CONTRACT_ID%"
 let ticker = "%REPLACE_TICKER%"
 let strike = %REPLACE_STRIKE_MULTIPLIED%UL // USD price multiplied by 1000
 let unixtime = %REPLACE_TIMESTAMP%UL
