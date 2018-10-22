@@ -163,6 +163,7 @@ class OraclePage extends Component {
               <Filters
                 filterState={this.filterState}
                 allTickers={this.allTickers}
+                defaultDate={this.lastUpdated}
               />
             }
             date={this.filterState.date}

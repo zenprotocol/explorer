@@ -49,7 +49,7 @@ class Filters extends Component {
   }
 
   resetHandler() {
-    this.props.filterState.date = TextUtils.getISODateFromNow();
+    this.props.filterState.date = this.props.defaultDate;
     this.props.filterState.tickers = [];
   }
 
@@ -116,6 +116,11 @@ Filters.propTypes = {
     tickers: PropTypes.array.isRequired,
   }),
   allTickers: PropTypes.array.isRequired,
+  defaultDate: PropTypes.string,
+};
+
+Filters.defaultProps = {
+  defaultDate: TextUtils.getISODateFromNow(),
 };
 
 export default observer(Filters);
