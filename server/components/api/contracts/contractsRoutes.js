@@ -8,4 +8,7 @@ router.route('/')
 router.route('/:address')
   .get(wrapAsync(controller.show));
 
+router.route('/:address/assets')
+  .get(wrapAsync(controller.assets));
+
 module.exports = router;
