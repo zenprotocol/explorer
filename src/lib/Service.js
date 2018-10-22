@@ -212,13 +212,7 @@ export default {
         },
       });
     },
-    lastUpdated() {
-      return cancelableHttpRequest({
-        url: `${Endpoints.oracle}/lastUpdated`,
-        method: 'get',
-      });
-    },
-    latestData() {
+    latest() {
       return cancelableHttpRequest({
         url: `${Endpoints.oracle}/latest`,
         method: 'get',

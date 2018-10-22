@@ -43,10 +43,10 @@ class CreateContractTemplateContainer extends Component {
   }
 
   fetchTickers() {
-    return service.oracle.latestData().then(response => {
+    return service.oracle.latest().then(response => {
       runInAction(() => {
         // convert the tickers array to a dictionary
-        this.data.tickers = response.data.reduce((dictionary, cur) => {
+        this.data.tickers = response.data.data.reduce((dictionary, cur) => {
           dictionary[cur.ticker] = cur.value;
           return dictionary;
         }, {});

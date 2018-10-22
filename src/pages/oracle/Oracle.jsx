@@ -68,13 +68,10 @@ class OraclePage extends Component {
 
   loadInitialData() {
     // get all tickers & last updated
-    Promise.all([
-      service.oracle.lastUpdated(),
-      service.oracle.latestData(),
-    ])
-      .then(results => {
-        const lastUpdated = results[0].data;
-        const allTickers = results[1].data.map(item => item.ticker);
+    service.oracle.latest()
+      .then(response => {
+        const lastUpdated = response.data.date;
+        const allTickers = response.data.data.map(item => item.ticker);
         runInAction(() => {
           this.lastUpdated = lastUpdated;
           this.filterState.date = lastUpdated;
