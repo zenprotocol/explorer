@@ -2,6 +2,7 @@
 
 const dal = require('../../../lib/dal');
 const Op = require('sequelize').Op;
+const inputsDAL = require('../inputs/inputsDAL');
 
 const contractsDAL = dal.createDAL('Contract');
 
@@ -65,13 +66,30 @@ contractsDAL.findAllOutstandingAssets = function(id, { limit = 10, offset = 0 } 
     LIMIT :limit OFFSET :offset
   `;
 
-  return sequelize.query(sql, {
-    replacements: {
-      assetSearch: `${id}%`,
-      limit,
-      offset,
-    },
-    type: sequelize.QueryTypes.SELECT,
+  return Promise.all([
+    inputsDAL.count({
+      col: 'asset',
+      where: {
+        asset: {
+          [Op.like]: `${id}%`,
+        },
+        isMint: true,
+      },
+      distinct: true,
+    }),
+    sequelize.query(sql, {
+      replacements: {
+        assetSearch: `${id}%`,
+        limit,
+        offset,
+      },
+      type: sequelize.QueryTypes.SELECT,
+    }),
+  ]).then(results => {
+    return {
+      count: results[0],
+      items: results[1],
+    };
   });
 };
 

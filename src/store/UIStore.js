@@ -1,6 +1,7 @@
 import { observable, decorate, action, autorun, toJS, runInAction } from 'mobx';
 import blockStore from './BlockStore';
 import addressStore from './AddressStore';
+import contractStore from './ContractStore';
 import localStore from '../lib/localStore';
 import Service from '../lib/Service';
 import config from '../lib/Config';
@@ -27,6 +28,12 @@ class UIStore {
     };
 
     this.addressTxsTable = {
+      address: '',
+      pageSize: config.ui.table.defaultPageSize,
+      curPage: 0,
+    };
+
+    this.contractAssetsTable = {
       address: '',
       pageSize: config.ui.table.defaultPageSize,
       curPage: 0,
@@ -63,6 +70,10 @@ class UIStore {
 
     autorun(() => {
       this.fetchAddressTxsOnChange();
+    });
+
+    autorun(() => {
+      this.fetchContractAssetsOnChange();
     });
   }
 
@@ -106,6 +117,15 @@ class UIStore {
       addressStore.loadAddressTransactions(this.addressTxsTable.address, {
         page: this.addressTxsTable.curPage,
         pageSize: this.addressTxsTable.pageSize,
+      });
+    }
+  }
+
+  fetchContractAssetsOnChange() {
+    if (this.contractAssetsTable.address) {
+      contractStore.loadAssets(this.contractAssetsTable.address, {
+        page: this.contractAssetsTable.curPage,
+        pageSize: this.contractAssetsTable.pageSize,
       });
     }
   }
@@ -166,6 +186,19 @@ class UIStore {
     }
   }
 
+  setContractAssetsTableData({ address, pageSize, curPage } = {}) {
+    if (address && address !== this.contractAssetsTable.address) {
+      this.contractAssetsTable.address = address;
+      this.contractAssetsTable.curPage = 0;
+    }
+    if (pageSize) {
+      this.contractAssetsTable.pageSize = pageSize;
+    }
+    if (curPage !== undefined) {
+      this.contractAssetsTable.curPage = curPage;
+    }
+  }
+
   saveToStorage(store) {
     localStore.set('ui-store', toJS(store));
   }
@@ -195,11 +228,13 @@ decorate(UIStore, {
   addressTxAssetsTable: observable,
   addressTxsTable: observable,
   blockTxTable: observable,
+  contractAssetsTable: observable,
   fetchSyncing: action,
   setBlocksTableData: action,
   setBlockTxTableData: action,
   setAddressTxAssetsTableData: action,
   setAddressTxsTableData: action,
+  setContractAssetsTableData: action,
   loadFromStorage: action,
 });
 

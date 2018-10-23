@@ -4,8 +4,11 @@ import Service from '../lib/Service';
 class ContractStore {
   constructor() {
     this.contract = {};
+    this.assets = [];
+    this.assetsCount = 0;
     this.loading = {
       contract: false,
+      assets: false,
     };
   }
 
@@ -29,12 +32,34 @@ class ContractStore {
         });
       });
   }
+
+  loadAssets(address, params = {}) {
+    this.loading.assets = true;
+
+    return Service.contracts
+      .findAssetsOutstanding(address, params)
+      .then(({data}) => {
+        runInAction(() => {
+          this.assets = data.items;
+          this.assetsCount = data.count;
+        });
+      })
+      .catch(() => {})
+      .then(() => {
+        runInAction(() => {
+          this.loading.assets = false;
+        });
+      });
+  }
 }
 
 decorate(ContractStore, {
   contract: observable,
-  loadContract: action,
+  assets: observable,
+  assetsCount: observable,
   loading: observable,
+  loadContract: action,
+  loadAssets: action,
 });
 
 export default new ContractStore();
