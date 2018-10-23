@@ -9,15 +9,21 @@ const jsonResponse = require('../../../lib/jsonResponse');
 const HttpError = require('../../../lib/HttpError');
 
 const NOT_VALID_REGEX = /[^a-zA-Z\d.]/g;
+const ADDRESS_PREPENDS = ['zen', 'zen1', 'czen', 'czen1', 'tzn', 'tzn1', 'ctzn', 'ctzn1'];
 
 function isSearchStringValid(searchString) {
   return (
     searchString &&
       searchString.length >= 3 &&
       !NOT_VALID_REGEX.test(searchString) &&
-      searchString !== 'zen' &&
-      searchString !== 'zen1' &&
-      (searchString.indexOf('zen1') !== 0 || searchString.length >= 7)
+      !ADDRESS_PREPENDS.includes(searchString) &&
+      ADDRESS_PREPENDS.reduce(
+        (valid, cur) =>
+          valid &&
+          cur.substring(0, 3) !== searchString &&
+          (!searchString.startsWith(cur) || searchString.length >= 7),
+        true
+      )
   );
 }
 
