@@ -112,7 +112,7 @@ class ContractPage extends Component {
             <Route path={`${currentPath}/txns`} component={TransactionsTabReactive} />
             <Route path={`${currentPath}/commands`} component={CommandsTab} />
             <Route path={`${currentPath}/code`} component={CodeTab} />
-            <Route path={`${currentPath}/assets`} component={AssetsTab} />
+            <Route path={`${currentPath}/assets`} component={AssetsTabReactive} />
             <Redirect from={`${currentPath}`} to={`${currentPath}/txns`} />
           </Switch>
         </TabBody>
@@ -171,9 +171,50 @@ function CodeTab() {
   );
 }
 
-function AssetsTab(props) {
-  return <TabPanel>assets</TabPanel>;
-}
+const AssetsTab = observer(props => {
+  return (
+    <TabPanel>
+      <ItemsTable
+        columns={[
+          {
+            Header: 'ASSET',
+            accessor: 'asset',
+            Cell: data => <HashLink hash={data.value} />,
+          },
+          {
+            Header: 'TOKENS OUTSTANDING',
+            accessor: 'outstanding',
+            Cell: data => TextUtils.formatNumber(data.value),
+          },
+          {
+            Header: 'TOTAL ISSUED',
+            accessor: 'issued',
+            Cell: data => TextUtils.formatNumber(data.value),
+          },
+          {
+            Header: 'TOKENS DESTROYED',
+            accessor: 'destroyed',
+            Cell: data => TextUtils.formatNumber(data.value),
+          },
+          {
+            Header: 'UNIQUE KEYHOLDERS',
+            accessor: 'keyholders',
+            Cell: data => TextUtils.formatNumber(data.value),
+          },
+        ]}
+        loading={contractStore.loading.assets}
+        itemsCount={contractStore.assetsCount}
+        items={contractStore.assets}
+        pageSize={uiStore.contractAssetsTable.pageSize}
+        curPage={uiStore.contractAssetsTable.curPage}
+        tableDataSetter={uiStore.setContractAssetsTableData.bind(uiStore)}
+      />
+    </TabPanel>
+  );
+});
+const AssetsTabReactive = observer(
+  WithSetAddressOnUiStore(AssetsTab, 'setContractAssetsTableData')
+);
 
 function WithSetAddressOnUiStore(WrappedComponent, uiStoreFunctionName) {
   return class HOC extends Component {
