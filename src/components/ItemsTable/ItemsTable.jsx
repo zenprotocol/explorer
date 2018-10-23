@@ -81,10 +81,11 @@ class ItemsTable extends Component {
     const { loading, itemsCount, items, pageSize, curPage, SubComponent, topContent } = this.props;
     const numOfPages = Math.ceil(itemsCount / pageSize);
     const showPageSizes = itemsCount > config.ui.table.pageSizes[0];
+    const showTopRow = showPageSizes || topContent;
 
     return (
       <div className={classNames('ItemsTable', { loading })}>
-        <div>
+        {showTopRow && (
           <div className="ItemsTable-top row align-items-end mb-3 mb-lg-5">
             <div className="col-md-8 mb-3 mb-lg-0">{topContent}</div>
             <div className="col-md-4">
@@ -101,7 +102,7 @@ class ItemsTable extends Component {
               )}
             </div>
           </div>
-        </div>
+        )}
         <GenericTable
           loading={loading}
           data={items}
