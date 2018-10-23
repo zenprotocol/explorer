@@ -1,11 +1,15 @@
-@import 'style/colors';
-@import 'style/sizes';
+@import 'style/variables';
 .Tabs {
   .Tab {
+    margin-left: -1px;
     a {
       color: $body-color;
+      border-color: $border-color;
+
+      &.active {
+        border-top-color: map-get($theme-colors, "primary");
+      }
     }
-    margin-left: -1px;
 
     &:first-child {
       margin-left: 0; 
