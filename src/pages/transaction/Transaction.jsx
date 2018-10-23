@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 import blockStore from '../../store/BlockStore';
 import transactionStore from '../../store/TransactionStore';
 import TextUtils from '../../lib/TextUtils';
-import Transaction from '../../components/Transactions/Transaction.jsx';
+import { Transaction } from '../../components/Transactions';
 import Loading from '../../components/Loading';
 import Page from '../../components/Page';
 import './Transaction.css';

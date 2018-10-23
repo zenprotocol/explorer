@@ -16,8 +16,20 @@
     padding-top: $content-padding-x / 4;
     padding-bottom: $content-padding-x / 4;
   }
+  &.btn-wide {
+    padding-left: 4 * $content-padding-x;
+    padding-right: 4 * $content-padding-x;
+  }
   &.btn-dark-2:hover {
     background-color: #202020;
+  }
+  &.btn-link {
+    &:disabled {
+      color: $gray;
+      text-decoration: none;
+      background-color: transparent;
+      opacity: 1;
+    }
   }
   &.btn-blue-hard {
     background-color: #1663cc;

@@ -29,13 +29,8 @@ module.exports = {
     const data = await service.oracle.proof(ticker, date);
     res.status(httpStatus.OK).json(jsonResponse.create(httpStatus.OK, data));
   },
-  lastUpdated: async function(req, res) {
-    const data = await service.oracle.data('GOOG');
-    if(data && Array.isArray(data) && data.length) {
-      res.status(httpStatus.OK).json(jsonResponse.create(httpStatus.OK, data[0].date));
-    }
-    else {
-      throw new HttpError(httpStatus.NOT_FOUND);
-    }
+  latest: async function(req, res) {
+    const data = await service.oracle.data();
+    res.status(httpStatus.OK).json(jsonResponse.create(httpStatus.OK, data));
   },
 };

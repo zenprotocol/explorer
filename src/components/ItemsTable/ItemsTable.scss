@@ -1,6 +1,9 @@
 @import 'style/colors';
 
 .ItemsTable {
+  .ItemsTable-top {
+    min-height: 35px;
+  }
   .negative {
     color: $red;
   }

@@ -10,7 +10,7 @@ const developmentJson = JSON.parse(fs.readFileSync(path.join(__dirname, 'develop
 const testJson = JSON.parse(fs.readFileSync(path.join(__dirname, 'test.json')));
 
 module.exports = {
-  development: merge(developmentJson.db, { operatorsAliases: Sequelize.Op }),
+  development: merge(developmentJson.db, { operatorsAliases: Sequelize.Op, seederStorage: 'sequelize', }),
   test: {
     username: testJson.db.username,
     password: testJson.db.password,
@@ -26,5 +26,6 @@ module.exports = {
     dialectOptions: Config.get('db:dialectOptions'),
     operatorsAliases: Sequelize.Op,
     logging: false,
+    seederStorage: 'sequelize',
   },
 };

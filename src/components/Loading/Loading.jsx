@@ -6,7 +6,10 @@ import './Loading.css';
 export default function Loading({ className, text, ...props }) {
   return (
     <div className={classNames('Loading text-center', className)} {...props}>
-      <span><i className="icon fa fa-spinner fa-spin" />{text}</span>
+      <span>
+        <i className="icon far fa-spinner-third zen-spin" />
+        {text}
+      </span>
     </div>
   );
 }
@@ -16,5 +19,5 @@ Loading.propTypes = {
 };
 
 Loading.defaultProps = {
-  text: ' Loading...'
+  text: ' Loading...',
 };

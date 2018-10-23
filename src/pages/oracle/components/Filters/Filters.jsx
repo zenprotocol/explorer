@@ -3,7 +3,7 @@ import { computed, decorate } from 'mobx';
 import { observer } from 'mobx-react';
 import PropTypes from 'prop-types';
 import debounce from 'lodash.debounce';
-import getYesterday from '../../getYesterday';
+import TextUtils from '../../../../lib/TextUtils';
 import DatePicker from '../../../../components/DatePicker';
 import Dropdown from '../../../../components/Dropdown';
 import Button from '../../../../components/buttons/Button';
@@ -49,7 +49,7 @@ class Filters extends Component {
   }
 
   resetHandler() {
-    this.props.filterState.date = getYesterday();
+    this.props.filterState.date = this.props.defaultDate;
     this.props.filterState.tickers = [];
   }
 
@@ -116,6 +116,11 @@ Filters.propTypes = {
     tickers: PropTypes.array.isRequired,
   }),
   allTickers: PropTypes.array.isRequired,
+  defaultDate: PropTypes.string,
+};
+
+Filters.defaultProps = {
+  defaultDate: TextUtils.getISODateFromNow(),
 };
 
 export default observer(Filters);

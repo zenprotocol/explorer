@@ -80,24 +80,25 @@ class ItemsTable extends Component {
   render() {
     const { loading, itemsCount, items, pageSize, curPage, SubComponent, topContent } = this.props;
     const numOfPages = Math.ceil(itemsCount / pageSize);
+    const showPageSizes = itemsCount > config.ui.table.pageSizes[0];
 
     return (
       <div className={classNames('ItemsTable', { loading })}>
         <div>
-          <div className="row align-items-end mb-3 mb-lg-5">
-            <div className="col-md-8 mb-3 mb-lg-0">
-              {topContent}
-            </div>
+          <div className="ItemsTable-top row align-items-end mb-3 mb-lg-5">
+            <div className="col-md-8 mb-3 mb-lg-0">{topContent}</div>
             <div className="col-md-4">
-              <div className="ItemsTable-pageSizes form-inline float-right">
-                <span className="mr-2 d-none d-md-inline-block">SHOW</span>
-                <Dropdown
-                  options={config.ui.table.pageSizes}
-                  value={String(pageSize)}
-                  onChange={this.setPageSize}
-                />
-                <span className="ml-2 d-none d-md-inline-block">ENTRIES</span>
-              </div>
+              {showPageSizes && (
+                <div className="ItemsTable-pageSizes form-inline float-right">
+                  <span className="mr-2 d-none d-md-inline-block">SHOW</span>
+                  <Dropdown
+                    options={config.ui.table.pageSizes}
+                    value={String(pageSize)}
+                    onChange={this.setPageSize}
+                  />
+                  <span className="ml-2 d-none d-md-inline-block">ENTRIES</span>
+                </div>
+              )}
             </div>
           </div>
         </div>
