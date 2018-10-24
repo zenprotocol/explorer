@@ -46,7 +46,7 @@ class SearchBar extends Component {
   }
 
   canSearchImmediately(search) {
-    return search.indexOf('zen1') === 0 && search.length > 50;
+    return search.indexOf('zen') === 0 && search.length > 50;
   }
 
   render() {

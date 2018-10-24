@@ -1,5 +1,6 @@
 const NOT_VALID_REGEX = /[^a-zA-Z\d.]/g;
-const ADDRESS_PREPENDS = ['zen', 'zen1', 'czen', 'czen1', 'tzn', 'tzn1', 'ctzn', 'ctzn1'];
+const ADDRESS_PREFIXES = ['zen', 'tzn'];
+const MIN_ADDRESS_SEARCH_LENGTH = 7;
 
 export default {
   validateSearchString(searchString) {
@@ -7,14 +8,10 @@ export default {
       searchString &&
       searchString.length >= 3 &&
       !NOT_VALID_REGEX.test(searchString) &&
-      !ADDRESS_PREPENDS.includes(searchString) &&
-      ADDRESS_PREPENDS.reduce(
-        (valid, cur) =>
-          valid &&
-          cur.substring(0, 3) !== searchString &&
-          (!searchString.startsWith(cur) || searchString.length >= 7),
-        true
-      )
+      (!ADDRESS_PREFIXES.includes(searchString.substring(0, 3)) ||
+        searchString.length >= MIN_ADDRESS_SEARCH_LENGTH) &&
+      (!ADDRESS_PREFIXES.map(item => `c${item}`).includes(searchString.substring(0, 4)) ||
+        searchString.length >= MIN_ADDRESS_SEARCH_LENGTH + 1)
     );
   },
   isCompleteAddress(searchString) {
