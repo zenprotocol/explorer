@@ -33,10 +33,10 @@ export default {
   },
   truncateHash(hash) {
     const HASH_TRIM_LENGTH = 6;
-    if (hash.length > HASH_TRIM_LENGTH * 2) {
-      return `${hash.slice(0, HASH_TRIM_LENGTH)}...${hash.slice(hash.length - HASH_TRIM_LENGTH)}`;
+    if (typeof hash !== 'string' || hash.length <= HASH_TRIM_LENGTH * 2) {
+      return hash;
     }
-    return hash;
+    return `${hash.slice(0, HASH_TRIM_LENGTH)}...${hash.slice(hash.length - HASH_TRIM_LENGTH)}`;
   },
   capitalize(text) {
     if (text && typeof text === 'string') {

@@ -10,6 +10,8 @@ import AssetUtils from '../../lib/AssetUtils';
 import Loading from '../../components/Loading';
 import SearchResultsTable from './SearchResultsTable';
 import Page from '../../components/Page';
+import HashLink from '../../components/HashLink';
+import AddressLink from '../../components/AddressLink';
 import './Search.css';
 
 class SearchResultsPage extends Component {
@@ -77,7 +79,6 @@ class SearchResultsPage extends Component {
         redirectTo = `/tx/${outputs[0].Transaction.hash}`;
       }
 
-
       if (redirectTo) {
         return <Redirect to={redirectTo} />;
       }
@@ -90,7 +91,13 @@ class SearchResultsPage extends Component {
             <div className="col-sm">
               <h1 className="d-block text-white mb-1 mb-lg-5">
                 {total ? `${total} Search Results` : 'No search results found for'}
-                <div className={classNames('search-string text-light', {'border-top border-dark mt-3': !total})}>{search}</div>
+                <div
+                  className={classNames('search-string text-light', {
+                    'border-top border-dark mt-3': !total,
+                  })}
+                >
+                  {search}
+                </div>
               </h1>
             </div>
           </div>
@@ -103,9 +110,12 @@ class SearchResultsPage extends Component {
                   {
                     accessor: 'hash',
                     cell: data => (
-                      <Link className="break-word" to={`/tx/${data}`}>
-                        {this.getHighlightedSearchResult(search, data)}
-                      </Link>
+                      <HashLink
+                        truncate={false}
+                        url={`/tx/${data}`}
+                        hash={this.getHighlightedSearchResult(search, data)}
+                        value={data}
+                      />
                     ),
                   },
                   {
@@ -128,11 +138,7 @@ class SearchResultsPage extends Component {
                 columns={[
                   {
                     accessor: 'Transaction.hash',
-                    cell: data => (
-                      <Link className="break-word" to={`/tx/${data}`}>
-                        {data}
-                      </Link>
-                    ),
+                    cell: data => <HashLink url={`/tx/${data}`} hash={data} />,
                   },
                   {
                     accessor: 'Transaction.Block.blockNumber',
@@ -148,7 +154,12 @@ class SearchResultsPage extends Component {
                   },
                   {
                     accessor: 'amount',
-                    cell: (data, row) => this.getHighlightedSearchResult(search, AssetUtils.getAmountString(row.asset, data), true),
+                    cell: (data, row) =>
+                      this.getHighlightedSearchResult(
+                        search,
+                        AssetUtils.getAmountString(row.asset, data),
+                        true
+                      ),
                   },
                 ]}
               />
@@ -167,9 +178,12 @@ class SearchResultsPage extends Component {
                   {
                     accessor: 'hash',
                     cell: data => (
-                      <Link className="break-word" to={`/blocks/${data}`}>
-                        {this.getHighlightedSearchResult(search, data)}
-                      </Link>
+                      <HashLink
+                        truncate={false}
+                        url={`/blocks/${data}`}
+                        hash={this.getHighlightedSearchResult(search, data)}
+                        value={data}
+                      />
                     ),
                   },
                   {
@@ -186,9 +200,12 @@ class SearchResultsPage extends Component {
                   {
                     accessor: 'address',
                     cell: data => (
-                      <Link className="break-word" to={`/address/${data}`}>
-                        {this.getHighlightedSearchResult(search, data)}
-                      </Link>
+                      <AddressLink
+                        address={data}
+                        truncate={false}
+                        hash={this.getHighlightedSearchResult(search, data)}
+                        value={data}
+                      />
                     ),
                   },
                   // { accessor: 'txCount', cell: data => <span>{data} txns</span> },
@@ -204,7 +221,7 @@ class SearchResultsPage extends Component {
 
   getHighlightedSearchResult(searchString, searchResult, formatNumbers = false) {
     let formattedSearchResult = String(searchResult);
-    if(formatNumbers && !isNaN(Number(searchString))) {
+    if (formatNumbers && !isNaN(Number(searchString))) {
       searchString = TextUtils.formatNumber(searchString);
     }
     const partsWithoutSearchString = formattedSearchResult.split(searchString);

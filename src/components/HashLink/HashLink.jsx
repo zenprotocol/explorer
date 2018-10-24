@@ -25,17 +25,33 @@ export default class HashLink extends Component {
     const valueToCopy = value ? value : hash;
 
     const anchorCopy = (
-      <div className="copy" onMouseLeave={() => {this.setCopied(false);}} data-balloon={this.state.copied? 'Copied to clipboard' : 'Copy'} data-balloon-pos="up-left">
-        <button onClick={() => {this.copyToClipboard(valueToCopy);}} className="button btn-link" title="Copy hash to clipboard">
+      <div
+        className="copy"
+        onMouseLeave={() => {
+          this.setCopied(false);
+        }}
+        data-balloon={this.state.copied ? 'Copied to clipboard' : 'Copy'}
+        data-balloon-pos="up-left"
+      >
+        <button
+          onClick={() => {
+            this.copyToClipboard(valueToCopy);
+          }}
+          className="button btn-link"
+          title="Copy hash to clipboard"
+        >
           <i className="far fa-copy" />
         </button>
       </div>
     );
 
-    const showCopy = copy && hash !== truncatedHash;
+    const showCopy = copy;
 
     return (
-      <div className={classNames('HashLink break-word', {copyable: showCopy})} title={showCopy ? valueToCopy : ''}>
+      <div
+        className={classNames('HashLink break-word', { copyable: showCopy })}
+        title={showCopy ? valueToCopy : ''}
+      >
         {anchorHash}
         {showCopy ? anchorCopy : null}
       </div>
@@ -49,7 +65,7 @@ export default class HashLink extends Component {
   }
 
   setCopied(copied) {
-    this.setState({copied});
+    this.setState({ copied });
   }
 }
 
@@ -59,7 +75,7 @@ function truncateHash(hash) {
 
 HashLink.propTypes = {
   url: PropTypes.string,
-  hash: PropTypes.string.isRequired,
+  hash: PropTypes.any.isRequired,
   value: PropTypes.string,
   copy: PropTypes.bool,
   truncate: PropTypes.bool,
