@@ -22,14 +22,16 @@ class ContractStore {
         runInAction(() => {
           this.contract = contract;
         });
-        return contract;
       })
       .catch(() => {
-        // avoid using finally
+        runInAction(() => {
+          this.contract = {};
+        });
       }).then(() => {
         runInAction(() => {
           this.loading.contract = false;
         });
+        return this.contract;
       });
   }
 
@@ -44,7 +46,12 @@ class ContractStore {
           this.assetsCount = data.count;
         });
       })
-      .catch(() => {})
+      .catch(() => {
+        runInAction(() => {
+          this.assets = [];
+          this.assetsCount = 0;
+        });
+      })
       .then(() => {
         runInAction(() => {
           this.loading.assets = false;
