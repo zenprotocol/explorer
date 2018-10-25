@@ -13,5 +13,8 @@ module.exports = (sequelize, DataTypes) => {
     },
     {}
   );
+  Contract.associate = function(models) {
+    Contract.hasMany(models.Command);
+  };
   return Contract;
 };
