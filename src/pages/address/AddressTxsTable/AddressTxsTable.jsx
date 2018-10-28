@@ -9,7 +9,7 @@ import addressStore from '../../../store/AddressStore';
 import HashLink from '../../../components/HashLink';
 import ItemsTable from '../../../components/ItemsTable';
 import PageTitle from '../../../components/PageTitle';
-import TransactionAssetLoader from '../../../components/Transactions/Asset/TransactionAssetLoader.jsx';
+import { TransactionAssetLoader } from '../../../components/Transactions';
 
 class AddressTxsTable extends Component {
   getTableColumns() {

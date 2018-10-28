@@ -1,8 +1,5 @@
 'use strict';
 
-// pre processing for react ssr
-require('./babel');
-
 const express = require('express');
 const morgan = require('morgan');
 const logger = require('./lib/logger');

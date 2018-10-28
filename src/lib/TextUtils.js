@@ -7,10 +7,10 @@ export default {
     return this.getDateString(new Date(Number(timestamp)));
   },
   getDateString(date) {
-    if(!date || typeof date !== 'object') {
+    if (!date || typeof date !== 'object') {
       return '';
     }
-    
+
     const day = addPrecedingZero(date.getDate());
     const month = months[date.getMonth()];
     const year = date.getFullYear();
@@ -18,6 +18,9 @@ export default {
     const minutes = addPrecedingZero(date.getMinutes());
 
     return `${day} ${month} ${year} ${hours}:${minutes}`;
+  },
+  getISODateFromNow(daysToAdd = 0) {
+    return new Date(Date.now() + daysToAdd * 86400000).toISOString().split('T')[0];
   },
   formatNumber(number, delimiter) {
     if (!number) return '0';
@@ -40,6 +43,13 @@ export default {
       return text.substring(0, 1).toUpperCase() + text.substring(1);
     }
     return '';
+  },
+  convertToFilename(str) {
+    return str
+      .split(' ')
+      .map(word => this.capitalize(word))
+      .join('-')
+      .replace(/[^a-zA-Z0-9-]/g, '');
   },
 };
 

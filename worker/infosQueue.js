@@ -2,6 +2,7 @@
 
 const path = require('path');
 const Queue = require('bull');
+const TaskTimeLimiter = require('./lib/TaskTimeLimiter');
 const Config = require('../server/config/Config');
 const logger = require('./lib/logger');
 const slackLogger = require('../server/lib/slackLogger');
@@ -10,6 +11,9 @@ const updateGeneralInfosQueue = new Queue(
   Config.get('queues:updateGeneralInfos:name'),
   Config.any(['REDISCLOUD_URL', 'redis'])
 );
+
+const taskTimeLimiter = new TaskTimeLimiter(Config.get('queues:slackTimeLimit') * 1000);
+
 // process ---
 updateGeneralInfosQueue.process(path.join(__dirname, 'jobs/infos/updateGeneralInfos.handler.js'));
 
@@ -28,7 +32,9 @@ updateGeneralInfosQueue.on('completed', function(job, result) {
 
 updateGeneralInfosQueue.on('failed', function(job, error) {
   logger.info(`An UpdateGeneralInfosQueue job has failed. ID=${job.id}, error=${error}`);
-  slackLogger.error(`An UpdateGeneralInfos job has failed, error=${error}`);
+  taskTimeLimiter.executeTask(() => {
+    slackLogger.error(`An UpdateGeneralInfos job has failed, error=${error}`);
+  });
 });
 
 updateGeneralInfosQueue.on('cleaned', function(jobs, type) {

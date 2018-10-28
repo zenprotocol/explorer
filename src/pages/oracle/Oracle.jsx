@@ -2,16 +2,15 @@ import React, { Component } from 'react';
 import { observable, decorate, computed, runInAction, action, autorun } from 'mobx';
 import { observer } from 'mobx-react';
 import PropTypes from 'prop-types';
-import localStore from '../../lib/localStore';
 import config from '../../lib/Config';
 import service from '../../lib/Service';
-import getYesterday from './getYesterday';
 import Page from '../../components/Page';
 import PageTitle from '../../components/PageTitle';
 import ExternalLink from '../../components/ExternalLink';
 import HashLink from '../../components/HashLink';
 import TickersTable from './components/TickersTable';
 import Filters from './components/Filters';
+import LocalStoreContainer from '../../components/containers/LocalStoreContainer';
 import './Oracle.css';
 
 class OraclePage extends Component {
@@ -25,7 +24,7 @@ class OraclePage extends Component {
       curPage: 0,
     };
     this.filterState = {
-      date: getYesterday(),
+      date: '',
       tickers: [],
     };
     this.allTickers = [];
@@ -56,12 +55,6 @@ class OraclePage extends Component {
   }
 
   componentDidMount() {
-    this.loadFromStorage();
-
-    autorun(() => {
-      this.saveToStorage(this.tableState);
-    });
-
     autorun(() => {
       this.loadTickersTableOnDateChange();
     });
@@ -73,25 +66,15 @@ class OraclePage extends Component {
     this.loadInitialData();
   }
 
-  saveToStorage(data) {
-    localStore.set('oracle-data', data);
-  }
-
-  loadFromStorage() {
-    const data = localStore.get('oracle-data');
-    if (data) {
-      this.tableState.pageSize = data.pageSize;
-    }
-  }
-
   loadInitialData() {
     // get all tickers & last updated
-    Promise.all([service.oracle.lastUpdated(), service.oracle.data('', getYesterday())])
-      .then(results => {
-        const lastUpdated = results[0].data;
-        const allTickers = results[1].data.map(item => item.ticker);
+    service.oracle.latest()
+      .then(response => {
+        const lastUpdated = response.data.date;
+        const allTickers = response.data.data.map(item => item.ticker);
         runInAction(() => {
           this.lastUpdated = lastUpdated;
+          this.filterState.date = lastUpdated;
           this.allTickers = allTickers;
         });
       })
@@ -168,6 +151,7 @@ class OraclePage extends Component {
         </section>
 
         <section>
+          <LocalStoreContainer name="oracle" data={this.tableState} keys={['pageSize']} />
           <TickersTable
             items={this.curPageTableItems}
             count={this.totalItems}
@@ -179,7 +163,7 @@ class OraclePage extends Component {
               <Filters
                 filterState={this.filterState}
                 allTickers={this.allTickers}
-                onReset={this.resetFilters}
+                defaultDate={this.lastUpdated}
               />
             }
             date={this.filterState.date}
@@ -200,7 +184,6 @@ decorate(OraclePage, {
   totalItems: computed,
   loadTickersTableData: action,
   setTickersTableData: action,
-  resetFilters: action,
 });
 
 export default observer(OraclePage);

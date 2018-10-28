@@ -119,5 +119,14 @@ module.exports = {
         },
       }).then(response => response.data);
     },
+    timestamp(date) {
+      return sendHttpRequest({
+        url: `${Endpoints.oracle}/timestamp`,
+        method: 'get',
+        params: {
+          date,
+        },
+      }).then(response => response.data);
+    },
   },
 };

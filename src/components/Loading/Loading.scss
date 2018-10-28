@@ -1,7 +1,9 @@
+@import 'style/variables';
+
 .Loading {
   font-size: 1.25rem;
   .icon {
-    color: #84D1ED;
+    color: $blue-soft;
   }
   .text {
     display: inline-block;

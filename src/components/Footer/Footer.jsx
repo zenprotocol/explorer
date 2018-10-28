@@ -35,7 +35,7 @@ const SyncNotification = observer(function() {
     <div className="SyncNotification">
       {uiStore.syncing ? (
         <span className="syncing">
-          <i className="icon fa fa-spinner fa-spin" /> Syncing...
+          <i className="icon far fa-spinner-third zen-spin" /> Syncing...
         </span>
       ) : (
         <span className="synced">
@@ -57,6 +57,9 @@ function FooterLinks() {
           <li className="nav-item">
             <Link className="nav-link text-nowrap" to="/oracle">Oracle</Link>
           </li>
+          {/* <li className="nav-item">
+            <Link className="nav-link text-nowrap" to="/templates/contract">Contract templates</Link>
+          </li> */}
           <li className="nav-item">
             <ExternalLink
               className="nav-link text-nowrap"

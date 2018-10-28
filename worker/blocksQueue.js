@@ -2,6 +2,7 @@
 
 const path = require('path');
 const Queue = require('bull');
+const TaskTimeLimiter = require('./lib/TaskTimeLimiter');
 const Config = require('../server/config/Config');
 const logger = require('./lib/logger');
 const slackLogger = require('../server/lib/slackLogger');
@@ -11,6 +12,8 @@ const addBlocksQueue = new Queue(
   Config.get('queues:addBlocks:name'),
   Config.any(['REDISCLOUD_URL', 'redis'])
 );
+
+const taskTimeLimiter = new TaskTimeLimiter(Config.get('queues:slackTimeLimit') * 1000);
 
 // process ---
 addBlocksQueue.process(path.join(__dirname, 'jobs/blocks/addNewBlocks.handler.js'));
@@ -35,7 +38,9 @@ addBlocksQueue.on('completed', function(job, result) {
 
 addBlocksQueue.on('failed', function(job, error) {
   logger.error(`An AddBlocksQueue job has failed. ID=${job.id}, error=${error}`);
-  slackLogger.error(`An AddBlocks job has failed, error=${error}`);
+  taskTimeLimiter.executeTask(() => {
+    slackLogger.error(`An AddBlocks job has failed, error=${error}`);
+  });
 });
 
 addBlocksQueue.on('cleaned', function(jobs, type) {

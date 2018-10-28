@@ -2,6 +2,7 @@
   "queues": {
     "cleanInterval": 60,
     "cleanAfter": 10,
+    "slackTimeLimit": 1800000,
     "addBlocks": {
       "name": "Add Blocks From Node",
       "limitBlocks": 10

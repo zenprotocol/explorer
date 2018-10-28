@@ -1,5 +1,4 @@
-@import 'style/colors';
-@import 'style/sizes';
+@import 'style/variables';
 
 .Dropdown {
   $dd-padding-y: 8px;
@@ -81,5 +80,11 @@
     padding: $dd-padding-y $text-icon-padding;
   }
 
-  
+  .Dropdown-placeholder {
+    color: $input-placeholder-color;
+
+    &.is-selected {
+      color: $white;
+    }
+  }
 }

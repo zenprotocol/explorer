@@ -13,6 +13,7 @@ const Endpoints = {
   stats: '/api/stats',
   contracts: '/api/contracts',
   oracle: '/api/oracle',
+  contractTemplates: '/api/contractTemplates',
 };
 
 let globalMute = false;
@@ -211,10 +212,32 @@ export default {
         },
       });
     },
-    lastUpdated() {
+    latest() {
       return cancelableHttpRequest({
-        url: `${Endpoints.oracle}/lastUpdated`,
+        url: `${Endpoints.oracle}/latest`,
         method: 'get',
+      });
+    },
+  },
+  contractTemplates: {
+    findAll() {
+      return cancelableHttpRequest({
+        url: `${Endpoints.contractTemplates}`,
+        method: 'get',
+      });
+    },
+    findBySlug(slug) {
+      return cancelableHttpRequest({
+        url: `${Endpoints.contractTemplates}/${slug}`,
+        method: 'get',
+      });
+    },
+    download(data) {
+      return cancelableHttpRequest({
+        url: `${Endpoints.contractTemplates}/download`,
+        method: 'post',
+        data,
+        responseType: 'blob',
       });
     },
   },

@@ -2,6 +2,7 @@
 
 const path = require('path');
 const Queue = require('bull');
+const TaskTimeLimiter = require('./lib/TaskTimeLimiter');
 const Config = require('../server/config/Config');
 const logger = require('./lib/logger');
 const slackLogger = require('../server/lib/slackLogger');
@@ -10,6 +11,9 @@ const contractsQueue = new Queue(
   Config.get('queues:contracts:name'),
   Config.any(['REDISCLOUD_URL', 'redis'])
 );
+
+const taskTimeLimiter = new TaskTimeLimiter(Config.get('queues:slackTimeLimit') * 1000);
+
 // process ---
 contractsQueue.process(path.join(__dirname, 'jobs/contracts/contracts.handler.js'));
 
@@ -28,7 +32,9 @@ contractsQueue.on('completed', function(job, result) {
 
 contractsQueue.on('failed', function(job, error) {
   logger.info(`An contractsQueue job has failed. ID=${job.id}, error=${error}`);
-  slackLogger.error(`A Contracts job has failed, error=${error}`);
+  taskTimeLimiter.executeTask(() => {
+    slackLogger.error(`A Contracts job has failed, error=${error}`);
+  });
 });
 
 contractsQueue.on('cleaned', function(jobs, type) {

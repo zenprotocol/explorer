@@ -384,7 +384,7 @@ class BlocksAdder {
         transaction: dbTransaction,
       });
       const block = await blocksDAL.findById(transaction.BlockId, { transaction: dbTransaction });
-      const errorMsg = `Did not find an output for an outpoint input! txHash=${
+      const errorMsg = `Did not find an output for an outpoint input! outpointIndex=${input.outpointIndex} outpointTXHash=${input.outpointTXHash}, current txHash=${
         transaction.hash
       } inputIndex=${input.index} blockNumber=${block.blockNumber}`;
       throw new Error(errorMsg);

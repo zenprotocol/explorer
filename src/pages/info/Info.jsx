@@ -5,7 +5,7 @@ import Service from '../../lib/Service';
 import TextUtils from '../../lib/TextUtils.js';
 import Loading from '../../components/Loading';
 import Button from '../../components/buttons/Button';
-import ChartLoader from '../../components/charts/ChartLoader.jsx';
+import { ChartLoader } from '../../components/charts';
 import Page from '../../components/Page';
 import './Info.css';
 
@@ -148,15 +148,27 @@ class InfoPage extends Component {
           <h1 className="d-block text-white mb-5">CHARTS</h1>
           <div className="row">
             <div className="col-lg-6">
-              <ChartLoader chartName="transactionsPerDay" showTitle={true} titleLinkTo="/charts/transactions" />
+              <ChartLoader
+                chartName="transactionsPerDay"
+                showTitle={true}
+                titleLinkTo="/charts/transactions"
+              />
             </div>
             <div className="col-lg-6">
-              <ChartLoader chartName="blockDifficulty" showTitle={true} titleLinkTo="/charts/difficulty" />
+              <ChartLoader
+                chartName="blockDifficulty"
+                showTitle={true}
+                titleLinkTo="/charts/difficulty"
+              />
             </div>
           </div>
           <div className="row">
             <div className="col-lg-6">
-              <ChartLoader chartName="networkHashRate" showTitle={true} titleLinkTo="/charts/hashrate" />
+              <ChartLoader
+                chartName="networkHashRate"
+                showTitle={true}
+                titleLinkTo="/charts/hashrate"
+              />
             </div>
             <div className="col-lg-6">
               <ChartLoader chartName="zpRichList" showTitle={true} titleLinkTo="/charts/richlist" />
@@ -174,7 +186,7 @@ class InfoPage extends Component {
   }
 }
 
-const addNetToChainName = (chain) => {
+const addNetToChainName = chain => {
   if (!chain || typeof chain !== 'string') {
     return chain;
   }
