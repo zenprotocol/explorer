@@ -7,22 +7,7 @@ const addressesDAL = require('../addresses/addressesDAL');
 const outputsDAL = require('../outputs/outputsDAL');
 const jsonResponse = require('../../../lib/jsonResponse');
 const HttpError = require('../../../lib/HttpError');
-
-const NOT_VALID_REGEX = /[^a-zA-Z\d.]/g;
-const ADDRESS_PREFIXES = ['zen', 'tzn'];
-const MIN_ADDRESS_SEARCH_LENGTH = 7;
-
-function isSearchStringValid(searchString) {
-  return (
-    searchString &&
-      searchString.length >= 3 &&
-      !NOT_VALID_REGEX.test(searchString) &&
-      (!ADDRESS_PREFIXES.includes(searchString.substring(0, 3)) ||
-        searchString.length >= MIN_ADDRESS_SEARCH_LENGTH) &&
-      (!ADDRESS_PREFIXES.map(item => `c${item}`).includes(searchString.substring(0, 4)) ||
-        searchString.length >= MIN_ADDRESS_SEARCH_LENGTH + 1)
-  );
-}
+const { isSearchStringValid } = require('../../../../src/common/validations/search');
 
 function getSearchPromises(search, limit) {
   const searchFor = {
@@ -33,7 +18,8 @@ function getSearchPromises(search, limit) {
   };
   let shouldMultiplyAmount = true;
 
-  if(!isNaN(Number(search))) { // Numeric search
+  if (!isNaN(Number(search))) {
+    // Numeric search
     searchFor.amount = true;
 
     // if (Number(search) > 1000000) {
@@ -58,7 +44,12 @@ function getSearchPromises(search, limit) {
     searchFor.blocks ? blocksDAL.search(search, limit) : Promise.resolve([0, []]),
     searchFor.transactions ? transactionsDAL.search(search, limit) : Promise.resolve([0, []]),
     searchFor.addresses ? addressesDAL.search(search, limit) : Promise.resolve([0, []]),
-    searchFor.amount ? outputsDAL.searchByAmount(shouldMultiplyAmount ? Math.floor(Number(search) * 100000000) : search, limit) : Promise.resolve([0, []]),
+    searchFor.amount
+      ? outputsDAL.searchByAmount(
+          shouldMultiplyAmount ? Math.floor(Number(search) * 100000000) : search,
+          limit
+        )
+      : Promise.resolve([0, []]),
   ];
 }
 
@@ -82,7 +73,7 @@ module.exports = {
           blocks: blocks[1],
           transactions: transactions[1],
           addresses: addresses[1],
-          outputs: outputs[1]
+          outputs: outputs[1],
         },
       })
     );
