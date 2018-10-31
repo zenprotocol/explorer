@@ -43,4 +43,21 @@ module.exports = {
       throw new HttpError(httpStatus.NOT_FOUND);
     }
   },
+  commands: async function(req, res) {
+    if(!req.params.address) {
+      throw new HttpError(httpStatus.BAD_REQUEST);
+    }
+
+    const contract = await contractsDAL.findByAddress(req.params.address);
+    if (contract) {
+      const page = Number(req.query.page) || 0;
+      const pageSize = Number(req.query.pageSize) || 10;
+
+      const query = createQueryObject({ page, pageSize, sorted: [] });
+      const commands = await contractsDAL.findCommandsWithRelations(contract.id, query);
+      res.status(httpStatus.OK).json(jsonResponse.create(httpStatus.OK, commands));
+    } else {
+      throw new HttpError(httpStatus.NOT_FOUND);
+    }
+  },
 };

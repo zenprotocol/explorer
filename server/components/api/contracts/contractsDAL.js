@@ -123,12 +123,41 @@ contractsDAL.countCommands = function(id) {
 };
 
 contractsDAL.getCommands = function(id, options) {
-  return commandsDAL.findAll(
-    deepMerge({
+  console.log(deepMerge(
+    {
       where: {
         ContractId: id,
       },
-    }, options)
+    },
+    options
+  ));
+  return commandsDAL.findAll(
+    deepMerge(
+      {
+        where: {
+          ContractId: id,
+        },
+      },
+      options
+    )
+  );
+};
+
+contractsDAL.findCommandsWithRelations = function(id, options) {
+  return this.getCommands(
+    id,
+    deepMerge(
+      {
+        include: [
+          {
+            model: this.db.Transaction,
+            include: ['Block'],
+          },
+        ],
+        order: [[{model: this.db.Transaction}, {model: this.db.Block}, 'timestamp', 'DESC']],
+      },
+      options
+    )
   );
 };
 
