@@ -1,8 +1,10 @@
 'use strict';
 
 const dal = require('../../../lib/dal');
+const deepMerge = require('deepmerge');
 const Op = require('sequelize').Op;
 const inputsDAL = require('../inputs/inputsDAL');
+const commandsDAL = require('../commands/commandsDAL');
 
 const contractsDAL = dal.createDAL('Contract');
 
@@ -109,6 +111,24 @@ contractsDAL.setExpired = function(ids = []) {
         },
       },
     }
+  );
+};
+
+contractsDAL.countCommands = function(id) {
+  return commandsDAL.count({
+    where: {
+      ContractId: id,
+    },
+  });
+};
+
+contractsDAL.getCommands = function(id, options) {
+  return commandsDAL.findAll(
+    deepMerge({
+      where: {
+        ContractId: id,
+      },
+    }, options)
   );
 };
 

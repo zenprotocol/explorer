@@ -52,7 +52,7 @@ Promise.all([
   // schedule ---
   contractsQueue.add(
     {},
-    { repeat: { cron: '* * * * *' } } // once a day at 1:00
+    { repeat: { cron: '* * * * *' } }
   );
   // now
   contractsQueue.add({});

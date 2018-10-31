@@ -8,20 +8,7 @@ const infosDAL = require('../../../server/components/api/infos/infosDAL');
 const contractsDAL = require('../../../server/components/api/contracts/contractsDAL');
 const logger = require('../../lib/logger');
 const BlockchainParser = require('../../../server/lib/BlockchainParser');
-
-/**
- * Get a key from the job data object
- *
- * @param {Object} job
- * @param {String} key
- * @returns the key or null
- */
-function getJobData(job, key) {
-  if (job && job.data && job.data[key]) {
-    return job.data[key];
-  }
-  return null;
-}
+const getJobData = require('../../lib/getJobData');
 
 class BlocksAdder {
   constructor(networkHelper) {

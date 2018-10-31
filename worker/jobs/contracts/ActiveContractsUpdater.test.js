@@ -28,7 +28,7 @@ test.onFinish(() => {
   contractsDAL.db.sequelize.close();
 });
 
-test('ContractsAdder.doJob()', async function(t) {
+test('ActiveContractsUpdater.doJob()', async function(t) {
   await givenNoContractsInDb(t);
   await givenAllContractsInDbWithNull(t);
   await givenContractInDbButNotInACS(t);
@@ -37,17 +37,17 @@ test('ContractsAdder.doJob()', async function(t) {
 
 async function givenNoContractsInDb(t) {
   await truncate();
-  const contractsAdder = getMockedActiveContractsUpdater();
+  const activeContractsUpdater = getMockedActiveContractsUpdater();
 
-  t.equal(await contractsAdder.doJob(), 0, 'Given no contracts in db: Should not update contracts');
+  t.equal(await activeContractsUpdater.doJob(), 0, 'Given no contracts in db: Should not update contracts');
 }
 
 async function givenAllContractsInDbWithNull(t) {
   await truncate();
-  const contractsAdder = getMockedActiveContractsUpdater();
+  const activeContractsUpdater = getMockedActiveContractsUpdater();
   await addAllMocksToDb();
   t.equal(
-    await contractsAdder.doJob(),
+    await activeContractsUpdater.doJob(),
     activeContractsMock.length,
     'Given contracts in db with null expire: Should update all contracts'
   );
@@ -55,7 +55,7 @@ async function givenAllContractsInDbWithNull(t) {
 
 async function givenContractInDbButNotInACS(t) {
   await truncate();
-  const contractsAdder = getMockedActiveContractsUpdater();
+  const activeContractsUpdater = getMockedActiveContractsUpdater();
   await contractsDAL.create({
     id: '1234',
     address: '5678',
@@ -63,7 +63,7 @@ async function givenContractInDbButNotInACS(t) {
     code: 'nothing to test here',
   });
 
-  await contractsAdder.doJob();
+  await activeContractsUpdater.doJob();
   const contract = await contractsDAL.findById('1234');
   t.equal(
     contract.expiryBlock,
@@ -74,10 +74,10 @@ async function givenContractInDbButNotInACS(t) {
 
 async function extendContracts(t) {
   await truncate();
-  const contractsAdder = getMockedActiveContractsUpdater();
+  const activeContractsUpdater = getMockedActiveContractsUpdater();
   await addAllMocksToDb(100);
   t.equal(
-    await contractsAdder.doJob(),
+    await activeContractsUpdater.doJob(),
     activeContractsMock.length,
     'Given all contracts with smaller expire: should extend all contracts'
   );
