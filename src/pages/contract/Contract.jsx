@@ -141,6 +141,10 @@ const TransactionsTab = observer(props => {
             accessor: 'Block.blockNumber',
             Cell: data => <Link to={`/blocks/${data.value}`}>{data.value}</Link>,
           },
+          {
+            Header: 'First Command',
+            accessor: 'firstCommand',
+          },
         ]}
         loading={addressStore.loading.addressTransactions}
         itemsCount={addressStore.addressTransactionsCount}

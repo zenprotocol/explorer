@@ -127,7 +127,7 @@ transactionsDAL.findAllByAddress = async function(address, options = { limit: 10
   const blocksSelectFields = getFieldsForSelectQuery(transactionsDAL.db.Block, 'Block', false);
   const order = options.ascending? 'ASC' : 'DESC';
   const sql = `
-  SELECT ${transactionsSelectFields}, ${blocksSelectFields}
+  SELECT ${transactionsSelectFields}, ${blocksSelectFields}, COALESCE("Commands"."command", '') AS "firstCommand"
     FROM
       (SELECT "TransactionId" 
         FROM "Outputs" 
@@ -140,6 +140,8 @@ transactionsDAL.findAllByAddress = async function(address, options = { limit: 10
         GROUP BY "Inputs"."TransactionId" ) AS "Inputs"
       ON "Outputs"."TransactionId" = "Inputs"."TransactionId"
       INNER JOIN "Transactions" AS "Transaction" ON "Outputs"."TransactionId" = "Transaction"."id" OR "Inputs"."TransactionId" = "Transaction"."id"
+      LEFT JOIN (SELECT * FROM "Commands" INNER JOIN "Contracts" ON "Commands"."ContractId" = "Contracts"."id" AND "Contracts"."address" = 'czen1qqqqqqq8jfkej4gvgr9txgmfuewmy0hm3g4w7zr8e3d34sy8gsuysdfttvvc93s77' ORDER BY "Commands"."indexInTransaction"
+      ) AS "Commands" ON "Transaction"."id" = "Commands"."TransactionId"
       INNER JOIN "Blocks" AS "Block" ON "Transaction"."BlockId" = "Block"."id"
       ORDER BY "Block"."timestamp" ${order}
       LIMIT :limit OFFSET :offset`;
