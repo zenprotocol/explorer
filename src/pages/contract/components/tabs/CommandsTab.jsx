@@ -40,6 +40,7 @@ const CommandsTab = observer(() => {
         pageSize={uiStore.contractCommandsTable.pageSize}
         curPage={uiStore.contractCommandsTable.curPage}
         tableDataSetter={uiStore.setContractCommandsTableData.bind(uiStore)}
+        topContent={<div>Total of {contractStore.commandsCount} events found for all commands</div>}
       />
     </TabPanel>
   );
