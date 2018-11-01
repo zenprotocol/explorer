@@ -84,6 +84,12 @@ const createDAL = modelName => {
     toJSON(model) {
       return model.toJSON();
     },
+    getItemsAndCountResult([count, items] = []) {
+      return {
+        count,
+        items,
+      };
+    },
   };
 };
 

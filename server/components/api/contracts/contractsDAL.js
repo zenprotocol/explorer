@@ -123,14 +123,6 @@ contractsDAL.countCommands = function(id) {
 };
 
 contractsDAL.getCommands = function(id, options) {
-  console.log(deepMerge(
-    {
-      where: {
-        ContractId: id,
-      },
-    },
-    options
-  ));
   return commandsDAL.findAll(
     deepMerge(
       {
@@ -144,21 +136,36 @@ contractsDAL.getCommands = function(id, options) {
 };
 
 contractsDAL.findCommandsWithRelations = function(id, options) {
-  return this.getCommands(
-    id,
-    deepMerge(
-      {
-        include: [
-          {
-            model: this.db.Transaction,
-            include: ['Block'],
-          },
-        ],
-        order: [[{model: this.db.Transaction}, {model: this.db.Block}, 'timestamp', 'DESC']],
+  return Promise.all([
+    commandsDAL.count({
+      where: {
+        ContractId: id,
       },
-      options
-    )
-  );
+    }),
+    commandsDAL.findAll(
+      deepMerge(
+        {
+          where: {
+            ContractId: id,
+          },
+          include: [
+            {
+              model: this.db.Transaction,
+              required: true,
+              include: [
+                {
+                  model: this.db.Block,
+                  required: true,
+                },
+              ],
+            },
+          ],
+          order: [[{ model: this.db.Transaction }, { model: this.db.Block }, 'timestamp', 'DESC']],
+        },
+        options
+      )
+    ),
+  ]).then(results => this.getItemsAndCountResult(results));
 };
 
 module.exports = contractsDAL;
