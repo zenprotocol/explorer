@@ -5,7 +5,6 @@ import contractStore from './ContractStore';
 import localStore from '../lib/localStore';
 import Service from '../lib/Service';
 import config from '../lib/Config';
-import { Object } from 'core-js';
 
 class UIStore {
   constructor() {
