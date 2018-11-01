@@ -14,6 +14,8 @@ export default class HashLink extends Component {
       copied: false,
     };
 
+    this.copyDiv = React.createRef();
+
     this.copyToClipboard = this.copyToClipboard.bind(this);
     this.setCopied = this.setCopied.bind(this);
   }
@@ -23,15 +25,16 @@ export default class HashLink extends Component {
     const truncatedHash = truncate ? truncateHash(hash) : hash;
     const anchorHash = url ? <Link to={url}>{truncatedHash}</Link> : truncatedHash;
     const valueToCopy = value ? value : hash;
-
+    
     const anchorCopy = (
       <div
+        ref={this.copyDiv}
         className="copy"
         onMouseLeave={() => {
           this.setCopied(false);
         }}
         data-balloon={this.state.copied ? 'Copied to clipboard' : 'Copy'}
-        data-balloon-pos="up-left"
+        data-balloon-pos={this.getTooltipPosition()}
       >
         <button
           onClick={() => {
@@ -56,6 +59,15 @@ export default class HashLink extends Component {
         {showCopy ? anchorCopy : null}
       </div>
     );
+  }
+
+  getTooltipPosition() {
+    if(this.copyDiv.current) {
+      if(Math.abs(window.innerWidth - this.copyDiv.current.getBoundingClientRect().left) < 150) {
+        return 'up-right';
+      }
+    }
+    return 'up-left';
   }
 
   copyToClipboard(str) {
