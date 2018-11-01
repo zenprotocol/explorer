@@ -23,7 +23,7 @@ class CommandsAdder {
       logger.info(`Active contracts updated - ${numOfRowsAffected} number of rows affected`);
       return numOfRowsAffected;
     } catch (error) {
-      logger.error(`An Error has occurred when processing contracts: ${error.message}`);
+      logger.error(`An Error has occurred when processing commands: ${error.message}`);
       throw error;
     }
   }
@@ -50,8 +50,8 @@ class CommandsAdder {
       this.getLastCommandTxInfoFromDb(contractId),
     ]);
     let commandsTakenCount = 0;
-    let { lastIxHash, lastTxIndex } = lastCommandInfo;
-
+    const { lastIxHash, lastTxIndex } = lastCommandInfo;
+    
     const commandsToInsert = [];
     let hasMoreCommands = true;
     while (hasMoreCommands) {
