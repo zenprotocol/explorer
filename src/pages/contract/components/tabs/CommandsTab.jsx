@@ -18,6 +18,7 @@ const CommandsTab = observer(() => {
           {
             Header: 'Command',
             accessor: 'command',
+            className: 'text-uppercase',
           },
           {
             Header: 'Timestamp',

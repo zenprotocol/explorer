@@ -35,6 +35,7 @@ const TransactionsTab = observer(() => {
           {
             Header: 'First Command',
             accessor: 'firstCommand',
+            className: 'text-uppercase',
           },
         ]}
         loading={addressStore.loading.addressTransactions}
