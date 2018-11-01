@@ -3,6 +3,7 @@ import { observer } from 'mobx-react';
 import { Link } from 'react-router-dom';
 import addressStore from '../../../../store/AddressStore';
 import uiStore from '../../../../store/UIStore';
+import config from '../../../../lib/Config';
 import WithSetAddressOnUiStore from '../WithSetAddressOnUiStore';
 import TextUtils from '../../../../lib/TextUtils';
 import { TabPanel } from '../../../../components/tabs';
@@ -17,11 +18,13 @@ const TransactionsTab = observer(() => {
           {
             Header: 'TX HASH',
             accessor: 'hash',
+            minWidth: config.ui.table.minCellWidth,
             Cell: data => <HashLink url={`/tx/${data.value}`} hash={data.value} />,
           },
           {
             Header: 'Timestamp',
             accessor: 'Block.timestamp',
+            minWidth: config.ui.table.minCellWidth,
             Cell: data => TextUtils.getDateStringFromTimestamp(data.value),
           },
           {

@@ -3,6 +3,7 @@ import { observer } from 'mobx-react';
 import { Link } from 'react-router-dom';
 import contractStore from '../../../../store/ContractStore';
 import uiStore from '../../../../store/UIStore';
+import config from '../../../../lib/Config';
 import TextUtils from '../../../../lib/TextUtils';
 import WithSetAddressOnUiStore from '../WithSetAddressOnUiStore';
 import { TabPanel } from '../../../../components/tabs';
@@ -21,11 +22,13 @@ const CommandsTab = observer(() => {
           {
             Header: 'Timestamp',
             accessor: 'Transaction.Block.timestamp',
+            minWidth: config.ui.table.minCellWidth,
             Cell: data => TextUtils.getDateStringFromTimestamp(data.value),
           },
           {
             Header: 'TX Hash',
             accessor: 'Transaction.hash',
+            minWidth: config.ui.table.minCellWidth,
             Cell: data => <HashLink url={`/tx/${data.value}`} hash={data.value} />,
           },
           {
