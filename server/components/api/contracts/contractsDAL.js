@@ -87,12 +87,7 @@ contractsDAL.findAllOutstandingAssets = function(id, { limit = 10, offset = 0 } 
       },
       type: sequelize.QueryTypes.SELECT,
     }),
-  ]).then(results => {
-    return {
-      count: results[0],
-      items: results[1],
-    };
-  });
+  ]).then(this.getItemsAndCountResult);
 };
 
 contractsDAL.setExpired = function(ids = []) {
@@ -137,17 +132,11 @@ contractsDAL.getCommands = function(id, options) {
 
 contractsDAL.findCommandsWithRelations = function(id, options) {
   return Promise.all([
-    commandsDAL.count({
-      where: {
-        ContractId: id,
-      },
-    }),
-    commandsDAL.findAll(
+    this.countCommands(id),
+    this.getCommands(
+      id,
       deepMerge(
         {
-          where: {
-            ContractId: id,
-          },
           include: [
             {
               model: this.db.Transaction,
@@ -165,7 +154,7 @@ contractsDAL.findCommandsWithRelations = function(id, options) {
         options
       )
     ),
-  ]).then(results => this.getItemsAndCountResult(results));
+  ]).then(this.getItemsAndCountResult);
 };
 
 module.exports = contractsDAL;
