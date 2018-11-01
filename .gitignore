@@ -32,3 +32,6 @@ coverage
 # generated
 src/**/*.css
 /build
+
+# personal files
+/TODO
