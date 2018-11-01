@@ -5,6 +5,7 @@ import contractStore from './ContractStore';
 import localStore from '../lib/localStore';
 import Service from '../lib/Service';
 import config from '../lib/Config';
+import { Object } from 'core-js';
 
 class UIStore {
   constructor() {
@@ -34,6 +35,12 @@ class UIStore {
     };
 
     this.contractAssetsTable = {
+      address: '',
+      pageSize: config.ui.table.defaultPageSize,
+      curPage: 0,
+    };
+
+    this.contractCommandsTable = {
       address: '',
       pageSize: config.ui.table.defaultPageSize,
       curPage: 0,
@@ -74,6 +81,10 @@ class UIStore {
 
     autorun(() => {
       this.fetchContractAssetsOnChange();
+    });
+
+    autorun(() => {
+      this.fetchContractCommandsOnChange();
     });
   }
 
@@ -126,6 +137,15 @@ class UIStore {
       contractStore.loadAssets(this.contractAssetsTable.address, {
         page: this.contractAssetsTable.curPage,
         pageSize: this.contractAssetsTable.pageSize,
+      });
+    }
+  }
+
+  fetchContractCommandsOnChange() {
+    if (this.contractCommandsTable.address) {
+      contractStore.loadCommands(this.contractCommandsTable.address, {
+        page: this.contractCommandsTable.curPage,
+        pageSize: this.contractCommandsTable.pageSize,
       });
     }
   }
@@ -199,6 +219,19 @@ class UIStore {
     }
   }
 
+  setContractCommandsTableData({ address, pageSize, curPage } = {}) {
+    if (address && address !== this.contractCommandsTable.address) {
+      this.contractCommandsTable.address = address;
+      this.contractCommandsTable.curPage = 0;
+    }
+    if (pageSize) {
+      this.contractCommandsTable.pageSize = pageSize;
+    }
+    if (curPage !== undefined) {
+      this.contractCommandsTable.curPage = curPage;
+    }
+  }
+
   saveToStorage(store) {
     localStore.set('ui-store', toJS(store));
   }
@@ -206,18 +239,11 @@ class UIStore {
   loadFromStorage() {
     const data = localStore.get('ui-store');
     if(data) {
-      if (data.blocksTable) {
-        this.blocksTable.pageSize = data.blocksTable.pageSize;
-      }
-      if (data.addressTxAssetsTable) {
-        this.addressTxAssetsTable.pageSize = data.addressTxAssetsTable.pageSize;
-      }
-      if (data.addressTxsTable) {
-        this.addressTxsTable.pageSize = data.addressTxsTable.pageSize;
-      }
-      if (data.blockTxTable) {
-        this.blockTxTable.pageSize = data.blockTxTable.pageSize;
-      }
+      Object.keys(data).forEach(key => {
+        if(data[key].pageSize) {
+          this[key].pageSize = data[key].pageSize;
+        }
+      });
     }
   }
 }
@@ -229,12 +255,14 @@ decorate(UIStore, {
   addressTxsTable: observable,
   blockTxTable: observable,
   contractAssetsTable: observable,
+  contractCommandsTable: observable,
   fetchSyncing: action,
   setBlocksTableData: action,
   setBlockTxTableData: action,
   setAddressTxAssetsTableData: action,
   setAddressTxsTableData: action,
   setContractAssetsTableData: action,
+  setContractCommandsTableData: action,
   loadFromStorage: action,
 });
 

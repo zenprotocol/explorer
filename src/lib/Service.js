@@ -193,6 +193,13 @@ export default {
         params,
       });
     },
+    findCommands(address, params) {
+      return cancelableHttpRequest({
+        url: `${Endpoints.contracts}/${address}/commands`,
+        method: 'get',
+        params,
+      });
+    },
   },
   oracle: {
     data(ticker, date) {

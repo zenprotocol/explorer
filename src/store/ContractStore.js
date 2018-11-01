@@ -5,10 +5,12 @@ class ContractStore {
   constructor() {
     this.contract = {};
     this.assets = [];
-    this.assetsCount = 0;
+    this.commands = [];
+    this.commandsCount = 0;
     this.loading = {
       contract: false,
       assets: false,
+      commands: false,
     };
   }
 
@@ -58,15 +60,42 @@ class ContractStore {
         });
       });
   }
+
+  loadCommands(address, params = {}) {
+    this.loading.commands = true;
+
+    return Service.contracts
+      .findCommands(address, params)
+      .then(({data}) => {
+        runInAction(() => {
+          this.commands = data.items;
+          this.commandsCount = data.count;
+        });
+      })
+      .catch(() => {
+        runInAction(() => {
+          this.commands = [];
+          this.commandsCount = 0;
+        });
+      })
+      .then(() => {
+        runInAction(() => {
+          this.loading.commands = false;
+        });
+      });
+  }
 }
 
 decorate(ContractStore, {
   contract: observable,
   assets: observable,
   assetsCount: observable,
+  commands: observable,
+  commandsCount: observable,
   loading: observable,
   loadContract: action,
   loadAssets: action,
+  loadCommands: action,
 });
 
 export default new ContractStore();

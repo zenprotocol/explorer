@@ -110,7 +110,7 @@ class ContractPage extends Component {
         <TabBody>
           <Switch>
             <Route path={`${currentPath}/txns`} component={TransactionsTabReactive} />
-            <Route path={`${currentPath}/commands`} component={CommandsTab} />
+            <Route path={`${currentPath}/commands`} component={CommandsTabReactive} />
             <Route path={`${currentPath}/code`} component={CodeTab} />
             <Route path={`${currentPath}/assets`} component={AssetsTabReactive} />
             <Redirect from={`${currentPath}`} to={`${currentPath}/txns`} />
@@ -160,9 +160,44 @@ const TransactionsTabReactive = observer(
   WithSetAddressOnUiStore(TransactionsTab, 'setAddressTxsTableData')
 );
 
-function CommandsTab(props) {
-  return <TabPanel>commands</TabPanel>;
-}
+const CommandsTab = observer(() => {
+  return (
+    <TabPanel>
+      <ItemsTable
+        columns={[
+          {
+            Header: 'Command',
+            accessor: 'command',
+          },
+          {
+            Header: 'Timestamp',
+            accessor: 'Transaction.Block.timestamp',
+            Cell: data => TextUtils.getDateStringFromTimestamp(data.value),
+          },
+          {
+            Header: 'TX Hash',
+            accessor: 'Transaction.hash',
+            Cell: data => <HashLink url={`/tx/${data.value}`} hash={data.value} />,
+          },
+          {
+            Header: 'Block',
+            accessor: 'Transaction.Block.blockNumber',
+            Cell: data => <Link to={`/blocks/${data.value}`}>{data.value}</Link>,
+          },
+        ]}
+        loading={contractStore.loading.commands}
+        itemsCount={contractStore.commandsCount}
+        items={contractStore.commands}
+        pageSize={uiStore.contractCommandsTable.pageSize}
+        curPage={uiStore.contractCommandsTable.curPage}
+        tableDataSetter={uiStore.setContractCommandsTableData.bind(uiStore)}
+      />
+    </TabPanel>
+  );
+});
+const CommandsTabReactive = observer(
+  WithSetAddressOnUiStore(CommandsTab, 'setContractCommandsTableData')
+);
 
 function CodeTab() {
   if (contractStore.loading.contract) {
