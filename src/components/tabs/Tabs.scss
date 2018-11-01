@@ -5,6 +5,7 @@
     a {
       color: $body-color;
       border-color: $border-color;
+      @include mixin-content-padding-x();
 
       &.active {
         border-top-color: map-get($theme-colors, "primary");
