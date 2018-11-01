@@ -22,8 +22,18 @@
     border-top: none;
     min-height: 50px;
 
+    .table-zen {
+      width: calc(100% + #{$content-padding-x * 2} + 2px);
+      margin-left: -1 * $content-padding-x - 1;
+    }
+
     @media (min-width: map-get($grid-breakpoints, "lg")) {
       padding: $content-padding-x-lg;
+
+      .table-zen {
+        width: calc(100% + #{$content-padding-x-lg * 2} + 2px);
+        margin-left: -1 * $content-padding-x-lg - 1;
+      }
     }
   }
 }
