@@ -130,6 +130,25 @@ contractsDAL.getCommands = function(id, options) {
   );
 };
 
+contractsDAL.getLastCommandOfTx = function(id, txHash) {
+  return commandsDAL.findAll({
+    where: {
+      ContractId: id,
+    },
+    include: [{
+      model: this.db.Transaction,
+      required: true,
+      where: {
+        hash: txHash,
+      }
+    }],
+    order: [['createdAt', 'DESC']],
+    limit: 1,
+  }).then(results => {
+    return results.length ? results[0] : null;
+  });
+};
+
 contractsDAL.findCommandsWithRelations = function(id, options) {
   return Promise.all([
     this.countCommands(id),

@@ -45,13 +45,9 @@ class CommandsAdder {
     if (numOfCommandsToTake === 0) {
       throw new Error('numOfCommandsToTake must be bigger than zero!');
     }
-    const [commandCountInDb, lastCommandInfo] = await Promise.all([
-      contractsDAL.countCommands(contractId),
-      this.getLastCommandTxInfoFromDb(contractId),
-    ]);
+    const commandCountInDb = await contractsDAL.countCommands(contractId);
     let commandsTakenCount = 0;
-    const { lastIxHash, lastTxIndex } = lastCommandInfo;
-    
+
     const commandsToInsert = [];
     let hasMoreCommands = true;
     while (hasMoreCommands) {
@@ -60,12 +56,7 @@ class CommandsAdder {
         skip: commandCountInDb + commandsTakenCount,
         take: numOfCommandsToTake,
       });
-      const mappedCommands = await this.mapNodeCommandsWithRelations(
-        contractId,
-        commands,
-        lastIxHash,
-        lastTxIndex
-      );
+      const mappedCommands = await this.mapNodeCommandsWithRelations(contractId, commands);
       commandsToInsert.push.apply(commandsToInsert, mappedCommands);
       commandsTakenCount += commands.length;
       if (commands.length < numOfCommandsToTake) {
@@ -76,34 +67,25 @@ class CommandsAdder {
     return commandsToInsert;
   }
 
-  async getLastCommandTxInfoFromDb(contractId) {
-    const lastCommand = await contractsDAL.getCommands(contractId, {
-      order: [['createdAt', 'DESC']],
-      limit: 1,
-      include: ['Transaction'],
-    });
-    return {
-      txHash: ((lastCommand || {}).Transaction || {}).hash || '',
-      indexInTransaction: (lastCommand || {}).indexInTransaction || 0,
-    };
-  }
+  async mapNodeCommandsWithRelations(contractId, commands) {
+    let currentIxHash = '';
+    let currentTxIndex = 0;
+    const promises = [];
+    for (let i = 0; i < commands.length; i++) {
+      const command = commands[i];
+      if (currentIxHash !== command.txHash) {
+        const lastTxIndex = await this.getLastCommandTxIndexFromDb(contractId, command.txHash);
+        currentIxHash = command.txHash;
+        currentTxIndex = lastTxIndex + 1;
+      }
+      let localIxHash = currentIxHash;
+      let localTxIndex = currentTxIndex;
+      currentTxIndex += 1;
 
-  mapNodeCommandsWithRelations(contractId, commands, lastIxHash, lastTxIndex) {
-    let currentIxHash = lastIxHash;
-    let currentTxIndex = lastIxHash ? lastTxIndex + 1 : 0;
-    return Promise.all(
-      commands.map(command => {
-        if (currentIxHash !== command.txHash) {
-          currentIxHash = command.txHash;
-          currentTxIndex = 0;
-        }
-        let localIxHash = currentIxHash;
-        let localTxIndex = currentTxIndex;
-        currentTxIndex += 1;
-
-        return (async () => {
+      promises.push(
+        (async () => {
           const tx = await transactionsDAL.findOne({ where: { hash: localIxHash } });
-          if(!tx) {
+          if (!tx) {
             logger.error(`Error - could not find a referenced tx with hash=${localIxHash}`);
           }
           return {
@@ -113,13 +95,17 @@ class CommandsAdder {
             indexInTransaction: localTxIndex,
             ContractId: contractId,
           };
-        })();
-      })
-    );
+        })()
+      );
+    }
+
+    return Promise.all(promises);
   }
 
-  async insertCommands(commands) {
-    // bulk insert into the db
+  async getLastCommandTxIndexFromDb(contractId, txHash) {
+    const lastCommand = await contractsDAL.getLastCommandOfTx(contractId, txHash);
+    const indexInTransaction = (lastCommand || {}).indexInTransaction;
+    return indexInTransaction !== undefined ? indexInTransaction : -1;
   }
 }
 

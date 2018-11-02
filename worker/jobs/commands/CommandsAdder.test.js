@@ -18,7 +18,7 @@ function before() {
   contractsDAL = td.replace('../../../server/components/api/contracts/contractsDAL', {
     findAllActive: td.func('findAllActive'),
     countCommands: td.func('countCommands'),
-    getCommands: td.func('getCommands'),
+    getLastCommandOfTx: td.func('getLastCommandOfTx'),
   });
   transactionsDAL = td.replace('../../../server/components/api/transactions/transactionsDAL', {
     findOne: td.func('findOne'),
@@ -65,7 +65,7 @@ function after() {
 }
 
 test('CommandsAdder.doJob()', async function(t) {
-  function stub({activeContracts = [], commandsCount = 0, transactionId = 1} = {}) {
+  function stub({ activeContracts = [], commandsCount = 0, transactionId = 1 } = {}) {
     td.when(contractsDAL.findAllActive()).thenResolve(activeContracts);
     td.when(contractsDAL.countCommands(td.matchers.isA(String))).thenResolve(commandsCount);
     td.when(transactionsDAL.findOne(td.matchers.isA(Object))).thenResolve({ id: transactionId });
@@ -80,7 +80,7 @@ test('CommandsAdder.doJob()', async function(t) {
 
   await (async function doJob_shouldCallBulkCreate() {
     before();
-    stub({activeContracts: [{ id: CONTRACT_ID_1 }]});
+    stub({ activeContracts: [{ id: CONTRACT_ID_1 }] });
     await commandsAdder.doJob({ data: { take: CUSTOM_TAKE } });
     try {
       td.verify(commandsDAL.bulkCreate(td.matchers.isA(Array)));
@@ -94,7 +94,7 @@ test('CommandsAdder.doJob()', async function(t) {
 
   await (async function doJob_oneContract_nothingInDd() {
     before();
-    stub({activeContracts: [{ id: CONTRACT_ID_1 }]});
+    stub({ activeContracts: [{ id: CONTRACT_ID_1 }] });
     const result = await commandsAdder.doJob({ data: { take: CUSTOM_TAKE } });
     t.equal(
       result,
@@ -106,10 +106,9 @@ test('CommandsAdder.doJob()', async function(t) {
 
   await (async function doJob_severalContracts_nothingInDd() {
     before();
-    stub({activeContracts: [
-      { id: CONTRACT_ID_1 },
-      { id: CONTRACT_ID_2 },
-    ]});
+    stub({
+      activeContracts: [{ id: CONTRACT_ID_1 }, { id: CONTRACT_ID_2 }],
+    });
     const result = await commandsAdder.doJob({ data: { take: CUSTOM_TAKE } });
     t.equal(
       result,
@@ -122,7 +121,7 @@ test('CommandsAdder.doJob()', async function(t) {
   await (async function doJob_oneContract_someInDd() {
     before();
     const commandsAlreadyInDb = 10;
-    stub({activeContracts: [{ id: CONTRACT_ID_1 }], commandsCount: commandsAlreadyInDb});
+    stub({ activeContracts: [{ id: CONTRACT_ID_1 }], commandsCount: commandsAlreadyInDb });
     const result = await commandsAdder.doJob({ data: { take: CUSTOM_TAKE } });
     t.equal(
       result,
@@ -135,9 +134,18 @@ test('CommandsAdder.doJob()', async function(t) {
 });
 
 test('CommandsAdder.getCommandsToInsert()', async function(t) {
-  function stub({transactionId = 1, commandsCount = 0} = {}) {
+  function stub({
+    contract = CONTRACT_ID_1,
+    transactionId = 1,
+    commandsCount = 0,
+    command = null,
+    txHashParam = td.matchers.isA(String),
+  } = {}) {
     td.when(transactionsDAL.findOne(td.matchers.isA(Object))).thenResolve({ id: transactionId });
     td.when(contractsDAL.countCommands(td.matchers.isA(String))).thenResolve(commandsCount);
+    td.when(contractsDAL.getLastCommandOfTx(contract, txHashParam)).thenResolve(
+      command
+    );
   }
   await (async function getCommandsToInsert_shouldReturnAnArray() {
     before();
@@ -173,7 +181,7 @@ test('CommandsAdder.getCommandsToInsert()', async function(t) {
 
   await (async function getCommandsToInsert_10CommandsInDB() {
     before();
-    stub({commandsCount: 10});
+    stub({ commandsCount: 10 });
     const result = await commandsAdder.getCommandsToInsert(CONTRACT_ID_1, CUSTOM_TAKE);
     t.equals(
       result.length,
@@ -182,58 +190,127 @@ test('CommandsAdder.getCommandsToInsert()', async function(t) {
     );
     after();
   })();
+
+  await (async function getCommandsToInsert_RepeatingTxWithGaps() {
+    // test when the db has a command with tx A then some other tx, then again tx A
+    before();
+    const lastTxHash = 'fb1b75ca931277ccc003aad4005a9369098f9c744b5e22ea8c6c85c8c80fe2da';
+    const lastTxId = 12345;
+    
+    stub({
+      commandsCount: 10,
+      txHashParam: td.matchers.not(lastTxHash)
+    });
+    // specific match for our tx
+    td.when(transactionsDAL.findOne({ where: { hash: lastTxHash } })).thenResolve({ id: lastTxId });
+    td.when(contractsDAL.getLastCommandOfTx(CONTRACT_ID_1, lastTxHash)).thenResolve({
+      indexInTransaction: 0,
+    });
+
+    const result = await commandsAdder.getCommandsToInsert(CONTRACT_ID_1, CUSTOM_TAKE);
+    t.equals(
+      result[result.length - 1].TransactionId,
+      lastTxId,
+      'Given 10 commands in db from which last has same txHash: last item should have the same tx id'
+    );
+    t.equals(
+      result[result.length - 1].indexInTransaction,
+      1,
+      'Given 10 commands in db from which last has same txHash: last item should have the next indexInTransaction'
+    );
+    after();
+  })();
+
+  await (async function getCommandsToInsert_RepeatingTxWithGaps() {
+    before();
+    const lastTxHash = 'fb1b75ca931277ccc003aad4005a9369098f9c744b5e22ea8c6c85c8c80fe2da';
+    
+    stub({
+      commandsCount: 10,
+      txHashParam: td.matchers.not(lastTxHash)
+    });
+    // specific match for our tx
+    td.when(contractsDAL.getLastCommandOfTx(CONTRACT_ID_1, lastTxHash)).thenResolve({
+      indexInTransaction: 7,
+    });
+
+    const result = await commandsAdder.getCommandsToInsert(CONTRACT_ID_1, CUSTOM_TAKE);
+    t.equals(
+      result[result.length - 1].indexInTransaction,
+      8,
+      'Given 10 commands in db from which last has same txHash and index not zero: last item should have the next indexInTransaction'
+    );
+    after();
+  })();
 });
 
-test('CommandsAdder.getLastCommandTxInfoFromDb()', async function(t) {
-  function stub({contract = CONTRACT_ID_1,command = null} = {}) {
-    td.when(contractsDAL.getCommands(contract, td.matchers.isA(Object))).thenResolve(command);
+test('CommandsAdder.getLastCommandTxIndexFromDb()', async function(t) {
+  function stub({ contract = CONTRACT_ID_1, command = null } = {}) {
+    td.when(contractsDAL.getLastCommandOfTx(contract, td.matchers.isA(String))).thenResolve(
+      command
+    );
   }
   await (async function getLastCommandTxInfoFromDb_nothingInDb() {
     before();
     stub();
-    const { txHash } = await commandsAdder.getLastCommandTxInfoFromDb(
-      CONTRACT_ID_1
+    const indexInTransaction = await commandsAdder.getLastCommandTxIndexFromDb(
+      CONTRACT_ID_1,
+      '12345'
     );
-    t.equals(txHash, '', 'Given no commands in db: should get an empty txHash');
+    t.equals(indexInTransaction, -1, 'Given no commands in db: should get index -1');
     after();
   })();
-  
+
   await (async function getLastCommandTxInfoFromDb_commandsInDb() {
     before();
-    stub({command: {
-      indexInTransaction: 15,
-      Transaction: { hash: '123' },
-    }});
-    const { txHash, indexInTransaction } = await commandsAdder.getLastCommandTxInfoFromDb(
-      CONTRACT_ID_1
+    const txHashTest = '12345';
+    stub({
+      command: {
+        indexInTransaction: 15,
+      },
+    });
+    const indexInTransaction = await commandsAdder.getLastCommandTxIndexFromDb(
+      CONTRACT_ID_1,
+      txHashTest
     );
-    t.equals(txHash, '123', 'Given a command in db: should get txHash');
     t.equals(indexInTransaction, 15, 'Given a command in db: should get indexInTransaction');
     after();
   })();
 });
 
-
 test('CommandsAdder.mapNodeCommandsWithRelations()', async function(t) {
+  function stub({ contract = CONTRACT_ID_1, command = null, transactionId = 1 } = {}) {
+    td.when(contractsDAL.getLastCommandOfTx(contract, td.matchers.isA(String))).thenResolve(
+      command
+    );
+    td.when(transactionsDAL.findOne(td.matchers.isA(Object))).thenResolve({ id: transactionId });
+  }
   await (async function mapNodeCommandsWithRelations_shouldReturnAnArray() {
     before();
+    stub();
     const result = await commandsAdder.mapNodeCommandsWithRelations(CONTRACT_ID_1, [], '', 0);
     t.assert(Array.isArray(result), 'Should return an array');
     after();
   })();
-  
+
   await (async function mapNodeCommandsWithRelations_emptyArray() {
     before();
+    stub();
     const result = await commandsAdder.mapNodeCommandsWithRelations(CONTRACT_ID_1, [], '', 0);
     t.equals(result.length, 0, 'Given  an empty commands array: should return an empty array');
     after();
   })();
-  
+
   await (async function mapNodeCommandsWithRelations_commandsArray() {
     before();
+    stub();
     const contractId = CONTRACT_ID_1;
-    td.when(transactionsDAL.findOne(td.matchers.isA(Object))).thenResolve({ id: 1 });
-    const result = await commandsAdder.mapNodeCommandsWithRelations(contractId, commandsData, '', 0);
+    const result = await commandsAdder.mapNodeCommandsWithRelations(
+      contractId,
+      commandsData,
+      '',
+      0
+    );
     t.equals(
       result.length,
       commandsData.length,
@@ -251,9 +328,11 @@ test('CommandsAdder.mapNodeCommandsWithRelations()', async function(t) {
     );
     after();
   })();
-  
-  await (async function mapNodeCommandsWithRelations_txIndex() {
+
+  await (async function mapNodeCommandsWithRelations_txIndexInRow() {
     before();
+    stub();
+    const lastTxHash = '2afdae904fd21e11036ffd02a195645f3d98915fa395cfc5d577a407b4f4bb1e';
     const data = [
       {
         command: 'buy',
@@ -273,42 +352,46 @@ test('CommandsAdder.mapNodeCommandsWithRelations()', async function(t) {
       {
         command: 'buy',
         messageBody: '',
-        txHash: '2afdae904fd21e11036ffd02a195645f3d98915fa395cfc5d577a407b4f4bb1e',
+        txHash: lastTxHash,
       },
       {
         command: 'buy',
         messageBody: '',
-        txHash: '2afdae904fd21e11036ffd02a195645f3d98915fa395cfc5d577a407b4f4bb1e',
+        txHash: lastTxHash,
       },
     ];
     const contractId = CONTRACT_ID_1;
-    td.when(transactionsDAL.findOne(td.matchers.isA(Object))).thenResolve({ id: 1 }); // doesn't matter
-    const result = await commandsAdder.mapNodeCommandsWithRelations(contractId, data, '', 0);
+    const result = await commandsAdder.mapNodeCommandsWithRelations(contractId, data);
     t.deepEqual(
       result.map(item => item.indexInTransaction),
       [0, 1, 2, 0, 1],
-      'Given different tx hashes: should contain the right indexes in txs'
-    );
-  
-    // continue next batch with same tx
-    const result1 = await commandsAdder.mapNodeCommandsWithRelations(
-      contractId,
-      [
-        {
-          command: 'buy',
-          messageBody: '',
-          txHash: '2afdae904fd21e11036ffd02a195645f3d98915fa395cfc5d577a407b4f4bb1e',
-        },
-      ],
-      '2afdae904fd21e11036ffd02a195645f3d98915fa395cfc5d577a407b4f4bb1e',
-      1
-    );
-    t.deepEqual(
-      result1.map(item => item.indexInTransaction),
-      [2],
-      'Given commands continue withe same tx: should contain the right indexes in txs'
+      'Given several following tx hashes: should contain the right indexes in txs'
     );
     after();
   })();
-});
 
+  await (async function mapNodeCommandsWithRelations_txIndex() {
+    // check for several indexes
+    const lastIndexes = [0, 1, 15];
+    for (let i = 0; i < lastIndexes.length; i++) {
+      const lastIndex = lastIndexes[i];
+      before();
+      stub({ command: { indexInTransaction: lastIndex } });
+      const lastTxHash = '2afdae904fd21e11036ffd02a195645f3d98915fa395cfc5d577a407b4f4bb1e';
+      // continue next batch with same tx
+      const result1 = await commandsAdder.mapNodeCommandsWithRelations(CONTRACT_ID_1, [
+        {
+          command: 'buy',
+          messageBody: '',
+          txHash: lastTxHash,
+        },
+      ]);
+      t.deepEqual(
+        result1.map(item => item.indexInTransaction),
+        [lastIndex + 1],
+        `Given commands continue withe same tx and index=${lastIndex}: should contain index ${lastIndex + 1}`
+      );
+      after();
+    }
+  })();
+});
