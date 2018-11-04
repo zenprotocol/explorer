@@ -1,5 +1,5 @@
 const NetworkHelper = require('../lib/NetworkHelper');
-const logger = require('../lib/logger');
+const logger = require('../lib/logger')('searchContracts');
 const networkHelper = new NetworkHelper();
 
 const run = async () => {

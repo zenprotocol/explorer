@@ -5,7 +5,7 @@
 const contractsDAL = require('../../server/components/api/contracts/contractsDAL');
 const BlocksAdder = require('../jobs/blocks/BlocksAdder');
 const NetworkHelper = require('../lib/NetworkHelper');
-const logger = require('../lib/logger');
+const logger = require('../lib/logger')('contracts');
 const networkHelper = new NetworkHelper();
 const blocksAdder = new BlocksAdder();
 
