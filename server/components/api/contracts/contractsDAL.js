@@ -1,5 +1,6 @@
 'use strict';
 
+const tags = require('common-tags');
 const dal = require('../../../lib/dal');
 const deepMerge = require('deepmerge');
 const Op = require('sequelize').Op;
@@ -36,7 +37,7 @@ contractsDAL.findAllExpired = function() {
 
 contractsDAL.findAllOutstandingAssets = function(id, { limit = 10, offset = 0 } = {}) {
   const sequelize = contractsDAL.db.sequelize;
-  const sql = `
+  const sql = tags.oneLine`
   SELECT
     COALESCE("Issued"."asset", "Destroyed"."asset") AS "asset",
     "Issued"."sum" AS "issued",

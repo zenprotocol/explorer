@@ -1,5 +1,6 @@
 'use strict';
 
+const tags = require('common-tags');
 const deepMerge = require('deepmerge');
 const dal = require('../../../lib/dal');
 const transactionsDAL = dal.createDAL('Transaction');
@@ -48,7 +49,7 @@ transactionsDAL.search = function(search, limit = 10) {
 
 transactionsDAL.findAllAssetsByAddress = async function(address, { limit = 10, offset = 0 }) {
   const sequelize = transactionsDAL.db.sequelize;
-  const sql = `
+  const sql = tags.oneLine`
   SELECT
       COALESCE("OutputAsset"."asset", "InputAsset"."asset") AS "asset",
       "Block"."timestamp" AS "timestamp",
@@ -126,7 +127,7 @@ transactionsDAL.findAllByAddress = async function(address, options = { limit: 10
   const transactionsSelectFields = getFieldsForSelectQuery(transactionsDAL.db.Transaction, 'Transaction', true);
   const blocksSelectFields = getFieldsForSelectQuery(transactionsDAL.db.Block, 'Block', false);
   const order = options.ascending? 'ASC' : 'DESC';
-  const sql = `
+  const sql = tags.oneLine`
   SELECT ${transactionsSelectFields}, ${blocksSelectFields}, COALESCE("Commands"."command", '') AS "firstCommand"
     FROM
       (SELECT "TransactionId" 
@@ -165,7 +166,7 @@ transactionsDAL.findAllAssetsByBlock = async function(
 ) {
   const blockProp = isHash(hashOrBlockNumber) ? 'hash' : 'blockNumber';
   const sequelize = transactionsDAL.db.sequelize;
-  const sql = `
+  const sql = tags.oneLine`
   SELECT
     COALESCE("OutputAsset"."asset", "InputAsset"."asset") AS "asset",
     "Block"."timestamp" AS "timestamp",
@@ -218,7 +219,7 @@ transactionsDAL.findAllAssetsByBlock = async function(
 
 transactionsDAL.countByAddress = async function(address) {
   const sequelize = transactionsDAL.db.sequelize;
-  const sql = `
+  const sql = tags.oneLine`
   SELECT COUNT("Outputs"."TransactionId")
     FROM
       (SELECT "TransactionId" 
@@ -246,7 +247,7 @@ transactionsDAL.countByAddress = async function(address) {
 
 transactionsDAL.countAssetsByAddress = async function(address) {
   const sequelize = transactionsDAL.db.sequelize;
-  const sql = `
+  const sql = tags.oneLine`
   SELECT COUNT("OutputAsset"."TransactionId")
     FROM
       (SELECT "Output"."TransactionId",
@@ -279,7 +280,7 @@ transactionsDAL.countAssetsByAddress = async function(address) {
 transactionsDAL.countAssetsByBlock = async function(hashOrBlockNumber) {
   const blockProp = isHash(hashOrBlockNumber) ? 'hash' : 'blockNumber';
   const sequelize = transactionsDAL.db.sequelize;
-  const sql = `
+  const sql = tags.oneLine`
   SELECT COUNT("OutputAsset"."TransactionId")
   FROM
     (SELECT SUM("Output"."amount") AS "outputSum",
