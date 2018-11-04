@@ -33,7 +33,7 @@ const TransactionsTab = observer(() => {
             Cell: data => <Link to={`/blocks/${data.value}`}>{data.value}</Link>,
           },
           {
-            Header: 'First Command',
+            Header: 'Command',
             accessor: 'firstCommand',
             className: 'text-uppercase',
           },
