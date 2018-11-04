@@ -177,4 +177,12 @@ contractsDAL.findCommandsWithRelations = function(id, options) {
   ]).then(this.getItemsAndCountResult);
 };
 
+contractsDAL.deleteCommands = function(id) {
+  return this.db.Command.destroy({
+    where: {
+      ContractId: id,
+    }
+  });
+};
+
 module.exports = contractsDAL;

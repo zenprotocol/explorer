@@ -19,6 +19,7 @@ function before() {
     findAllActive: td.func('findAllActive'),
     countCommands: td.func('countCommands'),
     getLastCommandOfTx: td.func('getLastCommandOfTx'),
+    deleteCommands: td.func('delete'),
   });
   transactionsDAL = td.replace('../../../server/components/api/transactions/transactionsDAL', {
     findOne: td.func('findOne'),
@@ -68,6 +69,7 @@ test('CommandsAdder.doJob()', async function(t) {
   function stub({ activeContracts = [], commandsCount = 0, transactionId = 1 } = {}) {
     td.when(contractsDAL.findAllActive()).thenResolve(activeContracts);
     td.when(contractsDAL.countCommands(td.matchers.isA(String))).thenResolve(commandsCount);
+    td.when(contractsDAL.deleteCommands(td.matchers.isA(String))).thenResolve(commandsCount);
     td.when(transactionsDAL.findOne(td.matchers.isA(Object))).thenResolve({ id: transactionId });
   }
   await (async function doJob_shouldReturnANumber() {
@@ -92,7 +94,7 @@ test('CommandsAdder.doJob()', async function(t) {
     after();
   })();
 
-  await (async function doJob_oneContract_nothingInDd() {
+  await (async function doJob_oneContract_nothingInDb() {
     before();
     stub({ activeContracts: [{ id: CONTRACT_ID_1 }] });
     const result = await commandsAdder.doJob({ data: { take: CUSTOM_TAKE } });
@@ -104,7 +106,7 @@ test('CommandsAdder.doJob()', async function(t) {
     after();
   })();
 
-  await (async function doJob_severalContracts_nothingInDd() {
+  await (async function doJob_severalContracts_nothingInDb() {
     before();
     stub({
       activeContracts: [{ id: CONTRACT_ID_1 }, { id: CONTRACT_ID_2 }],
@@ -118,17 +120,35 @@ test('CommandsAdder.doJob()', async function(t) {
     after();
   })();
 
-  await (async function doJob_oneContract_someInDd() {
+  await (async function doJob_oneContract_lessInDb() {
     before();
-    const commandsAlreadyInDb = 10;
-    stub({ activeContracts: [{ id: CONTRACT_ID_1 }], commandsCount: commandsAlreadyInDb });
+    stub({ activeContracts: [{ id: CONTRACT_ID_1 }], commandsCount: commandsData.length - 1 });
     const result = await commandsAdder.doJob({ data: { take: CUSTOM_TAKE } });
     t.equal(
       result,
-      commandsData.length - commandsAlreadyInDb,
-      `Given ${commandsAlreadyInDb} commands in db and 1 contract: should insert ${commandsData.length -
-        commandsAlreadyInDb} commands`
+      commandsData.length,
+      'Given less data in db: should insert all commandsData'
     );
+    after();
+  })();
+
+  await (async function doJob_oneContract_moreInDb() {
+    before();
+    stub({ activeContracts: [{ id: CONTRACT_ID_1 }], commandsCount: commandsData.length + 1 });
+    const result = await commandsAdder.doJob({ data: { take: CUSTOM_TAKE } });
+    t.equal(
+      result,
+      commandsData.length,
+      'Given more data in db: should insert all commandsData'
+    );
+    after();
+  })();
+
+  await (async function doJob_oneContract_someInDb() {
+    before();
+    stub({ activeContracts: [{ id: CONTRACT_ID_1 }], commandsCount: commandsData.length });
+    const result = await commandsAdder.doJob({ data: { take: CUSTOM_TAKE } });
+    t.equal(result, 0, 'Given same data in db: should not insert anything');
     after();
   })();
 });
@@ -143,9 +163,8 @@ test('CommandsAdder.getCommandsToInsert()', async function(t) {
   } = {}) {
     td.when(transactionsDAL.findOne(td.matchers.isA(Object))).thenResolve({ id: transactionId });
     td.when(contractsDAL.countCommands(td.matchers.isA(String))).thenResolve(commandsCount);
-    td.when(contractsDAL.getLastCommandOfTx(contract, txHashParam)).thenResolve(
-      command
-    );
+    td.when(contractsDAL.deleteCommands(td.matchers.isA(String))).thenResolve(commandsCount);
+    td.when(contractsDAL.getLastCommandOfTx(contract, txHashParam)).thenResolve(command);
   }
   await (async function getCommandsToInsert_shouldReturnAnArray() {
     before();
@@ -185,60 +204,8 @@ test('CommandsAdder.getCommandsToInsert()', async function(t) {
     const result = await commandsAdder.getCommandsToInsert(CONTRACT_ID_1, CUSTOM_TAKE);
     t.equals(
       result.length,
-      commandsData.length - 10,
-      'Given 10 commands in db: should get an array with all commands minus 10'
-    );
-    after();
-  })();
-
-  await (async function getCommandsToInsert_RepeatingTxWithGaps() {
-    // test when the db has a command with tx A then some other tx, then again tx A
-    before();
-    const lastTxHash = 'fb1b75ca931277ccc003aad4005a9369098f9c744b5e22ea8c6c85c8c80fe2da';
-    const lastTxId = 12345;
-    
-    stub({
-      commandsCount: 10,
-      txHashParam: td.matchers.not(lastTxHash)
-    });
-    // specific match for our tx
-    td.when(transactionsDAL.findOne({ where: { hash: lastTxHash } })).thenResolve({ id: lastTxId });
-    td.when(contractsDAL.getLastCommandOfTx(CONTRACT_ID_1, lastTxHash)).thenResolve({
-      indexInTransaction: 0,
-    });
-
-    const result = await commandsAdder.getCommandsToInsert(CONTRACT_ID_1, CUSTOM_TAKE);
-    t.equals(
-      result[result.length - 1].TransactionId,
-      lastTxId,
-      'Given 10 commands in db from which last has same txHash: last item should have the same tx id'
-    );
-    t.equals(
-      result[result.length - 1].indexInTransaction,
-      1,
-      'Given 10 commands in db from which last has same txHash: last item should have the next indexInTransaction'
-    );
-    after();
-  })();
-
-  await (async function getCommandsToInsert_RepeatingTxWithGaps() {
-    before();
-    const lastTxHash = 'fb1b75ca931277ccc003aad4005a9369098f9c744b5e22ea8c6c85c8c80fe2da';
-    
-    stub({
-      commandsCount: 10,
-      txHashParam: td.matchers.not(lastTxHash)
-    });
-    // specific match for our tx
-    td.when(contractsDAL.getLastCommandOfTx(CONTRACT_ID_1, lastTxHash)).thenResolve({
-      indexInTransaction: 7,
-    });
-
-    const result = await commandsAdder.getCommandsToInsert(CONTRACT_ID_1, CUSTOM_TAKE);
-    t.equals(
-      result[result.length - 1].indexInTransaction,
-      8,
-      'Given 10 commands in db from which last has same txHash and index not zero: last item should have the next indexInTransaction'
+      commandsData.length,
+      'Given 10 commands in db: should get an array with all commands'
     );
     after();
   })();
@@ -279,16 +246,13 @@ test('CommandsAdder.getLastCommandTxIndexFromDb()', async function(t) {
 });
 
 test('CommandsAdder.mapNodeCommandsWithRelations()', async function(t) {
-  function stub({ contract = CONTRACT_ID_1, command = null, transactionId = 1 } = {}) {
-    td.when(contractsDAL.getLastCommandOfTx(contract, td.matchers.isA(String))).thenResolve(
-      command
-    );
+  function stub({ transactionId = 1 } = {}) {
     td.when(transactionsDAL.findOne(td.matchers.isA(Object))).thenResolve({ id: transactionId });
   }
   await (async function mapNodeCommandsWithRelations_shouldReturnAnArray() {
     before();
     stub();
-    const result = await commandsAdder.mapNodeCommandsWithRelations(CONTRACT_ID_1, [], '', 0);
+    const result = await commandsAdder.mapNodeCommandsWithRelations(CONTRACT_ID_1, []);
     t.assert(Array.isArray(result), 'Should return an array');
     after();
   })();
@@ -296,7 +260,7 @@ test('CommandsAdder.mapNodeCommandsWithRelations()', async function(t) {
   await (async function mapNodeCommandsWithRelations_emptyArray() {
     before();
     stub();
-    const result = await commandsAdder.mapNodeCommandsWithRelations(CONTRACT_ID_1, [], '', 0);
+    const result = await commandsAdder.mapNodeCommandsWithRelations(CONTRACT_ID_1, []);
     t.equals(result.length, 0, 'Given  an empty commands array: should return an empty array');
     after();
   })();
@@ -305,12 +269,7 @@ test('CommandsAdder.mapNodeCommandsWithRelations()', async function(t) {
     before();
     stub();
     const contractId = CONTRACT_ID_1;
-    const result = await commandsAdder.mapNodeCommandsWithRelations(
-      contractId,
-      commandsData,
-      '',
-      0
-    );
+    const result = await commandsAdder.mapNodeCommandsWithRelations(contractId, commandsData);
     t.equals(
       result.length,
       commandsData.length,
@@ -328,70 +287,95 @@ test('CommandsAdder.mapNodeCommandsWithRelations()', async function(t) {
     );
     after();
   })();
+});
 
-  await (async function mapNodeCommandsWithRelations_txIndexInRow() {
+test('CommandsAdder.shouldInsertCommands()', async function(t) {
+  function stub({ commandsCount = 0, contract = CONTRACT_ID_1 } = {}) {
+    td.when(contractsDAL.countCommands(contract)).thenResolve(commandsCount);
+    td.when(contractsDAL.deleteCommands(contract)).thenResolve(commandsCount);
+  }
+  await (async function shouldInsertCommands_nothingInDb() {
     before();
     stub();
-    const lastTxHash = '2afdae904fd21e11036ffd02a195645f3d98915fa395cfc5d577a407b4f4bb1e';
-    const data = [
-      {
-        command: 'buy',
-        messageBody: '',
-        txHash: '5e448f458710898d65ee03be21e7634fc4027f3d292f4fb5b77f4d06b7943164',
-      },
-      {
-        command: 'buy',
-        messageBody: '',
-        txHash: '5e448f458710898d65ee03be21e7634fc4027f3d292f4fb5b77f4d06b7943164',
-      },
-      {
-        command: 'buy',
-        messageBody: '',
-        txHash: '5e448f458710898d65ee03be21e7634fc4027f3d292f4fb5b77f4d06b7943164',
-      },
-      {
-        command: 'buy',
-        messageBody: '',
-        txHash: lastTxHash,
-      },
-      {
-        command: 'buy',
-        messageBody: '',
-        txHash: lastTxHash,
-      },
-    ];
-    const contractId = CONTRACT_ID_1;
-    const result = await commandsAdder.mapNodeCommandsWithRelations(contractId, data);
-    t.deepEqual(
-      result.map(item => item.indexInTransaction),
-      [0, 1, 2, 0, 1],
-      'Given several following tx hashes: should contain the right indexes in txs'
+    const shouldInsert = await commandsAdder.shouldInsertCommands(CONTRACT_ID_1, []);
+    t.equals(
+      shouldInsert,
+      false,
+      'Given no commands in db and empty commands array: should return false'
     );
     after();
   })();
-
-  await (async function mapNodeCommandsWithRelations_txIndex() {
-    // check for several indexes
-    const lastIndexes = [0, 1, 15];
-    for (let i = 0; i < lastIndexes.length; i++) {
-      const lastIndex = lastIndexes[i];
-      before();
-      stub({ command: { indexInTransaction: lastIndex } });
-      const lastTxHash = '2afdae904fd21e11036ffd02a195645f3d98915fa395cfc5d577a407b4f4bb1e';
-      // continue next batch with same tx
-      const result1 = await commandsAdder.mapNodeCommandsWithRelations(CONTRACT_ID_1, [
-        {
-          command: 'buy',
-          messageBody: '',
-          txHash: lastTxHash,
-        },
-      ]);
-      t.deepEqual(
-        result1.map(item => item.indexInTransaction),
-        [lastIndex + 1],
-        `Given commands continue withe same tx and index=${lastIndex}: should contain index ${lastIndex + 1}`
-      );
-      after();
-    }
+  await (async function shouldInsertCommands_sameAmountInDb() {
+    before();
+    stub({ commandsCount: 2 });
+    const shouldInsert = await commandsAdder.shouldInsertCommands(CONTRACT_ID_1, [
+      {
+        command: '',
+        messageBody: '',
+        TransactionId: 1,
+        indexInTransaction: 0,
+        ContractId: '',
+      },
+      {
+        command: '',
+        messageBody: '',
+        TransactionId: 1,
+        indexInTransaction: 0,
+        ContractId: '',
+      },
+    ]);
+    t.equals(
+      shouldInsert,
+      false,
+      'Given same amount of commands in db: should return false'
+    );
+    after();
+  })();
+  await (async function shouldInsertCommands_lessAmountInDb() {
+    before();
+    const commandsInDb = 1;
+    stub({ commandsCount: commandsInDb });
+    const shouldInsert = await commandsAdder.shouldInsertCommands(CONTRACT_ID_1, [
+      {
+        command: '',
+        messageBody: '',
+        TransactionId: 1,
+        indexInTransaction: 0,
+        ContractId: '',
+      },
+      {
+        command: '',
+        messageBody: '',
+        TransactionId: 1,
+        indexInTransaction: 0,
+        ContractId: '',
+      },
+    ]);
+    t.equals(
+      shouldInsert,
+      true,
+      'Given less amount of commands in db: should return true'
+    );
+    after();
+  })();
+  await (async function shouldInsertCommands_biggerAmountInDb() {
+    before();
+    const commandsInDb = 2;
+    stub({ commandsCount: commandsInDb });
+    const shouldInsert = await commandsAdder.shouldInsertCommands(CONTRACT_ID_1, [
+      {
+        command: '',
+        messageBody: '',
+        TransactionId: 1,
+        indexInTransaction: 0,
+        ContractId: '',
+      },
+    ]);
+    t.equals(
+      shouldInsert,
+      true,
+      'Given bigger amount of commands in db: should return true'
+    );
+    after();
   })();
 });

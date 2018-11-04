@@ -20,7 +20,7 @@ class CommandsAdder {
       // the worker processes active contracts only - as non active ones can not add commands
       const activeContracts = await contractsDAL.findAllActive();
       const numOfRowsAffected = await this.processContracts(activeContracts, numOfCommandsToTake);
-      logger.info(`Active contracts updated - ${numOfRowsAffected} number of rows affected`);
+      logger.info(`Commands for active contracts updated - ${numOfRowsAffected} number of rows affected`);
       return numOfRowsAffected;
     } catch (error) {
       logger.error(`An Error has occurred when processing commands: ${error.message}`);
@@ -34,30 +34,41 @@ class CommandsAdder {
       promises.push(this.getCommandsToInsert(contract.id, numOfCommandsToTake))
     );
     const results = await Promise.all(promises);
+    const finalResults = [];
+    for (let i = 0; i < results.length; i++) {
+      const contractResults = results[i];
+      if(contractResults.length && await this.shouldInsertCommands(contractResults[0].ContractId, contractResults)) {
+        await contractsDAL.deleteCommands(contractResults[0].ContractId);
+        finalResults.push(contractResults);
+      }
+    }
 
-    const finalItemsToInsert = results.reduce((all, cur) => all.concat(cur), []);
+    const finalItemsToInsert = finalResults.reduce((all, cur) => all.concat(cur), []);
     await commandsDAL.bulkCreate(finalItemsToInsert);
 
     return finalItemsToInsert.length;
+  }
+
+  async shouldInsertCommands(contractId, commandsToInsert) {
+    const dbCommandsCount = await contractsDAL.countCommands(contractId);
+    return dbCommandsCount !== commandsToInsert.length;
   }
 
   async getCommandsToInsert(contractId, numOfCommandsToTake) {
     if (numOfCommandsToTake === 0) {
       throw new Error('numOfCommandsToTake must be bigger than zero!');
     }
-    const commandCountInDb = await contractsDAL.countCommands(contractId);
     let commandsTakenCount = 0;
-
     const commandsToInsert = [];
     let hasMoreCommands = true;
     while (hasMoreCommands) {
       const commands = await this.networkHelper.getContractCommandsFromNode({
         contractId,
-        skip: commandCountInDb + commandsTakenCount,
+        skip: commandsTakenCount,
         take: numOfCommandsToTake,
       });
       const mappedCommands = await this.mapNodeCommandsWithRelations(contractId, commands);
-      commandsToInsert.push.apply(commandsToInsert, mappedCommands);
+      commandsToInsert.push.apply(commandsToInsert, mappedCommands); // push into same array
       commandsTakenCount += commands.length;
       if (commands.length < numOfCommandsToTake) {
         hasMoreCommands = false;
@@ -68,31 +79,22 @@ class CommandsAdder {
   }
 
   async mapNodeCommandsWithRelations(contractId, commands) {
-    let currentIxHash = '';
-    let currentTxIndex = 0;
+    // indexInTransaction can not currently be calculated as the results from address db are ordered by command name
     const promises = [];
     for (let i = 0; i < commands.length; i++) {
       const command = commands[i];
-      if (currentIxHash !== command.txHash) {
-        const lastTxIndex = await this.getLastCommandTxIndexFromDb(contractId, command.txHash);
-        currentIxHash = command.txHash;
-        currentTxIndex = lastTxIndex + 1;
-      }
-      let localIxHash = currentIxHash;
-      let localTxIndex = currentTxIndex;
-      currentTxIndex += 1;
 
       promises.push(
         (async () => {
-          const tx = await transactionsDAL.findOne({ where: { hash: localIxHash } });
+          const tx = await transactionsDAL.findOne({ where: { hash: command.txHash } });
           if (!tx) {
-            logger.error(`Error - could not find a referenced tx with hash=${localIxHash}`);
+            logger.error(`Error - could not find a referenced tx with hash=${command.txHash}`);
           }
           return {
             command: command.command,
             messageBody: command.messageBody,
             TransactionId: tx.id,
-            indexInTransaction: localTxIndex,
+            indexInTransaction: 0, // can not calculate for now!
             ContractId: contractId,
           };
         })()
