@@ -4,7 +4,7 @@ const path = require('path');
 const Queue = require('bull');
 const TaskTimeLimiter = require('./lib/TaskTimeLimiter');
 const Config = require('../server/config/Config');
-const logger = require('./lib/logger');
+const logger = require('./lib/logger')('blocks');
 const slackLogger = require('../server/lib/slackLogger');
 const NUM_OF_BLOCKS_IN_CHUNK = Config.get('queues:addBlocks:limitBlocks');
 
@@ -20,15 +20,15 @@ addBlocksQueue.process(path.join(__dirname, 'jobs/blocks/addNewBlocks.handler.js
 
 // events
 addBlocksQueue.on('error', function(error) {
-  logger.error('A AddBlocksQueue job error has occurred', error);
+  logger.error('A job error has occurred', error);
 });
 
 addBlocksQueue.on('active', function(job, jobPromise) {
-  logger.info(`An AddBlocksQueue job has started. ID=${job.id}`);
+  logger.info(`An job has started. ID=${job.id}`);
 });
 
 addBlocksQueue.on('completed', function(job, result) {
-  logger.info(`An AddBlocksQueue job has been completed. ID=${job.id} result=${result}`);
+  logger.info(`An job has been completed. ID=${job.id} result=${result}`);
   if(result > 0) {
     addBlocksQueue.add(
       { limitBlocks: NUM_OF_BLOCKS_IN_CHUNK },
@@ -37,14 +37,14 @@ addBlocksQueue.on('completed', function(job, result) {
 });
 
 addBlocksQueue.on('failed', function(job, error) {
-  logger.error(`An AddBlocksQueue job has failed. ID=${job.id}, error=${error}`);
+  logger.error(`An job has failed. ID=${job.id}, error=${error}`);
   taskTimeLimiter.executeTask(() => {
     slackLogger.error(`An AddBlocks job has failed, error=${error}`);
   });
 });
 
 addBlocksQueue.on('cleaned', function(jobs, type) {
-  logger.info('AddBlocksQueue Jobs have been cleaned', { jobs, type });
+  logger.info('Jobs have been cleaned', { jobs, type });
 });
 
 // first clean the queue

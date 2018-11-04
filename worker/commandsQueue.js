@@ -4,7 +4,7 @@ const path = require('path');
 const Queue = require('bull');
 const TaskTimeLimiter = require('./lib/TaskTimeLimiter');
 const Config = require('../server/config/Config');
-const logger = require('./lib/logger');
+const logger = require('./lib/logger')('commands');
 const slackLogger = require('../server/lib/slackLogger');
 
 const commandsQueue = new Queue(
@@ -19,26 +19,26 @@ commandsQueue.process(path.join(__dirname, 'jobs/commands/commands.handler.js'))
 
 // events
 commandsQueue.on('error', function(error) {
-  logger.error('A commandsQueue job error has occurred', error);
+  logger.error('A job error has occurred', error);
 });
 
 commandsQueue.on('active', function(job, jobPromise) {
-  logger.info(`An commandsQueue job has started. ID=${job.id}`);
+  logger.info(`An job has started. ID=${job.id}`);
 });
 
 commandsQueue.on('completed', function(job, result) {
-  logger.info(`An commandsQueue job has been completed. ID=${job.id} result=${result}`);
+  logger.info(`An job has been completed. ID=${job.id} result=${result}`);
 });
 
 commandsQueue.on('failed', function(job, error) {
-  logger.info(`An commandsQueue job has failed. ID=${job.id}, error=${error}`);
+  logger.info(`An job has failed. ID=${job.id}, error=${error}`);
   taskTimeLimiter.executeTask(() => {
     slackLogger.error(`A Commands job has failed, error=${error}`);
   });
 });
 
 commandsQueue.on('cleaned', function(jobs, type) {
-  logger.info('CommandsQueue jobs have been cleaned', { jobs, type });
+  logger.info('Jobs have been cleaned', { jobs, type });
 });
 
 // first clean the queue

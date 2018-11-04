@@ -6,7 +6,7 @@ const outputsDAL = require('../../../server/components/api/outputs/outputsDAL');
 const inputsDAL = require('../../../server/components/api/inputs/inputsDAL');
 const infosDAL = require('../../../server/components/api/infos/infosDAL');
 const contractsDAL = require('../../../server/components/api/contracts/contractsDAL');
-const logger = require('../../lib/logger');
+const logger = require('../../lib/logger')('blocks');
 const BlockchainParser = require('../../../server/lib/BlockchainParser');
 const getJobData = require('../../lib/getJobData');
 

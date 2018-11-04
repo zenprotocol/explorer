@@ -1,6 +1,6 @@
 'use strict';
 
-const logger = require('../../lib/logger');
+const logger = require('../../lib/logger')('commands');
 const contractsDAL = require('../../../server/components/api/contracts/contractsDAL');
 const transactionsDAL = require('../../../server/components/api/transactions/transactionsDAL');
 const commandsDAL = require('../../../server/components/api/commands/commandsDAL');

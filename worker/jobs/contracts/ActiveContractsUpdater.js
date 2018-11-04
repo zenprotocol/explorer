@@ -1,6 +1,6 @@
 'use strict';
 
-const logger = require('../../lib/logger');
+const logger = require('../../lib/logger')('contracts');
 const contractsDAL = require('../../../server/components/api/contracts/contractsDAL');
 
 class ActiveContractsUpdater {

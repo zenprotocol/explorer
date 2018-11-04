@@ -4,7 +4,7 @@ const path = require('path');
 const Queue = require('bull');
 const TaskTimeLimiter = require('./lib/TaskTimeLimiter');
 const Config = require('../server/config/Config');
-const logger = require('./lib/logger');
+const logger = require('./lib/logger')('infos');
 const slackLogger = require('../server/lib/slackLogger');
 
 const updateGeneralInfosQueue = new Queue(
@@ -19,19 +19,19 @@ updateGeneralInfosQueue.process(path.join(__dirname, 'jobs/infos/updateGeneralIn
 
 // events
 updateGeneralInfosQueue.on('error', function(error) {
-  logger.error('A UpdateGeneralInfosQueue job error has occurred', error);
+  logger.error('A job error has occurred', error);
 });
 
 updateGeneralInfosQueue.on('active', function(job, jobPromise) {
-  logger.info(`An UpdateGeneralInfosQueue job has started. ID=${job.id}`);
+  logger.info(`A job has started. ID=${job.id}`);
 });
 
 updateGeneralInfosQueue.on('completed', function(job, result) {
-  logger.info(`An UpdateGeneralInfosQueue job has been completed. ID=${job.id} result=${result}`);
+  logger.info(`A job has been completed. ID=${job.id} result=${result}`);
 });
 
 updateGeneralInfosQueue.on('failed', function(job, error) {
-  logger.info(`An UpdateGeneralInfosQueue job has failed. ID=${job.id}, error=${error}`);
+  logger.info(`A job has failed. ID=${job.id}, error=${error}`);
   taskTimeLimiter.executeTask(() => {
     slackLogger.error(`An UpdateGeneralInfos job has failed, error=${error}`);
   });

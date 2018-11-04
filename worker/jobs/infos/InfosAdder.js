@@ -2,7 +2,7 @@
 
 const infosDAL = require('../../../server/components/api/infos/infosDAL');
 const statsDAL = require('../../../server/components/api/stats/statsDAL');
-const logger = require('../../lib/logger');
+const logger = require('../../lib/logger')('infos');
 
 function createOrUpdateInfos(infos) {
   const promises = [];
