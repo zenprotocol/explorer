@@ -17,7 +17,7 @@ class CommandsAdder {
     try {
       logger.info('Updating active contracts commands');
       const numOfCommandsToTake = getJobData(job, 'take') || DEFAULT_NUM_OF_COMMANDS_TO_TAKE;
-      // the worker processes active contracts only - as non active ones can not add commands
+      // Non active contracts can not add commands
       const activeContracts = await contractsDAL.findAllActive();
       const numOfRowsAffected = await this.processContracts(activeContracts, numOfCommandsToTake);
       logger.info(`Commands for active contracts updated - ${numOfRowsAffected} number of rows affected`);

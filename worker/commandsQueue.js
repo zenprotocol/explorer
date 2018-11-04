@@ -31,7 +31,7 @@ commandsQueue.on('completed', function(job, result) {
 });
 
 commandsQueue.on('failed', function(job, error) {
-  logger.info(`A job has failed. ID=${job.id}, error=${error}`);
+  logger.error(`A job has failed. ID=${job.id}, error=${error}`);
   taskTimeLimiter.executeTask(() => {
     slackLogger.error(`A Commands job has failed, error=${error}`);
   });

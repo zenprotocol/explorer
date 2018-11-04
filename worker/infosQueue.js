@@ -31,7 +31,7 @@ updateGeneralInfosQueue.on('completed', function(job, result) {
 });
 
 updateGeneralInfosQueue.on('failed', function(job, error) {
-  logger.info(`A job has failed. ID=${job.id}, error=${error}`);
+  logger.error(`A job has failed. ID=${job.id}, error=${error}`);
   taskTimeLimiter.executeTask(() => {
     slackLogger.error(`An UpdateGeneralInfos job has failed, error=${error}`);
   });
