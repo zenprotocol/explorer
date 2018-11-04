@@ -37,10 +37,6 @@ updateGeneralInfosQueue.on('failed', function(job, error) {
   });
 });
 
-updateGeneralInfosQueue.on('cleaned', function(jobs, type) {
-  logger.info('Jobs have been cleaned', { jobs, type });
-});
-
 // first clean the queue
 Promise.all([
   updateGeneralInfosQueue.clean(0, 'active'),

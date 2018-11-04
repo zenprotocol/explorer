@@ -24,11 +24,11 @@ addBlocksQueue.on('error', function(error) {
 });
 
 addBlocksQueue.on('active', function(job, jobPromise) {
-  logger.info(`An job has started. ID=${job.id}`);
+  logger.info(`A job has started. ID=${job.id}`);
 });
 
 addBlocksQueue.on('completed', function(job, result) {
-  logger.info(`An job has been completed. ID=${job.id} result=${result}`);
+  logger.info(`A job has been completed. ID=${job.id} result=${result}`);
   if(result > 0) {
     addBlocksQueue.add(
       { limitBlocks: NUM_OF_BLOCKS_IN_CHUNK },
@@ -37,14 +37,10 @@ addBlocksQueue.on('completed', function(job, result) {
 });
 
 addBlocksQueue.on('failed', function(job, error) {
-  logger.error(`An job has failed. ID=${job.id}, error=${error}`);
+  logger.error(`A job has failed. ID=${job.id}, error=${error}`);
   taskTimeLimiter.executeTask(() => {
     slackLogger.error(`An AddBlocks job has failed, error=${error}`);
   });
-});
-
-addBlocksQueue.on('cleaned', function(jobs, type) {
-  logger.info('Jobs have been cleaned', { jobs, type });
 });
 
 // first clean the queue

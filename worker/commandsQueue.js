@@ -23,22 +23,18 @@ commandsQueue.on('error', function(error) {
 });
 
 commandsQueue.on('active', function(job, jobPromise) {
-  logger.info(`An job has started. ID=${job.id}`);
+  logger.info(`A job has started. ID=${job.id}`);
 });
 
 commandsQueue.on('completed', function(job, result) {
-  logger.info(`An job has been completed. ID=${job.id} result=${result}`);
+  logger.info(`A job has been completed. ID=${job.id} result=${result}`);
 });
 
 commandsQueue.on('failed', function(job, error) {
-  logger.info(`An job has failed. ID=${job.id}, error=${error}`);
+  logger.info(`A job has failed. ID=${job.id}, error=${error}`);
   taskTimeLimiter.executeTask(() => {
     slackLogger.error(`A Commands job has failed, error=${error}`);
   });
-});
-
-commandsQueue.on('cleaned', function(jobs, type) {
-  logger.info('Jobs have been cleaned', { jobs, type });
 });
 
 // first clean the queue

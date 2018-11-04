@@ -37,10 +37,6 @@ contractsQueue.on('failed', function(job, error) {
   });
 });
 
-contractsQueue.on('cleaned', function(jobs, type) {
-  logger.info('Jobs have been cleaned', { jobs, type });
-});
-
 // first clean the queue
 Promise.all([
   contractsQueue.clean(0, 'active'),
