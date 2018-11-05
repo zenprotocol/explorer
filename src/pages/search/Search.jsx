@@ -7,6 +7,7 @@ import RouterUtils from '../../lib/RouterUtils';
 import TextUtils from '../../lib/TextUtils';
 import SearchUtils from '../../lib/SearchUtils';
 import AssetUtils from '../../lib/AssetUtils';
+import AddressUtils from '../../lib/AddressUtils';
 import Loading from '../../components/Loading';
 import SearchResultsTable from './SearchResultsTable';
 import Page from '../../components/Page';
@@ -47,8 +48,13 @@ class SearchResultsPage extends Component {
   }
 
   redirectBeforeSearch(search) {
-    if (SearchUtils.isCompleteAddress(search)) {
-      this.props.history.push(`/address/${search}`);
+    if (AddressUtils.isComplete(search)) {
+      if(AddressUtils.isContract(search)) {
+        this.props.history.push(`/contract/${search}`);
+      }
+      else {
+        this.props.history.push(`/address/${search}`);
+      }
     }
   }
 

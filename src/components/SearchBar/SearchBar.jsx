@@ -3,6 +3,7 @@ import { observer } from 'mobx-react';
 import { withRouter } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import SearchUtils from '../../lib/SearchUtils';
+import AddressUtils from '../../lib/AddressUtils';
 import searchStore from '../../store/SearchStore';
 import './SearchBar.css';
 
@@ -46,7 +47,7 @@ class SearchBar extends Component {
   }
 
   canSearchImmediately(search) {
-    return search.indexOf('zen') === 0 && search.length > 50;
+    return AddressUtils.isComplete(search);
   }
 
   render() {
