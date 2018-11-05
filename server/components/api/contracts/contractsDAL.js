@@ -6,6 +6,7 @@ const deepMerge = require('deepmerge');
 const Op = require('sequelize').Op;
 const inputsDAL = require('../inputs/inputsDAL');
 const commandsDAL = require('../commands/commandsDAL');
+const AddressUtils = require('../../../../src/common/AddressUtils');
 
 const contractsDAL = dal.createDAL('Contract');
 
@@ -15,6 +16,28 @@ contractsDAL.findByAddress = function(address) {
       address,
     },
   });
+};
+
+contractsDAL.search = async function(search, limit = 10) {
+  const like = AddressUtils.isContract(search) ? `${search}%` : `%${search}%`;
+  const where = {
+    address: {
+      [Op.like]: like,
+    },
+  };
+  return Promise.all([
+    this.count({
+      where,
+      distinct: true,
+      col: 'address',
+    }),
+    this.findAll({
+      where,
+      attributes: ['address'],
+      group: 'address',
+      limit,
+    })
+  ]);
 };
 
 contractsDAL.findAllActive = function() {

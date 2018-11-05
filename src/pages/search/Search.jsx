@@ -71,7 +71,7 @@ class SearchResultsPage extends Component {
 
     const results = searchStore.searchResults;
     const total = results.total;
-    const { blocks, transactions, addresses, outputs } = results.items;
+    const { blocks, transactions, addresses, contracts, outputs } = results.items;
 
     if (total === 1) {
       let redirectTo = '';
@@ -80,14 +80,10 @@ class SearchResultsPage extends Component {
       } else if (transactions.length > 0) {
         redirectTo = `/tx/${transactions[0].hash}`;
       } else if (addresses.length > 0) {
-        const address = addresses[0].address;
-        if(AddressUtils.isContract(address)) {
-          redirectTo = `/contract/${address}`;
-        }
-        else {
-          redirectTo = `/address/${address}`;
-        }
-      } else if (outputs.length > 0) {
+        redirectTo = `/address/${addresses[0].address}`;
+      } else if (contracts.length > 0) {
+        redirectTo = `/contract/${contracts[0].address}`;
+      }else if (outputs.length > 0) {
         redirectTo = `/tx/${outputs[0].Transaction.hash}`;
       }
 
@@ -220,8 +216,23 @@ class SearchResultsPage extends Component {
                       />
                     ),
                   },
-                  // { accessor: 'txCount', cell: data => <span>{data} txns</span> },
-                  // { accessor: 'balance', cell: data => AssetUtils.getAmountString('00', data) },
+                ]}
+              />
+              <SearchResultsTable
+                items={contracts}
+                title="CONTRACTS"
+                columns={[
+                  {
+                    accessor: 'address',
+                    cell: data => (
+                      <AddressLink
+                        address={data}
+                        truncate={false}
+                        hash={this.getHighlightedSearchResult(search, data)}
+                        value={data}
+                      />
+                    ),
+                  },
                 ]}
               />
             </div>
