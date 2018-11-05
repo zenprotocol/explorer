@@ -9,6 +9,11 @@
 
       &.active {
         border-top-color: map-get($theme-colors, "primary");
+        border-bottom-color: transparent;
+      }
+
+      &:hover {
+        color: $white;
       }
     }
 
