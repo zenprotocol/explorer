@@ -173,38 +173,40 @@ class BlocksAdder {
         // all outputs and inputs can be added simultaneously because they are not related at this point
         const outputsInputsPromises = [];
 
-        // add outputs
-        logger.info(
-          `Adding ${nodeTransaction.outputs.length} outputs to block #${block.blockNumber} txHash=${transaction.hash}`
-        );
-        for (let outputIndex = 0; outputIndex < nodeTransaction.outputs.length; outputIndex++) {
-          const nodeOutput = nodeTransaction.outputs[outputIndex];
-
-          outputsInputsPromises.push(
-            this.addOutputToTransaction({
-              transaction,
-              nodeOutput,
-              outputIndex,
-              dbTransaction,
-            })
+        
+        try {
+          // add outputs
+          logger.info(
+            `Adding ${nodeTransaction.outputs.length} outputs to block #${block.blockNumber} txHash=${
+              transaction.hash
+            }`
           );
-        }
+          const outputsToInsert = this.getOutputsToInsert({
+            nodeOutputs: nodeTransaction.outputs,
+            transactionId: transaction.id,
+          });
+          await this.addOutputsToTransaction({ outputs: outputsToInsert, dbTransaction });
 
-        // add inputs
-        logger.info(
-          `Adding ${nodeTransaction.inputs.length} inputs to block #${block.blockNumber} txHash=${transaction.hash}`
-        );
-        for (let inputIndex = 0; inputIndex < nodeTransaction.inputs.length; inputIndex++) {
-          const nodeInput = nodeTransaction.inputs[inputIndex];
-
-          outputsInputsPromises.push(
-            this.addInputToTransaction({ transaction, nodeInput, inputIndex, dbTransaction })
+          // add inputs
+          logger.info(
+            `Adding ${nodeTransaction.inputs.length} inputs to block #${block.blockNumber} txHash=${
+              transaction.hash
+            }`
           );
+          const inputsToInsert = this.getInputsToInsert({
+            nodeInputs: nodeTransaction.inputs,
+            transactionId: transaction.id,
+          });
+          await this.addInputsToTransaction({inputs: inputsToInsert, dbTransaction});
+          logger.info(
+            `All ${inputsToInsert.length +
+              outputsToInsert.length} inputs and outputs where added to block #${
+              block.blockNumber
+            } txHash=${transaction.hash}`
+          );
+        } catch (error) {
+          throw new Error(`${error.message} txHash=${transaction.hash}`);
         }
-        await Promise.all(outputsInputsPromises);
-        logger.info(
-          `All ${outputsInputsPromises.length} inputs and outputs where added to block #${block.blockNumber} txHash=${transaction.hash}`
-        );
       }
     }
     const hrEnd = process.hrtime(startTime);
@@ -258,25 +260,61 @@ class BlocksAdder {
     return transaction;
   }
 
-  async addOutputToTransaction({ transaction, nodeOutput, outputIndex, dbTransaction }) {
-    const { lockType, lockValue, address } = this.blockchainParser.getLockValuesFromOutput(
-      nodeOutput
-    );
-    const output = await outputsDAL.create(
-      {
+  getOutputsToInsert({ nodeOutputs, transactionId } = {}) {
+    return nodeOutputs.map((nodeOutput, index) => {
+      const { lockType, lockValue, address } = this.blockchainParser.getLockValuesFromOutput(
+        nodeOutput
+      );
+      return {
         lockType,
         lockValue,
         address,
         contractLockVersion: 0,
         asset: nodeOutput.spend ? nodeOutput.spend.asset : null,
         amount: nodeOutput.spend ? nodeOutput.spend.amount : null,
-        index: outputIndex,
-      },
-      { transaction: dbTransaction }
-    );
+        index,
+        TransactionId: transactionId,
+      };
+    });
+  }
 
-    await transactionsDAL.addOutput(transaction, output, { transaction: dbTransaction });
-    return output;
+  async addOutputsToTransaction({ outputs, dbTransaction }) {
+    return await outputsDAL.bulkCreate(outputs, { transaction: dbTransaction });
+  }
+
+  getInputsToInsert({ nodeInputs, transactionId }) {
+    return nodeInputs.map((nodeInput, index) => {
+      if (nodeInput.outpoint) {
+        if (!this.blockchainParser.isOutpointInputValid(nodeInput)) {
+          throw new Error(
+            `Outpoint input not valid! inputIndex=${index}`
+          );
+        }
+        return {
+          index,
+          outpointTXHash: nodeInput.outpoint.txHash,
+          outpointIndex: Number(nodeInput.outpoint.index),
+          isMint: false,
+          TransactionId: transactionId,
+        };
+      } else if (nodeInput.mint) {
+        if (!this.blockchainParser.isMintInputValid(nodeInput)) {
+          throw new Error(`Mint input not valid! inputIndex=${index}`);
+        }
+        return {
+          index,
+          isMint: true,
+          asset: nodeInput.mint.asset,
+          amount: Number(nodeInput.mint.amount),
+          TransactionId: transactionId,
+        };
+      } else {
+        throw new Error(`Input is invalid! inputIndex=${index}`);
+      }
+    });
+  }
+  async addInputsToTransaction({ inputs, dbTransaction }) {
+    return await inputsDAL.bulkCreate(inputs, { transaction: dbTransaction });
   }
 
   async addInputToTransaction({ transaction, nodeInput, inputIndex, dbTransaction }) {
@@ -352,7 +390,9 @@ class BlocksAdder {
       ],
       transaction: dbTransaction,
     });
-    logger.info(`Found ${inputs.length} outpoint inputs that need to be related to outputs. relating...`);
+    logger.info(
+      `Found ${inputs.length} outpoint inputs that need to be related to outputs. relating...`
+    );
     for (let i = 0; i < inputs.length; i++) {
       const input = inputs[i];
       await this.relateInputToOutput({ input, dbTransaction });
@@ -384,9 +424,11 @@ class BlocksAdder {
         transaction: dbTransaction,
       });
       const block = await blocksDAL.findById(transaction.BlockId, { transaction: dbTransaction });
-      const errorMsg = `Did not find an output for an outpoint input! outpointIndex=${input.outpointIndex} outpointTXHash=${input.outpointTXHash}, current txHash=${
-        transaction.hash
-      } inputIndex=${input.index} blockNumber=${block.blockNumber}`;
+      const errorMsg = `Did not find an output for an outpoint input! outpointIndex=${
+        input.outpointIndex
+      } outpointTXHash=${input.outpointTXHash}, current txHash=${transaction.hash} inputIndex=${
+        input.index
+      } blockNumber=${block.blockNumber}`;
       throw new Error(errorMsg);
     }
   }
