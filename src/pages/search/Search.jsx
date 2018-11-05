@@ -80,7 +80,13 @@ class SearchResultsPage extends Component {
       } else if (transactions.length > 0) {
         redirectTo = `/tx/${transactions[0].hash}`;
       } else if (addresses.length > 0) {
-        redirectTo = `/address/${addresses[0].address}`;
+        const address = addresses[0].address;
+        if(AddressUtils.isContract(address)) {
+          redirectTo = `/contract/${address}`;
+        }
+        else {
+          redirectTo = `/address/${address}`;
+        }
       } else if (outputs.length > 0) {
         redirectTo = `/tx/${outputs[0].Transaction.hash}`;
       }
