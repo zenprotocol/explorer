@@ -51,6 +51,9 @@ export default {
       .join('-')
       .replace(/[^a-zA-Z0-9-]/g, '');
   },
+  getSingularOrPlural(count, singular, plural) {
+    return count > 1 ? plural : singular; 
+  }
 };
 
 function addPrecedingZero(number) {

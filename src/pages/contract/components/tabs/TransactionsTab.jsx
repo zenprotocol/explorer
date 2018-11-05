@@ -44,6 +44,7 @@ const TransactionsTab = observer(() => {
         pageSize={uiStore.addressTxsTable.pageSize}
         curPage={uiStore.addressTxsTable.curPage}
         tableDataSetter={uiStore.setAddressTxsTableData.bind(uiStore)}
+        topContent={<div>Total of {addressStore.addressTransactionsCount} transactions found</div>}
       />
     </TabPanel>
   );
