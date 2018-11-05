@@ -13,7 +13,7 @@ module.exports = {
   development: merge(developmentJson.db, {
     operatorsAliases: Sequelize.Op,
     seederStorage: 'sequelize',
-    logging: Config.get('db:logging') !== 'false',
+    logging: Config.get('db:logging') !== 'false' ? console.log : false,
   }),
   test: merge(testJson.db, {
     operatorsAliases: Sequelize.Op,
