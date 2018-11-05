@@ -132,22 +132,26 @@ contractsDAL.getCommands = function(id, options) {
 };
 
 contractsDAL.getLastCommandOfTx = function(id, txHash) {
-  return commandsDAL.findAll({
-    where: {
-      ContractId: id,
-    },
-    include: [{
-      model: this.db.Transaction,
-      required: true,
+  return commandsDAL
+    .findAll({
       where: {
-        hash: txHash,
-      }
-    }],
-    order: [['createdAt', 'DESC']],
-    limit: 1,
-  }).then(results => {
-    return results.length ? results[0] : null;
-  });
+        ContractId: id,
+      },
+      include: [
+        {
+          model: this.db.Transaction,
+          required: true,
+          where: {
+            hash: txHash,
+          },
+        },
+      ],
+      order: [['createdAt', 'DESC']],
+      limit: 1,
+    })
+    .then(results => {
+      return results.length ? results[0] : null;
+    });
 };
 
 contractsDAL.findCommandsWithRelations = function(id, options) {
@@ -169,7 +173,10 @@ contractsDAL.findCommandsWithRelations = function(id, options) {
               ],
             },
           ],
-          order: [[{ model: this.db.Transaction }, { model: this.db.Block }, 'timestamp', 'DESC']],
+          order: [
+            [{ model: this.db.Transaction }, { model: this.db.Block }, 'timestamp', 'DESC'],
+            ['indexInTransaction', 'ASC'],
+          ],
         },
         options
       )
@@ -181,7 +188,7 @@ contractsDAL.deleteCommands = function(id) {
   return this.db.Command.destroy({
     where: {
       ContractId: id,
-    }
+    },
   });
 };
 
