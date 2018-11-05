@@ -170,10 +170,6 @@ class BlocksAdder {
           }. txHash=${transaction.hash}, transactionId=${transaction.id}`
         );
 
-        // all outputs and inputs can be added simultaneously because they are not related at this point
-        const outputsInputsPromises = [];
-
-        
         try {
           // add outputs
           logger.info(
@@ -315,57 +311,6 @@ class BlocksAdder {
   }
   async addInputsToTransaction({ inputs, dbTransaction }) {
     return await inputsDAL.bulkCreate(inputs, { transaction: dbTransaction });
-  }
-
-  async addInputToTransaction({ transaction, nodeInput, inputIndex, dbTransaction }) {
-    let input = null;
-
-    if (nodeInput.outpoint) {
-      input = await this.createOutpointInput({ transaction, nodeInput, inputIndex, dbTransaction });
-    } else if (nodeInput.mint) {
-      input = await this.createMintInput({ transaction, nodeInput, inputIndex, dbTransaction });
-    } else {
-      throw new Error(`Input is invalid! txHash=${transaction.hash} inputIndex=${inputIndex}`);
-    }
-
-    await transactionsDAL.addInput(transaction, input, { transaction: dbTransaction });
-    return input;
-  }
-
-  async createMintInput({ transaction, nodeInput, inputIndex, dbTransaction }) {
-    if (!this.blockchainParser.isMintInputValid(nodeInput)) {
-      throw new Error(`Mint input not valid! txHash=${transaction.hash} inputIndex=${inputIndex}`);
-    }
-
-    const input = await inputsDAL.create(
-      {
-        index: inputIndex,
-        isMint: true,
-        asset: nodeInput.mint.asset,
-        amount: Number(nodeInput.mint.amount),
-      },
-      { transaction: dbTransaction }
-    );
-    return input;
-  }
-
-  async createOutpointInput({ transaction, nodeInput, inputIndex, dbTransaction }) {
-    if (!this.blockchainParser.isOutpointInputValid(nodeInput)) {
-      throw new Error(
-        `Outpoint input not valid! txHash=${transaction.hash} inputIndex=${inputIndex}`
-      );
-    }
-
-    const input = await inputsDAL.create(
-      {
-        index: inputIndex,
-        outpointTXHash: nodeInput.outpoint.txHash,
-        outpointIndex: Number(nodeInput.outpoint.index),
-        isMint: false,
-      },
-      { transaction: dbTransaction }
-    );
-    return input;
   }
 
   /**
