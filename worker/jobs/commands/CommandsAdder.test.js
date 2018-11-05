@@ -8,13 +8,18 @@ const commandsData = require('./test/data/commands.json');
 const CONTRACT_ID_1 = '00000000f24db32aa1881956646d3ccbb647df71455de10cf98b635810e8870906a56b63';
 const CONTRACT_ID_2 = '00000000f24db32aa1881956646d3ccbb647df71455de10cf98b635810e8870906a56b64';
 const CUSTOM_TAKE = 10;
+const LATEST_BLOCK_NUMBER = 40000; // check if the db is synced
 
 let commandsAdder;
+let blocksDAL;
 let contractsDAL;
 let transactionsDAL;
 let commandsDAL;
 
 function before() {
+  blocksDAL = td.replace('../../../server/components/api/blocks/blocksDAL', {
+    findLatest: td.func('findLatest'),
+  });
   contractsDAL = td.replace('../../../server/components/api/contracts/contractsDAL', {
     findAllActive: td.func('findAllActive'),
     countCommands: td.func('countCommands'),
@@ -30,7 +35,6 @@ function before() {
   const FakeNetworkHelper = td.constructor(NetworkHelper);
   // return the same commands for all contracts
   const dataToReturn = JSON.parse(JSON.stringify(commandsData));
-
   [CONTRACT_ID_1, CONTRACT_ID_2].forEach(contractId => {
     td.when(
       FakeNetworkHelper.prototype.getContractCommandsFromNode({
@@ -57,6 +61,7 @@ function before() {
       ).thenResolve(dataToReturn.slice(skip, skip + CUSTOM_TAKE));
     }
   });
+  td.when(FakeNetworkHelper.prototype.getLatestBlockNumberFromNode()).thenResolve(LATEST_BLOCK_NUMBER);
 
   const CommandsAdder = require('./CommandsAdder');
   commandsAdder = new CommandsAdder(new FakeNetworkHelper());
@@ -66,11 +71,17 @@ function after() {
 }
 
 test('CommandsAdder.doJob()', async function(t) {
-  function stub({ activeContracts = [], commandsCount = 0, transactionId = 1 } = {}) {
+  function stub({
+    activeContracts = [],
+    commandsCount = 0,
+    transactionId = 1,
+    latestBlockNumber = LATEST_BLOCK_NUMBER,
+  } = {}) {
     td.when(contractsDAL.findAllActive()).thenResolve(activeContracts);
     td.when(contractsDAL.countCommands(td.matchers.isA(String))).thenResolve(commandsCount);
     td.when(contractsDAL.deleteCommands(td.matchers.isA(String))).thenResolve(commandsCount);
     td.when(transactionsDAL.findOne(td.matchers.isA(Object))).thenResolve({ id: transactionId });
+    td.when(blocksDAL.findLatest()).thenResolve([{blockNumber: latestBlockNumber}]);
   }
   await (async function doJob_shouldReturnANumber() {
     before();
@@ -94,6 +105,18 @@ test('CommandsAdder.doJob()', async function(t) {
     after();
   })();
 
+  await (async function doJob_dbNotSynced() {
+    before();
+    stub({ activeContracts: [{ id: CONTRACT_ID_1 }], latestBlockNumber: LATEST_BLOCK_NUMBER - 1 });
+    const result = await commandsAdder.doJob({ data: { take: CUSTOM_TAKE } });
+    t.equal(
+      result,
+      0,
+      'Given a not synced db: should not insert anything'
+    );
+    after();
+  })();
+
   await (async function doJob_oneContract_nothingInDb() {
     before();
     stub({ activeContracts: [{ id: CONTRACT_ID_1 }] });
@@ -101,7 +124,7 @@ test('CommandsAdder.doJob()', async function(t) {
     t.equal(
       result,
       commandsData.length,
-      'Given no data in db and 1 contract: should insert all commandsData'
+      'Given a synced db, no commands data and 1 contract: should insert all commandsData'
     );
     after();
   })();
@@ -124,11 +147,7 @@ test('CommandsAdder.doJob()', async function(t) {
     before();
     stub({ activeContracts: [{ id: CONTRACT_ID_1 }], commandsCount: commandsData.length - 1 });
     const result = await commandsAdder.doJob({ data: { take: CUSTOM_TAKE } });
-    t.equal(
-      result,
-      commandsData.length,
-      'Given less data in db: should insert all commandsData'
-    );
+    t.equal(result, commandsData.length, 'Given less data in db: should insert all commandsData');
     after();
   })();
 
@@ -136,11 +155,7 @@ test('CommandsAdder.doJob()', async function(t) {
     before();
     stub({ activeContracts: [{ id: CONTRACT_ID_1 }], commandsCount: commandsData.length + 1 });
     const result = await commandsAdder.doJob({ data: { take: CUSTOM_TAKE } });
-    t.equal(
-      result,
-      commandsData.length,
-      'Given more data in db: should insert all commandsData'
-    );
+    t.equal(result, commandsData.length, 'Given more data in db: should insert all commandsData');
     after();
   })();
 
@@ -324,11 +339,7 @@ test('CommandsAdder.shouldInsertCommands()', async function(t) {
         ContractId: '',
       },
     ]);
-    t.equals(
-      shouldInsert,
-      false,
-      'Given same amount of commands in db: should return false'
-    );
+    t.equals(shouldInsert, false, 'Given same amount of commands in db: should return false');
     after();
   })();
   await (async function shouldInsertCommands_lessAmountInDb() {
@@ -351,11 +362,7 @@ test('CommandsAdder.shouldInsertCommands()', async function(t) {
         ContractId: '',
       },
     ]);
-    t.equals(
-      shouldInsert,
-      true,
-      'Given less amount of commands in db: should return true'
-    );
+    t.equals(shouldInsert, true, 'Given less amount of commands in db: should return true');
     after();
   })();
   await (async function shouldInsertCommands_biggerAmountInDb() {
@@ -371,11 +378,7 @@ test('CommandsAdder.shouldInsertCommands()', async function(t) {
         ContractId: '',
       },
     ]);
-    t.equals(
-      shouldInsert,
-      true,
-      'Given bigger amount of commands in db: should return true'
-    );
+    t.equals(shouldInsert, true, 'Given bigger amount of commands in db: should return true');
     after();
   })();
 });

@@ -77,13 +77,8 @@ class BlocksAdder {
   }
 
   async getLatestBlockNumberInDB() {
-    let blockNumber = 0;
     const latestBlocksInDB = await blocksDAL.findLatest();
-    if (latestBlocksInDB.length) {
-      const latestBlockInDB = latestBlocksInDB[0];
-      blockNumber = latestBlockInDB.blockNumber;
-    }
-    return blockNumber;
+    return latestBlocksInDB.length ? latestBlocksInDB[0].blockNumber : 0;
   }
 
   async updateInfos() {
@@ -157,7 +152,7 @@ class BlocksAdder {
           }. txHash=${transaction.hash}, transactionId=${transaction.id}`
         );
 
-        await this.addContract({transactionHash, nodeBlock, dbTransaction});
+        await this.addContract({ transactionHash, nodeBlock, dbTransaction });
 
         // all outputs and inputs can be added simultaneously because they are not related at this point
         const outputsInputsPromises = [];
