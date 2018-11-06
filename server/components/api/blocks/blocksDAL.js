@@ -6,11 +6,16 @@ const wrapORMErrors = require('../../../lib/wrapORMErrors');
 
 const blocksDAL = dal.createDAL('Block');
 
-blocksDAL.findLatest = function(amount = 1) {
-  return this.findAll({
-    order: [['blockNumber', 'DESC']],
-    limit: amount,
-  });
+blocksDAL.findLatest = function(options = {}) {
+  return this.findAll(
+    deepMerge(
+      {
+        order: [['blockNumber', 'DESC']],
+        limit: 1,
+      },
+      options
+    )
+  ).then(results => (results.length ? results[0] : null));
 };
 
 blocksDAL.findByBlockNumber = function(blockNumber) {

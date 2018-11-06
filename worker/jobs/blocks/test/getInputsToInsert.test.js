@@ -2,9 +2,10 @@
 
 const test = require('blue-tape');
 const BlocksAdder = require('../BlocksAdder');
+const BlockchainParser = require('../../../../server/lib/BlockchainParser');
 
 test('BlocksAdder.getInputsToInsert()', async function(t) {
-  const blocksAdder = new BlocksAdder();
+  const blocksAdder = new BlocksAdder({}, new BlockchainParser());
 
   await (async function shouldReturnAnEmptyArray() {
     const given = 'Given an empty array';

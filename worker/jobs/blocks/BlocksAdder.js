@@ -6,7 +6,6 @@ const outputsDAL = require('../../../server/components/api/outputs/outputsDAL');
 const inputsDAL = require('../../../server/components/api/inputs/inputsDAL');
 const infosDAL = require('../../../server/components/api/infos/infosDAL');
 const logger = require('../../lib/logger');
-const BlockchainParser = require('../../../server/lib/BlockchainParser');
 
 /**
  * Get a key from the job data object
@@ -23,9 +22,9 @@ function getJobData(job, key) {
 }
 
 class BlocksAdder {
-  constructor(networkHelper) {
+  constructor(networkHelper, blockchainParser) {
     this.networkHelper = networkHelper;
-    this.blockchainParser = new BlockchainParser();
+    this.blockchainParser = blockchainParser;
   }
 
   async addNewBlocks(job) {
@@ -90,9 +89,8 @@ class BlocksAdder {
 
   async getLatestBlockNumberInDB() {
     let blockNumber = 0;
-    const latestBlocksInDB = await blocksDAL.findLatest();
-    if (latestBlocksInDB.length) {
-      const latestBlockInDB = latestBlocksInDB[0];
+    const latestBlockInDB = await blocksDAL.findLatest();
+    if (latestBlockInDB) {
       blockNumber = latestBlockInDB.blockNumber;
     }
     return blockNumber;
@@ -173,9 +171,9 @@ class BlocksAdder {
         try {
           // add outputs
           logger.info(
-            `Adding ${nodeTransaction.outputs.length} outputs to block #${block.blockNumber} txHash=${
-              transaction.hash
-            }`
+            `Adding ${nodeTransaction.outputs.length} outputs to block #${
+              block.blockNumber
+            } txHash=${transaction.hash}`
           );
           const outputsToInsert = this.getOutputsToInsert({
             nodeOutputs: nodeTransaction.outputs,
@@ -193,7 +191,7 @@ class BlocksAdder {
             nodeInputs: nodeTransaction.inputs,
             transactionId: transaction.id,
           });
-          await this.addInputsToTransaction({inputs: inputsToInsert, dbTransaction});
+          await this.addInputsToTransaction({ inputs: inputsToInsert, dbTransaction });
           logger.info(
             `All ${inputsToInsert.length +
               outputsToInsert.length} inputs and outputs where added to block #${
@@ -213,6 +211,17 @@ class BlocksAdder {
         1000000}ms`
     );
     return block;
+  }
+
+  async isReorg({ nodeBlock, dbTransaction } = {}) {
+    const { parent, blockNumber } = nodeBlock.header;
+    if(blockNumber > 1) {
+      const prevDbBlock = await blocksDAL.findByBlockNumber(blockNumber - 1);
+      if(prevDbBlock.hash !== parent) {
+        return true;
+      }
+    }
+    return false;
   }
 
   async createBlock({ nodeBlock, dbTransaction } = {}) {
@@ -282,9 +291,7 @@ class BlocksAdder {
     return nodeInputs.map((nodeInput, index) => {
       if (nodeInput.outpoint) {
         if (!this.blockchainParser.isOutpointInputValid(nodeInput)) {
-          throw new Error(
-            `Outpoint input not valid! inputIndex=${index}`
-          );
+          throw new Error(`Outpoint input not valid! inputIndex=${index}`);
         }
         return {
           index,
