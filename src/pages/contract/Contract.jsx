@@ -103,7 +103,7 @@ class ContractPage extends Component {
           <Tab id="txns">TRANSACTIONS</Tab>
           <Tab id="commands">COMMANDS</Tab>
           <Tab id="code">CONTRACT CODE</Tab>
-          <Tab id="assets">ASSET ISSUED</Tab>
+          <Tab id="assets">ASSETS ISSUED</Tab>
         </TabHead>
         <TabBody>
           <Switch>

@@ -4,6 +4,7 @@ import contractStore from '../../../../store/ContractStore';
 import uiStore from '../../../../store/UIStore';
 import config from '../../../../lib/Config';
 import TextUtils from '../../../../lib/TextUtils';
+import AssetUtils from '../../../../lib/AssetUtils';
 import WithSetAddressOnUiStore from '../WithSetAddressOnUiStore';
 import { TabPanel } from '../../../../components/tabs';
 import ItemsTable from '../../../../components/ItemsTable';
@@ -18,7 +19,7 @@ const AssetsTab = observer(() => {
             Header: 'ASSET',
             accessor: 'asset',
             minWidth: config.ui.table.minCellWidth,
-            Cell: data => <HashLink hash={data.value} />,
+            Cell: data => <HashLink hash={AssetUtils.getAssetNameFromCode(data.value)} value={data.value} />,
           },
           {
             Header: 'TOKENS OUTSTANDING',
