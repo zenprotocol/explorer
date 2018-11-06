@@ -8,7 +8,7 @@ const blocksDAL = dal.createDAL('Block');
 
 blocksDAL.findLatest = function(amount = 1) {
   return this.findAll({
-    order: [['createdAt', 'DESC']],
+    order: [['blockNumber', 'DESC']],
     limit: amount,
   });
 };
