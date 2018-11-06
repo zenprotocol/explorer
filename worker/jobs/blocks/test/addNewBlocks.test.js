@@ -1,7 +1,6 @@
 'use strict';
 
 const test = require('blue-tape');
-const faker = require('faker');
 const Service = require('../../../../server/lib/Service');
 const truncate = require('../../../../common/test/truncate');
 const blocksDAL = require('../../../../server/components/api/blocks/blocksDAL');
