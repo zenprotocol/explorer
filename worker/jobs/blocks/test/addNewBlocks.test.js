@@ -259,7 +259,7 @@ test('BlocksAdder.addNewBlocks()', async function(t) {
 
       t.fail(`${given}: Should throw an error`);
     } catch (error) {
-      t.equal(error.message, 'Reorg');
+      t.equal(error.message, 'Reorg', `${given}: Should throw a Reorg error`);
     }
   });
 });

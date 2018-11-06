@@ -42,8 +42,7 @@ class BlocksAdder {
       `latestBlockNumberInDB=${latestBlockNumberInDB}, latestBlockNumberToAdd=${latestBlockNumberToAdd}`
     );
 
-    const addBlockPromises = [];
-    let addBlockPromiseResults = [];
+    const blocks = [];
 
     if (latestBlockNumberToAdd > latestBlockNumberInDB) {
       await this.setSyncingStatus({ syncing: true });
@@ -61,16 +60,14 @@ class BlocksAdder {
           const nodeBlock = await this.networkHelper.getBlockFromNode(blockNumber);
           logger.info(`Got block #${nodeBlock.header.blockNumber} from NODE...`);
 
-          addBlockPromises.push(this.addBlock({ job, nodeBlock, dbTransaction }));
+          blocks.push(await this.addBlock({ job, nodeBlock, dbTransaction }));
         }
-        addBlockPromiseResults = await Promise.all(addBlockPromises);
-        const blockIds = addBlockPromiseResults.map(block => {
+        const blockIds = blocks.map(block => {
           return block.id;
         });
 
         await this.relateAllOutpointInputsToOutputs({ dbTransaction, blockIds });
 
-        // get
         await this.setSyncingStatus({ syncing: false });
 
         logger.info('Commit the database transaction');
@@ -84,7 +81,7 @@ class BlocksAdder {
     }
     const hrEnd = process.hrtime(startTime);
     logger.info(`AddNewBlocks Finished. Time elapsed = ${hrEnd[0]}s ${hrEnd[1] / 1000000}ms`);
-    return addBlockPromiseResults.length;
+    return blocks.length;
   }
 
   async getLatestBlockNumberInDB() {
@@ -142,6 +139,9 @@ class BlocksAdder {
   async addBlock({ job, nodeBlock, dbTransaction } = {}) {
     // TODO - check here if the block already exist in the db, then if a 'force' param is true, delete and re cache
     const startTime = process.hrtime();
+    if (await this.isReorg({ nodeBlock, dbTransaction })) {
+      throw new Error('Reorg');
+    }
     const block = await this.createBlock({ nodeBlock, dbTransaction });
     logger.info(`Block #${block.blockNumber} created. id=${block.id} hash=${block.hash}`);
     const skipTransactions = getJobData(job, 'skipTransactions');
@@ -215,9 +215,11 @@ class BlocksAdder {
 
   async isReorg({ nodeBlock, dbTransaction } = {}) {
     const { parent, blockNumber } = nodeBlock.header;
-    if(blockNumber > 1) {
-      const prevDbBlock = await blocksDAL.findByBlockNumber(blockNumber - 1);
-      if(prevDbBlock.hash !== parent) {
+    if (blockNumber > 1) {
+      const prevDbBlock = await blocksDAL.findByBlockNumber(blockNumber - 1, {
+        transaction: dbTransaction,
+      });
+      if (prevDbBlock.hash !== parent) {
         return true;
       }
     }
