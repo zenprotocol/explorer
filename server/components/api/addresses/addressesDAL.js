@@ -4,7 +4,7 @@ const tags = require('common-tags');
 const outputsDAL = require('../outputs/outputsDAL');
 const inputsDAL = require('../inputs/inputsDAL');
 const infosDAL = require('../infos/infosDAL');
-const AddressUtils = require('../../../../src/common/AddressUtils');
+const AddressUtils = require('../../../../src/common/utils/AddressUtils');
 const addressesDAL = {};
 
 addressesDAL.findOne = function(address) {

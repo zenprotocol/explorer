@@ -8,7 +8,7 @@ const contractsDAL = require('../contracts/contractsDAL');
 const outputsDAL = require('../outputs/outputsDAL');
 const jsonResponse = require('../../../lib/jsonResponse');
 const HttpError = require('../../../lib/HttpError');
-const AddressUtils = require('../../../../src/common/AddressUtils');
+const AddressUtils = require('../../../../src/common/utils/AddressUtils');
 const { isSearchStringValid } = require('../../../../src/common/validations/search');
 
 function getSearchPromises(search, limit) {

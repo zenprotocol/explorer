@@ -6,7 +6,7 @@ const deepMerge = require('deepmerge');
 const Op = require('sequelize').Op;
 const inputsDAL = require('../inputs/inputsDAL');
 const commandsDAL = require('../commands/commandsDAL');
-const AddressUtils = require('../../../../src/common/AddressUtils');
+const AddressUtils = require('../../../../src/common/utils/AddressUtils');
 
 const contractsDAL = dal.createDAL('Contract');
 

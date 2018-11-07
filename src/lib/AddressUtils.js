@@ -1,1 +1,1 @@
-export { default } from '../common/AddressUtils';
+export { default } from '../common/utils/AddressUtils';
