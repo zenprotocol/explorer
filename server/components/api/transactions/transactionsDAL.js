@@ -42,7 +42,7 @@ transactionsDAL.search = function(search, limit = 10) {
         'Block'
       ],
       limit,
-      order: [['createdAt', 'DESC']],
+      order: [['id', 'DESC']],
     })
   ]);
 };

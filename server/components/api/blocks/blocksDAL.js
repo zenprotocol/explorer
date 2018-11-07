@@ -50,7 +50,7 @@ blocksDAL.search = function(search, limit = 10) {
     this.findAll({
       where: whereByHash,
       limit,
-      order: [['createdAt', 'DESC']],
+      order: [['blockNumber', 'DESC']],
     }),
     this.findByBlockNumber(search),
   ]).then(results => {
