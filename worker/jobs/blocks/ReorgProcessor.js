@@ -25,9 +25,30 @@ class ReorgProcessor {
     // }
   }
 
-  // search fork
-  async search() {
-    return 0;
+  async searchFork() {
+    const latest = await blocksDAL.findLatest();
+    let blockNumber = latest ? latest.blockNumber : 0;
+    let foundDifference = false;
+
+    if (latest) {
+      while (blockNumber > Math.max(0, latest.blockNumber - MAX_ALLOWED_BLOCKS_TO_DELETE)) {
+        const [block, nodeBlock] = await Promise.all([
+          blocksDAL.findByBlockNumber(blockNumber),
+          this.networkHelper.getBlockFromNode(blockNumber),
+        ]);
+
+        if (block.hash !== nodeBlock.hash) {
+          foundDifference = true;
+        } else {
+          if (foundDifference) {
+            break;
+          }
+        }
+
+        blockNumber -= 1;
+      }
+    }
+    return foundDifference ? blockNumber : -1;
   }
 
   // delete blocks from fork
