@@ -8,8 +8,8 @@ module.exports = async function(fromBlockNumber, toBlockNumber, lastHash = '') {
   for (let i = fromBlockNumber; i <= toBlockNumber; i++) {
     blocks.push({
       version: 0,
-      hash: i === toBlockNumber ? lastHash : faker.random.uuid(), // for reorgs
-      parent: faker.random.uuid(),
+      hash: i === toBlockNumber && lastHash ? lastHash : String(i), // for reorgs
+      parent: String(i - 1),
       blockNumber: i,
       commitments: 'test commitments',
       timestamp: 123456789,

@@ -2,6 +2,7 @@
 
 const logger = require('../../lib/logger');
 const blocksDAL = require('../../../server/components/api/blocks/blocksDAL');
+const Op = require('../../../server/db/sequelize/models').sequelize.Op;
 // const getJobData = require('../../lib/getJobData');
 
 const MAX_ALLOWED_BLOCKS_TO_DELETE = 500;
@@ -12,26 +13,42 @@ class ReorgProcessor {
   }
 
   async doJob(job) {
-    // try {
-    //   logger.info('Updating active contracts commands');
-    //   const numOfRowsAffected = await this.processContracts(activeContracts, numOfCommandsToTake);
-    //   logger.info(
-    //     `Commands for active contracts updated - ${numOfRowsAffected} number of rows affected`
-    //   );
-    //   return numOfRowsAffected;
-    // } catch (error) {
-    //   logger.error(`An Error has occurred when processing commands: ${error.message}`);
-    //   throw error;
-    // }
+    try {
+      logger.info('Searching for a reorg fork...');
+      const fork = await this.searchFork();
+
+      if (fork > -1) {
+        logger.info(`Fork found at block number ${fork}`);
+        return await blocksDAL.bulkDelete({
+          where: {
+            blockNumber: {
+              [Op.gt]: fork,
+            }
+          }
+        });
+      } else {
+        logger.info('Did not find a fork');
+        return 0;
+      }
+    } catch (error) {
+      logger.error(`An Error has occurred when processing a reorg: ${error.message}`);
+      throw error;
+    }
   }
 
-  async searchFork() {
-    const latest = await blocksDAL.findLatest();
+  async searchFork(startAt, endAt) {
+    const latest = startAt
+      ? await blocksDAL.findByBlockNumber(startAt)
+      : await blocksDAL.findLatest();
+    const lowestBlockNumber = endAt
+      ? Math.max(1, endAt)
+      : Math.max(1, latest.blockNumber - MAX_ALLOWED_BLOCKS_TO_DELETE);
     let blockNumber = latest ? latest.blockNumber : 0;
     let foundDifference = false;
 
     if (latest) {
-      while (blockNumber > Math.max(0, latest.blockNumber - MAX_ALLOWED_BLOCKS_TO_DELETE)) {
+      while (blockNumber >= lowestBlockNumber) {
+        logger.info(`searching block ${blockNumber}`);
         const [block, nodeBlock] = await Promise.all([
           blocksDAL.findByBlockNumber(blockNumber),
           this.networkHelper.getBlockFromNode(blockNumber),
@@ -50,8 +67,6 @@ class ReorgProcessor {
     }
     return foundDifference ? blockNumber : -1;
   }
-
-  // delete blocks from fork
 }
 
 module.exports = ReorgProcessor;
