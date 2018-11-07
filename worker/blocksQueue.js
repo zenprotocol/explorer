@@ -12,11 +12,16 @@ const addBlocksQueue = new Queue(
   Config.get('queues:addBlocks:name'),
   Config.any(['REDISCLOUD_URL', 'redis'])
 );
+const reorgsQueue = new Queue(
+  Config.get('queues:reorgs:name'),
+  Config.any(['REDISCLOUD_URL', 'redis'])
+);
 
 const taskTimeLimiter = new TaskTimeLimiter(Config.get('queues:slackTimeLimit') * 1000);
 
 // process ---
 addBlocksQueue.process(path.join(__dirname, 'jobs/blocks/addNewBlocks.handler.js'));
+reorgsQueue.process(path.join(__dirname, 'jobs/blocks/reorgs.handler.js'));
 
 // events
 addBlocksQueue.on('error', function(error) {
@@ -41,10 +46,32 @@ addBlocksQueue.on('failed', function(job, error) {
   taskTimeLimiter.executeTask(() => {
     slackLogger.error(`An AddBlocks job has failed, error=${error}`);
   });
+  if(error.message === 'Reorg') {
+    logger.info('Found a reorg! starting the reorg processor...');
+    slackLogger.log('Found a reorg! starting the reorg processor...');
+    addBlocksQueue.pause();
+    reorgsQueue.add();
+  }
 });
 
-addBlocksQueue.on('cleaned', function(jobs, type) {
-  logger.info('AddBlocksQueue Jobs have been cleaned', { jobs, type });
+reorgsQueue.on('error', function(error) {
+  logger.error('A reorgsQueue job error has occurred', error);
+});
+
+reorgsQueue.on('active', function(job, jobPromise) {
+  logger.info(`An reorgsQueue job has started. ID=${job.id}`);
+});
+
+reorgsQueue.on('completed', function(job, result) {
+  logger.info(`An reorgsQueue job has been completed. ID=${job.id} result=${result}`);
+  addBlocksQueue.resume();
+});
+
+reorgsQueue.on('failed', function(job, error) {
+  logger.error(`An reorgsQueue job has failed. ID=${job.id}, error=${error}`);
+  taskTimeLimiter.executeTask(() => {
+    slackLogger.error(`An reorgsQueue job has failed, error=${error}`);
+  });
 });
 
 // first clean the queue

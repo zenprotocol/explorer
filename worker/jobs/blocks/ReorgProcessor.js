@@ -19,6 +19,7 @@ class ReorgProcessor {
 
       if (fork > -1) {
         logger.info(`Fork found at block number ${fork}`);
+        logger.info(`Deleting all blocks with blockNumber > ${fork}`);
         return await blocksDAL.bulkDelete({
           where: {
             blockNumber: {
@@ -48,7 +49,6 @@ class ReorgProcessor {
 
     if (latest) {
       while (blockNumber >= lowestBlockNumber) {
-        logger.info(`searching block ${blockNumber}`);
         const [block, nodeBlock] = await Promise.all([
           blocksDAL.findByBlockNumber(blockNumber),
           this.networkHelper.getBlockFromNode(blockNumber),

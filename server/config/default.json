@@ -12,6 +12,9 @@
     },
     "contracts": {
       "name": "Contracts"
+    },
+    "reorgs": {
+      "name": "Reorgs"
     }
   }
 }
