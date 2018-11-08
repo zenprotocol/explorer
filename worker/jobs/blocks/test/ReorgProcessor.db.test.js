@@ -16,8 +16,8 @@ test('ReorgProcessor.doJob() (DB)', async function(t) {
     const reorgProcessor = getReorgProcessor();
     // create demo blocks
     await createDemoBlocksFromTo(1, 10);
-    const numOfDeleted = await reorgProcessor.doJob();
-    t.equal(numOfDeleted, 0, `${given}: should not delete blocks`);
+    const result = await reorgProcessor.doJob();
+    t.equal(result.deleted, 0, `${given}: should not delete blocks`);
   });
 
   await wrapTest('Given a reorg', async given => {
@@ -26,9 +26,9 @@ test('ReorgProcessor.doJob() (DB)', async function(t) {
     const badHash = 'bad';
     await createDemoBlocksFromTo(1, 6, badHash);
     await createDemoBlocksFromTo(7, 10);
-    const numOfDeleted = await reorgProcessor.doJob();
+    const result = await reorgProcessor.doJob();
     const allBlocks = await blocksDAL.findAll();
-    t.equal(numOfDeleted, 5, `${given}: should delete blocks`);
+    t.equal(result.deleted, 5, `${given}: should delete blocks`);
     t.equal(allBlocks.length, 5, `${given}: database should have 5 blocks left`);
     const hashes = allBlocks.map(block => block.hash);
     t.assert(!hashes.includes(badHash), `${given}: db should not have the bad hash`);

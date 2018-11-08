@@ -4,6 +4,13 @@ const logger = require('../../lib/logger');
 const blocksDAL = require('../../../server/components/api/blocks/blocksDAL');
 const Op = require('../../../server/db/sequelize/models').sequelize.Op;
 // const getJobData = require('../../lib/getJobData');
+function getJobData(job, key) {
+  // TODO - use the require above after merge, but fix it with the undefined check
+  if (job && job.data && job.data[key] !== undefined) {
+    return job.data[key];
+  }
+  return null;
+}
 
 const MAX_ALLOWED_BLOCKS_TO_DELETE = 500;
 
@@ -14,35 +21,46 @@ class ReorgProcessor {
 
   async doJob(job) {
     try {
-      logger.info('Searching for a reorg fork...');
-      const fork = await this.searchFork();
+      const searchAll = getJobData(job, 'all') === true; // do not search all by default
+      const preventDelete = getJobData(job, 'delete') === false; // delete by default
+      let deleted = 0;
 
-      if (fork > -1) {
-        logger.info(`Fork found at block number ${fork}`);
-        logger.info(`Deleting all blocks with blockNumber > ${fork}`);
-        return await blocksDAL.bulkDelete({
-          where: {
-            blockNumber: {
-              [Op.gt]: fork,
-            }
-          }
-        });
+      logger.info('Searching for reorg forks...');
+      if (searchAll) {
+        logger.info('all flag is on - will search in all blocks');
+      }
+      const forks = await this.searchForks(searchAll);
+
+      if (forks.length) {
+        if (preventDelete) {
+          logger.info('delete flag is marked false, will not delete blocks.');
+        } else {
+          const lowestFork = forks[forks.length - 1];
+          logger.info(`Deleting all blocks with blockNumber > ${lowestFork}`);
+          deleted = await blocksDAL.bulkDelete({
+            where: {
+              blockNumber: {
+                [Op.gt]: lowestFork,
+              },
+            },
+          });
+        }
       } else {
         logger.info('Did not find a fork');
-        return 0;
       }
+
+      return { forks, deleted };
     } catch (error) {
       logger.error(`An Error has occurred when processing a reorg: ${error.message}`);
       throw error;
     }
   }
 
-  async searchFork(startAt, endAt) {
-    const latest = startAt
-      ? await blocksDAL.findByBlockNumber(startAt)
-      : await blocksDAL.findLatest();
-    const lowestBlockNumber = endAt
-      ? Math.max(1, endAt)
+  async searchForks(searchAll = false) {
+    const forks = [];
+    const latest = await blocksDAL.findLatest();
+    const lowestBlockNumber = searchAll
+      ? 1
       : Math.max(1, latest.blockNumber - MAX_ALLOWED_BLOCKS_TO_DELETE);
     let blockNumber = latest ? latest.blockNumber : 0;
     let foundDifference = false;
@@ -58,14 +76,25 @@ class ReorgProcessor {
           foundDifference = true;
         } else {
           if (foundDifference) {
-            break;
+            logger.info(`Fork found at block number ${blockNumber}`);
+            forks.push(blockNumber);
+            foundDifference = false;
+            if(!searchAll) {
+              break;
+            }
           }
         }
 
         blockNumber -= 1;
       }
     }
-    return foundDifference ? blockNumber : -1;
+
+    // special case - handle block number 1
+    if(foundDifference) {
+      forks.push(0);
+    }
+
+    return forks;
   }
 }
 

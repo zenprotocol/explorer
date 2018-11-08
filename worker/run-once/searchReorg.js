@@ -11,32 +11,10 @@ const logger = require('../lib/logger');
 const reorgProcessor = new ReorgProcessor(new NetworkHelper());
 
 const run = async () => {
-  logger.info('Searching fork...');
-  const forks = [];
-  let fork = await searchFork();
-  if (fork > -1) {
-    forks.push(fork);
-  }
-
-  if(searchAll()) {
-    while(fork > 0) {
-      fork = await searchFork(fork);
-      if (fork > -1) {
-        forks.push(fork);
-      }
-    }
-  }
-
+  logger.info('Searching forks...');
+  const forks = await reorgProcessor.searchForks(searchAll());
   return forks;
 };
-
-async function searchFork(startAt) {
-  const fork = await reorgProcessor.searchFork(startAt, 1);
-  if(fork > -1) {
-    logger.info(`Fork found at block number ${fork}`);
-  }
-  return fork;
-}
 
 run()
   .then((forks) => {

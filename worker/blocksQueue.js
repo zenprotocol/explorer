@@ -63,7 +63,10 @@ reorgsQueue.on('active', function(job, jobPromise) {
 });
 
 reorgsQueue.on('completed', function(job, result) {
-  logger.info(`An reorgsQueue job has been completed. ID=${job.id} result=${result}`);
+  logger.info(`An reorgsQueue job has been completed. ID=${job.id} result=${JSON.stringify(result)}`);
+  if(result.deleted > 0) {
+    slackLogger.log(`A reorg was successfully handled: ${JSON.stringify(result)}`);
+  }
   addBlocksQueue.resume();
 });
 
