@@ -6,5 +6,6 @@
  */
 
 require('./blocksQueue');
+require('./reorgsQueue');
 require('./infosQueue');
 require('./contractsQueue');
