@@ -6,14 +6,18 @@ const wrapORMErrors = require('../../../lib/wrapORMErrors');
 
 const blocksDAL = dal.createDAL('Block');
 
-blocksDAL.findLatest = function(amount = 1) {
-  return this.findAll({
-    order: [['createdAt', 'DESC']],
-    limit: amount,
-  });
+blocksDAL.findLatest = function({ transaction } = {}) {
+  const options = {
+    order: [['blockNumber', 'DESC']],
+    limit: 1,
+  };
+  if (transaction) {
+    options.transaction = transaction;
+  }
+  return this.findAll(options).then(results => (results.length ? results[0] : null));
 };
 
-blocksDAL.findByBlockNumber = function(blockNumber) {
+blocksDAL.findByBlockNumber = function(blockNumber, { transaction } = {}) {
   if (
     isNaN(Number(blockNumber)) ||
     !Number.isInteger(Number(blockNumber)) ||
@@ -22,11 +26,15 @@ blocksDAL.findByBlockNumber = function(blockNumber) {
   ) {
     return Promise.resolve(null);
   }
-  return this.findOne({
+  const options = {
     where: {
       blockNumber,
     },
-  });
+  };
+  if (transaction) {
+    options.transaction = transaction;
+  }
+  return this.findOne(options);
 };
 
 blocksDAL.findByHash = function(hash) {
