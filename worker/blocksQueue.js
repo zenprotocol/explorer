@@ -47,27 +47,30 @@ addBlocksQueue.on('failed', function(job, error) {
     slackLogger.error(`An AddBlocks job has failed, error=${error}`);
   });
   if(error.message === 'Reorg') {
-    logger.info('Found a reorg! starting the reorg processor...');
-    slackLogger.log('Found a reorg! starting the reorg processor...');
+    const message = 'Found a reorg! starting the reorg processor...';
+    logger.info(message);
+    slackLogger.log(message);
     addBlocksQueue.pause();
     reorgsQueue.add();
   }
 });
 
-reorgsQueue.on('error', function(error) {
-  logger.error('A reorgsQueue job error has occurred', error);
-});
-
 reorgsQueue.on('active', function(job, jobPromise) {
-  logger.info(`An reorgsQueue job has started. ID=${job.id}`);
+  logger.info('A reorgsQueue search one and delete job has started.');
 });
 
 reorgsQueue.on('completed', function(job, result) {
-  logger.info(`An reorgsQueue job has been completed. ID=${job.id} result=${JSON.stringify(result)}`);
   if(result.deleted > 0) {
-    slackLogger.log(`A reorg was successfully handled: ${JSON.stringify(result)}`);
+    const message = `A reorg was successfully handled: ${JSON.stringify(result)}`;
+    logger.info(message);
+    slackLogger.log(message);
+    addBlocksQueue.resume();
   }
-  addBlocksQueue.resume();
+  else {
+    const message = `Could not handle a reorg: ${JSON.stringify(result)}`;
+    logger.error(message);
+    slackLogger.error(message);
+  }
 });
 
 reorgsQueue.on('failed', function(job, error) {
