@@ -46,7 +46,7 @@ class ContractPage extends Component {
             title="Contract"
             subtitle={<HashLink hash={this.addressProp} truncate={false} copy={true} />}
           />
-          {is404 ? <ItemNotFound item="Contract" /> : this.renderTopTables()}
+          {is404 ? <ItemNotFound item="contract" /> : this.renderTopTables()}
         </section>
         {!is404 && <section>{this.renderTabs()}</section>}
       </Page>
