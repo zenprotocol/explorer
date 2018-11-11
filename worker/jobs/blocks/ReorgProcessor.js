@@ -60,6 +60,7 @@ class ReorgProcessor {
 
     if (latest) {
       while (blockNumber >= lowestBlockNumber) {
+        logger.info(`searching in block ${blockNumber}`);
         const [block, nodeBlock] = await Promise.all([
           blocksDAL.findByBlockNumber(blockNumber),
           this.networkHelper.getBlockFromNode(blockNumber),
