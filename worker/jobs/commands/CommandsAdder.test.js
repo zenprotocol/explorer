@@ -81,7 +81,7 @@ test('CommandsAdder.doJob()', async function(t) {
     td.when(contractsDAL.countCommands(td.matchers.isA(String))).thenResolve(commandsCount);
     td.when(contractsDAL.deleteCommands(td.matchers.isA(String))).thenResolve(commandsCount);
     td.when(transactionsDAL.findOne(td.matchers.isA(Object))).thenResolve({ id: transactionId });
-    td.when(blocksDAL.findLatest()).thenResolve([{blockNumber: latestBlockNumber}]);
+    td.when(blocksDAL.findLatest()).thenResolve({blockNumber: latestBlockNumber});
   }
   await (async function doJob_shouldReturnANumber() {
     before();

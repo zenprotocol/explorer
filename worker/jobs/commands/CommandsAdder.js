@@ -43,7 +43,7 @@ class CommandsAdder {
 
   async isBlocksSynced() {
     const latestBlockInDB = await blocksDAL.findLatest();
-    const latestBlockNumberInDB = latestBlockInDB.length ? latestBlockInDB[0].blockNumber : 0;
+    const latestBlockNumberInDB = latestBlockInDB ? latestBlockInDB.blockNumber : 0;
     const latestBlockNumberInNode = await this.networkHelper.getLatestBlockNumberFromNode();
     return latestBlockNumberInDB === latestBlockNumberInNode;
   }
