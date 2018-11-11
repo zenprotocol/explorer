@@ -69,7 +69,7 @@ outputsDAL.findAllAddressAssets = function(address) {
   });
 };
 
-outputsDAL.searchByAmount = function(amount, limit) {
+outputsDAL.searchByAmount = function(amount, limit = 10) {
   if (
     isNaN(Number(amount)) ||
     Number(amount) < 0 ||
@@ -96,7 +96,7 @@ outputsDAL.searchByAmount = function(amount, limit) {
         }
       ],
       limit,
-      order: [['createdAt', 'DESC']],
+      order: [['id', 'DESC']],
     })
   ]);
 };

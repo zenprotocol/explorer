@@ -4,7 +4,7 @@ const path = require('path');
 const Queue = require('bull');
 const TaskTimeLimiter = require('./lib/TaskTimeLimiter');
 const Config = require('../server/config/Config');
-const logger = require('./lib/logger');
+const logger = require('./lib/logger')('reorg');
 const slackLogger = require('../server/lib/slackLogger');
 
 const reorgsQueue = new Queue(
@@ -19,20 +19,20 @@ reorgsQueue.process(path.join(__dirname, 'jobs/blocks/reorgs.handler.js'));
 
 // events
 reorgsQueue.on('active', function(job, jobPromise) {
-  logger.info(`A reorgsQueue search all job has started. ID=${job.id}`);
+  logger.info(`A search all job has started. ID=${job.id}`);
 });
 
 reorgsQueue.on('completed', function(job, result) {
-  logger.info(`An reorgsQueue job has been completed. ID=${job.id} result=${JSON.stringify(result)}`);
+  logger.info(`A job has been completed. ID=${job.id} result=${JSON.stringify(result)}`);
   if(result.forks.length > 0) {
     slackLogger.error(`A reorg scan was completed and found forks! ${JSON.stringify(result)}`);
   }
 });
 
 reorgsQueue.on('failed', function(job, error) {
-  logger.error(`An reorgsQueue job has failed. ID=${job.id}, error=${error}`);
+  logger.error(`A job has failed. ID=${job.id}, error=${error}`);
   taskTimeLimiter.executeTask(() => {
-    slackLogger.error(`An reorgsQueue job has failed, error=${error}`);
+    slackLogger.error(`A reorgsQueue job has failed, error=${error}`);
   });
 });
 

@@ -1,5 +1,6 @@
 'use strict';
 
+const tags = require('common-tags');
 const transactionsDAL = require('../transactions/transactionsDAL');
 const blocksDAL = require('../blocks/blocksDAL');
 const db = transactionsDAL.db;
@@ -14,7 +15,7 @@ statsDAL.totalZp = async function() {
 };
 
 statsDAL.transactionsPerDay = async function(chartInterval = maximumChartInterval) {
-  const sql = `
+  const sql = tags.oneLine`
   SELECT COUNT("Transactions"."id"), "Blocks"."dt"
   FROM "Transactions"
     INNER JOIN (SELECT CAST(to_timestamp("Blocks"."timestamp" / 1000) AS DATE) AS dt, *
@@ -32,7 +33,7 @@ statsDAL.transactionsPerDay = async function(chartInterval = maximumChartInterva
 };
 
 statsDAL.blockDifficulty = async function(chartInterval = maximumChartInterval) {
-  const sql = `
+  const sql = tags.oneLine`
   with t_vals as
   (select id, timestamp as tsp, "blockNumber" as block_number, least (greatest ((difficulty >> 24), 3), 32) as lnth, (difficulty & x'00FFFFFF' :: int) as mantissa from "Blocks")
   , i_vals as
@@ -51,7 +52,7 @@ statsDAL.blockDifficulty = async function(chartInterval = maximumChartInterval) 
 };
 
 statsDAL.networkHashRate = async function(chartInterval = maximumChartInterval) {
-  const sql = `
+  const sql = tags.oneLine`
   with t_vals as
   (select id, timestamp as tsp, "blockNumber" as block_number, least (greatest ((difficulty >> 24), 3), 32) as lnth, (difficulty & x'00FFFFFF' :: int) as mantissa from "Blocks")
   , i_vals as
@@ -70,7 +71,7 @@ statsDAL.networkHashRate = async function(chartInterval = maximumChartInterval) 
 };
 
 statsDAL.zpRichList = async function() {
-  const sql = `
+  const sql = tags.oneLine`
   select
   (output_sum - input_sum) / 100000000 as balance,
   bothsums.address as address
@@ -125,7 +126,7 @@ statsDAL.zpRichList = async function() {
 };
 
 statsDAL.zpSupply = async function(chartInterval = maximumChartInterval) {
-  const sql = `
+  const sql = tags.oneLine`
   SELECT (MAX("Blocks"."blockNumber") * 50 + 20000000) AS supply, "dt"
   FROM
     (SELECT CAST(to_timestamp("Blocks"."timestamp" / 1000) AS DATE) AS dt, *

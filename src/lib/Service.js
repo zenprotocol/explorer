@@ -186,6 +186,20 @@ export default {
         method: 'get',
       });
     },
+    findAssetsOutstanding(address, params) {
+      return cancelableHttpRequest({
+        url: `${Endpoints.contracts}/${address}/assets`,
+        method: 'get',
+        params,
+      });
+    },
+    findCommands(address, params) {
+      return cancelableHttpRequest({
+        url: `${Endpoints.contracts}/${address}/commands`,
+        method: 'get',
+        params,
+      });
+    },
   },
   oracle: {
     data(ticker, date) {

@@ -1,16 +1,9 @@
 'use strict';
 
-const logger = require('../../lib/logger');
+const logger = require('../../lib/logger')('reorg');
 const blocksDAL = require('../../../server/components/api/blocks/blocksDAL');
 const Op = require('../../../server/db/sequelize/models').sequelize.Op;
-// const getJobData = require('../../lib/getJobData');
-function getJobData(job, key) {
-  // TODO - use the require above after merge, but fix it with the undefined check
-  if (job && job.data && job.data[key] !== undefined) {
-    return job.data[key];
-  }
-  return null;
-}
+const getJobData = require('../../lib/getJobData');
 
 const MAX_ALLOWED_BLOCKS_TO_DELETE = 500;
 

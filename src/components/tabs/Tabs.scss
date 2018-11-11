@@ -1,11 +1,21 @@
-@import 'style/colors';
-@import 'style/sizes';
+@import 'style/variables';
 .Tabs {
   .Tab {
+    margin-left: -1px;
     a {
       color: $body-color;
+      border-color: $border-color;
+      @include mixin-content-padding-x();
+
+      &.active {
+        border-top-color: map-get($theme-colors, "primary");
+        border-bottom-color: transparent;
+      }
+
+      &:hover {
+        color: $white;
+      }
     }
-    margin-left: -1px;
 
     &:first-child {
       margin-left: 0; 
@@ -17,8 +27,20 @@
     border-top: none;
     min-height: 50px;
 
+    .GenericTable {
+      width: calc(100% + #{$content-padding-x * 2} + 2px);
+      margin-left: -1 * $content-padding-x - 1;
+    }
     @media (min-width: map-get($grid-breakpoints, "lg")) {
       padding: $content-padding-x-lg;
+
+      .GenericTable {
+        width: calc(100% + #{$content-padding-x-lg * 2} + 2px);
+        margin-left: -1 * $content-padding-x-lg - 1;
+      }
+    }
+    .pagination-bottom {
+      @include mixin-content-padding-x();
     }
   }
 }

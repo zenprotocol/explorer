@@ -1,10 +1,8 @@
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
-import { Route, Switch, Redirect, Link } from 'react-router-dom';
-import Highlight from 'react-highlight';
+import { Route, Switch, Redirect } from 'react-router-dom';
 import contractStore from '../../store/ContractStore';
 import addressStore from '../../store/AddressStore';
-import uiStore from '../../store/UIStore';
 import RouterUtils from '../../lib/RouterUtils';
 import TextUtils from '../../lib/TextUtils';
 import Loading from '../../components/Loading';
@@ -12,9 +10,9 @@ import HashLink from '../../components/HashLink';
 import ItemNotFound from '../../components/ItemNotFound';
 import AssetsBalancesTable from '../../components/AssetsBalancesTable';
 import PageTitle from '../../components/PageTitle';
-import ItemsTable from '../../components/ItemsTable';
 import Page from '../../components/Page';
-import { Tabs, TabHead, TabBody, Tab, TabPanel } from '../../components/tabs';
+import { Tabs, TabHead, TabBody, Tab } from '../../components/tabs';
+import { AssetsTab, CodeTab, CommandsTab, TransactionsTab } from './components/tabs';
 import './Contract.css';
 
 class ContractPage extends Component {
@@ -48,7 +46,7 @@ class ContractPage extends Component {
             title="Contract"
             subtitle={<HashLink hash={this.addressProp} truncate={false} copy={true} />}
           />
-          {is404 ? <ItemNotFound item="Contract" /> : this.renderTopTables()}
+          {is404 ? <ItemNotFound item="contract" /> : this.renderTopTables()}
         </section>
         {!is404 && <section>{this.renderTabs()}</section>}
       </Page>
@@ -105,11 +103,11 @@ class ContractPage extends Component {
           <Tab id="txns">TRANSACTIONS</Tab>
           <Tab id="commands">COMMANDS</Tab>
           <Tab id="code">CONTRACT CODE</Tab>
-          <Tab id="assets">ASSET ISSUED</Tab>
+          <Tab id="assets">ASSETS ISSUED</Tab>
         </TabHead>
         <TabBody>
           <Switch>
-            <Route path={`${currentPath}/txns`} component={TransactionsTabReactive} />
+            <Route path={`${currentPath}/txns`} component={TransactionsTab} />
             <Route path={`${currentPath}/commands`} component={CommandsTab} />
             <Route path={`${currentPath}/code`} component={CodeTab} />
             <Route path={`${currentPath}/assets`} component={AssetsTab} />
@@ -119,87 +117,6 @@ class ContractPage extends Component {
       </Tabs>
     );
   }
-}
-
-const TransactionsTab = observer(props => {
-  return (
-    <TabPanel>
-      <ItemsTable
-        columns={[
-          {
-            Header: 'TX HASH',
-            accessor: 'hash',
-            Cell: data => <HashLink url={`/tx/${data.value}`} hash={data.value} />,
-          },
-          {
-            Header: 'Timestamp',
-            accessor: 'Block.timestamp',
-            Cell: data => TextUtils.getDateStringFromTimestamp(data.value),
-          },
-          {
-            Header: 'Block',
-            accessor: 'Block.blockNumber',
-            Cell: data => <Link to={`/blocks/${data.value}`}>{data.value}</Link>,
-          },
-        ]}
-        loading={addressStore.loading.addressTransactions}
-        itemsCount={addressStore.addressTransactionsCount}
-        items={addressStore.addressTransactions}
-        pageSize={uiStore.addressTxsTable.pageSize}
-        curPage={uiStore.addressTxsTable.curPage}
-        tableDataSetter={uiStore.setAddressTxsTableData.bind(uiStore)}
-      />
-    </TabPanel>
-  );
-});
-const TransactionsTabReactive = observer(
-  WithSetAddressOnUiStore(TransactionsTab, 'setAddressTxsTableData')
-);
-
-function CommandsTab(props) {
-  return <TabPanel>commands</TabPanel>;
-}
-
-function CodeTab() {
-  if (contractStore.loading.contract) {
-    return <Loading />;
-  }
-  return (
-    <TabPanel>
-      <Highlight className="fsharp">{contractStore.contract.code}</Highlight>
-    </TabPanel>
-  );
-}
-
-function AssetsTab(props) {
-  return <TabPanel>assets</TabPanel>;
-}
-
-function WithSetAddressOnUiStore(WrappedComponent, uiStoreFunctionName) {
-  return class HOC extends Component {
-    componentDidMount() {
-      this.setAddress();
-    }
-
-    componentDidUpdate(prevProps) {
-      const prevParams = RouterUtils.getRouteParams(prevProps);
-      if (this.addressProp !== prevParams.address) {
-        this.setAddress();
-      }
-    }
-
-    get addressProp() {
-      return RouterUtils.getRouteParams(this.props).address;
-    }
-
-    setAddress() {
-      uiStore[uiStoreFunctionName]({ address: this.addressProp });
-    }
-
-    render() {
-      return <WrappedComponent {...this.props} />;
-    }
-  };
 }
 
 export default observer(ContractPage);

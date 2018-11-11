@@ -21,13 +21,13 @@ class TransactionStore {
         runInAction(() => {
           this.transaction = transaction;
         });
-        return transaction;
       })
       .catch(() => {})
       .then(() => {
         runInAction(() => {
           this.loading.transaction = false;
         });
+        return this.transaction;
       });
   }
 

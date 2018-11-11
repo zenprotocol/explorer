@@ -22,6 +22,10 @@ class NetworkHelper {
     return await Service.contracts.getActiveContracts();
   }
 
+  async getContractCommandsFromNode(data) {
+    return await Service.contracts.getCommands(data);
+  }
+
   async getZenNodeLatestTag() {
     const tags = await Service.zen.getZenNodeTags();
     return tags.length ? tags[0].name : 'v0.9';

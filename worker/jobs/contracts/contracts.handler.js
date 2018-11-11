@@ -1,7 +1,7 @@
-const ContractsAdder = require('./ContractsAdder');
+const ActiveContractsUpdater = require('./ActiveContractsUpdater');
 const NetworkHelper = require('../../lib/NetworkHelper');
-const contractsAdder = new ContractsAdder(new NetworkHelper());
+const activeContractsUpdater = new ActiveContractsUpdater(new NetworkHelper());
 
 module.exports = async function (job) {
-  return await contractsAdder.doJob(job);
+  return await activeContractsUpdater.doJob(job);
 };

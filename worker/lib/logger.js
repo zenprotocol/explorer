@@ -1,3 +1,3 @@
-const logger = require('../../server/lib/namedLogger')('worker');
-
-module.exports = logger;
+module.exports = function(processName) {
+  return require('../../server/lib/namedLogger')(`worker.${processName}`);
+};

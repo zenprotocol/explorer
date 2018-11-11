@@ -5,21 +5,9 @@ const transactionsDAL = require('../../../server/components/api/transactions/tra
 const outputsDAL = require('../../../server/components/api/outputs/outputsDAL');
 const inputsDAL = require('../../../server/components/api/inputs/inputsDAL');
 const infosDAL = require('../../../server/components/api/infos/infosDAL');
-const logger = require('../../lib/logger');
-
-/**
- * Get a key from the job data object
- *
- * @param {Object} job
- * @param {String} key
- * @returns the key or null
- */
-function getJobData(job, key) {
-  if (job && job.data && job.data[key]) {
-    return job.data[key];
-  }
-  return null;
-}
+const contractsDAL = require('../../../server/components/api/contracts/contractsDAL');
+const logger = require('../../lib/logger')('blocks');
+const getJobData = require('../../lib/getJobData');
 
 class BlocksAdder {
   constructor(networkHelper, blockchainParser) {
@@ -137,7 +125,6 @@ class BlocksAdder {
   }
 
   async addBlock({ job, nodeBlock, dbTransaction } = {}) {
-    // TODO - check here if the block already exist in the db, then if a 'force' param is true, delete and re cache
     const startTime = process.hrtime();
     if (await this.isReorg({ nodeBlock, dbTransaction })) {
       throw new Error('Reorg');
@@ -167,6 +154,8 @@ class BlocksAdder {
             block.hash
           }. txHash=${transaction.hash}, transactionId=${transaction.id}`
         );
+
+        await this.addContract({ transactionHash, nodeBlock, dbTransaction });
 
         try {
           // add outputs
@@ -265,6 +254,31 @@ class BlocksAdder {
 
     await blocksDAL.addTransaction(block, transaction, { transaction: dbTransaction });
     return transaction;
+  }
+
+  async addContract({ nodeBlock, transactionHash, dbTransaction }) {
+    const nodeTransaction = nodeBlock.transactions[transactionHash];
+    if (nodeTransaction.contract) {
+      logger.info(
+        `Found a contract - blockNumber=${nodeBlock.header.blockNumber}. txHash=${transactionHash}`
+      );
+      const nodeContract = nodeTransaction.contract;
+      const dbContract = await contractsDAL.findById(nodeContract.contractId, {
+        transaction: dbTransaction,
+      });
+      if (!dbContract) {
+        await contractsDAL.create(
+          {
+            id: nodeContract.contractId,
+            address: nodeContract.address,
+            code: nodeContract.code,
+          },
+          { transaction: dbTransaction }
+        );
+        return 1;
+      }
+    }
+    return 0;
   }
 
   getOutputsToInsert({ nodeOutputs, transactionId } = {}) {

@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import TextUtils from '../../../lib/TextUtils';
 import uiStore from '../../../store/UIStore';
 import blockStore from '../../../store/BlockStore';
+import config from '../../../lib/Config';
 import BlockUtils from '../../../lib/BlockUtils';
 import HashLink from '../../../components/HashLink';
 import ItemsTable from '../../../components/ItemsTable';
@@ -15,7 +16,7 @@ class BlocksTable extends Component {
       {
         Header: 'Timestamp',
         accessor: 'timestamp',
-        minWidth: 130,
+        minWidth: config.ui.table.minCellWidth,
         Cell: function(data) {
           return TextUtils.getDateStringFromTimestamp(data.value);
         },
@@ -28,7 +29,7 @@ class BlocksTable extends Component {
       {
         Header: 'Parent',
         accessor: 'parent',
-        minWidth: 130,
+        minWidth: config.ui.table.minCellWidth,
         Cell: data => {
           return <HashLink url={`/blocks/${data.original.parent}`} hash={data.value} />;
         },

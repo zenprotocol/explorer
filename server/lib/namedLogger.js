@@ -2,6 +2,7 @@
 
 const fs = require('fs');
 const path = require('path');
+const colors = require('colors/safe');
 const { createLogger, format, transports } = require('winston');
 const { combine, timestamp, label, json } = format;
 const Config = require('../config/Config');
@@ -35,8 +36,11 @@ const createNamedLogger = function(name) {
       new transports.Console({
         format: combine(
           format.colorize(),
+          label({ label: name }),
           format.timestamp(),
-          format.printf(info => `${info.timestamp} ${info.level}: ${info.message}`)
+          format.printf(info => {
+            return `[${colors.gray(info.label)}] ${info.timestamp} ${info.level}: ${info.message}`;
+          })
         ),
       })
     );

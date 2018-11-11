@@ -2,8 +2,9 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import AssetUtils from '../../../lib/AssetUtils';
-import Output from '../../../lib/OutputUtils';
+import OutputUtils from '../../../lib/OutputUtils';
 import HashLink from '../../../components/HashLink';
+import AddressLink from '../../../components/AddressLink';
 import './TransactionAsset.css';
 
 class TransactionAsset extends Component {
@@ -18,7 +19,7 @@ class TransactionAsset extends Component {
 
     return (
       <div className={classNames('TransactionAsset', addressFoundIn)}>
-        {showHeader ? (
+        {showHeader && (
           <div className="row mx-0">
             <div className="col-2 border-bottom th">ASSET</div>
             <div className="col-4 border-bottom th">INPUT</div>
@@ -29,7 +30,7 @@ class TransactionAsset extends Component {
               </div>
             </div>
           </div>
-        ) : null}
+        )}
 
         <div className="row mx-0">
           <div className="col-2 break-word">
@@ -65,8 +66,8 @@ class TransactionAsset extends Component {
             this.renderInputOutputItem(input.id, input.Output.address, input.Output.address)
           );
         } else {
-          const title = Output.getTextByLockType(input.Output.lockType);
-          all.push(this.renderInputOutputItem(input.id, title, ''));
+          const title = OutputUtils.getTextByLockType(input.Output.lockType);
+          all.push(this.renderInputOutputItem(input.id, title));
         }
 
         return all;
@@ -86,7 +87,7 @@ class TransactionAsset extends Component {
       rowsToRender = transactionAsset.Outputs.map(output => {
         key++;
         let amount = showAmount ? AssetUtils.getAmountString(asset, output.amount) : null;
-        const title = output.address ? output.address : Output.getTextByLockType(output.lockType);
+        const title = output.address ? output.address : OutputUtils.getTextByLockType(output.lockType);
         const address = output.address ? output.address : '';
         return this.renderInputOutputItem(key, title, address, amount);
       });
@@ -123,12 +124,15 @@ class TransactionAsset extends Component {
   }
 
   renderInputOutputItem(key, title, address, amount, isTotal) {
-    title = title || '\u00a0';
-    const url = address && address !== this.props.address ? `/address/${address}` : '';
+    title = title || '\u00a0'; // no break space
+    const addressLinkActive = address && address !== this.props.address;
     return (
       <div className="row mx-0" key={key}>
-        <div className={classNames('address break-word px-0', `col-${amount? '6' : '12'}`)} title={title}>
-          {address ? <HashLink url={url ? url : ''} hash={title} /> : title}
+        <div
+          className={classNames('address break-word px-0', `col-${amount ? '6' : '12'}`)}
+          title={title}
+        >
+          {address ? <AddressLink address={address} active={addressLinkActive} hash={address} /> : title}
         </div>
         {amount && (
           <div

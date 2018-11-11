@@ -7,7 +7,7 @@
 const ReorgProcessor = require('../jobs/blocks/ReorgProcessor');
 const sequelize = require('../../server/db/sequelize/models').sequelize;
 const NetworkHelper = require('../lib/NetworkHelper');
-const logger = require('../lib/logger');
+const logger = require('../lib/logger')('reorg-search');
 const reorgProcessor = new ReorgProcessor(new NetworkHelper());
 
 const run = async () => {

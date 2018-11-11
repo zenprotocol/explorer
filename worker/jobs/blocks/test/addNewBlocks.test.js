@@ -2,7 +2,7 @@
 
 const test = require('blue-tape');
 const Service = require('../../../../server/lib/Service');
-const truncate = require('../../../../common/test/truncate');
+const truncate = require('../../../lib/truncate');
 const blocksDAL = require('../../../../server/components/api/blocks/blocksDAL');
 const transactionsDAL = require('../../../../server/components/api/transactions/transactionsDAL');
 const inputsDAL = require('../../../../server/components/api/inputs/inputsDAL');

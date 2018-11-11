@@ -3,6 +3,7 @@ import { observer } from 'mobx-react';
 import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import uiStore from '../../../store/UIStore';
+import config from '../../../lib/Config';
 import AssetUtils from '../../../lib/AssetUtils';
 import TextUtils from '../../../lib/TextUtils';
 import addressStore from '../../../store/AddressStore';
@@ -17,7 +18,7 @@ class AddressTxsTable extends Component {
       {
         Header: 'Asset',
         accessor: 'asset',
-        minWidth: 130,
+        minWidth: config.ui.table.minCellWidth,
         Cell: function(data) {
           return <HashLink hash={AssetUtils.getAssetNameFromCode(data.value)} value={data.value} />;
         },
@@ -25,7 +26,7 @@ class AddressTxsTable extends Component {
       {
         Header: 'Timestamp',
         accessor: 'timestamp',
-        minWidth: 130,
+        minWidth: config.ui.table.minCellWidth,
         Cell: function(data) {
           return TextUtils.getDateStringFromTimestamp(data.value);
         },
@@ -40,7 +41,7 @@ class AddressTxsTable extends Component {
       {
         Header: 'TX',
         accessor: 'txHash',
-        minWidth: 130,
+        minWidth: config.ui.table.minCellWidth,
         Cell: data => {
           return <HashLink url={`/tx/${data.value}`} hash={data.value} />;
         },

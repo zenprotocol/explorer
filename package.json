@@ -23,7 +23,7 @@
     "setup:db:test": "cross-env NODE_ENV=test npx sequelize db:create && cross-env NODE_ENV=test npx sequelize db:migrate",
     "setup:db:development": "npx sequelize db:create && npx sequelize db:migrate",
     "pretest": "cross-env NODE_ENV=test npx sequelize db:migrate",
-    "test": "npm-run-all -p test:server test:worker",
+    "test": "npm-run-all -p test:server test:worker client:lib:test",
     "test:server": "cross-env NODE_ENV=test tape 'server/**/*.test.js' | tap-bail | tap-spec",
     "test:worker": "cross-env NODE_ENV=test tape 'worker/**/*.test.js' | tap-bail | tap-spec",
     "test:coverage": "cross-env NODE_ENV=test nyc tape server/**/*.test.js",
@@ -61,6 +61,8 @@
     "bull": "^3.4.2",
     "classnames": "^2.2.6",
     "clipboard-polyfill": "^2.5.4",
+    "colors": "^1.3.2",
+    "common-tags": "^1.8.0",
     "compression": "^1.7.3",
     "core-js": "^2.5.7",
     "cors": "^2.8.4",
@@ -115,7 +117,8 @@
     "supertest": "^3.1.0",
     "tap-bail": "^1.0.0",
     "tap-spec": "^5.0.0",
-    "tape": "^4.9.1"
+    "tape": "^4.9.1",
+    "testdouble": "^3.8.2"
   },
   "nyc": {
     "include": [

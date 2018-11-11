@@ -5,7 +5,7 @@
 
 const outputsDAL = require('../../server/components/api/outputs/outputsDAL');
 const infosDAL = require('../../server/components/api/infos/infosDAL');
-const logger = require('../lib/logger');
+const logger = require('../lib/logger')('resetContractAddresses');
 const NetworkHelper = require('../lib/NetworkHelper');
 const BlockchainParser = require('../../server/lib/BlockchainParser');
 

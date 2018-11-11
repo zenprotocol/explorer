@@ -41,7 +41,6 @@ async function wrapTest(given, test) {
   td.replace('../../../../server/components/api/outputs/outputsDAL', {});
   td.replace('../../../../server/components/api/inputs/inputsDAL', {});
   td.replace('../../../../server/components/api/infos/infosDAL', {});
-  td.replace('../../../lib/logger', {});
   const BlocksAdder = require('../BlocksAdder');
   blocksAdder = new BlocksAdder({}, {});
 

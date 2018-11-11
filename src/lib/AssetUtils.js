@@ -30,9 +30,12 @@ export default {
       name = 'ZP';
     }
 
-    return this.removeLeadingAssetZeros(name);
+    return this.removeLeadingAndTrailingZeros(name);
   },
-  removeLeadingAssetZeros(asset) {
-    return asset.substring(0, 8) === '00000000' ? asset.substring(8) : asset;
+  removeLeadingAndTrailingZeros(asset) {
+    if(typeof asset !== 'string') {
+      return '';
+    }
+    return asset.length > 8 ? asset.replace(/^0+/, '').replace(/0+$/, '') : asset;
   },
 };
