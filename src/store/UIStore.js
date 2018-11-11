@@ -92,7 +92,7 @@ class UIStore {
       runInAction(() => {
         this.syncing = response.success && response.data.value === 'true';
       });
-    });
+    }).catch(() => {});
   }
 
   fetchBlocksOnChange() {
