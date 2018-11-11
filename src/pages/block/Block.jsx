@@ -12,6 +12,7 @@ import BlockTxsTable from './BlockTxsTable';
 import Loading from '../../components/Loading';
 import HashLink from '../../components/HashLink';
 import Page from '../../components/Page';
+import ItemNotFound from '../../components/ItemNotFound';
 import './Block.css';
 
 class BlockPage extends Component {
@@ -47,8 +48,46 @@ class BlockPage extends Component {
     uiStore.setBlockTxTableData({ hashOrBlockNumber });
   }
 
+  switchBlock(blockNumber) {
+    this.setState({ blockNumber: Number(blockNumber) });
+  }
+
+  render() {
+    const block = blockStore.block;
+    const blockDateStr = block.timestamp
+      ? TextUtils.getDateStringFromTimestamp(block.timestamp)
+      : '';
+    const blockNumberStr = block.blockNumber ? `#${block.blockNumber}` :this.hashOrBlockNumber;
+    const is404 = block.status === 404;
+    const renderContent = !is404 && block.blockNumber;
+
+    if (blockStore.loading.block) return <Loading />;
+
+    return (
+      <Page className="Block">
+        <section>
+          <div className="row">
+            <div className="col-sm">
+              <div className="font-size-md mb-1 mb-lg-2">{blockDateStr}</div>
+              <h1 className="d-block d-sm-inline-block text-white mb-3 mb-lg-5">
+                BLOCK {blockNumberStr}
+              </h1>
+            </div>
+            <div className="col-sm">{renderContent && this.renderPagination()}</div>
+          </div>
+          {is404 && <ItemNotFound item="block" />}
+          {renderContent && this.renderTopTables()}
+        </section>
+
+        <section>
+          {renderContent && <BlockTxsTable />}
+        </section>
+      </Page>
+    );
+  }
+
   renderPagination() {
-    const {blockNumber} = this.state;
+    const { blockNumber } = this.state;
     let prevDisabled = blockNumber <= 1;
     let nextDisabled = blockNumber >= blockStore.blocksCount;
 
@@ -85,94 +124,69 @@ class BlockPage extends Component {
     );
   }
 
-  switchBlock(blockNumber) {
-    this.setState({ blockNumber: Number(blockNumber) });
-  }
-
-  render() {
+  renderTopTables() {
     const block = blockStore.block;
     const blockDateStr = block.timestamp
       ? TextUtils.getDateStringFromTimestamp(block.timestamp)
       : '';
 
-    if (!block.id) return <Loading />;
-
     return (
-      <Page className="Block">
-        <section>
-          <div className="row">
-            <div className="col-sm">
-              <div className="font-size-md mb-1 mb-lg-2">{blockDateStr}</div>
-              <h1 className="d-block d-sm-inline-block text-white mb-3 mb-lg-5">
-                BLOCK #{block.blockNumber}
-              </h1>
-            </div>
-            <div className="col-sm">{this.renderPagination()}</div>
-          </div>
-          <div className="row">
-            <div className="col">
-              <table className="table table-zen">
-                <thead>
-                  <tr>
-                    <th scope="col" colSpan="2">
-                      SUMMARY
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {block.hash ? (
-                    <tr>
-                      <td>HASH</td>
-                      <td className="no-text-transform">
-                        <HashLink hash={block.hash} truncate={false} />
-                      </td>
-                    </tr>
-                  ) : null}
-                  <tr>
-                    <td>TRANSACTIONS</td>
-                    <td>{block.transactionCount}</td>
-                  </tr>
-                  <tr>
-                    <td>TIMESTAMP</td>
-                    <td>{blockDateStr}</td>
-                  </tr>
-                  <tr>
-                    <td>VERSION</td>
-                    <td>{block.version}</td>
-                  </tr>
-                  <tr>
-                    <td>DIFFICULTY</td>
-                    <td className="no-text-transform">
-                      {BlockUtils.formatDifficulty(block.difficulty)}
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>CONFIRMATIONS</td>
-                    <td className="no-text-transform">
-                      {blockStore.confirmations(block.blockNumber)}
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>PARENT</td>
-                    <td>
-                      <div className="address no-text-transform break-word">
-                        <HashLink
-                          url={block.blockNumber > 1 ? `/blocks/${block.parent}` : ''}
-                          hash={block.parent}
-                        />
-                      </div>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </section>
-
-        <section>
-          <BlockTxsTable />
-        </section>
-      </Page>
+      <div className="row">
+        <div className="col">
+          <table className="table table-zen">
+            <thead>
+              <tr>
+                <th scope="col" colSpan="2">
+                  SUMMARY
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              {block.hash ? (
+                <tr>
+                  <td>HASH</td>
+                  <td className="no-text-transform">
+                    <HashLink hash={block.hash} truncate={false} />
+                  </td>
+                </tr>
+              ) : null}
+              <tr>
+                <td>TRANSACTIONS</td>
+                <td>{block.transactionCount}</td>
+              </tr>
+              <tr>
+                <td>TIMESTAMP</td>
+                <td>{blockDateStr}</td>
+              </tr>
+              <tr>
+                <td>VERSION</td>
+                <td>{block.version}</td>
+              </tr>
+              <tr>
+                <td>DIFFICULTY</td>
+                <td className="no-text-transform">
+                  {BlockUtils.formatDifficulty(block.difficulty)}
+                </td>
+              </tr>
+              <tr>
+                <td>CONFIRMATIONS</td>
+                <td className="no-text-transform">{blockStore.confirmations(block.blockNumber)}</td>
+              </tr>
+              <tr>
+                <td>PARENT</td>
+                <td>
+                  <div className="address no-text-transform break-word">
+                    <HashLink
+                      url={block.blockNumber > 1 ? `/blocks/${block.parent}` : ''}
+                      hash={block.parent}
+                    />
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
     );
   }
 }

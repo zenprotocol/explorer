@@ -51,8 +51,9 @@ class AddressStore {
         })
         .catch(error => {
           runInAction(() => {
+            this.address = {};
             if (error.status === 404) {
-              this.address = { status: 404 };
+              this.address.status = 404;
             }
           });
         })

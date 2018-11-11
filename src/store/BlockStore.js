@@ -51,7 +51,14 @@ class BlockStore {
           this.block = response.data;
         });
       })
-      .catch(() => {})
+      .catch(error => {
+        runInAction(() => {
+          this.block = {};
+          if (error.status === 404) {
+            this.block.status = 404;
+          }
+        });
+      })
       .then(() => {
         runInAction(() => {
           this.loading.block = false;
@@ -89,7 +96,9 @@ class BlockStore {
         if (response.success) {
           this.medianTime = new Date(Number(response.data.value));
         }
-      });// TODO handle error
+      }).catch(() => {
+        this.medianTime = new Date();
+      });
     });
   }
 
