@@ -17,9 +17,16 @@ class RootStore {
     this.loading.chain = true;
     return service.infos.find().then(response => {
       runInAction(() => {
-        this.loading.chain = false;
         const chain = response.data.chain || 'main';
         this.chain = chain.endsWith('net') ? chain.substring(0, chain.length - 3) : chain;
+      });
+    }).catch(() => {
+      runInAction(() => {
+        this.chain = 'main';
+      });
+    }).then(() => {
+      runInAction(() => {
+        this.loading.chain = false;
       });
     });
   }

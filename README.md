@@ -98,10 +98,10 @@ in the docker web container, run `npx sequelize` to see all cli options.
 
 ## Folder Structure
 The project contain both the client and the server:
-- **common** - common code that can be used between processes (client, server or worker)
+- **src** - client source
+- **src/common** - common code that can be used between processes (client, server or worker)
 - **public** - client public source files
 - **server** - server code
-- **src** - client source
 - **worker** - server worker jobs & scheduler
 
 ## Examining the db in the container

@@ -3,12 +3,13 @@
 const faker = require('faker');
 const blocksDAL = require('../../server/components/api/blocks/blocksDAL');
 
-module.exports = async function(fromBlockNumber, toBlockNumber) {
+module.exports = async function(fromBlockNumber, toBlockNumber, lastHash = '') {
+  const blocks = [];
   for (let i = fromBlockNumber; i <= toBlockNumber; i++) {
-    await blocksDAL.create({
+    blocks.push({
       version: 0,
-      hash: faker.random.uuid(),
-      parent: faker.random.uuid(),
+      hash: i === toBlockNumber && lastHash ? lastHash : String(i), // for reorgs
+      parent: String(i - 1),
       blockNumber: i,
       commitments: 'test commitments',
       timestamp: 123456789,
@@ -17,4 +18,5 @@ module.exports = async function(fromBlockNumber, toBlockNumber) {
       nonce2: 25078183,
     });
   }
+  await blocksDAL.bulkCreate(blocks);
 };

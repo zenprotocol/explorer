@@ -135,7 +135,7 @@ class OraclePage extends Component {
           <PageTitle
             title={
               <React.Fragment>
-                OFFICIAL ZEN ORACLE -{' '}
+                EXAMPLE ORACLE -{' '}
                 <ExternalLink url="https://intrinio.com/">INTRINIO</ExternalLink>
               </React.Fragment>
             }

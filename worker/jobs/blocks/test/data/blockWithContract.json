@@ -1,0 +1,113 @@
+{
+  "hash": "0000000000170286bfd72a3c42fa4013a442598925814afa7e240c0737751e6e",
+  "header": {
+    "version": 0,
+    "parent": "000000000013d14f05aed962f77fed6816529293774bd215e9e86e06c010c338",
+    "blockNumber": 200,
+    "commitments": "d0c75d255d8663e000a034b47d07f67166a6244ab9ac4665cf8a9694fc0c6f1e",
+    "timestamp": 1530389364156,
+    "difficulty": 455032381,
+    "nonce": [-7281298598359019277, -6961157649031186408]
+  },
+  "transactions": {
+    "825acaa1c1fad256eb1e1a0b08cb73c2db034e79cfb6cb188d177d29b0af2964": {
+      "version": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "lock": {
+            "Coinbase": {
+              "blockNumber": 200,
+              "pkHash": "72c9f711659f19759967607f305da968f77f49e67ff23488d36fbd4df6a07b57"
+            }
+          },
+          "spend": {
+            "asset": "00",
+            "amount": 5001966124
+          }
+        }
+      ]
+    },
+    "8e411b606462c3b141fbe8728479fe0482c61ed8b8cb1e80822c91dd7daa6ad0": {
+      "version": 0,
+      "inputs": [
+        {
+          "outpoint": {
+            "txHash": "9c4810ee051bde971b50d6837a7e3b04f4dcae572ba4da28d0b1274787433756",
+            "index": 1
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "lock": {
+            "PK": {
+              "hash": "07851332bfeef6e37742f2b9ef22f168d10629ef468f27ddca3d92d565b5e368",
+              "address": "zen1qq7z3xv4lammwxa6z72u77gh3drgsv200g68j0hw28kfd2ed4ud5q22wrfy"
+            }
+          },
+          "spend": {
+            "asset": "00000000f24db32aa1881956646d3ccbb647df71455de10cf98b635810e8870906a56b63",
+            "amount": 1000
+          }
+        },
+        {
+          "lock": {
+            "PK": {
+              "hash": "e728617e1a3531dff581ce70584b9c41e1a23aa8f2e5f8f2fc83e6be0dad1235",
+              "address": "zen1quu5xzls6x5calavpeec9sjuug8s6yw4g7tjl3uhus0nturddzg6s6ptswj"
+            }
+          },
+          "spend": {
+            "asset": "00000000f24db32aa1881956646d3ccbb647df71455de10cf98b635810e8870906a56b63",
+            "amount": 987000
+          }
+        }
+      ]
+    },
+    "33c1ba62d66a65c3f0bb829eb7b31fb5a6f1ea1b880f96617ca173fc184f02b3": {
+      "version": 0,
+      "inputs": [
+        {
+          "outpoint": {
+            "txHash": "bcb26edae314e2309cc422b65471330092e1ad4284dc9feb2f87f48c4962bc6b",
+            "index": 27
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "lock": "ActivationSacrifice",
+          "spend": {
+            "asset": "00",
+            "amount": 1784000
+          }
+        },
+        {
+          "lock": "Fee",
+          "spend": {
+            "asset": "00",
+            "amount": 1960761
+          }
+        },
+        {
+          "lock": {
+            "PK": {
+              "hash": "f12195878fdfb0e3787c37067db17882ea9488aa4ad09523244fa713aa118629",
+              "address": "zen1q7ysetpu0m7cwx7ruxur8mvtcst4ffz92ftgf2geyf7n382s3sc5s6tdv9k"
+            }
+          },
+          "spend": {
+            "asset": "00",
+            "amount": 72696255239
+          }
+        }
+      ],
+      "contract": {
+        "contractId": "00000000cfcfe6bba6775dd01b3b11f0d2b03b134ed678b75468d221866bf030f679118a",
+        "address": "czen1qqqqqqqx0elnthfnhthgpkwc37rftqwcnfmt83d65drfzrpnt7qc0v7g33gdmynrf",
+        "code": "(* NAME_START:Chefs Pizza Token:NAME_END *)\nopen Zen.Types\nopen Zen.Base\nopen Zen.Cost\nopen Zen.Asset\nopen Zen.Data\n\nmodule D = Zen.Dictionary\nmodule W = Zen.Wallet\nmodule RT = Zen.ResultT\nmodule Tx = Zen.TxSkeleton\nmodule C = Zen.Cost\nmodule CR = Zen.ContractResult\n\nlet buy txSkeleton contractId returnAddress =\n  let! contractToken = Zen.Asset.getDefault contractId in\n  let! amount = Tx.getAvailableTokens zenAsset txSkeleton in\n\n  let! txSkeleton =\n    Tx.lockToContract zenAsset amount contractId txSkeleton\n    >>= Tx.mint amount contractToken\n    >>= Tx.lockToAddress contractToken amount returnAddress in\n\n  CR.ofTxSkel txSkeleton\n\nlet redeem txSkeleton contractId returnAddress wallet =\n  let! contractToken = Zen.Asset.getDefault contractId in\n  let! amount = Tx.getAvailableTokens contractToken txSkeleton in\n\n  let! txSkeleton =\n    Tx.destroy amount contractToken txSkeleton\n    >>= Tx.lockToAddress zenAsset amount returnAddress\n    >>= Tx.fromWallet zenAsset amount contractId wallet in\n\n  CR.ofOptionTxSkel \"contract doesn't have enough zens tokens\" txSkeleton\n\nlet main txSkeleton _ contractId command sender messageBody wallet state =\n  let! returnAddress =\n    messageBody >!= tryDict\n                >?= D.tryFind \"returnAddress\"\n                >?= tryLock\n  in\n  match returnAddress with\n  | Some returnAddress ->\n    if command = \"redeem\" then\n      redeem txSkeleton contractId returnAddress wallet\n    else if command = \"\" || command = \"buy\" then\n      buy txSkeleton contractId returnAddress\n      |> autoInc\n    else\n      RT.autoFailw \"unsupported command\"\n  | None ->\n    RT.autoFailw \"returnAddress is required\"\n\nlet cf _ _ _ _ _ wallet _ =\n    4 + 64 + 2 + (64 + (64 + (64 + 64 + (Zen.Wallet.size wallet * 128 + 192) + 3)) + 25) + 31\n    |> C.ret #nat\n"
+      }
+    }
+  }
+}

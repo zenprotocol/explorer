@@ -2,7 +2,7 @@
   "queues": {
     "cleanInterval": 60,
     "cleanAfter": 10,
-    "slackTimeLimit": 1800000,
+    "slackTimeLimit": 3600,
     "addBlocks": {
       "name": "Add Blocks From Node",
       "limitBlocks": 10
@@ -12,6 +12,12 @@
     },
     "contracts": {
       "name": "Contracts"
+    },
+    "commands": {
+      "name": "Commands"
+    },
+    "reorgs": {
+      "name": "Reorgs"
     }
   }
 }

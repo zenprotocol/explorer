@@ -115,7 +115,7 @@ function FooterLinks() {
           </li>
           <li className="nav-item">
             <ExternalLink className="nav-link text-nowrap" url="https://docs.zenprotocol.com/zen_js">
-              Zen’s JS
+              Zen.JS
             </ExternalLink>
           </li>
           <li className="nav-item">
@@ -146,19 +146,20 @@ function FooterLinks() {
               Contact Us
             </ExternalLink>
           </li>
-          <li className="nav-item text-nowrap">
+          <li className="nav-item">
             <ExternalLink
-              className="nav-link d-inline-block text-nowrap pr-0"
+              className="nav-link text-nowrap"
               url="https://www.zenprotocol.com/privacy?locale=en"
             >
-              Privacy
+              Privacy Policy
             </ExternalLink>
-            <span> &amp; </span>
+          </li>
+          <li className="nav-item">
             <ExternalLink
+              className="nav-link text-nowrap"
               url="https://www.zenprotocol.com/legal/zen_protocol_token_sale_agreement.pdf"
-              className="nav-link text-nowrap d-inline-block pl-0"
             >
-              Terms
+              Terms of Service
             </ExternalLink>
           </li>
         </ul>

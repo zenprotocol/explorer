@@ -1,7 +1,8 @@
 'use strict';
-import { inspect } from 'util';
 
+const util = require('util');
 const httpStatus = require('http-status');
+
 /**
  * Create a nicely formatted json response
  *
@@ -16,7 +17,7 @@ const createJsonResponse = (statusCode, data = null, err = null) => {
     errorObj = {
       message: httpStatus[statusCode],
       customMessage: err.customMessage,
-      error: inspect(err, false, 1),
+      error: util.inspect(err, false, 1),
     };
   }
 

@@ -1,9 +1,9 @@
 'use strict';
 
-const logger = require('../../lib/logger');
+const logger = require('../../lib/logger')('contracts');
 const contractsDAL = require('../../../server/components/api/contracts/contractsDAL');
 
-class ContractsAdder {
+class ActiveContractsUpdater {
   constructor(networkHelper) {
     this.networkHelper = networkHelper;
   }
@@ -23,10 +23,10 @@ class ContractsAdder {
   async processActiveContracts() {
     const contracts = await this.networkHelper.getActiveContractsFromNode();
     logger.info(`Got ${contracts.length} active contracts from node`);
-    return await this.createOrUpdateContracts(contracts);
+    return await this.updateContracts(contracts);
   }
 
-  async createOrUpdateContracts(activeContracts) {
+  async updateContracts(activeContracts) {
     const promises = [];
     const activeContractsDictionary = this.getContractsDictionaryFromArray(activeContracts);
     const setToNullIds = [];
@@ -36,7 +36,7 @@ class ContractsAdder {
     dbContracts.forEach(dbContract => {
       if (Object.keys(activeContractsDictionary).includes(dbContract.id)) {
         const expiryBlock = activeContractsDictionary[dbContract.id].expire;
-        if(dbContract.expiryBlock !== expiryBlock) {
+        if (dbContract.expiryBlock !== expiryBlock) {
           // update expiryBlock
           promises.push(
             contractsDAL.update(dbContract.id, {
@@ -55,27 +55,21 @@ class ContractsAdder {
     const notProcessedActiveContracts = Object.values(activeContractsDictionary).filter(
       contract => !contract.processed
     );
-    notProcessedActiveContracts.forEach(contract => {
-      const { contractId, address, expire, code } = contract;
-      promises.push(
-        (async () => {
-          const contractDb = await contractsDAL.findById(contractId);
-          if (contractDb) {
-            // if contract was found in this stage it means that it was re-activated
+    for (let i = 0; i < notProcessedActiveContracts.length; i++) {
+      const contract = notProcessedActiveContracts[i];
+      const { contractId, expire } = contract;
+      const contractDb = await contractsDAL.findById(contractId);
+      if (contractDb) {
+        // if contract was found in this stage it means that it was re-activated
+        promises.push(
+          (async () => {
             await contractsDAL.update(contractDb.id, {
               expiryBlock: expire,
             });
-          } else {
-            await contractsDAL.create({
-              id: contractId,
-              address,
-              code,
-              expiryBlock: expire,
-            });
-          }
-        })()
-      );
-    });
+          })()
+        );
+      }
+    }
 
     const numOfRowsAffected = promises.length + setToNullIds.length;
 
@@ -96,4 +90,4 @@ class ContractsAdder {
   }
 }
 
-module.exports = ContractsAdder;
+module.exports = ActiveContractsUpdater;

@@ -58,6 +58,16 @@ const createDAL = modelName => {
           });
       });
     },
+    async bulkCreate(values = [], options = {}) {
+      return new Promise((resolve, reject) => {
+        this.db[this.model]
+          .bulkCreate(values, options)
+          .then(resolve)
+          .catch(error => {
+            reject(wrapORMErrors(error));
+          });
+      });
+    },
     async update(id, values = {}, options = {}) {
       return new Promise((resolve, reject) => {
         this.db[this.model]
@@ -65,6 +75,16 @@ const createDAL = modelName => {
           .then((model) => {
             return model.update(values, deepMerge({individualHooks: true }, options));
           })
+          .then(resolve)
+          .catch(error => {
+            reject(wrapORMErrors(error));
+          });
+      });
+    },
+    async bulkUpdate(values = {}, options = {}) {
+      return new Promise((resolve, reject) => {
+        this.db[this.model]
+          .update(values, deepMerge({individualHooks: true }, options))
           .then(resolve)
           .catch(error => {
             reject(wrapORMErrors(error));
@@ -81,8 +101,24 @@ const createDAL = modelName => {
           });
       });
     },
+    async bulkDelete(options = {}) {
+      return new Promise((resolve, reject) => {
+        this.db[this.model]
+          .destroy(options)
+          .then(resolve)
+          .catch(error => {
+            reject(wrapORMErrors(error));
+          });
+      });
+    },
     toJSON(model) {
       return model.toJSON();
+    },
+    getItemsAndCountResult([count, items] = []) {
+      return {
+        count,
+        items,
+      };
     },
   };
 };

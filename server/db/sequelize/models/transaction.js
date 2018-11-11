@@ -15,6 +15,7 @@ module.exports = (sequelize, DataTypes) => {
     Transaction.hasMany(models.Output);
     Transaction.hasMany(models.Input);
     Transaction.belongsTo(models.Block);
+    Transaction.hasMany(models.Command);
   };
   return Transaction;
 };

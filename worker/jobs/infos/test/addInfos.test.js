@@ -2,7 +2,7 @@
 
 const test = require('blue-tape');
 const infosDAL = require('../../../../server/components/api/infos/infosDAL');
-const truncate = require('../../../../common/test/truncate');
+const truncate = require('../../../lib/truncate');
 const NetworkHelper = require('../../../lib/NetworkHelper');
 const mock = require('./mock');
 const InfosAdder = require('../InfosAdder');

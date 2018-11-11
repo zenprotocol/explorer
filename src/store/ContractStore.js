@@ -4,8 +4,13 @@ import Service from '../lib/Service';
 class ContractStore {
   constructor() {
     this.contract = {};
+    this.assets = [];
+    this.commands = [];
+    this.commandsCount = 0;
     this.loading = {
       contract: false,
+      assets: false,
+      commands: false,
     };
   }
 
@@ -19,13 +24,63 @@ class ContractStore {
         runInAction(() => {
           this.contract = contract;
         });
-        return contract;
       })
       .catch(() => {
-        // avoid using finally
+        runInAction(() => {
+          this.contract = {};
+        });
       }).then(() => {
         runInAction(() => {
           this.loading.contract = false;
+        });
+        return this.contract;
+      });
+  }
+
+  loadAssets(address, params = {}) {
+    this.loading.assets = true;
+
+    return Service.contracts
+      .findAssetsOutstanding(address, params)
+      .then(({data}) => {
+        runInAction(() => {
+          this.assets = data.items;
+          this.assetsCount = data.count;
+        });
+      })
+      .catch(() => {
+        runInAction(() => {
+          this.assets = [];
+          this.assetsCount = 0;
+        });
+      })
+      .then(() => {
+        runInAction(() => {
+          this.loading.assets = false;
+        });
+      });
+  }
+
+  loadCommands(address, params = {}) {
+    this.loading.commands = true;
+
+    return Service.contracts
+      .findCommands(address, params)
+      .then(({data}) => {
+        runInAction(() => {
+          this.commands = data.items;
+          this.commandsCount = data.count;
+        });
+      })
+      .catch(() => {
+        runInAction(() => {
+          this.commands = [];
+          this.commandsCount = 0;
+        });
+      })
+      .then(() => {
+        runInAction(() => {
+          this.loading.commands = false;
         });
       });
   }
@@ -33,8 +88,14 @@ class ContractStore {
 
 decorate(ContractStore, {
   contract: observable,
-  loadContract: action,
+  assets: observable,
+  assetsCount: observable,
+  commands: observable,
+  commandsCount: observable,
   loading: observable,
+  loadContract: action,
+  loadAssets: action,
+  loadCommands: action,
 });
 
 export default new ContractStore();
