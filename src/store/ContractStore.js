@@ -25,9 +25,12 @@ class ContractStore {
           this.contract = contract;
         });
       })
-      .catch(() => {
+      .catch((error) => {
         runInAction(() => {
           this.contract = {};
+          if (error.status === 404) {
+            this.contract.status = 404;
+          }
         });
       }).then(() => {
         runInAction(() => {

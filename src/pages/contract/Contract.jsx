@@ -37,7 +37,7 @@ class ContractPage extends Component {
   }
 
   render() {
-    const is404 = addressStore.address.status === 404;
+    const is404 = contractStore.contract.status === 404;
 
     return (
       <Page className="Contract">
