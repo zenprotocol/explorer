@@ -37,7 +37,7 @@ class ContractPage extends Component {
   }
 
   render() {
-    const is404 = addressStore.address.status === 404;
+    const is404 = contractStore.contract.status === 404;
 
     return (
       <Page className="Contract">
@@ -59,6 +59,9 @@ class ContractPage extends Component {
     }
     const contract = contractStore.contract;
     const address = addressStore.address;
+    if(!contract.id) {
+      return null;
+    }
     return (
       <div className="row">
         <div className="col-lg-6">
@@ -96,6 +99,9 @@ class ContractPage extends Component {
   }
 
   renderTabs() {
+    if(!contractStore.contract.id) {
+      return null;
+    }
     const currentPath = this.props.match.path;
     return (
       <Tabs>

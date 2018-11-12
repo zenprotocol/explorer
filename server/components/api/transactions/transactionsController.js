@@ -11,6 +11,7 @@ const getTransactionAssets = require('./getTransactionAssets');
 const isCoinbaseTX = require('./isCoinbaseTX');
 const Service = require('../../../lib/Service');
 const BlockchainParser = require('../../../lib/BlockchainParser');
+const isHash = require('../../../lib/isHash');
 
 module.exports = {
   index: async function(req, res) {
@@ -80,6 +81,9 @@ module.exports = {
     let countPromise, 
       findPromise;
     if (hashOrBlockNumber) {
+      if(!isHash(hashOrBlockNumber) && (isNaN(hashOrBlockNumber) || Number(hashOrBlockNumber) > 2147483647)) {
+        throw new HttpError(httpStatus.BAD_REQUEST);
+      }
       findPromise = transactionsDAL.findAllAssetsByBlock(hashOrBlockNumber, query);
       countPromise = transactionsDAL.countAssetsByBlock(hashOrBlockNumber);
     }

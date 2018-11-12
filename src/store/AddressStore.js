@@ -47,15 +47,19 @@ class AddressStore {
         .then(response => {
           runInAction(() => {
             this.address = response.data;
-            this.loading.address = false;
           });
         })
         .catch(error => {
           runInAction(() => {
-            this.loading.address = false;
+            this.address = {};
             if (error.status === 404) {
-              this.address = { status: 404 };
+              this.address.status = 404;
             }
+          });
+        })
+        .then(() => {
+          runInAction(() => {
+            this.loading.address = false;
           });
         });
     }

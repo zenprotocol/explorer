@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
-import classNames from 'classnames';
 import addressStore from '../../store/AddressStore';
 import uiStore from '../../store/UIStore';
 import RouterUtils from '../../lib/RouterUtils';
@@ -31,7 +30,7 @@ class AddressPage extends Component {
   }
 
   setAddress(address) {
-    uiStore.setAddressTxAssetsTableData({address});
+    uiStore.setAddressTxAssetsTableData({ address });
   }
 
   render() {
@@ -42,14 +41,18 @@ class AddressPage extends Component {
       balance: getAssetTotal(addressStore.address.balance, '00'),
     };
     const is404 = addressStore.address.status === 404;
+    const renderContent = !is404 && addressStore.address.address;
 
     return (
       <Page className="Address">
         <section>
-          <PageTitle title="ADDRESS" subtitle={<HashLink hash={params.address} truncate={false} />} />
-          {addressStore.loading.address ? (
-            <Loading />
-          ) : !is404 ? (
+          <PageTitle
+            title="ADDRESS"
+            subtitle={<HashLink hash={params.address} truncate={false} />}
+          />
+          {addressStore.loading.address && <Loading />}
+          {is404 && <ItemNotFound item="address" />}
+          {renderContent && (
             <div className="row">
               <div className="col-lg-6">
                 <table className="table table-zen">
@@ -79,7 +82,9 @@ class AddressPage extends Component {
                     </tr>
                     <tr>
                       <td>NO. ASSET TYPES</td>
-                      <td>{addressStore.address.assets ? addressStore.address.assets.length : ''}</td>
+                      <td>
+                        {addressStore.address.assets ? addressStore.address.assets.length : ''}
+                      </td>
                     </tr>
                   </tbody>
                 </table>
@@ -88,14 +93,10 @@ class AddressPage extends Component {
                 <AssetsBalancesTable balance={addressStore.address.balance} />
               </div>
             </div>
-          ) : (
-            <ItemNotFound item="Address" />
           )}
         </section>
 
-        <section className={classNames({'d-none': is404})}>
-          <AddressTxsTable address={params.address} />
-        </section>
+        <section>{renderContent && <AddressTxsTable address={params.address} />}</section>
       </Page>
     );
   }

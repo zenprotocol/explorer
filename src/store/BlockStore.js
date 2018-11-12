@@ -10,7 +10,7 @@ class BlockStore {
     this.blockTransactionAssets = [];
     this.blockTransactionAssetsCount = 0;
     this.medianTime = null;
-    
+
     this.loading = {
       blocks: false,
       block: false,
@@ -31,10 +31,10 @@ class BlockStore {
         runInAction(() => {
           this.blocks = response.data.items;
           this.blocksCount = response.data.total;
-          this.loading.blocks = false;
         });
       })
-      .catch(() => {
+      .catch(() => {})
+      .then(() => {
         runInAction(() => {
           this.loading.blocks = false;
         });
@@ -49,14 +49,21 @@ class BlockStore {
       .then(response => {
         runInAction(() => {
           this.block = response.data;
-          this.loading.block = false;
         });
-        return response.data;
       })
-      .catch(() => {
+      .catch(error => {
+        runInAction(() => {
+          this.block = {};
+          if (error.status === 404) {
+            this.block.status = 404;
+          }
+        });
+      })
+      .then(() => {
         runInAction(() => {
           this.loading.block = false;
         });
+        return this.block;
       });
   }
 
@@ -68,10 +75,10 @@ class BlockStore {
         runInAction(() => {
           this.blockTransactionAssets = response.data.items;
           this.blockTransactionAssetsCount = Number(response.data.total);
-          this.loading.blockTransactionAssets = false;
         });
       })
-      .catch(() => {
+      .catch(() => {})
+      .then(() => {
         runInAction(() => {
           this.loading.blockTransactionAssets = false;
         });
@@ -89,6 +96,8 @@ class BlockStore {
         if (response.success) {
           this.medianTime = new Date(Number(response.data.value));
         }
+      }).catch(() => {
+        this.medianTime = new Date();
       });
     });
   }

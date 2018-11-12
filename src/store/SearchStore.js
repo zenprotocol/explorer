@@ -37,13 +37,13 @@ class SearchStore {
       .searchAll(value)
       .then(response => {
         runInAction(() => {
-          this.loading.searchResults = false;
           if (response.success) {
             this.searchResults = response.data;
           }
         });
       })
-      .catch(() => {
+      .catch(() => {})
+      .then(() => {
         runInAction(() => {
           this.loading.searchResults = false;
         });

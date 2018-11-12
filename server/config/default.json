@@ -18,6 +18,9 @@
     },
     "reorgs": {
       "name": "Reorgs"
+    },
+    "reorgs-scan": {
+      "name": "Reorgs scan"
     }
   }
 }
