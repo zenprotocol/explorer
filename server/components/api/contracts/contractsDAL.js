@@ -63,8 +63,8 @@ contractsDAL.findAllOutstandingAssets = function(id, { limit = 10, offset = 0 } 
   const sql = tags.oneLine`
   SELECT
     COALESCE("Issued"."asset", "Destroyed"."asset") AS "asset",
-    "Issued"."sum" AS "issued",
-    "Destroyed"."sum" AS "destroyed",
+    COALESCE("Issued"."sum", 0) AS "issued",
+    COALESCE("Destroyed"."sum", 0) AS "destroyed",
     COALESCE("Issued"."sum", 0) -  COALESCE("Destroyed"."sum", 0) AS "outstanding",
     "Keyholders"."total" AS "keyholders"
   FROM
