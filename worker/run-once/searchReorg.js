@@ -10,6 +10,9 @@ const NetworkHelper = require('../lib/NetworkHelper');
 const logger = require('../lib/logger')('reorg-search');
 const reorgProcessor = new ReorgProcessor(new NetworkHelper());
 
+reorgProcessor.on('scan-block', blockNumber => logger.info(`searching in block ${blockNumber}`));
+reorgProcessor.on('fork-found', blockNumber => logger.info(`Fork found at block number ${blockNumber}`));
+
 const run = async () => {
   logger.info('Searching forks...');
   const forks = await reorgProcessor.searchForks(searchAll());

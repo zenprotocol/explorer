@@ -86,6 +86,11 @@ Promise.all([
   addBlocksQueue.clean(0, 'wait'),
   addBlocksQueue.clean(0, 'completed'),
   addBlocksQueue.clean(0, 'failed'),
+  reorgsQueue.clean(0, 'active'),
+  reorgsQueue.clean(0, 'delayed'),
+  reorgsQueue.clean(0, 'wait'),
+  reorgsQueue.clean(0, 'completed'),
+  reorgsQueue.clean(0, 'failed'),
 ]).then(() => {
   // schedule ---
   addBlocksQueue.add({ limitBlocks: NUM_OF_BLOCKS_IN_CHUNK }, { repeat: { cron: '* * * * *' } });
@@ -96,4 +101,6 @@ Promise.all([
 setInterval(() => {
   addBlocksQueue.clean(Config.get('queues:cleanAfter') * 1000, 'completed');
   addBlocksQueue.clean(Config.get('queues:cleanAfter') * 1000, 'failed');
+  reorgsQueue.clean(Config.get('queues:cleanAfter') * 1000, 'completed');
+  reorgsQueue.clean(Config.get('queues:cleanAfter') * 1000, 'failed');
 }, Config.get('queues:cleanInterval') * 1000);

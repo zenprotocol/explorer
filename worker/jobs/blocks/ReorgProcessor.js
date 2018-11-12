@@ -1,5 +1,6 @@
 'use strict';
 
+const EventEmitter = require('events');
 const logger = require('../../lib/logger')('reorg');
 const blocksDAL = require('../../../server/components/api/blocks/blocksDAL');
 const Op = require('../../../server/db/sequelize/models').sequelize.Op;
@@ -7,12 +8,14 @@ const getJobData = require('../../lib/getJobData');
 
 const MAX_ALLOWED_BLOCKS_TO_DELETE = 500;
 
-class ReorgProcessor {
+class ReorgProcessor extends EventEmitter {
   constructor(networkHelper) {
+    super();
     this.networkHelper = networkHelper;
   }
 
   async doJob(job) {
+    this.on('fork-found', blockNumber => logger.info(`Fork found at block number ${blockNumber}`));
     try {
       const searchAll = getJobData(job, 'all') === true; // do not search all by default
       const preventDelete = getJobData(job, 'delete') === false; // delete by default
@@ -60,7 +63,7 @@ class ReorgProcessor {
 
     if (latest) {
       while (blockNumber >= lowestBlockNumber) {
-        logger.info(`searching in block ${blockNumber}`);
+        this.emit('scan-block', blockNumber);
         const [block, nodeBlock] = await Promise.all([
           blocksDAL.findByBlockNumber(blockNumber),
           this.networkHelper.getBlockFromNode(blockNumber),
@@ -70,7 +73,7 @@ class ReorgProcessor {
           foundDifference = true;
         } else {
           if (foundDifference) {
-            logger.info(`Fork found at block number ${blockNumber}`);
+            this.emit('fork-found', blockNumber);
             forks.push(blockNumber);
             foundDifference = false;
             if(!searchAll) {
