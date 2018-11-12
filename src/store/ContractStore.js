@@ -5,12 +5,14 @@ class ContractStore {
   constructor() {
     this.contract = {};
     this.assets = [];
+    this.asset = {};
     this.commands = [];
     this.commandsCount = 0;
     this.loading = {
       contract: false,
       assets: false,
       commands: false,
+      asset: false,
     };
   }
 
