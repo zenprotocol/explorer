@@ -1,39 +1,45 @@
 import React, { Component } from 'react';
+import { computed, decorate } from 'mobx';
 import { observer } from 'mobx-react';
 import { Route, Switch, Redirect } from 'react-router-dom';
 import contractStore from '../../store/ContractStore';
 import RouterUtils from '../../lib/RouterUtils';
+import TextUtils from '../../lib/TextUtils';
 import Loading from '../../components/Loading';
 import HashLink from '../../components/HashLink';
 import ItemNotFound from '../../components/ItemNotFound';
 import PageTitle from '../../components/PageTitle';
 import Page from '../../components/Page';
+import { ChartLoader } from '../../components/charts';
 import { Tabs, TabHead, TabBody, Tab } from '../../components/tabs';
 import { TransactionsTab } from './components/tabs';
 
-class ContractPage extends Component {
-  // componentDidMount() {
-  //   this.setAddress(this.assetProp);
-  // }
+class AssetPage extends Component {
+  componentDidMount() {
+    this.setAsset(this.assetProp);
+  }
 
-  // componentDidUpdate(prevProps) {
-  //   const prevParams = RouterUtils.getRouteParams(prevProps);
-  //   if (this.assetProp !== prevParams.address) {
-  //     this.setAddress(this.assetProp);
-  //   }
-  // }
+  componentDidUpdate(prevProps) {
+    const prevParams = RouterUtils.getRouteParams(prevProps);
+    if (this.assetProp !== prevParams.asset) {
+      this.setAsset(this.assetProp);
+    }
+  }
 
-  // setAddress(address) {
-  //   contractStore.loadContract(address);
-  //   addressStore.fetchAddress(address);
-  // }
+  setAsset(asset) {
+    contractStore.loadAsset(asset);
+  }
 
   get assetProp() {
     return RouterUtils.getRouteParams(this.props).asset;
   }
 
+  get contractId() {
+    return this.assetProp.substring(0, 72);
+  }
+
   render() {
-    const is404 = contractStore.contract.status === 404;
+    const is404 = contractStore.asset.status === 404;
 
     return (
       <Page className="Asset">
@@ -50,11 +56,11 @@ class ContractPage extends Component {
   }
 
   renderTopTables() {
-    if (contractStore.loading.contract || contractStore.loading.asset) {
+    if (contractStore.loading.asset) {
       return <Loading />;
     }
-    const contract = contractStore.contract;
-    if(!contract.id) {
+    const asset = contractStore.asset;
+    if (!Object.keys(asset)) {
       return null;
     }
     return (
@@ -71,20 +77,49 @@ class ContractPage extends Component {
             <tbody>
               <tr>
                 <td>CONTRACT HASH</td>
-                <td>hash here...</td>
+                <td>
+                  <HashLink hash={this.contractId} />
+                </td>
+              </tr>
+              <tr>
+                <td>TOKENS OUTSTANDING</td>
+                <td>{TextUtils.formatNumber(contractStore.asset.outstanding)}</td>
+              </tr>
+              <tr>
+                <td>TOTAL ISSUED</td>
+                <td>{TextUtils.formatNumber(contractStore.asset.issued)}</td>
+              </tr>
+              <tr>
+                <td>DESTROYED</td>
+                <td>{TextUtils.formatNumber(contractStore.asset.destroyed)}</td>
+              </tr>
+              <tr>
+                <td>UNIQUE KEYHOLDERS</td>
+                <td>{TextUtils.formatNumber(contractStore.asset.keyholders)}</td>
               </tr>
             </tbody>
           </table>
         </div>
         <div className="col-lg-6">
-          chart here
+          <table className="table table-zen">
+            <thead>
+              <tr>
+                <th scope="col">Unique keyholder distribution</th>
+              </tr>
+            </thead>
+          </table>
+          <ChartLoader
+            chartName="assetDistributionMap"
+            showTitle={false}
+            params={{ asset: this.assetProp }}
+          />
         </div>
       </div>
     );
   }
 
   renderTabs() {
-    if(!contractStore.contract.id) {
+    if (!contractStore.contract.id) {
       return null;
     }
     const currentPath = this.props.match.path;
@@ -106,4 +141,8 @@ class ContractPage extends Component {
   }
 }
 
-export default observer(ContractPage);
+decorate(AssetPage, {
+  contractId: computed,
+});
+
+export default observer(AssetPage);

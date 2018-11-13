@@ -3,6 +3,7 @@
 const tags = require('common-tags');
 const transactionsDAL = require('../transactions/transactionsDAL');
 const blocksDAL = require('../blocks/blocksDAL');
+const inputsDAL = require('../inputs/inputsDAL');
 const db = transactionsDAL.db;
 const sequelize = db.sequelize;
 
@@ -14,7 +15,18 @@ statsDAL.totalZp = async function() {
   return 20000000 + (blocksCount - 1) * 50;
 };
 
-statsDAL.transactionsPerDay = async function(chartInterval = maximumChartInterval) {
+statsDAL.totalIssued = async function(asset) {
+  return inputsDAL.sum('amount', {
+    where: {
+      [db.sequelize.Op.and]: {
+        asset,
+        isMint: true,
+      },
+    },
+  });
+};
+
+statsDAL.transactionsPerDay = async function({ chartInterval = maximumChartInterval } = {}) {
   const sql = tags.oneLine`
   SELECT COUNT("Transactions"."id"), "Blocks"."dt"
   FROM "Transactions"
@@ -32,7 +44,7 @@ statsDAL.transactionsPerDay = async function(chartInterval = maximumChartInterva
   });
 };
 
-statsDAL.blockDifficulty = async function(chartInterval = maximumChartInterval) {
+statsDAL.blockDifficulty = async function({ chartInterval = maximumChartInterval } = {}) {
   const sql = tags.oneLine`
   with t_vals as
   (select id, timestamp as tsp, "blockNumber" as block_number, least (greatest ((difficulty >> 24), 3), 32) as lnth, (difficulty & x'00FFFFFF' :: int) as mantissa from "Blocks")
@@ -51,7 +63,7 @@ statsDAL.blockDifficulty = async function(chartInterval = maximumChartInterval) 
   });
 };
 
-statsDAL.networkHashRate = async function(chartInterval = maximumChartInterval) {
+statsDAL.networkHashRate = async function({ chartInterval = maximumChartInterval } = {}) {
   const sql = tags.oneLine`
   with t_vals as
   (select id, timestamp as tsp, "blockNumber" as block_number, least (greatest ((difficulty >> 24), 3), 32) as lnth, (difficulty & x'00FFFFFF' :: int) as mantissa from "Blocks")
@@ -71,9 +83,47 @@ statsDAL.networkHashRate = async function(chartInterval = maximumChartInterval) 
 };
 
 statsDAL.zpRichList = async function() {
+  return Promise.all([this.distributionMap('00', 100000000), statsDAL.totalZp()]).then(
+    ([chartData, totalZp]) => {
+      let restZp = chartData.reduce((restAmount, curItem) => {
+        return restAmount - Number(curItem.balance);
+      }, Number(totalZp));
+
+      chartData.push({
+        balance: String(restZp),
+        address: 'Rest',
+      });
+
+      return chartData;
+    }
+  );
+};
+
+statsDAL.assetDistributionMap = async function({ asset } = {}) {
+  if (!asset) {
+    return [];
+  }
+
+  return Promise.all([this.distributionMap(asset), statsDAL.totalIssued(asset)]).then(
+    ([chartData, total]) => {
+      let rest = chartData.reduce((restAmount, curItem) => {
+        return restAmount - Number(curItem.balance);
+      }, Number(total));
+
+      chartData.push({
+        balance: String(rest),
+        address: 'Rest',
+      });
+
+      return chartData;
+    }
+  );
+};
+
+statsDAL.distributionMap = async function(asset = '00', divideBy = 1) {
   const sql = tags.oneLine`
   select
-  (output_sum - input_sum) / 100000000 as balance,
+  (output_sum - input_sum) / :divideBy as balance,
   bothsums.address as address
   from
     (select
@@ -89,7 +139,8 @@ statsDAL.zpRichList = async function() {
         o.address,
         sum(o.amount) as output_sum
       from "Outputs" o
-      where o.asset = '00'
+      where o.asset = :asset
+      and o."lockType" <> 'Destroy'
       group by address) as osums
       full outer join
       (select
@@ -99,33 +150,23 @@ statsDAL.zpRichList = async function() {
         "Outputs" io
         join "Inputs" i
         on i."OutputId" = io.id
-      where io.asset = '00'
+      where io.asset = :asset
       group by io.address) as isums
       on osums.address = isums.address) as bothsums
   where output_sum <> input_sum
   order by balance desc
   limit 100
   `;
-  return Promise.all([
-    sequelize.query(sql, {
-      type: sequelize.QueryTypes.SELECT,
-    }),
-    statsDAL.totalZp(),
-  ]).then(([chartData, totalZp]) => {
-    let restZp = chartData.reduce((restAmount, curItem) => {
-      return restAmount - Number(curItem.balance);
-    }, Number(totalZp));
-    
-    chartData.push({
-      balance: String(restZp),
-      address: 'Rest',
-    });
-
-    return chartData;
+  return sequelize.query(sql, {
+    replacements: {
+      asset,
+      divideBy,
+    },
+    type: sequelize.QueryTypes.SELECT,
   });
 };
 
-statsDAL.zpSupply = async function(chartInterval = maximumChartInterval) {
+statsDAL.zpSupply = async function({ chartInterval = maximumChartInterval } = {}) {
   const sql = tags.oneLine`
   SELECT (MAX("Blocks"."blockNumber") * 50 + 20000000) AS supply, "dt"
   FROM

@@ -8,6 +8,18 @@ import LineChart from './LineChart.jsx';
 import PieChart from './PieChart.jsx';
 import './ChartLoader.css';
 
+const PrivateConfigs = {
+  distributionMap: {
+    type: 'pie',
+    xAxisType: 'linear',
+    tooltipHeaderFormat: '<span style="font-size: 10px;"><strong>{point.key}</strong></span><br/>',
+    dataLabelsFormatter: function() {
+      return this.point.x <= 20 || this.point.x === 100
+        ? TextUtils.truncateHash(this.point.name)
+        : null;
+    },
+  },
+};
 const ChartConfigs = {
   transactionsPerDay: {
     type: 'line',
@@ -24,18 +36,15 @@ const ChartConfigs = {
     title: 'Network HashRate',
     seriesTitle: 'Avg.Daily HashRate',
   },
-  zpRichList: {
-    type: 'pie',
-    xAxisType: 'linear',
+  zpRichList: Object.assign({}, PrivateConfigs.distributionMap, {
     title: 'ZP Rich List',
     seriesTitle: 'ZP Amount',
     tooltipValueSuffix: ' ZP',
-    tooltipHeaderFormat:
-      '<span style="font-size: 10px;"><strong>{point.key}</strong></span><br/>',
-    dataLabelsFormatter: function () {
-      return this.point.x <= 20 || this.point.x === 100 ? TextUtils.truncateHash(this.point.name) : null;
-    },
-  },
+  }),
+  assetDistributionMap: Object.assign({}, PrivateConfigs.distributionMap, {
+    title: 'Unique keyholder distribution',
+    seriesTitle: 'Amount',
+  }),
   zpSupply: {
     type: 'line',
     title: 'ZP Supply',
@@ -43,6 +52,17 @@ const ChartConfigs = {
   },
 };
 
+const PrivateMappers = {
+  distributionMap(data) {
+    return data.map((item, index) => {
+      return {
+        name: item.address,
+        x: index,
+        y: Number(item.balance),
+      };
+    });
+  },
+};
 const Mappers = {
   transactionsPerDay(data) {
     return data.map(item => {
@@ -68,15 +88,8 @@ const Mappers = {
       };
     });
   },
-  zpRichList(data) {
-    return data.map((item, index) => {
-      return {
-        name: item.address,
-        x: index,
-        y: Number(item.balance),
-      };
-    });
-  },
+  zpRichList: PrivateMappers.distributionMap,
+  assetDistributionMap: PrivateMappers.distributionMap,
   zpSupply(data) {
     return data.map(item => {
       return {
@@ -101,7 +114,7 @@ export default class ChartLoader extends PureComponent {
     const chartConfig = this.getChartConfig();
     if (chartConfig) {
       this.setState({ loading: true });
-      this.currentPromise = Service.stats.charts(chartConfig.name);
+      this.currentPromise = Service.stats.charts(chartConfig.name, chartConfig.params);
       this.currentPromise
         .then(response => {
           if (response.success) {
@@ -109,7 +122,7 @@ export default class ChartLoader extends PureComponent {
           }
           this.setState({ loading: false });
         })
-        .catch((err) => {
+        .catch(err => {
           if (!Service.utils.isCancel(err)) {
             this.setState({ loading: false });
           }
@@ -139,7 +152,7 @@ export default class ChartLoader extends PureComponent {
 
     let componentType = null;
     switch (chartConfig.type) {
-      case 'pie': 
+      case 'pie':
         componentType = PieChart;
         break;
       case 'line':
@@ -147,7 +160,7 @@ export default class ChartLoader extends PureComponent {
         componentType = LineChart;
         break;
     }
-    
+
     const title = titleLinkTo ? (
       <Link to={titleLinkTo}>{chartConfig.title}</Link>
     ) : (
@@ -166,8 +179,8 @@ export default class ChartLoader extends PureComponent {
   }
 
   getChartConfig() {
-    const { chartName } = this.props;
-    return Object.assign({}, ChartConfigs[chartName], { name: chartName });
+    const { chartName, params } = this.props;
+    return Object.assign({}, ChartConfigs[chartName], { name: chartName, params });
   }
 }
 

@@ -27,14 +27,15 @@ class ContractStore {
           this.contract = contract;
         });
       })
-      .catch((error) => {
+      .catch(error => {
         runInAction(() => {
           this.contract = {};
           if (error.status === 404) {
             this.contract.status = 404;
           }
         });
-      }).then(() => {
+      })
+      .then(() => {
         runInAction(() => {
           this.loading.contract = false;
         });
@@ -47,7 +48,7 @@ class ContractStore {
 
     return Service.contracts
       .findAssetsOutstanding(address, params)
-      .then(({data}) => {
+      .then(({ data }) => {
         runInAction(() => {
           this.assets = data.items;
           this.assetsCount = data.count;
@@ -66,12 +67,37 @@ class ContractStore {
       });
   }
 
+  loadAsset(hash) {
+    this.loading.asset = true;
+
+    return Service.assets
+      .find(hash)
+      .then(({ data }) => {
+        runInAction(() => {
+          this.asset = data;
+        });
+      })
+      .catch(error => {
+        runInAction(() => {
+          this.asset = {};
+          if (error.status === 404) {
+            this.asset.status = 404;
+          }
+        });
+      })
+      .then(() => {
+        runInAction(() => {
+          this.loading.asset = false;
+        });
+      });
+  }
+
   loadCommands(address, params = {}) {
     this.loading.commands = true;
 
     return Service.contracts
       .findCommands(address, params)
-      .then(({data}) => {
+      .then(({ data }) => {
         runInAction(() => {
           this.commands = data.items;
           this.commandsCount = data.count;
@@ -106,7 +132,7 @@ decorate(ContractStore, {
 export default new ContractStore();
 
 export class Contract {
-  constructor({id = '', address = '', code = '', expiryBlock = null} = {}) {
+  constructor({ id = '', address = '', code = '', expiryBlock = null } = {}) {
     this.id = id;
     this.address = address;
     this.code = code;

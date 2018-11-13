@@ -48,6 +48,16 @@ const createDAL = modelName => {
           });
       });
     },
+    async sum(column, options = {}) {
+      return new Promise((resolve, reject) => {
+        this.db[this.model]
+          .sum(column, options)
+          .then(resolve)
+          .catch(error => {
+            reject(wrapORMErrors(error));
+          });
+      });
+    },
     async create(values = {}, options = {}) {
       return new Promise((resolve, reject) => {
         this.db[this.model]
