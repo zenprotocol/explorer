@@ -5,14 +5,17 @@ class ContractStore {
   constructor() {
     this.contract = {};
     this.assets = [];
-    this.asset = {};
     this.commands = [];
     this.commandsCount = 0;
+    this.asset = {};
+    this.assetTxs = [];
+    this.assetTxsCount = 0;
     this.loading = {
       contract: false,
       assets: false,
       commands: false,
       asset: false,
+      assetTxs: false,
     };
   }
 
@@ -67,6 +70,30 @@ class ContractStore {
       });
   }
 
+  loadCommands(address, params = {}) {
+    this.loading.commands = true;
+
+    return Service.contracts
+      .findCommands(address, params)
+      .then(({ data }) => {
+        runInAction(() => {
+          this.commands = data.items;
+          this.commandsCount = data.count;
+        });
+      })
+      .catch(() => {
+        runInAction(() => {
+          this.commands = [];
+          this.commandsCount = 0;
+        });
+      })
+      .then(() => {
+        runInAction(() => {
+          this.loading.commands = false;
+        });
+      });
+  }
+
   loadAsset(hash) {
     this.loading.asset = true;
 
@@ -92,26 +119,26 @@ class ContractStore {
       });
   }
 
-  loadCommands(address, params = {}) {
-    this.loading.commands = true;
+  loadAssetTxs(asset, params = {}) {
+    this.loading.assetTxs = true;
 
-    return Service.contracts
-      .findCommands(address, params)
+    return Service.transactions
+      .find(Object.assign({ asset }, params))
       .then(({ data }) => {
         runInAction(() => {
-          this.commands = data.items;
-          this.commandsCount = data.count;
+          this.assetTxs = data.items;
+          this.assetTxsCount = data.total;
         });
       })
       .catch(() => {
         runInAction(() => {
-          this.commands = [];
-          this.commandsCount = 0;
+          this.assetTxs = [];
+          this.assetTxsCount = 0;
         });
       })
       .then(() => {
         runInAction(() => {
-          this.loading.commands = false;
+          this.loading.assetTxs = false;
         });
       });
   }
@@ -123,10 +150,14 @@ decorate(ContractStore, {
   assetsCount: observable,
   commands: observable,
   commandsCount: observable,
+  asset: observable,
+  assetTxs: observable,
+  assetTxsCount: observable,
   loading: observable,
   loadContract: action,
   loadAssets: action,
   loadCommands: action,
+  loadAssetTxs: action,
 });
 
 export default new ContractStore();

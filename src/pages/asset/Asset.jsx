@@ -119,7 +119,7 @@ class AssetPage extends Component {
   }
 
   renderTabs() {
-    if (!contractStore.contract.id) {
+    if (!Object.keys(contractStore.asset)) {
       return null;
     }
     const currentPath = this.props.match.path;

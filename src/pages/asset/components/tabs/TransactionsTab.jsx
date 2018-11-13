@@ -1,14 +1,15 @@
 import React from 'react';
 import { observer } from 'mobx-react';
 import { Link } from 'react-router-dom';
-import addressStore from '../../../../store/AddressStore';
+import contractStore from '../../../../store/ContractStore';
 import uiStore from '../../../../store/UIStore';
 import config from '../../../../lib/Config';
-import WithSetDataOnUiStore from '../WithSetDataOnUiStore';
+import WithSetIdOnUiStore from '../WithSetIdOnUiStore';
 import TextUtils from '../../../../lib/TextUtils';
 import { TabPanel } from '../../../../components/tabs';
 import ItemsTable from '../../../../components/ItemsTable';
 import HashLink from '../../../../components/HashLink';
+import { TransactionAssetLoader } from '../../../../components/Transactions';
 
 const TransactionsTab = observer(() => {
   return (
@@ -33,20 +34,31 @@ const TransactionsTab = observer(() => {
             Cell: data => <Link to={`/blocks/${data.value}`}>{data.value}</Link>,
           },
           {
-            Header: 'Command',
-            accessor: 'firstCommand',
-            className: 'text-uppercase',
+            Header: 'Output total',
+            accessor: 'outputSum',
+            Cell: data => TextUtils.formatNumber(data.value),
           },
         ]}
-        loading={addressStore.loading.addressTransactions}
-        itemsCount={addressStore.addressTransactionsCount}
-        items={addressStore.addressTransactions}
-        pageSize={uiStore.addressTxsTable.pageSize}
-        curPage={uiStore.addressTxsTable.curPage}
-        tableDataSetter={uiStore.setAddressTxsTableData.bind(uiStore)}
-        topContent={<div>Total of {addressStore.addressTransactionsCount} transactions found</div>}
+        loading={contractStore.loading.assetTxs}
+        itemsCount={contractStore.assetTxsCount}
+        items={contractStore.assetTxs}
+        pageSize={uiStore.assetTxsTable.pageSize}
+        curPage={uiStore.assetTxsTable.curPage}
+        tableDataSetter={uiStore.setAssetTxsTableData.bind(uiStore)}
+        topContent={
+          <div>Total of {contractStore.assetTxsCount} transactions found involving this asset</div>
+        }
+        SubComponent={row => {
+          return (
+            <TransactionAssetLoader
+              transactionAssets={contractStore.assetTxs}
+              index={row.index}
+              total={Number(row.original.totalSum)}
+            />
+          );
+        }}
       />
     </TabPanel>
   );
 });
-export default observer(WithSetDataOnUiStore(TransactionsTab, 'setAddressTxsTableData'));
+export default observer(WithSetIdOnUiStore(TransactionsTab, 'setAssetTxsTableData', 'asset'));

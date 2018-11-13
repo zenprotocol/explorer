@@ -2,25 +2,25 @@ import React, { Component } from 'react';
 import RouterUtils from '../../../../lib/RouterUtils';
 import uiStore from '../../../../store/UIStore';
 
-export default function WithSetAddressOnUiStore(WrappedComponent, uiStoreFunctionName) {
+export default function WithSetIdOnUiStore(WrappedComponent, uiStoreFunctionName, nameOfId) {
   return class HOC extends Component {
     componentDidMount() {
-      this.setAddress();
+      this.setId();
     }
 
     componentDidUpdate(prevProps) {
       const prevParams = RouterUtils.getRouteParams(prevProps);
-      if (this.addressProp !== prevParams.address) {
-        this.setAddress();
+      if (this.idProp !== prevParams[nameOfId]) {
+        this.setId();
       }
     }
 
-    get addressProp() {
-      return RouterUtils.getRouteParams(this.props).address;
+    get idProp() {
+      return RouterUtils.getRouteParams(this.props)[nameOfId];
     }
 
-    setAddress() {
-      uiStore[uiStoreFunctionName]({ address: this.addressProp });
+    setId() {
+      uiStore[uiStoreFunctionName]({ [nameOfId]: this.idProp });
     }
 
     render() {
