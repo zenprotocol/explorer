@@ -127,7 +127,7 @@ class ContractStore {
       .then(({ data }) => {
         runInAction(() => {
           this.assetTxs = data.items;
-          this.assetTxsCount = data.total;
+          this.assetTxsCount = Number(data.total);
         });
       })
       .catch(() => {
