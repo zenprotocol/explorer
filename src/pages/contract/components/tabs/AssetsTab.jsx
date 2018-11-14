@@ -19,7 +19,13 @@ const AssetsTab = observer(() => {
             Header: 'ASSET',
             accessor: 'asset',
             minWidth: config.ui.table.minCellWidth,
-            Cell: data => <HashLink hash={AssetUtils.getAssetNameFromCode(data.value)} value={data.value} />,
+            Cell: ({ value }) => (
+              <HashLink
+                hash={AssetUtils.getAssetNameFromCode(value)}
+                value={value}
+                url={`/assets/${value}`}
+              />
+            ),
           },
           {
             Header: 'TOKENS OUTSTANDING',
@@ -52,6 +58,4 @@ const AssetsTab = observer(() => {
     </TabPanel>
   );
 });
-export default observer(
-  WithSetAddressOnUiStore(AssetsTab, 'setContractAssetsTableData')
-);
+export default observer(WithSetAddressOnUiStore(AssetsTab, 'setContractAssetsTableData'));

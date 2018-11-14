@@ -35,7 +35,7 @@ class TransactionAsset extends Component {
         <div className="row mx-0">
           {showAsset && (
             <div className="col-2 break-word">
-              <HashLink hash={AssetUtils.getAssetNameFromCode(asset)} value={asset} />
+              <HashLink hash={AssetUtils.getAssetNameFromCode(asset)} value={asset} url={`/assets/${asset}`} />
             </div>
           )}
           <div className={`${inputCol} py-0`}>
