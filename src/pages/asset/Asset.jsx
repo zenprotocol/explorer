@@ -43,7 +43,14 @@ class AssetPage extends Component {
         <section>
           <PageTitle
             title="Asset"
-            subtitle={<HashLink hash={this.assetProp} truncate={false} copy={true} />}
+            subtitle={
+              <HashLink
+                hash={AssetUtils.getAssetNameFromCode(this.assetProp)}
+                value={this.assetProp}
+                truncate={false}
+                copy={true}
+              />
+            }
           />
           {is404 ? <ItemNotFound item="asset" /> : this.renderTopTables()}
         </section>
@@ -81,15 +88,30 @@ class AssetPage extends Component {
               </tr>
               <tr>
                 <td>TOKENS OUTSTANDING</td>
-                <td>{AssetUtils.getAmountString(contractStore.asset.asset, contractStore.asset.outstanding)}</td>
+                <td>
+                  {AssetUtils.getAmountString(
+                    contractStore.asset.asset,
+                    contractStore.asset.outstanding
+                  )}
+                </td>
               </tr>
               <tr>
                 <td>TOTAL ISSUED</td>
-                <td>{AssetUtils.getAmountString(contractStore.asset.asset, contractStore.asset.issued)}</td>
+                <td>
+                  {AssetUtils.getAmountString(
+                    contractStore.asset.asset,
+                    contractStore.asset.issued
+                  )}
+                </td>
               </tr>
               <tr>
                 <td>DESTROYED</td>
-                <td>{AssetUtils.getAmountString(contractStore.asset.asset, contractStore.asset.destroyed)}</td>
+                <td>
+                  {AssetUtils.getAmountString(
+                    contractStore.asset.asset,
+                    contractStore.asset.destroyed
+                  )}
+                </td>
               </tr>
               <tr>
                 <td>UNIQUE KEYHOLDERS</td>
