@@ -38,15 +38,29 @@ assetsDAL.findOutstanding = function(asset) {
     ON "Issued"."asset" = "Keyholders"."asset"
   `;
 
-  return sequelize.query(sql, {
-    replacements: {
-      asset,
-    },
-    type: sequelize.QueryTypes.SELECT,
-  }).then(results => results.length ? results[0] : null);
+  return sequelize
+    .query(sql, {
+      replacements: {
+        asset,
+      },
+      type: sequelize.QueryTypes.SELECT,
+    })
+    .then(results => (results.length ? results[0] : null));
 };
 
-assetsDAL.keyholders = async function({ asset, limit, offset } = {}) {
+assetsDAL.findZP = function() {
+  return Promise.all([statsDAL.totalZp(), statsDAL.distributionMapCount('00')]).then(
+    ([issued, keyholders]) => {
+      return {
+        asset: '00',
+        issued,
+        keyholders,
+      };
+    }
+  );
+};
+
+assetsDAL.keyholders = function({ asset, limit, offset } = {}) {
   if (!asset) {
     return this.getItemsAndCountResult([0, []]);
   }

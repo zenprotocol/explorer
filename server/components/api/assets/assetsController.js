@@ -13,11 +13,15 @@ module.exports = {
     if (!asset) {
       throw new HttpError(httpStatus.BAD_REQUEST);
     }
-
-    const [assetOutstanding, contract] = await Promise.all([
+    // ZP is a special case and need to be treated differently
+    const promises = asset === '00' ? [
+      assetsDAL.findZP(),
+    ] : [
       assetsDAL.findOutstanding(asset),
       contractsDAL.findById(asset.substring(0, 72)),
-    ]);
+    ];
+
+    const [assetOutstanding, contract] = await Promise.all(promises);
     if (asset) {
       res
         .status(httpStatus.OK)
