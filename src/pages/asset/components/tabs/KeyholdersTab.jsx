@@ -34,8 +34,7 @@ const KeyholdersTab = observer(() => {
             Header: '%',
             accessor: 'balance',
             Cell: ({value}) => {
-              const balance = AssetUtils.getAmountDivided(uiStore.assetKeyholdersTable.asset, value);
-              return (totalIssued ? balance / totalIssued * 100 : 0) + '%';
+              return (totalIssued ? Number(value) / totalIssued * 100 : 0) + '%';
             },
           },
         ]}

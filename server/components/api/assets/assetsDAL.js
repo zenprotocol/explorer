@@ -53,7 +53,7 @@ assetsDAL.findZP = function() {
     ([issued, keyholders]) => {
       return {
         asset: '00',
-        issued,
+        issued: Math.floor(issued * 100000000),
         keyholders,
       };
     }
