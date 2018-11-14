@@ -1,5 +1,6 @@
 import { observable, decorate, action, runInAction } from 'mobx';
 import Service from '../lib/Service';
+import AssetUtils from '../lib/AssetUtils';
 
 class ContractStore {
   constructor() {
@@ -152,8 +153,9 @@ class ContractStore {
 
   loadAssetDistributionData(asset) {
     this.assetDistributionData.loading = true;
+    const chartName = AssetUtils.isZP(asset)? 'zpRichList' : 'assetDistributionMap';
     return Service.stats
-      .charts('assetDistributionMap', { asset })
+      .charts(chartName, { asset })
       .then(response => {
         runInAction(() => {
           this.assetDistributionData.data = response.data;
