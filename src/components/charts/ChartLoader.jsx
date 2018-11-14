@@ -112,6 +112,10 @@ export default class ChartLoader extends PureComponent {
 
   componentDidMount() {
     const chartConfig = this.getChartConfig();
+    const { externalChartData } = this.props;
+    if (externalChartData) {
+      return;
+    }
     if (chartConfig) {
       this.setState({ loading: true });
       this.currentPromise = Service.stats.charts(chartConfig.name, chartConfig.params);
@@ -136,17 +140,28 @@ export default class ChartLoader extends PureComponent {
     }
   }
 
+  /**
+   * data can come from state or an external object
+   */
+  get chartLoading() {
+    return this.state.loading || this.props.externalChartLoading;
+  }
+
+  get chartItems() {
+    return this.state.data.length ? this.state.data : this.props.externalChartData || [];
+  }
+
   render() {
     const { chartName, showTitle, titleLinkTo } = this.props;
     const chartConfig = ChartConfigs[chartName];
     if (!chartConfig) {
       return null;
     }
-    if (this.state.loading) {
+    if (this.chartLoading) {
       return <Loading />;
     }
 
-    if (this.state.data.length === 0) {
+    if (this.chartItems.length === 0) {
       return null;
     }
 
@@ -171,7 +186,7 @@ export default class ChartLoader extends PureComponent {
       <div className="Chart">
         {showTitle && <div className="title display-4 text-white border-dark">{title}</div>}
         {React.createElement(componentType, {
-          data: Mappers[chartName](this.state.data),
+          data: Mappers[chartName](this.chartItems),
           ...chartConfig,
         })}
       </div>
@@ -188,4 +203,6 @@ ChartLoader.propTypes = {
   chartName: PropTypes.string.isRequired,
   showTitle: PropTypes.bool,
   titleLinkTo: PropTypes.string,
+  externalChartData: PropTypes.array,
+  externalChartLoading: PropTypes.bool,
 };
