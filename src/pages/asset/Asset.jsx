@@ -80,12 +80,14 @@ class AssetPage extends Component {
               </tr>
             </thead>
             <tbody>
-              <tr>
-                <td>CONTRACT HASH</td>
-                <td>
-                  <HashLink hash={contract.id} url={`/contract/${contract.address}`} />
-                </td>
-              </tr>
+              {!AssetUtils.isZP(asset.asset) && (
+                <tr>
+                  <td>CONTRACT HASH</td>
+                  <td>
+                    <HashLink hash={contract.id} url={`/contract/${contract.address}`} />
+                  </td>
+                </tr>
+              )}
               <tr>
                 <td>TOKENS OUTSTANDING</td>
                 <td>
