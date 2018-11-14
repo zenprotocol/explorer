@@ -49,7 +49,7 @@ class AssetPage extends Component {
             title="Asset"
             subtitle={<HashLink hash={this.assetProp} truncate={false} copy={true} />}
           />
-          {is404 ? <ItemNotFound item="contract" /> : this.renderTopTables()}
+          {is404 ? <ItemNotFound item="asset" /> : this.renderTopTables()}
         </section>
         {!is404 && <section>{this.renderTabs()}</section>}
       </Page>
