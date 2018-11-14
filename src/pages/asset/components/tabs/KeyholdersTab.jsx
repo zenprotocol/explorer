@@ -4,7 +4,7 @@ import contractStore from '../../../../store/ContractStore';
 import uiStore from '../../../../store/UIStore';
 import config from '../../../../lib/Config';
 import WithSetIdOnUiStore from '../WithSetIdOnUiStore';
-import TextUtils from '../../../../lib/TextUtils';
+import AssetUtils from '../../../../lib/AssetUtils';
 import { TabPanel } from '../../../../components/tabs';
 import ItemsTable from '../../../../components/ItemsTable';
 import HashLink from '../../../../components/HashLink';
@@ -28,12 +28,15 @@ const KeyholdersTab = observer(() => {
           {
             Header: 'QUANTITY',
             accessor: 'balance',
-            Cell: data => TextUtils.formatNumber(Number(data.value).toFixed(4)),
+            Cell: data => AssetUtils.getAmountString(uiStore.assetKeyholdersTable.asset, data.value),
           },
           {
             Header: '%',
             accessor: 'balance',
-            Cell: ({value}) => (totalIssued ? Number(value) / totalIssued * 100 : 0) + '%',
+            Cell: ({value}) => {
+              const balance = AssetUtils.getAmountDivided(uiStore.assetKeyholdersTable.asset, value);
+              return (totalIssued ? balance / totalIssued * 100 : 0) + '%';
+            },
           },
         ]}
         loading={contractStore.loading.assetKeyholders}

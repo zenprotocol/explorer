@@ -8,18 +8,19 @@ export default {
     // maybe later change conditions
     return true;
   },
+  getAmountDivided(asset, amount) {
+    return this.isZP(asset) ? Number(amount) / 100000000 : Number(amount);
+  },
   getAmountString(asset, amount) {
     if (!amount) {
       return '0';
     }
 
     amount = Number(amount);
+    const amountDivided = this.getAmountDivided(asset, amount);
 
     if (this.isZP(asset)) {
-      let parsedAmount = String(amount / 100000000);
-      if (amount <= 100) {
-        parsedAmount = (amount / 100000000).toFixed(8);
-      }
+      const parsedAmount = amount <= 100 ? amountDivided.toFixed(8) : String(amountDivided);
       return `${TextUtils.formatNumber(parsedAmount)} ${this.getAssetNameFromCode(asset)}`;
     }
     return String(TextUtils.formatNumber(amount));
