@@ -112,10 +112,12 @@ statsDAL.assetDistributionMap = async function({ asset } = {}) {
       return restAmount - Number(curItem.balance);
     }, Number(total));
 
-    chartData.push({
-      balance: String(rest),
-      address: 'Rest',
-    });
+    if(rest > 0) {
+      chartData.push({
+        balance: String(rest),
+        address: 'Rest',
+      });
+    }
 
     return chartData;
   });
