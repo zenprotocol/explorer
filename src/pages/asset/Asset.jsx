@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { computed, decorate } from 'mobx';
 import { observer } from 'mobx-react';
 import { Route, Switch, Redirect } from 'react-router-dom';
 import contractStore from '../../store/ContractStore';
@@ -35,10 +34,6 @@ class AssetPage extends Component {
     return RouterUtils.getRouteParams(this.props).asset;
   }
 
-  get contractId() {
-    return this.assetProp.substring(0, 72);
-  }
-
   render() {
     const is404 = contractStore.asset.status === 404;
 
@@ -61,7 +56,8 @@ class AssetPage extends Component {
       return <Loading />;
     }
     const asset = contractStore.asset;
-    if (!Object.keys(asset)) {
+    const contract = asset.contract || {};
+    if (!Object.keys(asset).length) {
       return null;
     }
     return (
@@ -79,7 +75,7 @@ class AssetPage extends Component {
               <tr>
                 <td>CONTRACT HASH</td>
                 <td>
-                  <HashLink hash={this.contractId} />
+                  <HashLink hash={contract.id} url={`/contract/${contract.address}`} />
                 </td>
               </tr>
               <tr>
@@ -145,9 +141,5 @@ class AssetPage extends Component {
     );
   }
 }
-
-decorate(AssetPage, {
-  contractId: computed,
-});
 
 export default observer(AssetPage);
