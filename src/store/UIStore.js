@@ -309,23 +309,23 @@ function hashOrBlockNumberNotEmpty(hashOrBlockNumber) {
 }
 
 // todo - use this for all common table setters
-function setTableData({nameOfIdentifier, objectToSet} = {}) {
-  return (params = {}) => {
-    const id = params[nameOfIdentifier];
-    const pageSize = params.pageSize;
-    const curPage = params.curPage;
+// function setTableData({nameOfIdentifier, objectToSet} = {}) {
+//   return (params = {}) => {
+//     const id = params[nameOfIdentifier];
+//     const pageSize = params.pageSize;
+//     const curPage = params.curPage;
 
-    if (id && id !== objectToSet[nameOfIdentifier]) {
-      objectToSet[nameOfIdentifier] = id;
-      objectToSet.curPage = 0;
-    }
-    if (pageSize) {
-      objectToSet.pageSize = pageSize;
-    }
-    if (curPage !== undefined) {
-      objectToSet.curPage = curPage;
-    }
-  };
-}
+//     if (id && id !== objectToSet[nameOfIdentifier]) {
+//       objectToSet[nameOfIdentifier] = id;
+//       objectToSet.curPage = 0;
+//     }
+//     if (pageSize) {
+//       objectToSet.pageSize = pageSize;
+//     }
+//     if (curPage !== undefined) {
+//       objectToSet.curPage = curPage;
+//     }
+//   };
+// }
 
 export default new UIStore();

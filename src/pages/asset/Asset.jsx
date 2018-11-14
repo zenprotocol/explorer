@@ -12,7 +12,7 @@ import PageTitle from '../../components/PageTitle';
 import Page from '../../components/Page';
 import { ChartLoader } from '../../components/charts';
 import { Tabs, TabHead, TabBody, Tab } from '../../components/tabs';
-import { TransactionsTab } from './components/tabs';
+import { TransactionsTab, ChartTab } from './components/tabs';
 
 class AssetPage extends Component {
   componentDidMount() {
@@ -28,6 +28,7 @@ class AssetPage extends Component {
 
   setAsset(asset) {
     contractStore.loadAsset(asset);
+    contractStore.loadAssetDistributionData(asset);
   }
 
   get assetProp() {
@@ -112,6 +113,8 @@ class AssetPage extends Component {
             chartName="assetDistributionMap"
             showTitle={false}
             params={{ asset: this.assetProp }}
+            externalChartData={contractStore.assetDistributionData.data}
+            externalChartLoading={contractStore.assetDistributionData.loading}
           />
         </div>
       </div>
@@ -133,6 +136,7 @@ class AssetPage extends Component {
         <TabBody>
           <Switch>
             <Route path={`${currentPath}/txns`} component={TransactionsTab} />
+            <Route path={`${currentPath}/chart`} component={ChartTab} />
             <Redirect from={`${currentPath}`} to={`${currentPath}/txns`} />
           </Switch>
         </TabBody>

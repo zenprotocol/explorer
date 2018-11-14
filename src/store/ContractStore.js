@@ -10,6 +10,10 @@ class ContractStore {
     this.asset = {};
     this.assetTxs = [];
     this.assetTxsCount = 0;
+    this.assetDistributionData = {
+      loading: false,
+      data: [],
+    };
     this.loading = {
       contract: false,
       assets: false,
@@ -142,6 +146,27 @@ class ContractStore {
         });
       });
   }
+
+  loadAssetDistributionData(asset) {
+    this.assetDistributionData.loading = true;
+    return Service.stats
+      .charts('assetDistributionMap', { asset })
+      .then(response => {
+        runInAction(() => {
+          this.assetDistributionData.data = response.data;
+        });
+      })
+      .catch(() => {
+        runInAction(() => {
+          this.assetDistributionData.data = [];
+        });
+      })
+      .then(() => {
+        runInAction(() => {
+          this.assetDistributionData.loading = false;
+        });
+      });
+  }
 }
 
 decorate(ContractStore, {
@@ -153,11 +178,13 @@ decorate(ContractStore, {
   asset: observable,
   assetTxs: observable,
   assetTxsCount: observable,
+  assetDistributionData: observable,
   loading: observable,
   loadContract: action,
   loadAssets: action,
   loadCommands: action,
   loadAssetTxs: action,
+  loadAssetDistributionData: action,
 });
 
 export default new ContractStore();
