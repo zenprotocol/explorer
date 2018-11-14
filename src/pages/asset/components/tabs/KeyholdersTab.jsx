@@ -33,7 +33,7 @@ const KeyholdersTab = observer(() => {
           {
             Header: '%',
             accessor: 'balance',
-            Cell: ({value}) => totalIssued ? Number(value) / totalIssued * 100 : 0,
+            Cell: ({value}) => (totalIssued ? Number(value) / totalIssued * 100 : 0) + '%',
           },
         ]}
         loading={contractStore.loading.assetKeyholders}
