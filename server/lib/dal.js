@@ -126,7 +126,7 @@ const createDAL = modelName => {
     },
     getItemsAndCountResult([count, items] = []) {
       return {
-        count,
+        count: Number(count),
         items,
       };
     },

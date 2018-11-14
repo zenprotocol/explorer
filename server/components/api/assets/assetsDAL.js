@@ -2,8 +2,10 @@
 
 const tags = require('common-tags');
 const sequelize = require('../../../db/sequelize/models').sequelize;
+const dal = require('../../../lib/dal');
+const statsDAL = require('../stats/statsDAL');
 
-const assetsDAL = {};
+const assetsDAL = dal.createDAL('');
 
 assetsDAL.findOutstanding = function(asset) {
   const sql = tags.oneLine`
@@ -43,6 +45,19 @@ assetsDAL.findOutstanding = function(asset) {
     },
     type: sequelize.QueryTypes.SELECT,
   }).then(results => results.length ? results[0] : null);
+};
+
+assetsDAL.keyholders = async function({ asset, limit, offset } = {}) {
+  if (!asset) {
+    return this.getItemsAndCountResult([0, []]);
+  }
+
+  return Promise.all([
+    statsDAL.distributionMapCount(asset),
+    statsDAL.distributionMap(asset, 1, limit, offset),
+  ]).then(result => {
+    return this.getItemsAndCountResult(result);
+  });
 };
 
 module.exports = assetsDAL;

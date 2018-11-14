@@ -12,7 +12,7 @@ import PageTitle from '../../components/PageTitle';
 import Page from '../../components/Page';
 import { ChartLoader } from '../../components/charts';
 import { Tabs, TabHead, TabBody, Tab } from '../../components/tabs';
-import { TransactionsTab, ChartTab } from './components/tabs';
+import { TransactionsTab, ChartTab, KeyholdersTab } from './components/tabs';
 
 class AssetPage extends Component {
   componentDidMount() {
@@ -136,6 +136,7 @@ class AssetPage extends Component {
         <TabBody>
           <Switch>
             <Route path={`${currentPath}/txns`} component={TransactionsTab} />
+            <Route path={`${currentPath}/keyholders`} component={KeyholdersTab} />
             <Route path={`${currentPath}/chart`} component={ChartTab} />
             <Redirect from={`${currentPath}`} to={`${currentPath}/txns`} />
           </Switch>

@@ -14,12 +14,15 @@ class ContractStore {
       loading: false,
       data: [],
     };
+    this.assetKeyholders = [];
+    this.assetKeyholdersCount = 0;
     this.loading = {
       contract: false,
       assets: false,
       commands: false,
       asset: false,
       assetTxs: false,
+      assetKeyholders: false,
     };
   }
 
@@ -167,6 +170,30 @@ class ContractStore {
         });
       });
   }
+
+  loadAssetKeyholders(asset, params = {}) {
+    this.loading.assetKeyholders = true;
+
+    return Service.assets
+      .findKeyholders(asset, params)
+      .then(({ data }) => {
+        runInAction(() => {
+          this.assetKeyholders = data.items;
+          this.assetKeyholdersCount = data.count;
+        });
+      })
+      .catch(() => {
+        runInAction(() => {
+          this.assetKeyholders = [];
+          this.assetKeyholdersCount = 0;
+        });
+      })
+      .then(() => {
+        runInAction(() => {
+          this.loading.assetKeyholders = false;
+        });
+      });
+  }
 }
 
 decorate(ContractStore, {
@@ -179,12 +206,15 @@ decorate(ContractStore, {
   assetTxs: observable,
   assetTxsCount: observable,
   assetDistributionData: observable,
+  assetKeyholders: observable,
+  assetKeyholdersCount: observable,
   loading: observable,
   loadContract: action,
   loadAssets: action,
   loadCommands: action,
   loadAssetTxs: action,
   loadAssetDistributionData: action,
+  loadAssetKeyholders: action,
 });
 
 export default new ContractStore();

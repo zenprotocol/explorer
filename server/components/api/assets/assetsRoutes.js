@@ -5,4 +5,7 @@ const wrapAsync = require('../../../lib/wrapAsyncForExpressErrors');
 router.route('/:asset')
   .get(wrapAsync(controller.show));
 
+router.route('/:asset/keyholders')
+  .get(wrapAsync(controller.keyholders));
+
 module.exports = router;

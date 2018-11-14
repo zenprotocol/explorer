@@ -83,7 +83,7 @@ statsDAL.networkHashRate = async function({ chartInterval = maximumChartInterval
 };
 
 statsDAL.zpRichList = async function() {
-  return Promise.all([this.distributionMap('00', 100000000), statsDAL.totalZp()]).then(
+  return Promise.all([this.distributionMap('00', 100000000), this.totalZp()]).then(
     ([chartData, totalZp]) => {
       let restZp = chartData.reduce((restAmount, curItem) => {
         return restAmount - Number(curItem.balance);
@@ -104,27 +104,28 @@ statsDAL.assetDistributionMap = async function({ asset } = {}) {
     return [];
   }
 
-  return Promise.all([this.distributionMap(asset), statsDAL.totalIssued(asset)]).then(
-    ([chartData, total]) => {
-      let rest = chartData.reduce((restAmount, curItem) => {
-        return restAmount - Number(curItem.balance);
-      }, Number(total));
+  return Promise.all([
+    this.distributionMap(asset, 1),
+    this.totalIssued(asset),
+  ]).then(([chartData, total]) => {
+    let rest = chartData.reduce((restAmount, curItem) => {
+      return restAmount - Number(curItem.balance);
+    }, Number(total));
 
-      chartData.push({
-        balance: String(rest),
-        address: 'Rest',
-      });
+    chartData.push({
+      balance: String(rest),
+      address: 'Rest',
+    });
 
-      return chartData;
-    }
-  );
+    return chartData;
+  });
 };
 
-statsDAL.distributionMap = async function(asset = '00', divideBy = 1) {
+statsDAL.distributionMap = async function(asset = '00', divideBy = 1, limit = 100, offset = 0) {
   const sql = tags.oneLine`
   select
-  (output_sum - input_sum) / :divideBy as balance,
-  bothsums.address as address
+    (output_sum - input_sum) / :divideBy as balance,
+    bothsums.address as address
   from
     (select
       coalesce(osums.address, isums.address) as address,
@@ -155,15 +156,59 @@ statsDAL.distributionMap = async function(asset = '00', divideBy = 1) {
       on osums.address = isums.address) as bothsums
   where output_sum <> input_sum
   order by balance desc
-  limit 100
+  limit :limit offset :offset
   `;
   return sequelize.query(sql, {
     replacements: {
       asset,
       divideBy,
+      limit,
+      offset,
     },
     type: sequelize.QueryTypes.SELECT,
   });
+};
+
+statsDAL.distributionMapCount = async function(asset) {
+  const sql = tags.oneLine`
+  select
+    count(bothsums.address)
+  from
+    (select
+      coalesce(osums.address, isums.address) as address,
+      osums.output_sum,
+      case
+      when isums.input_sum is null
+      then 0
+      else isums.input_sum
+      end
+    from
+      (select
+        o.address,
+        sum(o.amount) as output_sum
+      from "Outputs" o
+      where o.asset = :asset
+      and o."lockType" <> 'Destroy'
+      group by address) as osums
+      full outer join
+      (select
+        io.address,
+        sum(io.amount) as input_sum
+      from
+        "Outputs" io
+        join "Inputs" i
+        on i."OutputId" = io.id
+      where io.asset = :asset
+      group by io.address) as isums
+      on osums.address = isums.address) as bothsums
+  where output_sum <> input_sum
+  `;
+  return sequelize.query(sql, {
+    replacements: {
+      asset,
+    },
+    type: sequelize.QueryTypes.SELECT,
+  }).then(result => result.length ? result[0].count : 0);
 };
 
 statsDAL.zpSupply = async function({ chartInterval = maximumChartInterval } = {}) {

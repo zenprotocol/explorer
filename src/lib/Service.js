@@ -210,6 +210,13 @@ export default {
         method: 'get',
       });
     },
+    findKeyholders(hash, params) {
+      return cancelableHttpRequest({
+        url: `${Endpoints.assets}/${hash}/keyholders`,
+        method: 'get',
+        params,
+      });
+    },
   },
   oracle: {
     data(ticker, date) {
