@@ -4,6 +4,7 @@ import { Route, Switch, Redirect } from 'react-router-dom';
 import contractStore from '../../store/ContractStore';
 import RouterUtils from '../../lib/RouterUtils';
 import TextUtils from '../../lib/TextUtils';
+import AssetUtils from '../../lib/AssetUtils';
 import Loading from '../../components/Loading';
 import HashLink from '../../components/HashLink';
 import ItemNotFound from '../../components/ItemNotFound';
@@ -80,15 +81,15 @@ class AssetPage extends Component {
               </tr>
               <tr>
                 <td>TOKENS OUTSTANDING</td>
-                <td>{TextUtils.formatNumber(contractStore.asset.outstanding)}</td>
+                <td>{AssetUtils.getAmountString(contractStore.asset.asset, contractStore.asset.outstanding)}</td>
               </tr>
               <tr>
                 <td>TOTAL ISSUED</td>
-                <td>{TextUtils.formatNumber(contractStore.asset.issued)}</td>
+                <td>{AssetUtils.getAmountString(contractStore.asset.asset, contractStore.asset.issued)}</td>
               </tr>
               <tr>
                 <td>DESTROYED</td>
-                <td>{TextUtils.formatNumber(contractStore.asset.destroyed)}</td>
+                <td>{AssetUtils.getAmountString(contractStore.asset.asset, contractStore.asset.destroyed)}</td>
               </tr>
               <tr>
                 <td>UNIQUE KEYHOLDERS</td>

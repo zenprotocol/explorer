@@ -6,6 +6,7 @@ import uiStore from '../../../../store/UIStore';
 import config from '../../../../lib/Config';
 import WithSetIdOnUiStore from '../WithSetIdOnUiStore';
 import TextUtils from '../../../../lib/TextUtils';
+import AssetUtils from '../../../../lib/AssetUtils';
 import { TabPanel } from '../../../../components/tabs';
 import ItemsTable from '../../../../components/ItemsTable';
 import HashLink from '../../../../components/HashLink';
@@ -36,7 +37,7 @@ const TransactionsTab = observer(() => {
           {
             Header: 'Output total',
             accessor: 'outputSum',
-            Cell: data => TextUtils.formatNumber(data.value),
+            Cell: data => AssetUtils.getAmountString(uiStore.assetTxsTable.asset, data.value),
           },
         ]}
         loading={contractStore.loading.assetTxs}

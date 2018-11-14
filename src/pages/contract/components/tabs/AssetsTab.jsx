@@ -30,17 +30,17 @@ const AssetsTab = observer(() => {
           {
             Header: 'TOKENS OUTSTANDING',
             accessor: 'outstanding',
-            Cell: data => TextUtils.formatNumber(data.value),
+            Cell: data => AssetUtils.getAmountString(data.original.asset, data.value),
           },
           {
             Header: 'TOTAL ISSUED',
             accessor: 'issued',
-            Cell: data => TextUtils.formatNumber(data.value),
+            Cell: data => AssetUtils.getAmountString(data.original.asset, data.value),
           },
           {
             Header: 'TOKENS DESTROYED',
             accessor: 'destroyed',
-            Cell: data => TextUtils.formatNumber(data.value),
+            Cell: data => AssetUtils.getAmountString(data.original.asset, data.value),
           },
           {
             Header: 'UNIQUE KEYHOLDERS',
