@@ -4,6 +4,7 @@ const tags = require('common-tags');
 const sequelize = require('../../../db/sequelize/models').sequelize;
 const dal = require('../../../lib/dal');
 const statsDAL = require('../stats/statsDAL');
+const sqlQueries = require('../../../lib/sqlQueries');
 
 const assetsDAL = dal.createDAL('');
 
@@ -29,13 +30,11 @@ assetsDAL.findOutstanding = function(asset) {
     GROUP BY "Outputs"."asset") AS "Destroyed"
     ON "Issued"."asset" = "Destroyed"."asset" 
     LEFT JOIN
-    (SELECT COUNT("UniqueAddresses"."address") AS "total", "UniqueAddresses"."asset"
-    FROM
-      (SELECT "address", "asset"
-      FROM "Outputs"
-      WHERE "Outputs"."asset" = :asset
-      GROUP BY "Outputs"."asset", "Outputs"."address") AS "UniqueAddresses"
-    GROUP BY "UniqueAddresses"."asset") AS "Keyholders"
+    (select
+      count(bothsums.address) as total,
+      :asset as asset
+    from ${sqlQueries.distributionMapFrom}
+    ) AS "Keyholders"
     ON "Issued"."asset" = "Keyholders"."asset"
   `;
 

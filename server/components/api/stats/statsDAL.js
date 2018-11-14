@@ -4,6 +4,7 @@ const tags = require('common-tags');
 const transactionsDAL = require('../transactions/transactionsDAL');
 const blocksDAL = require('../blocks/blocksDAL');
 const inputsDAL = require('../inputs/inputsDAL');
+const sqlQueries = require('../../../lib/sqlQueries');
 const db = transactionsDAL.db;
 const sequelize = db.sequelize;
 
@@ -104,23 +105,22 @@ statsDAL.assetDistributionMap = async function({ asset } = {}) {
     return [];
   }
 
-  return Promise.all([
-    this.distributionMap(asset, 1),
-    this.totalIssued(asset),
-  ]).then(([chartData, total]) => {
-    let rest = chartData.reduce((restAmount, curItem) => {
-      return restAmount - Number(curItem.balance);
-    }, Number(total));
+  return Promise.all([this.distributionMap(asset, 1), this.totalIssued(asset)]).then(
+    ([chartData, total]) => {
+      let rest = chartData.reduce((restAmount, curItem) => {
+        return restAmount - Number(curItem.balance);
+      }, Number(total));
 
-    if(rest > 0) {
-      chartData.push({
-        balance: String(rest),
-        address: 'Rest',
-      });
+      if (rest > 0) {
+        chartData.push({
+          balance: String(rest),
+          address: 'Rest',
+        });
+      }
+
+      return chartData;
     }
-
-    return chartData;
-  });
+  );
 };
 
 statsDAL.distributionMap = async function(asset = '00', divideBy = 1, limit = 100, offset = 0) {
@@ -129,34 +129,7 @@ statsDAL.distributionMap = async function(asset = '00', divideBy = 1, limit = 10
     (output_sum - input_sum) / :divideBy as balance,
     bothsums.address as address
   from
-    (select
-      coalesce(osums.address, isums.address) as address,
-      osums.output_sum,
-      case
-      when isums.input_sum is null
-      then 0
-      else isums.input_sum
-      end
-    from
-      (select
-        o.address,
-        sum(o.amount) as output_sum
-      from "Outputs" o
-      where o.asset = :asset
-      and o."lockType" <> 'Destroy'
-      group by address) as osums
-      full outer join
-      (select
-        io.address,
-        sum(io.amount) as input_sum
-      from
-        "Outputs" io
-        join "Inputs" i
-        on i."OutputId" = io.id
-      where io.asset = :asset
-      group by io.address) as isums
-      on osums.address = isums.address) as bothsums
-  where output_sum <> input_sum
+    ${sqlQueries.distributionMapFrom}
   order by balance desc
   limit :limit offset :offset
   `;
@@ -176,41 +149,16 @@ statsDAL.distributionMapCount = async function(asset) {
   select
     count(bothsums.address)
   from
-    (select
-      coalesce(osums.address, isums.address) as address,
-      osums.output_sum,
-      case
-      when isums.input_sum is null
-      then 0
-      else isums.input_sum
-      end
-    from
-      (select
-        o.address,
-        sum(o.amount) as output_sum
-      from "Outputs" o
-      where o.asset = :asset
-      and o."lockType" <> 'Destroy'
-      group by address) as osums
-      full outer join
-      (select
-        io.address,
-        sum(io.amount) as input_sum
-      from
-        "Outputs" io
-        join "Inputs" i
-        on i."OutputId" = io.id
-      where io.asset = :asset
-      group by io.address) as isums
-      on osums.address = isums.address) as bothsums
-  where output_sum <> input_sum
+    ${sqlQueries.distributionMapFrom}
   `;
-  return sequelize.query(sql, {
-    replacements: {
-      asset,
-    },
-    type: sequelize.QueryTypes.SELECT,
-  }).then(result => result.length ? result[0].count : 0);
+  return sequelize
+    .query(sql, {
+      replacements: {
+        asset,
+      },
+      type: sequelize.QueryTypes.SELECT,
+    })
+    .then(result => (result.length ? result[0].count : 0));
 };
 
 statsDAL.zpSupply = async function({ chartInterval = maximumChartInterval } = {}) {
