@@ -3,6 +3,7 @@
 const httpStatus = require('http-status');
 const zen = require('@zen/zenjs');
 const transactionsDAL = require('./transactionsDAL');
+const zpTransactionsDAL = require('../zpTransactions/zpTransactionsDAL');
 const outputsDAL = require('../outputs/outputsDAL');
 const jsonResponse = require('../../../lib/jsonResponse');
 const HttpError = require('../../../lib/HttpError');
@@ -39,8 +40,8 @@ module.exports = {
     }
     else if (asset) {
       if(asset === '00') {
-        findPromise = transactionsDAL.findAllZpTransactions({limit: query.limit, offset: query.offset, ascending});
-        countPromise = transactionsDAL.countAllZpTransactions();
+        findPromise = zpTransactionsDAL.findAll({limit: query.limit, offset: query.offset});
+        countPromise = zpTransactionsDAL.count();
       }
       else {
         findPromise = transactionsDAL.findAllByAsset(asset, {limit: query.limit, offset: query.offset, ascending});

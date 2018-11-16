@@ -4,6 +4,7 @@ const tags = require('common-tags');
 const transactionsDAL = require('../transactions/transactionsDAL');
 const blocksDAL = require('../blocks/blocksDAL');
 const inputsDAL = require('../inputs/inputsDAL');
+const zpAddressAmountsDAL = require('../zpAddressAmounts/zpAddressAmountsDAL');
 const sqlQueries = require('../../../lib/sqlQueries');
 const db = transactionsDAL.db;
 const sequelize = db.sequelize;
@@ -85,7 +86,7 @@ statsDAL.networkHashRate = async function({ chartInterval = maximumChartInterval
 
 statsDAL.zpRichList = async function() {
   return Promise.all([
-    db.ZpAddressAmount.findAll({
+    zpAddressAmountsDAL.findAll({
       attributes: {include: [[sequelize.literal('balance / 100000000'), 'balanceZp']]},
       limit: 100, offset: 0
     }), 

@@ -5,6 +5,7 @@ const sequelize = require('../../../db/sequelize/models').sequelize;
 const dal = require('../../../lib/dal');
 const statsDAL = require('../stats/statsDAL');
 const outputsDAL = require('../outputs/outputsDAL');
+const zpAddressAmountsDAL = require('../zpAddressAmounts/zpAddressAmountsDAL');
 const sqlQueries = require('../../../lib/sqlQueries');
 
 const assetsDAL = dal.createDAL('');
@@ -58,7 +59,7 @@ assetsDAL.findZP = function() {
         lockType: 'Destroy',
       }
     }
-  }), this.db.ZpAddressAmount.count()]).then(
+  }), zpAddressAmountsDAL.count()]).then(
     ([issued, destroyed, keyholders]) => {
       return {
         asset: '00',
@@ -77,8 +78,8 @@ assetsDAL.keyholders = function({ asset, limit, offset } = {}) {
   }
 
   const promises = asset === '00' ? [
-    this.db.ZpAddressAmount.count(),
-    this.db.ZpAddressAmount.findAll({limit, offset}),
+    zpAddressAmountsDAL.count(),
+    zpAddressAmountsDAL.findAll({limit, offset}),
   ] : [
     statsDAL.distributionMapCount(asset),
     statsDAL.distributionMap(asset, 1, limit, offset),
