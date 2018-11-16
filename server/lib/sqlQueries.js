@@ -15,8 +15,7 @@ module.exports = {
         o.address,
         sum(o.amount) as output_sum
       from "Outputs" o
-      where o.asset = :asset
-      and o."lockType" <> 'Destroy'
+      where o.asset = :asset and o.address is not null
       group by address) as osums
       full outer join
       (select
@@ -26,7 +25,7 @@ module.exports = {
         "Outputs" io
         join "Inputs" i
         on i."OutputId" = io.id
-      where io.asset = :asset
+      where io.asset = :asset and io.address is not null
       group by io.address) as isums
       on osums.address = isums.address) as bothsums
     where output_sum <> input_sum
