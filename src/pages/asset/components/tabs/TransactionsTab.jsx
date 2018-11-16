@@ -25,13 +25,13 @@ const TransactionsTab = observer(() => {
           },
           {
             Header: 'Timestamp',
-            accessor: 'Block.timestamp',
+            accessor: 'timestamp',
             minWidth: config.ui.table.minCellWidth,
             Cell: data => TextUtils.getDateStringFromTimestamp(data.value),
           },
           {
             Header: 'Block',
-            accessor: 'Block.blockNumber',
+            accessor: 'blockNumber',
             Cell: data => <Link to={`/blocks/${data.value}`}>{data.value}</Link>,
           },
           {

@@ -7,6 +7,7 @@ import { ChartLoader } from '../../../../components/charts';
 
 const ChartTab = observer(props => {
   const { data, loading } = contractStore.assetDistributionData;
+  const { asset } = RouterUtils.getRouteParams(props);
   const count = data.length
     ? data[data.length - 1].address.toLowerCase() === 'rest'
       ? data.length - 1
@@ -16,9 +17,9 @@ const ChartTab = observer(props => {
     <TabPanel>
       <div>Top {count} keyholders</div>
       <ChartLoader
-        chartName="assetDistributionMap"
+        chartName={asset === '00'? 'zpRichList' : 'assetDistributionMap'}
         showTitle={false}
-        params={{ asset: RouterUtils.getRouteParams(props).asset }}
+        params={{ asset }}
         externalChartData={data}
         externalChartLoading={loading}
       />

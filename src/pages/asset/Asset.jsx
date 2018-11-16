@@ -131,7 +131,7 @@ class AssetPage extends Component {
             </thead>
           </table>
           <ChartLoader
-            chartName="assetDistributionMap"
+            chartName={asset.asset === '00'? 'zpRichList' : 'assetDistributionMap'}
             showTitle={false}
             params={{ asset: this.assetProp }}
             externalChartData={contractStore.assetDistributionData.data}

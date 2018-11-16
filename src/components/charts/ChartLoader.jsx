@@ -52,17 +52,6 @@ const ChartConfigs = {
   },
 };
 
-const PrivateMappers = {
-  distributionMap(data) {
-    return data.map((item, index) => {
-      return {
-        name: item.address,
-        x: index,
-        y: Number(item.balance),
-      };
-    });
-  },
-};
 const Mappers = {
   transactionsPerDay(data) {
     return data.map(item => {
@@ -88,8 +77,24 @@ const Mappers = {
       };
     });
   },
-  zpRichList: PrivateMappers.distributionMap,
-  assetDistributionMap: PrivateMappers.distributionMap,
+  zpRichList(data) {
+    return data.map((item, index) => {
+      return {
+        name: item.address,
+        x: index,
+        y: Number(item.balanceZp),
+      };
+    });
+  },
+  assetDistributionMap(data) {
+    return data.map((item, index) => {
+      return {
+        name: item.address,
+        x: index,
+        y: Number(item.balance),
+      };
+    });
+  },
   zpSupply(data) {
     return data.map(item => {
       return {
