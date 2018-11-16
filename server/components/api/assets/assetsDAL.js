@@ -58,7 +58,7 @@ assetsDAL.findZP = function() {
         lockType: 'Destroy',
       }
     }
-  }), statsDAL.distributionMapCount('00')]).then(
+  }), this.db.ZpAddressAmount.count()]).then(
     ([issued, destroyed, keyholders]) => {
       return {
         asset: '00',
@@ -76,10 +76,14 @@ assetsDAL.keyholders = function({ asset, limit, offset } = {}) {
     return this.getItemsAndCountResult([0, []]);
   }
 
-  return Promise.all([
+  const promises = asset === '00' ? [
+    this.db.ZpAddressAmount.count(),
+    this.db.ZpAddressAmount.findAll({limit, offset}),
+  ] : [
     statsDAL.distributionMapCount(asset),
     statsDAL.distributionMap(asset, 1, limit, offset),
-  ]).then(result => {
+  ];
+  return Promise.all(promises).then(result => {
     return this.getItemsAndCountResult(result);
   });
 };

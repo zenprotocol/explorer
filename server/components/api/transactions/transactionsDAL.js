@@ -202,6 +202,13 @@ transactionsDAL.findAllByAsset = async function(asset, options = { limit: 10, of
     });
 };
 
+transactionsDAL.findAllZpTransactions = function({ limit = 10, offset = 0} = {}) {
+  return this.db.ZpTransaction.findAll({limit, offset});
+};
+transactionsDAL.countAllZpTransactions = function() {
+  return this.db.ZpTransaction.count();
+};
+
 transactionsDAL.findAllAssetsByBlock = async function(
   hashOrBlockNumber,
   { limit = 10, offset = 0 }

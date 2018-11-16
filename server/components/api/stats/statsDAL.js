@@ -84,7 +84,12 @@ statsDAL.networkHashRate = async function({ chartInterval = maximumChartInterval
 };
 
 statsDAL.zpRichList = async function() {
-  return Promise.all([this.distributionMap('00', 100000000), this.totalZp()]).then(
+  return Promise.all([
+    db.ZpAddressAmount.findAll({
+      attributes: {include: [[sequelize.literal('balance / 100000000'), 'balanceZp']]},
+      limit: 100, offset: 0
+    }), 
+    this.totalZp()]).then(
     ([chartData, totalZp]) => {
       let restZp = chartData.reduce((restAmount, curItem) => {
         return restAmount - Number(curItem.balance);

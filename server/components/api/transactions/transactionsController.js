@@ -38,8 +38,14 @@ module.exports = {
       countPromise = transactionsDAL.countByAddress(address);
     }
     else if (asset) {
-      findPromise = transactionsDAL.findAllByAsset(asset, {limit: query.limit, offset: query.offset, ascending});
-      countPromise = transactionsDAL.countByAsset(asset);
+      if(asset === '00') {
+        findPromise = transactionsDAL.findAllZpTransactions({limit: query.limit, offset: query.offset, ascending});
+        countPromise = transactionsDAL.countAllZpTransactions();
+      }
+      else {
+        findPromise = transactionsDAL.findAllByAsset(asset, {limit: query.limit, offset: query.offset, ascending});
+        countPromise = transactionsDAL.countByAsset(asset);
+      }
     }
     else {
       findPromise = transactionsDAL.findAll(query);
