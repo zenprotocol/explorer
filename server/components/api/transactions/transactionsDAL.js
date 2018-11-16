@@ -384,7 +384,7 @@ transactionsDAL.countByAsset = async function(asset) {
       FULL OUTER JOIN (SELECT "Inputs"."TransactionId" 
         FROM "Inputs" JOIN "Outputs" 
         ON "Inputs"."OutputId" = "Outputs"."id" 
-        AND "Outputs"."address" = :asset
+        AND "Outputs"."asset" = :asset
         GROUP BY "Inputs"."TransactionId" ) AS "Inputs"
       ON "Outputs"."TransactionId" = "Inputs"."TransactionId"`;
 
