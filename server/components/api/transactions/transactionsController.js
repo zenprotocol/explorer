@@ -3,6 +3,7 @@
 const httpStatus = require('http-status');
 const zen = require('@zen/zenjs');
 const transactionsDAL = require('./transactionsDAL');
+const zpTransactionsDAL = require('../zpTransactions/zpTransactionsDAL');
 const outputsDAL = require('../outputs/outputsDAL');
 const jsonResponse = require('../../../lib/jsonResponse');
 const HttpError = require('../../../lib/HttpError');
@@ -15,8 +16,8 @@ const isHash = require('../../../lib/isHash');
 
 module.exports = {
   index: async function(req, res) {
-    // find by blockNumber or address
-    const { blockNumber, address } = req.query;
+    // find by blockNumber, address or asset
+    const { blockNumber, address, asset } = req.query;
     const page = req.query.page || 0;
     const pageSize = req.query.pageSize || 10;
     const ascending = req.query.order === 'asc'; // descending by default
@@ -36,6 +37,16 @@ module.exports = {
     else if (address) {
       findPromise = transactionsDAL.findAllByAddress(address, {limit: query.limit, offset: query.offset, ascending});
       countPromise = transactionsDAL.countByAddress(address);
+    }
+    else if (asset) {
+      if(asset === '00') {
+        findPromise = zpTransactionsDAL.findAll({limit: query.limit, offset: query.offset});
+        countPromise = zpTransactionsDAL.count();
+      }
+      else {
+        findPromise = transactionsDAL.findAllByAsset(asset, {limit: query.limit, offset: query.offset, ascending});
+        countPromise = transactionsDAL.countByAsset(asset);
+      }
     }
     else {
       findPromise = transactionsDAL.findAll(query);

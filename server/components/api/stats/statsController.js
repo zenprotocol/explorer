@@ -3,11 +3,10 @@
 const httpStatus = require('http-status');
 const jsonResponse = require('../../../lib/jsonResponse');
 const HttpError = require('../../../lib/HttpError');
-const blocksDAL = require('../blocks/blocksDAL');
 const statsDAL = require('./statsDAL');
 
 const STATS = ['totalzp', 'totalkalapa'];
-const CHARTS = ['transactionsPerDay', 'blockDifficulty', 'networkHashRate', 'zpRichList', 'zpSupply'];
+const CHARTS = ['transactionsPerDay', 'blockDifficulty', 'networkHashRate', 'zpRichList', 'assetDistributionMap', 'zpSupply'];
 
 const StatsFunctions = {
   totalZp: async function() {
@@ -55,7 +54,7 @@ module.exports = {
     if (!name || !CHARTS.includes(name)) {
       throw new HttpError(httpStatus.NOT_FOUND);
     }
-    const data = await statsDAL[name]();
+    const data = await statsDAL[name](req.query);
 
     res.status(httpStatus.OK).json(
       jsonResponse.create(httpStatus.OK, data)

@@ -12,6 +12,7 @@ const Endpoints = {
   search: '/api/search',
   stats: '/api/stats',
   contracts: '/api/contracts',
+  assets: '/api/assets',
   oracle: '/api/oracle',
   contractTemplates: '/api/contractTemplates',
 };
@@ -92,7 +93,7 @@ export default {
       return sendHttpRequest({
         url: Endpoints.blocks,
         method: 'get',
-        params: params,
+        params,
       });
     },
     async findById(id) {
@@ -105,7 +106,7 @@ export default {
       return sendHttpRequest({
         url: `${Endpoints.blocks}/${blockNumber}/assets`,
         method: 'get',
-        params: params,
+        params,
       });
     },
   },
@@ -114,7 +115,7 @@ export default {
       return sendHttpRequest({
         url: Endpoints.transactions,
         method: 'get',
-        params: params,
+        params,
       });
     },
     async findByHash(hash) {
@@ -159,7 +160,7 @@ export default {
       return sendHttpRequest({
         url: `${Endpoints.addresses}/${address}/assets`,
         method: 'get',
-        params: params,
+        params,
       });
     },
   },
@@ -172,10 +173,11 @@ export default {
     },
   },
   stats: {
-    charts(name) {
+    charts(name, params) {
       return cancelableHttpRequest({
         url: `${Endpoints.stats}/charts/${name}`,
         method: 'get',
+        params,
       });
     },
   },
@@ -196,6 +198,21 @@ export default {
     findCommands(address, params) {
       return cancelableHttpRequest({
         url: `${Endpoints.contracts}/${address}/commands`,
+        method: 'get',
+        params,
+      });
+    },
+  },
+  assets: {
+    find(hash) {
+      return cancelableHttpRequest({
+        url: `${Endpoints.assets}/${hash}`,
+        method: 'get',
+      });
+    },
+    findKeyholders(hash, params) {
+      return cancelableHttpRequest({
+        url: `${Endpoints.assets}/${hash}/keyholders`,
         method: 'get',
         params,
       });

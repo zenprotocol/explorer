@@ -21,6 +21,9 @@
     },
     "reorgs-scan": {
       "name": "Reorgs scan"
+    },
+    "views-refresh": {
+      "name": "Refresh materialized views"
     }
   }
 }

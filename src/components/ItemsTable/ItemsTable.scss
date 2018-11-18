@@ -1,4 +1,4 @@
-@import 'style/colors';
+@import 'style/variables';
 
 .ItemsTable {
   .ItemsTable-top {
@@ -35,6 +35,19 @@
     color: $gray;
     .Dropdown-control {
       min-width: 88px;
+    }
+  }
+
+  
+
+  @media (min-width: map-get($grid-breakpoints, "lg")) {
+    .TransactionAsset {
+      width: 70%;
+      align-self: flex-end;
+      margin: $content-padding-x * 2;
+    }
+    .TransactionAsset:last-child {
+      margin: $content-padding-x * 2;
     }
   }
 }

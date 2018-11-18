@@ -8,6 +8,18 @@ import LineChart from './LineChart.jsx';
 import PieChart from './PieChart.jsx';
 import './ChartLoader.css';
 
+const PrivateConfigs = {
+  distributionMap: {
+    type: 'pie',
+    xAxisType: 'linear',
+    tooltipHeaderFormat: '<span style="font-size: 10px;"><strong>{point.key}</strong></span><br/>',
+    dataLabelsFormatter: function() {
+      return this.point.x <= 20 || this.point.x === 100
+        ? TextUtils.truncateHash(this.point.name)
+        : null;
+    },
+  },
+};
 const ChartConfigs = {
   transactionsPerDay: {
     type: 'line',
@@ -24,18 +36,15 @@ const ChartConfigs = {
     title: 'Network HashRate',
     seriesTitle: 'Avg.Daily HashRate',
   },
-  zpRichList: {
-    type: 'pie',
-    xAxisType: 'linear',
+  zpRichList: Object.assign({}, PrivateConfigs.distributionMap, {
     title: 'ZP Rich List',
     seriesTitle: 'ZP Amount',
     tooltipValueSuffix: ' ZP',
-    tooltipHeaderFormat:
-      '<span style="font-size: 10px;"><strong>{point.key}</strong></span><br/>',
-    dataLabelsFormatter: function () {
-      return this.point.x <= 20 || this.point.x === 100 ? TextUtils.truncateHash(this.point.name) : null;
-    },
-  },
+  }),
+  assetDistributionMap: Object.assign({}, PrivateConfigs.distributionMap, {
+    title: 'Unique keyholder distribution',
+    seriesTitle: 'Amount',
+  }),
   zpSupply: {
     type: 'line',
     title: 'ZP Supply',
@@ -73,6 +82,15 @@ const Mappers = {
       return {
         name: item.address,
         x: index,
+        y: Number(item.balanceZp),
+      };
+    });
+  },
+  assetDistributionMap(data) {
+    return data.map((item, index) => {
+      return {
+        name: item.address,
+        x: index,
         y: Number(item.balance),
       };
     });
@@ -99,9 +117,13 @@ export default class ChartLoader extends PureComponent {
 
   componentDidMount() {
     const chartConfig = this.getChartConfig();
+    const { externalChartData } = this.props;
+    if (externalChartData) {
+      return;
+    }
     if (chartConfig) {
       this.setState({ loading: true });
-      this.currentPromise = Service.stats.charts(chartConfig.name);
+      this.currentPromise = Service.stats.charts(chartConfig.name, chartConfig.params);
       this.currentPromise
         .then(response => {
           if (response.success) {
@@ -109,7 +131,7 @@ export default class ChartLoader extends PureComponent {
           }
           this.setState({ loading: false });
         })
-        .catch((err) => {
+        .catch(err => {
           if (!Service.utils.isCancel(err)) {
             this.setState({ loading: false });
           }
@@ -123,23 +145,34 @@ export default class ChartLoader extends PureComponent {
     }
   }
 
+  /**
+   * data can come from state or an external object
+   */
+  get chartLoading() {
+    return this.state.loading || this.props.externalChartLoading;
+  }
+
+  get chartItems() {
+    return this.state.data.length ? this.state.data : this.props.externalChartData || [];
+  }
+
   render() {
     const { chartName, showTitle, titleLinkTo } = this.props;
     const chartConfig = ChartConfigs[chartName];
     if (!chartConfig) {
       return null;
     }
-    if (this.state.loading) {
+    if (this.chartLoading) {
       return <Loading />;
     }
 
-    if (this.state.data.length === 0) {
+    if (this.chartItems.length === 0) {
       return null;
     }
 
     let componentType = null;
     switch (chartConfig.type) {
-      case 'pie': 
+      case 'pie':
         componentType = PieChart;
         break;
       case 'line':
@@ -147,7 +180,7 @@ export default class ChartLoader extends PureComponent {
         componentType = LineChart;
         break;
     }
-    
+
     const title = titleLinkTo ? (
       <Link to={titleLinkTo}>{chartConfig.title}</Link>
     ) : (
@@ -158,7 +191,7 @@ export default class ChartLoader extends PureComponent {
       <div className="Chart">
         {showTitle && <div className="title display-4 text-white border-dark">{title}</div>}
         {React.createElement(componentType, {
-          data: Mappers[chartName](this.state.data),
+          data: Mappers[chartName](this.chartItems),
           ...chartConfig,
         })}
       </div>
@@ -166,8 +199,8 @@ export default class ChartLoader extends PureComponent {
   }
 
   getChartConfig() {
-    const { chartName } = this.props;
-    return Object.assign({}, ChartConfigs[chartName], { name: chartName });
+    const { chartName, params } = this.props;
+    return Object.assign({}, ChartConfigs[chartName], { name: chartName, params });
   }
 }
 
@@ -175,4 +208,6 @@ ChartLoader.propTypes = {
   chartName: PropTypes.string.isRequired,
   showTitle: PropTypes.bool,
   titleLinkTo: PropTypes.string,
+  externalChartData: PropTypes.array,
+  externalChartLoading: PropTypes.bool,
 };

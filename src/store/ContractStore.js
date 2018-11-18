@@ -1,5 +1,6 @@
 import { observable, decorate, action, runInAction } from 'mobx';
 import Service from '../lib/Service';
+import AssetUtils from '../lib/AssetUtils';
 
 class ContractStore {
   constructor() {
@@ -7,10 +8,22 @@ class ContractStore {
     this.assets = [];
     this.commands = [];
     this.commandsCount = 0;
+    this.asset = {};
+    this.assetTxs = [];
+    this.assetTxsCount = 0;
+    this.assetDistributionData = {
+      loading: false,
+      data: [],
+    };
+    this.assetKeyholders = [];
+    this.assetKeyholdersCount = 0;
     this.loading = {
       contract: false,
       assets: false,
       commands: false,
+      asset: false,
+      assetTxs: false,
+      assetKeyholders: false,
     };
   }
 
@@ -25,14 +38,15 @@ class ContractStore {
           this.contract = contract;
         });
       })
-      .catch((error) => {
+      .catch(error => {
         runInAction(() => {
           this.contract = {};
           if (error.status === 404) {
             this.contract.status = 404;
           }
         });
-      }).then(() => {
+      })
+      .then(() => {
         runInAction(() => {
           this.loading.contract = false;
         });
@@ -45,7 +59,7 @@ class ContractStore {
 
     return Service.contracts
       .findAssetsOutstanding(address, params)
-      .then(({data}) => {
+      .then(({ data }) => {
         runInAction(() => {
           this.assets = data.items;
           this.assetsCount = data.count;
@@ -69,7 +83,7 @@ class ContractStore {
 
     return Service.contracts
       .findCommands(address, params)
-      .then(({data}) => {
+      .then(({ data }) => {
         runInAction(() => {
           this.commands = data.items;
           this.commandsCount = data.count;
@@ -87,6 +101,101 @@ class ContractStore {
         });
       });
   }
+
+  loadAsset(hash) {
+    this.loading.asset = true;
+
+    return Service.assets
+      .find(hash)
+      .then(({ data }) => {
+        runInAction(() => {
+          this.asset = data;
+        });
+      })
+      .catch(error => {
+        runInAction(() => {
+          this.asset = {};
+          if (error.status === 404) {
+            this.asset.status = 404;
+          }
+        });
+      })
+      .then(() => {
+        runInAction(() => {
+          this.loading.asset = false;
+        });
+      });
+  }
+
+  loadAssetTxs(asset, params = {}) {
+    this.loading.assetTxs = true;
+
+    return Service.transactions
+      .find(Object.assign({ asset }, params))
+      .then(({ data }) => {
+        runInAction(() => {
+          this.assetTxs = data.items;
+          this.assetTxsCount = Number(data.total);
+        });
+      })
+      .catch(() => {
+        runInAction(() => {
+          this.assetTxs = [];
+          this.assetTxsCount = 0;
+        });
+      })
+      .then(() => {
+        runInAction(() => {
+          this.loading.assetTxs = false;
+        });
+      });
+  }
+
+  loadAssetDistributionData(asset) {
+    this.assetDistributionData.loading = true;
+    const chartName = AssetUtils.isZP(asset)? 'zpRichList' : 'assetDistributionMap';
+    return Service.stats
+      .charts(chartName, { asset })
+      .then(response => {
+        runInAction(() => {
+          this.assetDistributionData.data = response.data;
+        });
+      })
+      .catch(() => {
+        runInAction(() => {
+          this.assetDistributionData.data = [];
+        });
+      })
+      .then(() => {
+        runInAction(() => {
+          this.assetDistributionData.loading = false;
+        });
+      });
+  }
+
+  loadAssetKeyholders(asset, params = {}) {
+    this.loading.assetKeyholders = true;
+
+    return Service.assets
+      .findKeyholders(asset, params)
+      .then(({ data }) => {
+        runInAction(() => {
+          this.assetKeyholders = data.items;
+          this.assetKeyholdersCount = data.count;
+        });
+      })
+      .catch(() => {
+        runInAction(() => {
+          this.assetKeyholders = [];
+          this.assetKeyholdersCount = 0;
+        });
+      })
+      .then(() => {
+        runInAction(() => {
+          this.loading.assetKeyholders = false;
+        });
+      });
+  }
 }
 
 decorate(ContractStore, {
@@ -95,16 +204,25 @@ decorate(ContractStore, {
   assetsCount: observable,
   commands: observable,
   commandsCount: observable,
+  asset: observable,
+  assetTxs: observable,
+  assetTxsCount: observable,
+  assetDistributionData: observable,
+  assetKeyholders: observable,
+  assetKeyholdersCount: observable,
   loading: observable,
   loadContract: action,
   loadAssets: action,
   loadCommands: action,
+  loadAssetTxs: action,
+  loadAssetDistributionData: action,
+  loadAssetKeyholders: action,
 });
 
 export default new ContractStore();
 
 export class Contract {
-  constructor({id = '', address = '', code = '', expiryBlock = null} = {}) {
+  constructor({ id = '', address = '', code = '', expiryBlock = null } = {}) {
     this.id = id;
     this.address = address;
     this.code = code;

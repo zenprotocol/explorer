@@ -29,6 +29,7 @@ export default function Transaction(props) {
                 address={address}
                 timestamp={timestamp}
                 total={address ? Number(asset.addressTotal) : Number(asset.total)}
+                showAsset={true}
               />
             );
           })}
