@@ -44,7 +44,7 @@ Promise.all([
   // schedule - search all of the blocks for forks
   viewsRefreshQueue.add(
     {},
-    { repeat: { cron: '*/30 * * * *' } } // At every 30 minutes.
+    { repeat: { cron: '*/10 * * * *' } } // At every 10 minutes.
   );
   // now
   viewsRefreshQueue.add();
