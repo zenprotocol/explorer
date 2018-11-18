@@ -19,9 +19,13 @@ class AddressTxsTable extends Component {
         Header: 'Asset',
         accessor: 'asset',
         minWidth: config.ui.table.minCellWidth,
-        Cell: function(data) {
-          return <HashLink hash={AssetUtils.getAssetNameFromCode(data.value)} value={data.value} />;
-        },
+        Cell: ({ value }) => (
+          <HashLink
+            hash={AssetUtils.getAssetNameFromCode(value)}
+            value={value}
+            url={`/assets/${value}`}
+          />
+        ),
       },
       {
         Header: 'Timestamp',

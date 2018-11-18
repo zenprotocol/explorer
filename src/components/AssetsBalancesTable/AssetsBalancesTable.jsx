@@ -24,6 +24,7 @@ export default function AssetsBalancesTable({ title, balance = [] }) {
               <HashLink
                 hash={AssetUtils.getAssetNameFromCode(assetBalance.asset)}
                 value={assetBalance.asset}
+                url={`/assets/${assetBalance.asset}`}
               />
             </td>
             <td>{AssetUtils.getAmountString(assetBalance.asset, assetBalance.total)}</td>

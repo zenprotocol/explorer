@@ -19,22 +19,28 @@ const AssetsTab = observer(() => {
             Header: 'ASSET',
             accessor: 'asset',
             minWidth: config.ui.table.minCellWidth,
-            Cell: data => <HashLink hash={AssetUtils.getAssetNameFromCode(data.value)} value={data.value} />,
+            Cell: ({ value }) => (
+              <HashLink
+                hash={AssetUtils.getAssetNameFromCode(value)}
+                value={value}
+                url={`/assets/${value}`}
+              />
+            ),
           },
           {
             Header: 'TOKENS OUTSTANDING',
             accessor: 'outstanding',
-            Cell: data => TextUtils.formatNumber(data.value),
+            Cell: data => AssetUtils.getAmountString(data.original.asset, data.value),
           },
           {
             Header: 'TOTAL ISSUED',
             accessor: 'issued',
-            Cell: data => TextUtils.formatNumber(data.value),
+            Cell: data => AssetUtils.getAmountString(data.original.asset, data.value),
           },
           {
             Header: 'TOKENS DESTROYED',
             accessor: 'destroyed',
-            Cell: data => TextUtils.formatNumber(data.value),
+            Cell: data => AssetUtils.getAmountString(data.original.asset, data.value),
           },
           {
             Header: 'UNIQUE KEYHOLDERS',
@@ -52,6 +58,4 @@ const AssetsTab = observer(() => {
     </TabPanel>
   );
 });
-export default observer(
-  WithSetAddressOnUiStore(AssetsTab, 'setContractAssetsTableData')
-);
+export default observer(WithSetAddressOnUiStore(AssetsTab, 'setContractAssetsTableData'));

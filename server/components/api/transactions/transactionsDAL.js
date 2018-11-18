@@ -160,6 +160,48 @@ transactionsDAL.findAllByAddress = async function(address, options = { limit: 10
     });
 };
 
+transactionsDAL.findAllByAsset = async function(asset, options = { limit: 10, offset: 0, ascending: false }) {
+  const sequelize = transactionsDAL.db.sequelize;
+  const transactionsSelectFields = getFieldsForSelectQuery(transactionsDAL.db.Transaction, 'Transaction', true);
+  const blocksSelectFields = getFieldsForSelectQuery(transactionsDAL.db.Block, 'Block', false);
+  const order = options.ascending? 'ASC' : 'DESC';
+  const sql = tags.oneLine`
+  SELECT 
+    :asset AS "asset",
+    COALESCE("Outputs"."outputSum", 0) AS "outputSum",
+    COALESCE("Inputs"."inputSum", 0) AS "inputSum",
+    COALESCE("outputSum", 0) -  COALESCE("inputSum", 0) AS "totalSum",
+    "Transaction"."id" as "transactionId",
+    ${transactionsSelectFields}, ${blocksSelectFields}
+    FROM
+      (SELECT "TransactionId", SUM("Outputs"."amount") as "outputSum"
+        FROM "Outputs" 
+        WHERE "Outputs"."asset" = :asset
+        GROUP BY "TransactionId") AS "Outputs"
+      FULL OUTER JOIN (SELECT "Inputs"."TransactionId", SUM("Outputs"."amount") AS "inputSum"
+        FROM "Inputs" JOIN "Outputs" 
+        ON "Inputs"."OutputId" = "Outputs"."id" 
+        AND "Outputs"."asset" = :asset
+        GROUP BY "Inputs"."TransactionId" ) AS "Inputs"
+      ON "Outputs"."TransactionId" = "Inputs"."TransactionId"
+      INNER JOIN "Transactions" AS "Transaction" ON "Outputs"."TransactionId" = "Transaction"."id" OR "Inputs"."TransactionId" = "Transaction"."id"
+      INNER JOIN "Blocks" AS "Block" ON "Transaction"."BlockId" = "Block"."id"
+      ORDER BY "Block"."timestamp" ${order}
+      LIMIT :limit OFFSET :offset`;
+
+  return sequelize
+    .query(sql, {
+      replacements: {
+        asset,
+        limit: options.limit,
+        offset: options.offset,
+      },
+      type: sequelize.QueryTypes.SELECT,
+      raw: false,
+      nest: true,
+    });
+};
+
 transactionsDAL.findAllAssetsByBlock = async function(
   hashOrBlockNumber,
   { limit = 10, offset = 0 }
@@ -328,6 +370,34 @@ transactionsDAL.countByBlockNumber = async function(blockNumber) {
       },
     ],
   });
+};
+
+transactionsDAL.countByAsset = async function(asset) {
+  const sequelize = transactionsDAL.db.sequelize;
+  const sql = tags.oneLine`
+  SELECT COUNT("Outputs"."TransactionId")
+    FROM
+      (SELECT "TransactionId" 
+        FROM "Outputs" 
+        WHERE "Outputs"."asset" = :asset
+        GROUP BY "TransactionId") AS "Outputs"
+      FULL OUTER JOIN (SELECT "Inputs"."TransactionId" 
+        FROM "Inputs" JOIN "Outputs" 
+        ON "Inputs"."OutputId" = "Outputs"."id" 
+        AND "Outputs"."asset" = :asset
+        GROUP BY "Inputs"."TransactionId" ) AS "Inputs"
+      ON "Outputs"."TransactionId" = "Inputs"."TransactionId"`;
+
+  return sequelize
+    .query(sql, {
+      replacements: {
+        asset,
+      },
+      type: sequelize.QueryTypes.SELECT,
+    })
+    .then(result => {
+      return result.length ? result[0].count : 0;
+    });
 };
 
 transactionsDAL.findTransactionAssetInputsOutputs = async function(id, asset) {

@@ -45,6 +45,18 @@ class UIStore {
       curPage: 0,
     };
 
+    this.assetTxsTable = {
+      asset: '',
+      pageSize: config.ui.table.defaultPageSize,
+      curPage: 0,
+    };
+
+    this.assetKeyholdersTable = {
+      asset: '',
+      pageSize: config.ui.table.defaultPageSize,
+      curPage: 0,
+    };
+
     let firstRun = true;
     autorun(() => {
       if(firstRun) {
@@ -84,6 +96,14 @@ class UIStore {
 
     autorun(() => {
       this.fetchContractCommandsOnChange();
+    });
+
+    autorun(() => {
+      this.fetchAssetTxsOnChange();
+    });
+
+    autorun(() => {
+      this.fetchAssetKeyholdersOnChange();
     });
   }
 
@@ -145,6 +165,24 @@ class UIStore {
       contractStore.loadCommands(this.contractCommandsTable.address, {
         page: this.contractCommandsTable.curPage,
         pageSize: this.contractCommandsTable.pageSize,
+      });
+    }
+  }
+
+  fetchAssetTxsOnChange() {
+    if (this.assetTxsTable.asset) {
+      contractStore.loadAssetTxs(this.assetTxsTable.asset, {
+        page: this.assetTxsTable.curPage,
+        pageSize: this.assetTxsTable.pageSize,
+      });
+    }
+  }
+
+  fetchAssetKeyholdersOnChange() {
+    if (this.assetKeyholdersTable.asset) {
+      contractStore.loadAssetKeyholders(this.assetKeyholdersTable.asset, {
+        page: this.assetKeyholdersTable.curPage,
+        pageSize: this.assetKeyholdersTable.pageSize,
       });
     }
   }
@@ -231,6 +269,32 @@ class UIStore {
     }
   }
 
+  setAssetTxsTableData({ asset, pageSize, curPage } = {}) {
+    if (asset && asset !== this.assetTxsTable.asset) {
+      this.assetTxsTable.asset = asset;
+      this.assetTxsTable.curPage = 0;
+    }
+    if (pageSize) {
+      this.assetTxsTable.pageSize = pageSize;
+    }
+    if (curPage !== undefined) {
+      this.assetTxsTable.curPage = curPage;
+    }
+  }
+
+  setAssetKeyholdersTableData({ asset, pageSize, curPage } = {}) {
+    if (asset && asset !== this.assetKeyholdersTable.asset) {
+      this.assetKeyholdersTable.asset = asset;
+      this.assetKeyholdersTable.curPage = 0;
+    }
+    if (pageSize) {
+      this.assetKeyholdersTable.pageSize = pageSize;
+    }
+    if (curPage !== undefined) {
+      this.assetKeyholdersTable.curPage = curPage;
+    }
+  }
+
   saveToStorage(store) {
     localStore.set('ui-store', toJS(store));
   }
@@ -255,6 +319,8 @@ decorate(UIStore, {
   blockTxTable: observable,
   contractAssetsTable: observable,
   contractCommandsTable: observable,
+  assetTxsTable: observable,
+  assetKeyholdersTable: observable,
   fetchSyncing: action,
   setBlocksTableData: action,
   setBlockTxTableData: action,
@@ -262,6 +328,8 @@ decorate(UIStore, {
   setAddressTxsTableData: action,
   setContractAssetsTableData: action,
   setContractCommandsTableData: action,
+  setAssetTxsTableData: action,
+  setAssetKeyholdersTableData: action,
   loadFromStorage: action,
 });
 
@@ -273,5 +341,25 @@ function hashOrBlockNumberNotEmpty(hashOrBlockNumber) {
     hashOrBlockNumber !== 0
   );
 }
+
+// todo - use this for all common table setters
+// function setTableData({nameOfIdentifier, objectToSet} = {}) {
+//   return (params = {}) => {
+//     const id = params[nameOfIdentifier];
+//     const pageSize = params.pageSize;
+//     const curPage = params.curPage;
+
+//     if (id && id !== objectToSet[nameOfIdentifier]) {
+//       objectToSet[nameOfIdentifier] = id;
+//       objectToSet.curPage = 0;
+//     }
+//     if (pageSize) {
+//       objectToSet.pageSize = pageSize;
+//     }
+//     if (curPage !== undefined) {
+//       objectToSet.curPage = curPage;
+//     }
+//   };
+// }
 
 export default new UIStore();
