@@ -14,7 +14,7 @@ assetsDAL.findOutstanding = function(asset) {
     where: {
       asset,
     },
-  });
+  }).then(assetOutstanding => assetOutstanding ? assetOutstandingsDAL.toJSON(assetOutstanding) : null);
 };
 
 assetsDAL.findZP = function() {

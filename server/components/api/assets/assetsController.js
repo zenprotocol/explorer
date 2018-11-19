@@ -28,7 +28,7 @@ module.exports = {
         .json(
           jsonResponse.create(
             httpStatus.OK,
-            Object.assign({}, assetsDAL.toJSON(assetOutstanding), contract && {
+            Object.assign({}, assetOutstanding, contract && {
               contract: { id: contract.id, address: contract.address },
             })
           )
