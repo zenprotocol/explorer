@@ -22,8 +22,8 @@ export default function MainRoutes() {
       <Route path="/blocks/:id" component={Block} />
       <Route path="/tx/:hash" component={Transaction} />
       <Route path="/address/:address" component={Address} />
-      <Route path="/contracts" component={Contracts} />
-      <Route path="/contract/:address" component={Contract} />
+      <Route path="/contracts" exact={true} component={Contracts} />
+      <Route path="/contracts/:address" component={Contract} />
       <Route path="/templates/contract" exact component={ContractTemplates} />
       <Route path="/templates/contract/:slug" component={CreateContractTemplate} />
       <Route path="/search/:search" component={Search} />
