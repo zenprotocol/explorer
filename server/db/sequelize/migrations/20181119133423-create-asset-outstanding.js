@@ -1,10 +1,64 @@
 'use strict';
+
 module.exports = {
   up: (queryInterface, Sequelize) => {
     return queryInterface.sequelize.query(
       `
         CREATE MATERIALIZED VIEW "AssetOutstandings"
-        AS 
+        AS
+        -- ZP
+        SELECT
+          '00' AS asset,
+          "Issued"."amount" AS issued,
+          "Destroyed"."amount" AS destroyed,
+          "Issued"."amount" - "Destroyed"."amount" AS outstanding,
+          "Keyholders"."total" AS "keyholders"
+        FROM
+          -- issued
+          (SELECT ((20000000 + (COUNT(*) - 1) * 50) * 100000000) as amount
+          from "Blocks") AS "Issued",
+          -- destroyed
+          (SELECT COALESCE(sum("amount"), 0) as amount
+          FROM "Outputs"
+          WHERE ("Outputs"."asset" = '00' AND "Outputs"."lockType" = 'Destroy')) AS "Destroyed",
+          -- keyholders
+          (SELECT
+            COUNT(bothsums.address) AS total
+          FROM
+            (SELECT
+              COALESCE(osums.address, isums.address) AS address,
+              COALESCE(osums.asset, isums.asset) AS asset,
+              osums.output_sum,
+              CASE
+            WHEN isums.input_sum IS NULL
+            THEN 0
+            ELSE isums.input_sum
+            END
+            FROM
+              (SELECT
+                o.address,
+                o.asset,
+                SUM(o.amount) AS output_sum
+              FROM "Outputs" o
+              WHERE o.asset = '00' AND o.address IS NOT NULL
+              GROUP BY address, asset) AS osums
+              FULL OUTER JOIN
+              (SELECT
+                io.address,
+                io.asset,
+                SUM(io.amount) AS input_sum
+              FROM
+                "Outputs" io
+                JOIN "Inputs" i
+                ON i."OutputId" = io.id
+              WHERE io.asset = '00' AND io.address IS NOT NULL
+              GROUP BY io.address, io.asset) AS isums
+              ON osums.address = isums.address AND osums.asset = isums.asset) AS bothsums
+          WHERE output_sum <> input_sum
+          GROUP BY bothsums.asset) AS "Keyholders"
+
+        UNION
+        -- contract assets
         SELECT
           COALESCE("Issued"."asset", "Destroyed"."asset") AS "asset",
           COALESCE("Issued"."sum", 0) AS "issued",
@@ -29,16 +83,16 @@ module.exports = {
           (SELECT
             COUNT(bothsums.address) AS total,
             bothsums.asset AS asset
-          FROM 
+          FROM
             (SELECT
               COALESCE(osums.address, isums.address) AS address,
               COALESCE(osums.asset, isums.asset) AS asset,
               osums.output_sum,
               CASE
-              WHEN isums.input_sum IS NULL
-              THEN 0
-              ELSE isums.input_sum
-              END
+            WHEN isums.input_sum IS NULL
+            THEN 0
+            ELSE isums.input_sum
+            END
             FROM
               (SELECT
                 o.address,
@@ -61,8 +115,10 @@ module.exports = {
               ON osums.address = isums.address AND osums.asset = isums.asset) AS bothsums
           WHERE output_sum <> input_sum
           GROUP BY bothsums.asset
-            ) AS "Keyholders"
+                  ) AS "Keyholders"
           ON "Issued"."asset" = "Keyholders"."asset"
+          
+        ORDER BY keyholders DESC;
         `
     );
   },
