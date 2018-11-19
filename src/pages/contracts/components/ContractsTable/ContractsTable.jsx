@@ -30,6 +30,7 @@ class ContractsTable extends Component {
       {
         Header: 'Active until',
         accessor: 'expiryBlock',
+        hideOnMobile: true,
         Cell: ({value}) => value ? `Block #${value}` : '',
       },
     ];

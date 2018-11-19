@@ -53,6 +53,7 @@ class AddressTxsTable extends Component {
       {
         Header: '',
         accessor: 'isCoinbaseTx',
+        hideOnMobile: true,
         Cell: data => {
           return data.value ? 'Coinbase' : '';
         },
@@ -76,7 +77,6 @@ class AddressTxsTable extends Component {
     return (
       <ItemsTable
         columns={this.getTableColumns()}
-        hideOnMobile={['blockHash', 'isCoinbaseTx']}
         loading={addressStore.loading.addressTransactionAssets}
         itemsCount={addressStore.addressTransactionAssetsCount}
         items={addressStore.addressTransactionAssets}
