@@ -5,7 +5,7 @@ import contractStore from '../../../../store/ContractStore';
 import uiStore from '../../../../store/UIStore';
 import config from '../../../../lib/Config';
 import TextUtils from '../../../../lib/TextUtils';
-import WithSetAddressOnUiStore from '../WithSetAddressOnUiStore';
+import WithSetIdOnUiStore from '../../../../components/hoc/WithSetIdOnUiStore';
 import { TabPanel } from '../../../../components/tabs';
 import ItemsTable from '../../../../components/ItemsTable';
 import HashLink from '../../../../components/HashLink';
@@ -49,4 +49,4 @@ const CommandsTab = observer(() => {
     </TabPanel>
   );
 });
-export default observer(WithSetAddressOnUiStore(CommandsTab, 'setContractCommandsTableData'));
+export default observer(WithSetIdOnUiStore(CommandsTab, 'setContractCommandsTableData', 'address'));

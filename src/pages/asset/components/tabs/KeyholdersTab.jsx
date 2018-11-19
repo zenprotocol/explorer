@@ -3,7 +3,7 @@ import { observer } from 'mobx-react';
 import contractStore from '../../../../store/ContractStore';
 import uiStore from '../../../../store/UIStore';
 import config from '../../../../lib/Config';
-import WithSetIdOnUiStore from '../WithSetIdOnUiStore';
+import WithSetIdOnUiStore from '../../../../components/hoc/WithSetIdOnUiStore';
 import AssetUtils from '../../../../lib/AssetUtils';
 import { TabPanel } from '../../../../components/tabs';
 import ItemsTable from '../../../../components/ItemsTable';
