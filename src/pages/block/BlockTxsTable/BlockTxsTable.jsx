@@ -59,7 +59,6 @@ class BlockTxsTable extends Component {
     return (
       <ItemsTable
         columns={this.getTableColumns()}
-        hideOnMobile={[]}
         loading={blockStore.loading.blockTransactionAssets}
         itemsCount={blockStore.blockTransactionAssetsCount}
         items={blockStore.blockTransactionAssets}

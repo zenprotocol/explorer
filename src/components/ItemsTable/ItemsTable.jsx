@@ -54,7 +54,7 @@ class ItemsTable extends Component {
     };
 
     const columns = this.props.columns.map(column => {
-      const hideOnMobileObj = this.props.hideOnMobile.includes(column.accessor)
+      const hideOnMobileObj = column.hideOnMobile
         ? { show: this.state.windowWidth >= config.ui.sizes.breakpointMd }
         : {};
       return Object.assign({}, column, hideOnMobileObj);
@@ -139,14 +139,12 @@ class ItemsTable extends Component {
 }
 
 ItemsTable.defaultProps = {
-  hideOnMobile: [],
   pageSize: config.ui.table.defaultPageSize,
   curPage: 0,
 };
 
 ItemsTable.propTypes = {
   columns: PropTypes.array.isRequired,
-  hideOnMobile: PropTypes.array,
   loading: PropTypes.bool,
   itemsCount: PropTypes.number,
   items: PropTypes.array,

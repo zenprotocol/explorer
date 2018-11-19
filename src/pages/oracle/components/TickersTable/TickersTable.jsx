@@ -10,7 +10,6 @@ export default class TickersTable extends Component {
     return (
       <ItemsTable
         columns={this.getColumns()}
-        hideOnMobile={[]}
         loading={loading}
         itemsCount={count}
         items={items}

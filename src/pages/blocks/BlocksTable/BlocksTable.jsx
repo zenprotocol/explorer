@@ -29,6 +29,7 @@ class BlocksTable extends Component {
       {
         Header: 'Parent',
         accessor: 'parent',
+        hideOnMobile: true,
         minWidth: config.ui.table.minCellWidth,
         Cell: data => {
           return <HashLink url={`/blocks/${data.original.parent}`} hash={data.value} />;
@@ -37,6 +38,7 @@ class BlocksTable extends Component {
       {
         Header: 'Difficulty',
         accessor: 'difficulty',
+        hideOnMobile: true,
         Cell: function(data) {
           return BlockUtils.formatDifficulty(data.value);
         },
@@ -52,7 +54,6 @@ class BlocksTable extends Component {
     return (
       <ItemsTable
         columns={this.getTableColumns()}
-        hideOnMobile={['parent', 'difficulty']}
         loading={blockStore.loading.blocks}
         itemsCount={blockStore.blocksCount}
         items={blockStore.blocks}
