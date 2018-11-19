@@ -303,7 +303,7 @@ class UIStore {
     const data = localStore.get('ui-store');
     if(data) {
       Object.keys(data).forEach(key => {
-        if(data[key].pageSize) {
+        if(data[key].pageSize && this[key]) {
           this[key].pageSize = data[key].pageSize;
         }
       });
