@@ -10,6 +10,17 @@ const AddressUtils = require('../../../../src/common/utils/AddressUtils');
 
 const contractsDAL = dal.createDAL('Contract');
 
+contractsDAL.findAllAndCountOrderByNewest = function({ limit = 10, offset = 0 } = {}) {
+  return Promise.all([
+    this.count(),
+    this.findAll({
+      limit,
+      offset,
+      order: [['expiryBlock', 'DESC'], ['createdAt', 'DESC']],
+    })
+  ]).then(this.getItemsAndCountResult);
+};
+
 contractsDAL.findByAddress = function(address) {
   return this.findOne({
     where: {
@@ -36,7 +47,7 @@ contractsDAL.search = async function(search, limit = 10) {
       attributes: ['address'],
       group: 'address',
       limit,
-    })
+    }),
   ]);
 };
 

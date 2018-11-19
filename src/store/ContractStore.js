@@ -4,6 +4,8 @@ import AssetUtils from '../lib/AssetUtils';
 
 class ContractStore {
   constructor() {
+    this.contracts = [];
+    this.contractsCount = 0;
     this.contract = {};
     this.assets = [];
     this.commands = [];
@@ -18,6 +20,7 @@ class ContractStore {
     this.assetKeyholders = [];
     this.assetKeyholdersCount = 0;
     this.loading = {
+      contracts: false,
       contract: false,
       assets: false,
       commands: false,
@@ -25,6 +28,28 @@ class ContractStore {
       assetTxs: false,
       assetKeyholders: false,
     };
+  }
+
+  loadContracts(params = { pageSize: 10, page: 0 }) {
+    this.loading.contracts = true;
+
+    return Service.contracts
+      .find(params)
+      .then(response => {
+        runInAction(() => {
+          this.contracts = response.data.items;
+          this.contractsCount = response.data.count;
+        });
+      })
+      .catch(() => {
+        this.contracts = [];
+        this.contractsCount = 0;
+      })
+      .then(() => {
+        runInAction(() => {
+          this.loading.contracts = false;
+        });
+      });
   }
 
   loadContract(address) {
@@ -199,6 +224,8 @@ class ContractStore {
 }
 
 decorate(ContractStore, {
+  contracts: observable,
+  contractsCount: observable,
   contract: observable,
   assets: observable,
   assetsCount: observable,
@@ -211,6 +238,7 @@ decorate(ContractStore, {
   assetKeyholders: observable,
   assetKeyholdersCount: observable,
   loading: observable,
+  loadContracts: action,
   loadContract: action,
   loadAssets: action,
   loadCommands: action,
