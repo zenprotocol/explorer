@@ -3,6 +3,7 @@
 const logger = require('../../lib/logger')('views-refresh');
 const zpAddressAmountsDAL = require('../../../server/components/api/zpAddressAmounts/zpAddressAmountsDAL');
 const zpTransactionsDAL = require('../../../server/components/api/zpTransactions/zpTransactionsDAL');
+const assetOutstandingsDAL = require('../../../server/components/api/assetOutstandings/assetOutstandingsDAL');
 
 class ViewsRefresher {
   async doJob(job) {
@@ -10,6 +11,7 @@ class ViewsRefresher {
       logger.info('Refreshing views');
       await zpAddressAmountsDAL.refreshView();
       await zpTransactionsDAL.refreshView();
+      await assetOutstandingsDAL.refreshView();
       logger.info('Refreshed all views');
       return 'Success';
     } catch (error) {
