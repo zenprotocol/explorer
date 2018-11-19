@@ -133,16 +133,18 @@ class Navbar extends Component {
                 <NavLink
                   className="nav-link"
                   to="/blocks"
-                  isActive={(match, location) => {
-                    const MATCHED_ROUTES = ['blocks', 'tx', 'address'];
-                    const pathname = location.pathname.startsWith('/')
-                      ? location.pathname
-                      : `/${location.pathname}`;
-                    const path = pathname.split('/')[1];
-                    return location.pathname === '/' || MATCHED_ROUTES.includes(path);
-                  }}
+                  isActive={isNavLinkActive(['', 'blocks', 'tx', 'address'])}
                 >
                   Blocks
+                </NavLink>
+              </li>
+              <li className="nav-item">
+                <NavLink
+                  className="nav-link"
+                  to="/contracts"
+                  isActive={isNavLinkActive(['contracts', 'contract'])}
+                >
+                  Contracts
                 </NavLink>
               </li>
               <li className="nav-item">
@@ -168,6 +170,12 @@ class Navbar extends Component {
 Navbar.propTypes = {
   className: PropTypes.string,
   location: PropTypes.object,
+};
+
+const isNavLinkActive = matchedRoutes => (match, location) => {
+  const pathname = location.pathname.startsWith('/') ? location.pathname : `/${location.pathname}`;
+  const path = pathname.split('/')[1];
+  return matchedRoutes.includes(path);
 };
 
 export default withRouter(Navbar);

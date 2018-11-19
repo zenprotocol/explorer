@@ -6,6 +6,7 @@ import Block from './pages/block';
 import Transaction from './pages/transaction';
 import Address from './pages/address';
 import Contract from './pages/contract';
+import Contracts from './pages/contracts';
 import Search from './pages/search';
 import Info from './pages/info';
 import Chart from './pages/chart';
@@ -21,6 +22,7 @@ export default function MainRoutes() {
       <Route path="/blocks/:id" component={Block} />
       <Route path="/tx/:hash" component={Transaction} />
       <Route path="/address/:address" component={Address} />
+      <Route path="/contracts" component={Contracts} />
       <Route path="/contract/:address" component={Contract} />
       <Route path="/templates/contract" exact component={ContractTemplates} />
       <Route path="/templates/contract/:slug" component={CreateContractTemplate} />
