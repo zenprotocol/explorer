@@ -14,13 +14,13 @@ class ContractsTable extends Component {
         Header: 'Hash',
         accessor: 'id',
         minWidth: config.ui.table.minCellWidth,
-        Cell: (data) => <HashLink url={`/contract/${data.original.address}`} hash={data.value} />,
+        Cell: (data) => <HashLink url={`/contracts/${data.original.address}`} hash={data.value} />,
       },
       {
         Header: 'Address',
         accessor: 'address',
         minWidth: config.ui.table.minCellWidth,
-        Cell: ({value}) => <HashLink url={`/contract/${value}`} hash={value} />,
+        Cell: ({value}) => <HashLink url={`/contracts/${value}`} hash={value} />,
       },
       {
         Header: '',
