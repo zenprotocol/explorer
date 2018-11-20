@@ -46,6 +46,11 @@ class UIStore {
       curPage: 0,
     };
 
+    this.assetsTable = {
+      pageSize: config.ui.table.defaultPageSize,
+      curPage: 0,
+    };
+
     this.assetTxsTable = {
       asset: '',
       pageSize: config.ui.table.defaultPageSize,
@@ -99,6 +104,10 @@ class UIStore {
       this.fetchContractCommandsOnChange();
     });
 
+    autorun(() => {
+      this.fetchAssetsOnChange();
+    });
+    
     autorun(() => {
       this.fetchAssetTxsOnChange();
     });
@@ -166,6 +175,15 @@ class UIStore {
       contractStore.loadCommands(this.contractCommandsTable.address, {
         page: this.contractCommandsTable.curPage,
         pageSize: this.contractCommandsTable.pageSize,
+      });
+    }
+  }
+
+  fetchAssetsOnChange() {
+    if (this.assetsTable.curPage * this.assetsTable.pageSize < assetStore.assetsCount) {
+      assetStore.loadAssets({
+        page: this.assetsTable.curPage,
+        pageSize: this.assetsTable.pageSize,
       });
     }
   }
@@ -270,6 +288,15 @@ class UIStore {
     }
   }
 
+  setAssetsTableData({ pageSize, curPage } = {}) {
+    if (pageSize) {
+      this.assetsTable.pageSize = pageSize;
+    }
+    if (curPage !== undefined) {
+      this.assetsTable.curPage = curPage;
+    }
+  }
+
   setAssetTxsTableData({ asset, pageSize, curPage } = {}) {
     if (asset && asset !== this.assetTxsTable.asset) {
       this.assetTxsTable.asset = asset;
@@ -320,6 +347,7 @@ decorate(UIStore, {
   blockTxTable: observable,
   contractAssetsTable: observable,
   contractCommandsTable: observable,
+  assetsTable: observable,
   assetTxsTable: observable,
   assetKeyholdersTable: observable,
   fetchSyncing: action,
@@ -329,6 +357,7 @@ decorate(UIStore, {
   setAddressTxsTableData: action,
   setContractAssetsTableData: action,
   setContractCommandsTableData: action,
+  setAssetsTableData: action,
   setAssetTxsTableData: action,
   setAssetKeyholdersTableData: action,
   loadFromStorage: action,
