@@ -42,19 +42,28 @@ class SearchResultsPage extends Component {
 
   search(value) {
     const search = SearchUtils.formatSearchString(value);
-    this.redirectBeforeSearch(search);
-    searchStore.search(search);
-    this.setState({ initialSearchDone: true });
+    if(!this.redirectBeforeSearch(search)) {
+      searchStore.search(search);
+      this.setState({ initialSearchDone: true });
+    }
   }
 
   redirectBeforeSearch(search) {
-    if (AddressUtils.isComplete(search)) {
+    let redirect = false;
+    if(search === '00' || search === 'zp') {
+      this.props.history.push('/assets/00');
+      redirect = true;
+    }
+    else if (AddressUtils.isComplete(search)) {
       if (AddressUtils.isContract(search)) {
         this.props.history.push(`/contract/${search}`);
+        redirect = true;
       } else {
         this.props.history.push(`/address/${search}`);
+        redirect = true;
       }
     }
+    return redirect;
   }
 
   render() {
