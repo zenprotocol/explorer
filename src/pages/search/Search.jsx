@@ -49,10 +49,9 @@ class SearchResultsPage extends Component {
 
   redirectBeforeSearch(search) {
     if (AddressUtils.isComplete(search)) {
-      if(AddressUtils.isContract(search)) {
+      if (AddressUtils.isContract(search)) {
         this.props.history.push(`/contract/${search}`);
-      }
-      else {
+      } else {
         this.props.history.push(`/address/${search}`);
       }
     }
@@ -71,7 +70,7 @@ class SearchResultsPage extends Component {
 
     const results = searchStore.searchResults;
     const total = results.total;
-    const { blocks, transactions, addresses, contracts, outputs } = results.items;
+    const { blocks, transactions, addresses, contracts, assets, outputs } = results.items;
 
     if (total === 1) {
       let redirectTo = '';
@@ -83,7 +82,9 @@ class SearchResultsPage extends Component {
         redirectTo = `/address/${addresses[0].address}`;
       } else if (contracts.length > 0) {
         redirectTo = `/contract/${contracts[0].address}`;
-      }else if (outputs.length > 0) {
+      } else if (assets.length > 0) {
+        redirectTo = `/assets/${assets[0].asset}`;
+      } else if (outputs.length > 0) {
         redirectTo = `/tx/${outputs[0].Transaction.hash}`;
       }
 
@@ -228,6 +229,23 @@ class SearchResultsPage extends Component {
                       <AddressLink
                         address={data}
                         truncate={false}
+                        hash={this.getHighlightedSearchResult(search, data)}
+                        value={data}
+                      />
+                    ),
+                  },
+                ]}
+              />
+              <SearchResultsTable
+                items={assets}
+                title="ASSETS"
+                columns={[
+                  {
+                    accessor: 'asset',
+                    cell: data => (
+                      <HashLink
+                        truncate={false}
+                        url={`/assets/${data}`}
                         hash={this.getHighlightedSearchResult(search, data)}
                         value={data}
                       />

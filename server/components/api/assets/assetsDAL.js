@@ -6,6 +6,7 @@ const zpAddressAmountsDAL = require('../zpAddressAmounts/zpAddressAmountsDAL');
 const assetOutstandingsDAL = require('../assetOutstandings/assetOutstandingsDAL');
 
 const assetsDAL = dal.createDAL('');
+const Op = assetsDAL.db.sequelize.Op;
 
 assetsDAL.findOutstanding = function(asset) {
   return assetOutstandingsDAL.findOne({
@@ -27,6 +28,25 @@ assetsDAL.keyholders = function({ asset, limit, offset } = {}) {
   return Promise.all(promises).then(result => {
     return this.getItemsAndCountResult(result);
   });
+};
+
+assetsDAL.search = async function(search, limit = 10) {
+  const like = `%${search}%`;
+  const where = {
+    asset: {
+      [Op.like]: like,
+    },
+  };
+  return Promise.all([
+    assetOutstandingsDAL.count({
+      where,
+    }),
+    assetOutstandingsDAL.findAll({
+      where,
+      attributes: ['asset'],
+      limit,
+    }),
+  ]);
 };
 
 module.exports = assetsDAL;
