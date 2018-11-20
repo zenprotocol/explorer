@@ -139,11 +139,7 @@ class Navbar extends Component {
                 </NavLink>
               </li>
               <li className="nav-item">
-                <NavLink
-                  className="nav-link"
-                  to="/contracts"
-                  isActive={isNavLinkActive(['contracts', 'contract'])}
-                >
+                <NavLink className="nav-link" to="/contracts">
                   Contracts
                 </NavLink>
               </li>
