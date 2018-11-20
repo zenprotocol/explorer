@@ -162,8 +162,6 @@ transactionsDAL.findAllByAddress = async function(address, options = { limit: 10
 
 transactionsDAL.findAllByAsset = async function(asset, options = { limit: 10, offset: 0, ascending: false }) {
   const sequelize = transactionsDAL.db.sequelize;
-  const transactionsSelectFields = getFieldsForSelectQuery(transactionsDAL.db.Transaction, 'Transaction', true);
-  const blocksSelectFields = getFieldsForSelectQuery(transactionsDAL.db.Block, 'Block', false);
   const order = options.ascending? 'ASC' : 'DESC';
   const sql = tags.oneLine`
   SELECT 
@@ -172,7 +170,9 @@ transactionsDAL.findAllByAsset = async function(asset, options = { limit: 10, of
     COALESCE("Inputs"."inputSum", 0) AS "inputSum",
     COALESCE("outputSum", 0) -  COALESCE("inputSum", 0) AS "totalSum",
     "Transaction"."id" as "transactionId",
-    ${transactionsSelectFields}, ${blocksSelectFields}
+    "Transaction"."hash",
+    "Block"."timestamp",
+    "Block"."blockNumber"
     FROM
       (SELECT "TransactionId", SUM("Outputs"."amount") as "outputSum"
         FROM "Outputs" 
