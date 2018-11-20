@@ -1,8 +1,7 @@
 'use strict';
 
 const dal = require('../../../lib/dal');
-const statsDAL = require('../stats/statsDAL');
-const zpAddressAmountsDAL = require('../zpAddressAmounts/zpAddressAmountsDAL');
+const addressAmountsDAL = require('../addressAmounts/addressAmountsDAL');
 const assetOutstandingsDAL = require('../assetOutstandings/assetOutstandingsDAL');
 
 const assetsDAL = dal.createDAL('');
@@ -21,13 +20,7 @@ assetsDAL.keyholders = function({ asset, limit, offset } = {}) {
     return this.getItemsAndCountResult([0, []]);
   }
 
-  const promises =
-    asset === '00'
-      ? [zpAddressAmountsDAL.count(), zpAddressAmountsDAL.findAll({ limit, offset })]
-      : [statsDAL.distributionMapCount(asset), statsDAL.distributionMap(asset, 1, limit, offset)];
-  return Promise.all(promises).then(result => {
-    return this.getItemsAndCountResult(result);
-  });
+  return addressAmountsDAL.keyholders({ asset, limit, offset });
 };
 
 assetsDAL.search = async function(search, limit = 10) {

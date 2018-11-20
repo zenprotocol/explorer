@@ -4,10 +4,11 @@ const tags = require('common-tags');
 const transactionsDAL = require('../transactions/transactionsDAL');
 const blocksDAL = require('../blocks/blocksDAL');
 const inputsDAL = require('../inputs/inputsDAL');
-const zpAddressAmountsDAL = require('../zpAddressAmounts/zpAddressAmountsDAL');
+const addressAmountsDAL = require('../addressAmounts/addressAmountsDAL');
 const sqlQueries = require('../../../lib/sqlQueries');
 const db = transactionsDAL.db;
 const sequelize = db.sequelize;
+const Op = sequelize.Op;
 
 const statsDAL = {};
 const maximumChartInterval = '1 year';
@@ -86,7 +87,15 @@ statsDAL.networkHashRate = async function({ chartInterval = maximumChartInterval
 
 statsDAL.zpRichList = async function() {
   return Promise.all([
-    zpAddressAmountsDAL.findAll({
+    addressAmountsDAL.findAll({
+      where: {
+        [Op.and]: {
+          asset: '00',
+          balance: {
+            [Op.gt]: 0,
+          },
+        },
+      },
       attributes: {include: [[sequelize.literal('balance / 100000000'), 'balanceZp']]},
       limit: 100, offset: 0
     }), 
@@ -111,20 +120,21 @@ statsDAL.assetDistributionMap = async function({ asset } = {}) {
     return [];
   }
 
-  return Promise.all([this.distributionMap(asset, 1), this.totalIssued(asset)]).then(
+  return Promise.all([addressAmountsDAL.keyholders({asset, limit: 100}), this.totalIssued(asset)]).then(
     ([chartData, total]) => {
-      let rest = chartData.reduce((restAmount, curItem) => {
+      const items = chartData.items;
+      let rest = items.reduce((restAmount, curItem) => {
         return restAmount - Number(curItem.balance);
       }, Number(total));
 
       if (rest > 0) {
-        chartData.push({
+        items.push({
           balance: String(rest),
           address: 'Rest',
         });
       }
 
-      return chartData;
+      return items;
     }
   );
 };
