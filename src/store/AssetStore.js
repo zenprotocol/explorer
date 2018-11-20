@@ -23,21 +23,29 @@ class AssetStore {
     };
   }
 
-  loadAssets(params = {}) {
+  loadAssets(params = {}, { setCount = true, setItems = true } = {}) {
     this.loading.assets = true;
 
     return Service.assets
       .find(params)
       .then(({ data }) => {
         runInAction(() => {
-          this.assets = data.items;
-          this.assetsCount = data.count;
+          if (setItems) {
+            this.assets = data.items;
+          }
+          if (setCount) {
+            this.assetsCount = data.count;
+          }
         });
       })
       .catch(() => {
         runInAction(() => {
-          this.assets = [];
-          this.assetsCount = 0;
+          if (setItems) {
+            this.assets = [];
+          }
+          if (setCount) {
+            this.assetsCount = 0;
+          }
         });
       })
       .then(() => {
@@ -98,7 +106,7 @@ class AssetStore {
 
   loadAssetDistributionData(asset) {
     this.assetDistributionData.loading = true;
-    const chartName = AssetUtils.isZP(asset)? 'zpRichList' : 'assetDistributionMap';
+    const chartName = AssetUtils.isZP(asset) ? 'zpRichList' : 'assetDistributionMap';
     return Service.stats
       .charts(chartName, { asset })
       .then(response => {

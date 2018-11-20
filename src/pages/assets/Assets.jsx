@@ -6,7 +6,7 @@ import Page from '../../components/Page';
 
 class AssetsPage extends Component {
   componentDidMount() {
-    assetStore.loadAssets();
+    assetStore.loadAssets({}, { setItems: false });
   }
 
   render() {
