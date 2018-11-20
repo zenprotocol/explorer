@@ -35,7 +35,7 @@ class AssetsTable extends Component {
         Cell: data => AssetUtils.getAmountString(data.original.asset, data.value),
       },
       {
-        Header: 'TOKENS DESTROYED',
+        Header: 'DESTROYED',
         accessor: 'destroyed',
         Cell: data => AssetUtils.getAmountString(data.original.asset, data.value),
       },
