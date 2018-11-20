@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { Route, Switch, Redirect } from 'react-router-dom';
-import contractStore from '../../store/ContractStore';
+import assetStore from '../../store/AssetStore';
 import RouterUtils from '../../lib/RouterUtils';
 import TextUtils from '../../lib/TextUtils';
 import AssetUtils from '../../lib/AssetUtils';
@@ -27,8 +27,8 @@ class AssetPage extends Component {
   }
 
   setAsset(asset) {
-    contractStore.loadAsset(asset);
-    contractStore.loadAssetDistributionData(asset);
+    assetStore.loadAsset(asset);
+    assetStore.loadAssetDistributionData(asset);
   }
 
   get assetProp() {
@@ -36,7 +36,7 @@ class AssetPage extends Component {
   }
 
   render() {
-    const is404 = contractStore.asset.status === 404;
+    const is404 = assetStore.asset.status === 404;
 
     return (
       <Page className="Asset">
@@ -60,10 +60,10 @@ class AssetPage extends Component {
   }
 
   renderTopTables() {
-    if (contractStore.loading.asset) {
+    if (assetStore.loading.asset) {
       return <Loading />;
     }
-    const asset = contractStore.asset;
+    const asset = assetStore.asset;
     const contract = asset.contract || {};
     if (!Object.keys(asset).length) {
       return null;
@@ -92,8 +92,8 @@ class AssetPage extends Component {
                 <td>TOKENS OUTSTANDING</td>
                 <td>
                   {AssetUtils.getAmountString(
-                    contractStore.asset.asset,
-                    contractStore.asset.outstanding
+                    assetStore.asset.asset,
+                    assetStore.asset.outstanding
                   )}
                 </td>
               </tr>
@@ -101,8 +101,8 @@ class AssetPage extends Component {
                 <td>TOTAL ISSUED</td>
                 <td>
                   {AssetUtils.getAmountString(
-                    contractStore.asset.asset,
-                    contractStore.asset.issued
+                    assetStore.asset.asset,
+                    assetStore.asset.issued
                   )}
                 </td>
               </tr>
@@ -110,14 +110,14 @@ class AssetPage extends Component {
                 <td>DESTROYED</td>
                 <td>
                   {AssetUtils.getAmountString(
-                    contractStore.asset.asset,
-                    contractStore.asset.destroyed
+                    assetStore.asset.asset,
+                    assetStore.asset.destroyed
                   )}
                 </td>
               </tr>
               <tr>
                 <td>UNIQUE KEYHOLDERS</td>
-                <td>{TextUtils.formatNumber(contractStore.asset.keyholders)}</td>
+                <td>{TextUtils.formatNumber(assetStore.asset.keyholders)}</td>
               </tr>
             </tbody>
           </table>
@@ -134,8 +134,8 @@ class AssetPage extends Component {
             chartName={asset.asset === '00'? 'zpRichList' : 'assetDistributionMap'}
             showTitle={false}
             params={{ asset: this.assetProp }}
-            externalChartData={contractStore.assetDistributionData.data}
-            externalChartLoading={contractStore.assetDistributionData.loading}
+            externalChartData={assetStore.assetDistributionData.data}
+            externalChartLoading={assetStore.assetDistributionData.loading}
           />
         </div>
       </div>
@@ -143,7 +143,7 @@ class AssetPage extends Component {
   }
 
   renderTabs() {
-    if (!Object.keys(contractStore.asset)) {
+    if (!Object.keys(assetStore.asset)) {
       return null;
     }
     const currentPath = this.props.match.path;
