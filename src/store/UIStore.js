@@ -64,7 +64,7 @@ class UIStore {
 
     let firstRun = true;
     autorun(() => {
-      if(firstRun) {
+      if (firstRun) {
         this.loadFromStorage();
       }
       this.saveToStorage(this);
@@ -117,11 +117,14 @@ class UIStore {
   }
 
   fetchSyncing() {
-    return Service.infos.findByName('syncing').then(response => {
-      runInAction(() => {
-        this.syncing = response.success && response.data.value === 'true';
-      });
-    }).catch(() => {});
+    return Service.infos
+      .findByName('syncing')
+      .then(response => {
+        runInAction(() => {
+          this.syncing = response.success && response.data.value === 'true';
+        });
+      })
+      .catch(() => {});
   }
 
   fetchBlocksOnChange() {
@@ -161,7 +164,7 @@ class UIStore {
   }
 
   fetchContractsOnChange() {
-    if (this.contractsTable.curPage * this.contractsTable.pageSize < blockStore.blocksCount) {
+    if (this.contractsTable.curPage * this.contractsTable.pageSize < contractStore.contractsCount) {
       contractStore.loadContracts({
         page: this.contractsTable.curPage,
         pageSize: this.contractsTable.pageSize,
@@ -328,9 +331,9 @@ class UIStore {
 
   loadFromStorage() {
     const data = localStore.get('ui-store');
-    if(data) {
+    if (data) {
       Object.keys(data).forEach(key => {
-        if(data[key].pageSize && this[key]) {
+        if (data[key].pageSize && this[key]) {
           this[key].pageSize = data[key].pageSize;
         }
       });

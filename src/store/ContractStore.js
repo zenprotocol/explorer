@@ -30,20 +30,28 @@ class ContractStore {
     };
   }
 
-  loadContracts(params = { pageSize: 10, page: 0 }) {
+  loadContracts(params = { pageSize: 10, page: 0 }, { setCount = true, setItems = true } = {}) {
     this.loading.contracts = true;
 
     return Service.contracts
       .find(params)
       .then(response => {
         runInAction(() => {
-          this.contracts = response.data.items;
-          this.contractsCount = response.data.count;
+          if (setItems) {
+            this.contracts = response.data.items;
+          }
+          if (setCount) {
+            this.contractsCount = response.data.count;
+          }
         });
       })
       .catch(() => {
-        this.contracts = [];
-        this.contractsCount = 0;
+        if (setItems) {
+          this.contracts = [];
+        }
+        if (setCount) {
+          this.contractsCount = 0;
+        }
       })
       .then(() => {
         runInAction(() => {
@@ -178,7 +186,7 @@ class ContractStore {
 
   loadAssetDistributionData(asset) {
     this.assetDistributionData.loading = true;
-    const chartName = AssetUtils.isZP(asset)? 'zpRichList' : 'assetDistributionMap';
+    const chartName = AssetUtils.isZP(asset) ? 'zpRichList' : 'assetDistributionMap';
     return Service.stats
       .charts(chartName, { asset })
       .then(response => {
