@@ -16,7 +16,7 @@ contractsDAL.findAllAndCountOrderByNewest = function({ limit = 10, offset = 0 } 
     this.findAll({
       limit,
       offset,
-      order: [['expiryBlock', 'DESC'], ['createdAt', 'DESC']],
+      order: [[this.db.sequelize.literal('"expiryBlock" DESC NULLS LAST')], ['createdAt', 'DESC']],
     })
   ]).then(this.getItemsAndCountResult);
 };
