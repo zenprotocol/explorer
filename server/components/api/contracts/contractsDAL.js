@@ -3,12 +3,37 @@
 const tags = require('common-tags');
 const dal = require('../../../lib/dal');
 const deepMerge = require('deepmerge');
-const Op = require('sequelize').Op;
 const inputsDAL = require('../inputs/inputsDAL');
 const commandsDAL = require('../commands/commandsDAL');
 const AddressUtils = require('../../../../src/common/utils/AddressUtils');
 
 const contractsDAL = dal.createDAL('Contract');
+const sequelize = contractsDAL.db.sequelize;
+const Op = sequelize.Op;
+
+contractsDAL.findAllWithAssetsCountAndCountOrderByNewest = function({ limit = 10, offset = 0 } = {}) {
+  const sql = tags.oneLine`
+  SELECT "Contracts".*, COUNT("Assets".asset) AS "assetCount"
+  FROM "Contracts" 
+  LEFT JOIN 
+    (SELECT asset
+    FROM "AssetOutstandings") AS "Assets"
+  ON "Assets"."asset" LIKE CONCAT("Contracts"."id", '%')
+  GROUP BY "Contracts"."id"
+  ORDER BY "expiryBlock" DESC NULLS LAST, "updatedAt" DESC
+  LIMIT :limit OFFSET :offset;
+  `;
+  return Promise.all([
+    this.count(),
+    sequelize.query(sql, {
+      replacements: {
+        limit,
+        offset,
+      },
+      type: sequelize.QueryTypes.SELECT,
+    })
+  ]).then(this.getItemsAndCountResult);
+};
 
 contractsDAL.findByAddress = function(address) {
   return this.findOne({
@@ -36,7 +61,7 @@ contractsDAL.search = async function(search, limit = 10) {
       attributes: ['address'],
       group: 'address',
       limit,
-    })
+    }),
   ]);
 };
 
@@ -59,7 +84,6 @@ contractsDAL.findAllExpired = function() {
 };
 
 contractsDAL.findAllOutstandingAssets = function(id, { limit = 10, offset = 0 } = {}) {
-  const sequelize = contractsDAL.db.sequelize;
   const sql = tags.oneLine`
   SELECT
     COALESCE("Issued"."asset", "Destroyed"."asset") AS "asset",

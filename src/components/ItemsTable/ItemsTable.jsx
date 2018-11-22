@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import PropTypes from 'prop-types';
-import debounce from 'lodash.debounce';
+import throttle from 'lodash.throttle';
 import classNames from 'classnames';
 import config from '../../lib/Config';
 import GenericTable from '../GenericTable';
@@ -19,16 +19,18 @@ class ItemsTable extends Component {
 
     this.setPageSize = this.setPageSize.bind(this);
     this.onPageChange = this.onPageChange.bind(this);
-    this.setWindowWidth = debounce(this.setWindowWidth, 200).bind(this);
+    this.setWindowWidth = this.setWindowWidth.bind(this);
+    this.setWindowWidthThrottled = throttle(this.setWindowWidth, 200);
   }
 
   componentDidMount() {
     this.setWindowWidth();
-    window.addEventListener('resize', this.setWindowWidth);
+    window.addEventListener('resize', this.setWindowWidthThrottled, false);
   }
 
   componentWillUnmount() {
-    window.removeEventListener('resize', this.setWindowWidth);
+    this.setWindowWidthThrottled.cancel();
+    window.removeEventListener('resize', this.setWindowWidthThrottled, false);
   }
 
   componentDidUpdate(prevProps) {
@@ -54,7 +56,7 @@ class ItemsTable extends Component {
     };
 
     const columns = this.props.columns.map(column => {
-      const hideOnMobileObj = this.props.hideOnMobile.includes(column.accessor)
+      const hideOnMobileObj = column.hideOnMobile
         ? { show: this.state.windowWidth >= config.ui.sizes.breakpointMd }
         : {};
       return Object.assign({}, column, hideOnMobileObj);
@@ -139,14 +141,12 @@ class ItemsTable extends Component {
 }
 
 ItemsTable.defaultProps = {
-  hideOnMobile: [],
   pageSize: config.ui.table.defaultPageSize,
   curPage: 0,
 };
 
 ItemsTable.propTypes = {
   columns: PropTypes.array.isRequired,
-  hideOnMobile: PropTypes.array,
   loading: PropTypes.bool,
   itemsCount: PropTypes.number,
   items: PropTypes.array,

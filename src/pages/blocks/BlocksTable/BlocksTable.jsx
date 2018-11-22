@@ -28,6 +28,7 @@ class BlocksTable extends Component {
       {
         Header: 'Difficulty',
         accessor: 'difficulty',
+        hideOnMobile: true,
         Cell: function(data) {
           return BlockUtils.formatDifficulty(data.value);
         },
@@ -43,7 +44,6 @@ class BlocksTable extends Component {
     return (
       <ItemsTable
         columns={this.getTableColumns()}
-        hideOnMobile={['parent', 'difficulty']}
         loading={blockStore.loading.blocks}
         itemsCount={blockStore.blocksCount}
         items={blockStore.blocks}
