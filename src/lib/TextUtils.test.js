@@ -2,6 +2,7 @@
 
 import test from 'tape';
 import TextUtils from './TextUtils';
+import {getTimezoneDisplay} from './TextUtils';
 
 test('TextUtils.formatNumber()', function(t) {
   wrapTest('Given a normal number', given => {
@@ -43,6 +44,40 @@ test('TextUtils.formatNumber()', function(t) {
     let expected = 'abcdefg.123abc';
     let actual = TextUtils.formatNumber(number);
     t.equals(actual, expected, `${given}: should return the string as it is`);
+  }, t);
+
+  t.end();
+});
+
+test('TextUtils.getTimezoneDisplay()', function(t) {
+  wrapTest('Given offset = 0', given => {
+    let expected = '(GMT)';
+    let actual = getTimezoneDisplay(0);
+    t.equals(actual, expected, `${given}: should return GMT without time`);
+  }, t);
+
+  wrapTest('Given positive round offset', given => {
+    let expected = '(GMT-2)';
+    let actual = getTimezoneDisplay(120);
+    t.equals(actual, expected, `${given}: should return a negative timezone`);
+  }, t);
+
+  wrapTest('Given positive offset with minutes', given => {
+    let expected = '(GMT-2:30)';
+    let actual = getTimezoneDisplay(150);
+    t.equals(actual, expected, `${given}: should return a negative timezone with the minutes leftover`);
+  }, t);
+
+  wrapTest('Given negative round offset', given => {
+    let expected = '(GMT+2)';
+    let actual = getTimezoneDisplay(-120);
+    t.equals(actual, expected, `${given}: should return a positive timezone`);
+  }, t);
+
+  wrapTest('Given negative offset with minutes', given => {
+    let expected = '(GMT+5:45)';
+    let actual = getTimezoneDisplay(-345);
+    t.equals(actual, expected, `${given}: should return a positive timezone with the minutes leftover`);
   }, t);
 
   t.end();
