@@ -56,7 +56,7 @@ class SearchResultsPage extends Component {
     }
     else if (AddressUtils.isComplete(search)) {
       if (AddressUtils.isContract(search)) {
-        this.props.history.push(`/contract/${search}`);
+        this.props.history.push(`/contracts/${search}`);
         redirect = true;
       } else {
         this.props.history.push(`/address/${search}`);
@@ -90,7 +90,7 @@ class SearchResultsPage extends Component {
       } else if (addresses.length > 0) {
         redirectTo = `/address/${addresses[0].address}`;
       } else if (contracts.length > 0) {
-        redirectTo = `/contract/${contracts[0].address}`;
+        redirectTo = `/contracts/${contracts[0].address}`;
       } else if (assets.length > 0) {
         redirectTo = `/assets/${assets[0].asset}`;
       } else if (outputs.length > 0) {

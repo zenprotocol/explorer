@@ -182,6 +182,13 @@ export default {
     },
   },
   contracts: {
+    find(params) {
+      return cancelableHttpRequest({
+        url: `${Endpoints.contracts}`,
+        method: 'get',
+        params,
+      });
+    },
     findByAddress(address) {
       return cancelableHttpRequest({
         url: `${Endpoints.contracts}/${address}`,

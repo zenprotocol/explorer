@@ -1,6 +1,7 @@
 import Config from '../lib/Config';
 
 const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+const timezoneDisplay = getTimezoneDisplay((new Date()).getTimezoneOffset());
 
 export default {
   getDateStringFromTimestamp(timestamp) {
@@ -17,7 +18,7 @@ export default {
     const hours = addPrecedingZero(date.getHours());
     const minutes = addPrecedingZero(date.getMinutes());
 
-    return `${day} ${month} ${year} ${hours}:${minutes}`;
+    return `${day} ${month} ${year} ${hours}:${minutes} ${timezoneDisplay}`;
   },
   getISODateFromNow(daysToAdd = 0) {
     return new Date(Date.now() + daysToAdd * 86400000).toISOString().split('T')[0];
@@ -52,10 +53,22 @@ export default {
       .replace(/[^a-zA-Z0-9-]/g, '');
   },
   getSingularOrPlural(count, singular, plural) {
-    return count > 1 ? plural : singular; 
-  }
+    return count > 1 ? plural : singular;
+  },
 };
 
 function addPrecedingZero(number) {
   return Number(number) < 10 ? `0${number}` : `${number}`;
+}
+
+export function getTimezoneDisplay(timezoneOffset) {
+  const timezoneOffsetHours = Math.floor(Math.abs(timezoneOffset) / 60);
+  const timezoneOffsetMinutes = Math.abs(timezoneOffsetHours * 60 - Math.abs(timezoneOffset));
+  const minutesDisplay = timezoneOffsetMinutes ? `:${timezoneOffsetMinutes}` : '';
+
+  return timezoneOffset === 0
+    ? '(GMT)'
+    : timezoneOffset > 0
+      ? `(GMT-${timezoneOffsetHours}${minutesDisplay})`
+      : `(GMT+${Math.abs(timezoneOffsetHours)}${minutesDisplay})`;
 }

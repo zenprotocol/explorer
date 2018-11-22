@@ -84,7 +84,7 @@ class AssetPage extends Component {
                 <tr>
                   <td>CONTRACT HASH</td>
                   <td>
-                    <HashLink hash={contract.id} url={`/contract/${contract.address}`} />
+                    <HashLink hash={contract.id} url={`/contracts/${contract.address}`} />
                   </td>
                 </tr>
               )}

@@ -6,7 +6,6 @@ import uiStore from '../../../store/UIStore';
 import blockStore from '../../../store/BlockStore';
 import config from '../../../lib/Config';
 import BlockUtils from '../../../lib/BlockUtils';
-import HashLink from '../../../components/HashLink';
 import ItemsTable from '../../../components/ItemsTable';
 import PageTitle from '../../../components/PageTitle';
 
@@ -27,16 +26,9 @@ class BlocksTable extends Component {
         Cell: data => <Link to={`/blocks/${data.value}`}>{data.value}</Link>,
       },
       {
-        Header: 'Parent',
-        accessor: 'parent',
-        minWidth: config.ui.table.minCellWidth,
-        Cell: data => {
-          return <HashLink url={`/blocks/${data.original.parent}`} hash={data.value} />;
-        },
-      },
-      {
         Header: 'Difficulty',
         accessor: 'difficulty',
+        hideOnMobile: true,
         Cell: function(data) {
           return BlockUtils.formatDifficulty(data.value);
         },
@@ -52,7 +44,6 @@ class BlocksTable extends Component {
     return (
       <ItemsTable
         columns={this.getTableColumns()}
-        hideOnMobile={['parent', 'difficulty']}
         loading={blockStore.loading.blocks}
         itemsCount={blockStore.blocksCount}
         items={blockStore.blocks}
