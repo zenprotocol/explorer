@@ -144,6 +144,11 @@ class Navbar extends Component {
                 </NavLink>
               </li>
               <li className="nav-item">
+                <NavLink className="nav-link" to="/assets">
+                  Assets
+                </NavLink>
+              </li>
+              <li className="nav-item">
                 <NavLink className="nav-link" to="/blockchain/info">
                   Stats
                 </NavLink>

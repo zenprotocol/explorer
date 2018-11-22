@@ -2,6 +2,7 @@ import { observable, decorate, action, autorun, toJS, runInAction } from 'mobx';
 import blockStore from './BlockStore';
 import addressStore from './AddressStore';
 import contractStore from './ContractStore';
+import assetStore from './AssetStore';
 import localStore from '../lib/localStore';
 import Service from '../lib/Service';
 import config from '../lib/Config';
@@ -46,6 +47,11 @@ class UIStore {
 
     this.contractCommandsTable = {
       address: '',
+      pageSize: config.ui.table.defaultPageSize,
+      curPage: 0,
+    };
+
+    this.assetsTable = {
       pageSize: config.ui.table.defaultPageSize,
       curPage: 0,
     };
@@ -107,6 +113,10 @@ class UIStore {
       this.fetchContractCommandsOnChange();
     });
 
+    autorun(() => {
+      this.fetchAssetsOnChange();
+    });
+    
     autorun(() => {
       this.fetchAssetTxsOnChange();
     });
@@ -190,9 +200,18 @@ class UIStore {
     }
   }
 
+  fetchAssetsOnChange() {
+    if (this.assetsTable.curPage * this.assetsTable.pageSize < assetStore.assetsCount) {
+      assetStore.loadAssets({
+        page: this.assetsTable.curPage,
+        pageSize: this.assetsTable.pageSize,
+      });
+    }
+  }
+
   fetchAssetTxsOnChange() {
     if (this.assetTxsTable.asset) {
-      contractStore.loadAssetTxs(this.assetTxsTable.asset, {
+      assetStore.loadAssetTxs(this.assetTxsTable.asset, {
         page: this.assetTxsTable.curPage,
         pageSize: this.assetTxsTable.pageSize,
       });
@@ -201,7 +220,7 @@ class UIStore {
 
   fetchAssetKeyholdersOnChange() {
     if (this.assetKeyholdersTable.asset) {
-      contractStore.loadAssetKeyholders(this.assetKeyholdersTable.asset, {
+      assetStore.loadAssetKeyholders(this.assetKeyholdersTable.asset, {
         page: this.assetKeyholdersTable.curPage,
         pageSize: this.assetKeyholdersTable.pageSize,
       });
@@ -299,6 +318,15 @@ class UIStore {
     }
   }
 
+  setAssetsTableData({ pageSize, curPage } = {}) {
+    if (pageSize) {
+      this.assetsTable.pageSize = pageSize;
+    }
+    if (curPage !== undefined) {
+      this.assetsTable.curPage = curPage;
+    }
+  }
+
   setAssetTxsTableData({ asset, pageSize, curPage } = {}) {
     if (asset && asset !== this.assetTxsTable.asset) {
       this.assetTxsTable.asset = asset;
@@ -350,6 +378,7 @@ decorate(UIStore, {
   contractsTable: observable,
   contractAssetsTable: observable,
   contractCommandsTable: observable,
+  assetsTable: observable,
   assetTxsTable: observable,
   assetKeyholdersTable: observable,
   fetchSyncing: action,
@@ -360,6 +389,7 @@ decorate(UIStore, {
   setContractsTableData: action,
   setContractAssetsTableData: action,
   setContractCommandsTableData: action,
+  setAssetsTableData: action,
   setAssetTxsTableData: action,
   setAssetKeyholdersTableData: action,
   loadFromStorage: action,

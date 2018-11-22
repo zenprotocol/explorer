@@ -1,12 +1,12 @@
 import React from 'react';
 import { observer } from 'mobx-react';
-import contractStore from '../../../../store/ContractStore';
+import assetStore from '../../../../store/AssetStore';
 import RouterUtils from '../../../../lib/RouterUtils';
 import { TabPanel } from '../../../../components/tabs';
 import { ChartLoader } from '../../../../components/charts';
 
 const ChartTab = observer(props => {
-  const { data, loading } = contractStore.assetDistributionData;
+  const { data, loading } = assetStore.assetDistributionData;
   const { asset } = RouterUtils.getRouteParams(props);
   const count = data.length
     ? data[data.length - 1].address.toLowerCase() === 'rest'

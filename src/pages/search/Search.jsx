@@ -42,20 +42,28 @@ class SearchResultsPage extends Component {
 
   search(value) {
     const search = SearchUtils.formatSearchString(value);
-    this.redirectBeforeSearch(search);
-    searchStore.search(search);
-    this.setState({ initialSearchDone: true });
+    if(!this.redirectBeforeSearch(search)) {
+      searchStore.search(search);
+      this.setState({ initialSearchDone: true });
+    }
   }
 
   redirectBeforeSearch(search) {
-    if (AddressUtils.isComplete(search)) {
-      if(AddressUtils.isContract(search)) {
+    let redirect = false;
+    if(search === '00' || search === 'zp') {
+      this.props.history.push('/assets/00');
+      redirect = true;
+    }
+    else if (AddressUtils.isComplete(search)) {
+      if (AddressUtils.isContract(search)) {
         this.props.history.push(`/contracts/${search}`);
-      }
-      else {
+        redirect = true;
+      } else {
         this.props.history.push(`/address/${search}`);
+        redirect = true;
       }
     }
+    return redirect;
   }
 
   render() {
@@ -71,7 +79,7 @@ class SearchResultsPage extends Component {
 
     const results = searchStore.searchResults;
     const total = results.total;
-    const { blocks, transactions, addresses, contracts, outputs } = results.items;
+    const { blocks, transactions, addresses, contracts, assets, outputs } = results.items;
 
     if (total === 1) {
       let redirectTo = '';
@@ -83,7 +91,9 @@ class SearchResultsPage extends Component {
         redirectTo = `/address/${addresses[0].address}`;
       } else if (contracts.length > 0) {
         redirectTo = `/contracts/${contracts[0].address}`;
-      }else if (outputs.length > 0) {
+      } else if (assets.length > 0) {
+        redirectTo = `/assets/${assets[0].asset}`;
+      } else if (outputs.length > 0) {
         redirectTo = `/tx/${outputs[0].Transaction.hash}`;
       }
 
@@ -228,6 +238,23 @@ class SearchResultsPage extends Component {
                       <AddressLink
                         address={data}
                         truncate={false}
+                        hash={this.getHighlightedSearchResult(search, data)}
+                        value={data}
+                      />
+                    ),
+                  },
+                ]}
+              />
+              <SearchResultsTable
+                items={assets}
+                title="ASSETS"
+                columns={[
+                  {
+                    accessor: 'asset',
+                    cell: data => (
+                      <HashLink
+                        truncate={false}
+                        url={`/assets/${data}`}
                         hash={this.getHighlightedSearchResult(search, data)}
                         value={data}
                       />

@@ -13,6 +13,7 @@ import Chart from './pages/chart';
 import BroadcastTx from './pages/broadcastTx';
 import Oracle from './pages/oracle';
 import {ContractTemplates, CreateContractTemplate} from './pages/contractTemplates';
+import Assets from './pages/assets';
 import Asset from './pages/asset';
 
 export default function MainRoutes() {
@@ -31,6 +32,7 @@ export default function MainRoutes() {
       <Route path="/charts/:name" component={Chart} />
       <Route path="/broadcastTx/:hex?" component={BroadcastTx} />
       <Route path="/oracle" component={Oracle} />
+      <Route path="/assets" exact={true} component={Assets} />
       <Route path="/assets/:asset" component={Asset} />
       <Route component={NotFound} />
     </Switch>
