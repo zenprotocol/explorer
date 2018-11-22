@@ -3,6 +3,7 @@ import { observer } from 'mobx-react';
 import uiStore from '../../../../store/UIStore';
 import contractStore from '../../../../store/ContractStore';
 import config from '../../../../lib/Config';
+import TextUtils from '../../../../lib/TextUtils';
 import HashLink from '../../../../components/HashLink';
 import ItemsTable from '../../../../components/ItemsTable';
 import PageTitle from '../../../../components/PageTitle';
@@ -32,6 +33,12 @@ class ContractsTable extends Component {
         accessor: 'expiryBlock',
         hideOnMobile: true,
         Cell: ({value}) => value ? `Block #${value}` : '',
+      },
+      {
+        Header: 'Assets Issued',
+        accessor: 'assetCount',
+        hideOnMobile: true,
+        Cell: ({value}) => TextUtils.formatNumber(value),
       },
     ];
   }
