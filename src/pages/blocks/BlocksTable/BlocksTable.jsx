@@ -6,7 +6,6 @@ import uiStore from '../../../store/UIStore';
 import blockStore from '../../../store/BlockStore';
 import config from '../../../lib/Config';
 import BlockUtils from '../../../lib/BlockUtils';
-import HashLink from '../../../components/HashLink';
 import ItemsTable from '../../../components/ItemsTable';
 import PageTitle from '../../../components/PageTitle';
 
@@ -25,15 +24,6 @@ class BlocksTable extends Component {
         Header: 'Block',
         accessor: 'blockNumber',
         Cell: data => <Link to={`/blocks/${data.value}`}>{data.value}</Link>,
-      },
-      {
-        Header: 'Parent',
-        accessor: 'parent',
-        hideOnMobile: true,
-        minWidth: config.ui.table.minCellWidth,
-        Cell: data => {
-          return <HashLink url={`/blocks/${data.original.parent}`} hash={data.value} />;
-        },
       },
       {
         Header: 'Difficulty',
