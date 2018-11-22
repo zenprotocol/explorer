@@ -20,7 +20,7 @@ contractsDAL.findAllWithAssetsCountAndCountOrderByNewest = function({ limit = 10
     FROM "AssetOutstandings") AS "Assets"
   ON "Assets"."asset" LIKE CONCAT("Contracts"."id", '%')
   GROUP BY "Contracts"."id"
-  ORDER BY "expiryBlock" DESC NULLS LAST, "createdAt" DESC
+  ORDER BY "expiryBlock" DESC NULLS LAST, "updatedAt" DESC
   LIMIT :limit OFFSET :offset;
   `;
   return Promise.all([
