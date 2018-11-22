@@ -101,12 +101,13 @@ statsDAL.zpRichList = async function() {
     }), 
     this.totalZp()]).then(
     ([chartData, totalZp]) => {
-      let restZp = chartData.reduce((restAmount, curItem) => {
+      const restKalapas = chartData.reduce((restAmount, curItem) => {
         return restAmount - Number(curItem.balance);
-      }, Number(totalZp));
-
+      }, Number(totalZp) * 100000000);
+      const restZp = restKalapas / 100000000;
       chartData.push({
-        balance: String(restZp),
+        balance: String(restKalapas),
+        balanceZp: String(restZp),
         address: 'Rest',
       });
 
