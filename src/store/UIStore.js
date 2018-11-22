@@ -2,6 +2,7 @@ import { observable, decorate, action, autorun, toJS, runInAction } from 'mobx';
 import blockStore from './BlockStore';
 import addressStore from './AddressStore';
 import contractStore from './ContractStore';
+import assetStore from './AssetStore';
 import localStore from '../lib/localStore';
 import Service from '../lib/Service';
 import config from '../lib/Config';
@@ -33,6 +34,11 @@ class UIStore {
       curPage: 0,
     };
 
+    this.contractsTable = {
+      pageSize: config.ui.table.defaultPageSize,
+      curPage: 0,
+    };
+
     this.contractAssetsTable = {
       address: '',
       pageSize: config.ui.table.defaultPageSize,
@@ -41,6 +47,11 @@ class UIStore {
 
     this.contractCommandsTable = {
       address: '',
+      pageSize: config.ui.table.defaultPageSize,
+      curPage: 0,
+    };
+
+    this.assetsTable = {
       pageSize: config.ui.table.defaultPageSize,
       curPage: 0,
     };
@@ -59,7 +70,7 @@ class UIStore {
 
     let firstRun = true;
     autorun(() => {
-      if(firstRun) {
+      if (firstRun) {
         this.loadFromStorage();
       }
       this.saveToStorage(this);
@@ -91,6 +102,10 @@ class UIStore {
     });
 
     autorun(() => {
+      this.fetchContractsOnChange();
+    });
+
+    autorun(() => {
       this.fetchContractAssetsOnChange();
     });
 
@@ -98,6 +113,10 @@ class UIStore {
       this.fetchContractCommandsOnChange();
     });
 
+    autorun(() => {
+      this.fetchAssetsOnChange();
+    });
+    
     autorun(() => {
       this.fetchAssetTxsOnChange();
     });
@@ -108,11 +127,14 @@ class UIStore {
   }
 
   fetchSyncing() {
-    return Service.infos.findByName('syncing').then(response => {
-      runInAction(() => {
-        this.syncing = response.success && response.data.value === 'true';
-      });
-    }).catch(() => {});
+    return Service.infos
+      .findByName('syncing')
+      .then(response => {
+        runInAction(() => {
+          this.syncing = response.success && response.data.value === 'true';
+        });
+      })
+      .catch(() => {});
   }
 
   fetchBlocksOnChange() {
@@ -151,6 +173,15 @@ class UIStore {
     }
   }
 
+  fetchContractsOnChange() {
+    if (this.contractsTable.curPage * this.contractsTable.pageSize < contractStore.contractsCount) {
+      contractStore.loadContracts({
+        page: this.contractsTable.curPage,
+        pageSize: this.contractsTable.pageSize,
+      });
+    }
+  }
+
   fetchContractAssetsOnChange() {
     if (this.contractAssetsTable.address) {
       contractStore.loadAssets(this.contractAssetsTable.address, {
@@ -169,9 +200,18 @@ class UIStore {
     }
   }
 
+  fetchAssetsOnChange() {
+    if (this.assetsTable.curPage * this.assetsTable.pageSize < assetStore.assetsCount) {
+      assetStore.loadAssets({
+        page: this.assetsTable.curPage,
+        pageSize: this.assetsTable.pageSize,
+      });
+    }
+  }
+
   fetchAssetTxsOnChange() {
     if (this.assetTxsTable.asset) {
-      contractStore.loadAssetTxs(this.assetTxsTable.asset, {
+      assetStore.loadAssetTxs(this.assetTxsTable.asset, {
         page: this.assetTxsTable.curPage,
         pageSize: this.assetTxsTable.pageSize,
       });
@@ -180,7 +220,7 @@ class UIStore {
 
   fetchAssetKeyholdersOnChange() {
     if (this.assetKeyholdersTable.asset) {
-      contractStore.loadAssetKeyholders(this.assetKeyholdersTable.asset, {
+      assetStore.loadAssetKeyholders(this.assetKeyholdersTable.asset, {
         page: this.assetKeyholdersTable.curPage,
         pageSize: this.assetKeyholdersTable.pageSize,
       });
@@ -243,6 +283,15 @@ class UIStore {
     }
   }
 
+  setContractsTableData({ pageSize, curPage } = {}) {
+    if (pageSize) {
+      this.contractsTable.pageSize = pageSize;
+    }
+    if (curPage !== undefined) {
+      this.contractsTable.curPage = curPage;
+    }
+  }
+
   setContractAssetsTableData({ address, pageSize, curPage } = {}) {
     if (address && address !== this.contractAssetsTable.address) {
       this.contractAssetsTable.address = address;
@@ -266,6 +315,15 @@ class UIStore {
     }
     if (curPage !== undefined) {
       this.contractCommandsTable.curPage = curPage;
+    }
+  }
+
+  setAssetsTableData({ pageSize, curPage } = {}) {
+    if (pageSize) {
+      this.assetsTable.pageSize = pageSize;
+    }
+    if (curPage !== undefined) {
+      this.assetsTable.curPage = curPage;
     }
   }
 
@@ -301,9 +359,9 @@ class UIStore {
 
   loadFromStorage() {
     const data = localStore.get('ui-store');
-    if(data) {
+    if (data) {
       Object.keys(data).forEach(key => {
-        if(data[key].pageSize) {
+        if (data[key].pageSize && this[key]) {
           this[key].pageSize = data[key].pageSize;
         }
       });
@@ -317,8 +375,10 @@ decorate(UIStore, {
   addressTxAssetsTable: observable,
   addressTxsTable: observable,
   blockTxTable: observable,
+  contractsTable: observable,
   contractAssetsTable: observable,
   contractCommandsTable: observable,
+  assetsTable: observable,
   assetTxsTable: observable,
   assetKeyholdersTable: observable,
   fetchSyncing: action,
@@ -326,8 +386,10 @@ decorate(UIStore, {
   setBlockTxTableData: action,
   setAddressTxAssetsTableData: action,
   setAddressTxsTableData: action,
+  setContractsTableData: action,
   setContractAssetsTableData: action,
   setContractCommandsTableData: action,
+  setAssetsTableData: action,
   setAssetTxsTableData: action,
   setAssetKeyholdersTableData: action,
   loadFromStorage: action,

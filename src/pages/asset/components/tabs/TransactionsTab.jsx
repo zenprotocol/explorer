@@ -1,10 +1,10 @@
 import React from 'react';
 import { observer } from 'mobx-react';
 import { Link } from 'react-router-dom';
-import contractStore from '../../../../store/ContractStore';
+import assetStore from '../../../../store/AssetStore';
 import uiStore from '../../../../store/UIStore';
 import config from '../../../../lib/Config';
-import WithSetIdOnUiStore from '../WithSetIdOnUiStore';
+import WithSetIdOnUiStore from '../../../../components/hoc/WithSetIdOnUiStore';
 import TextUtils from '../../../../lib/TextUtils';
 import AssetUtils from '../../../../lib/AssetUtils';
 import { TabPanel } from '../../../../components/tabs';
@@ -40,19 +40,19 @@ const TransactionsTab = observer(() => {
             Cell: data => AssetUtils.getAmountString(uiStore.assetTxsTable.asset, data.value),
           },
         ]}
-        loading={contractStore.loading.assetTxs}
-        itemsCount={contractStore.assetTxsCount}
-        items={contractStore.assetTxs}
+        loading={assetStore.loading.assetTxs}
+        itemsCount={assetStore.assetTxsCount}
+        items={assetStore.assetTxs}
         pageSize={uiStore.assetTxsTable.pageSize}
         curPage={uiStore.assetTxsTable.curPage}
         tableDataSetter={uiStore.setAssetTxsTableData.bind(uiStore)}
         topContent={
-          <div>Total of {contractStore.assetTxsCount} transactions found involving this asset</div>
+          <div>Total of {assetStore.assetTxsCount} transactions found involving this asset</div>
         }
         SubComponent={row => {
           return (
             <TransactionAssetLoader
-              transactionAssets={contractStore.assetTxs}
+              transactionAssets={assetStore.assetTxs}
               index={row.index}
               total={Number(row.original.totalSum)}
             />

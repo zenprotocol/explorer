@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import RouterUtils from '../../../../lib/RouterUtils';
-import uiStore from '../../../../store/UIStore';
+import RouterUtils from '../../../lib/RouterUtils';
+import uiStore from '../../../store/UIStore';
 
 export default function WithSetIdOnUiStore(WrappedComponent, uiStoreFunctionName, nameOfId) {
   return class HOC extends Component {

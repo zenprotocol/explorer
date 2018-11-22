@@ -21,6 +21,7 @@ function ContractTemplates({ loading, itemsCount, items, pageSize, curPage, tabl
             {
               Header: 'Description',
               accessor: 'description',
+              hideOnMobile: true,
               className: 'description',
               Cell: data => <p dangerouslySetInnerHTML={{__html: data.value}} />,
             },
@@ -31,7 +32,6 @@ function ContractTemplates({ loading, itemsCount, items, pageSize, curPage, tabl
               Cell: data => <CreateButtonWithRouter active={!!data.value} slug={data.original.slug} />,
             },
           ]}
-          hideOnMobile={['description']}
           loading={loading}
           itemsCount={itemsCount}
           items={items}

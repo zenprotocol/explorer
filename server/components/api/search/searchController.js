@@ -5,6 +5,7 @@ const blocksDAL = require('../blocks/blocksDAL');
 const transactionsDAL = require('../transactions/transactionsDAL');
 const addressesDAL = require('../addresses/addressesDAL');
 const contractsDAL = require('../contracts/contractsDAL');
+const assetsDAL = require('../assets/assetsDAL');
 const outputsDAL = require('../outputs/outputsDAL');
 const jsonResponse = require('../../../lib/jsonResponse');
 const HttpError = require('../../../lib/HttpError');
@@ -17,6 +18,7 @@ function getSearchPromises(search, limit) {
     transactions: true,
     addresses: true,
     contracts: true,
+    assets: true,
     amount: false,
   };
   let shouldMultiplyAmount = true;
@@ -31,6 +33,7 @@ function getSearchPromises(search, limit) {
     searchFor.transactions = false;
     searchFor.addresses = false;
     searchFor.contracts = false;
+    searchFor.assets = false;
   } else if (AddressUtils.isAddress(search) || AddressUtils.isContract(search)) {
     searchFor.blocks = false;
     searchFor.transactions = false;
@@ -41,6 +44,7 @@ function getSearchPromises(search, limit) {
     searchFor.transactions ? transactionsDAL.search(search, limit) : Promise.resolve([0, []]),
     searchFor.addresses ? addressesDAL.search(search, limit) : Promise.resolve([0, []]),
     searchFor.contracts ? contractsDAL.search(search, limit) : Promise.resolve([0, []]),
+    searchFor.assets ? assetsDAL.search(search, limit) : Promise.resolve([0, []]),
     searchFor.amount
       ? outputsDAL.searchByAmount(
           shouldMultiplyAmount ? Math.floor(Number(search) * 100000000) : search,
@@ -59,18 +63,19 @@ module.exports = {
 
     search = search.trim().toLowerCase();
     const searchResultsLimit = 5;
-    const [blocks, transactions, addresses, contracts, outputs] = await Promise.all(
+    const [blocks, transactions, addresses, contracts, assets, outputs] = await Promise.all(
       getSearchPromises(search, searchResultsLimit)
     );
 
     res.status(httpStatus.OK).json(
       jsonResponse.create(httpStatus.OK, {
-        total: blocks[0] + transactions[0] + addresses[0] + contracts[0] + outputs[0],
+        total: blocks[0] + transactions[0] + addresses[0] + contracts[0] + assets[0] + outputs[0],
         items: {
           blocks: blocks[1],
           transactions: transactions[1],
           addresses: addresses[1],
           contracts: contracts[1],
+          assets: assets[1],
           outputs: outputs[1],
         },
       })

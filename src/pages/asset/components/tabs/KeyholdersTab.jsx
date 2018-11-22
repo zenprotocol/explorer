@@ -1,16 +1,16 @@
 import React from 'react';
 import { observer } from 'mobx-react';
-import contractStore from '../../../../store/ContractStore';
+import assetStore from '../../../../store/AssetStore';
 import uiStore from '../../../../store/UIStore';
 import config from '../../../../lib/Config';
-import WithSetIdOnUiStore from '../WithSetIdOnUiStore';
+import WithSetIdOnUiStore from '../../../../components/hoc/WithSetIdOnUiStore';
 import AssetUtils from '../../../../lib/AssetUtils';
 import { TabPanel } from '../../../../components/tabs';
 import ItemsTable from '../../../../components/ItemsTable';
 import HashLink from '../../../../components/HashLink';
 
 const KeyholdersTab = observer(() => {
-  const totalIssued = Number(contractStore.asset.issued || 0);
+  const totalIssued = Number(assetStore.asset.issued || 0);
   return (
     <TabPanel>
       <ItemsTable
@@ -38,14 +38,14 @@ const KeyholdersTab = observer(() => {
             },
           },
         ]}
-        loading={contractStore.loading.assetKeyholders}
-        itemsCount={contractStore.assetKeyholdersCount}
-        items={contractStore.assetKeyholders}
+        loading={assetStore.loading.assetKeyholders}
+        itemsCount={assetStore.assetKeyholdersCount}
+        items={assetStore.assetKeyholders}
         pageSize={uiStore.assetKeyholdersTable.pageSize}
         curPage={uiStore.assetKeyholdersTable.curPage}
         tableDataSetter={uiStore.setAssetKeyholdersTableData.bind(uiStore)}
         topContent={
-          <div>{contractStore.assetKeyholdersCount} unique keyholders found for this asset</div>
+          <div>{assetStore.assetKeyholdersCount} unique keyholders found for this asset</div>
         }
       />
     </TabPanel>

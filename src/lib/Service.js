@@ -182,6 +182,13 @@ export default {
     },
   },
   contracts: {
+    find(params) {
+      return cancelableHttpRequest({
+        url: `${Endpoints.contracts}`,
+        method: 'get',
+        params,
+      });
+    },
     findByAddress(address) {
       return cancelableHttpRequest({
         url: `${Endpoints.contracts}/${address}`,
@@ -204,7 +211,14 @@ export default {
     },
   },
   assets: {
-    find(hash) {
+    find(params) {
+      return cancelableHttpRequest({
+        url: `${Endpoints.assets}`,
+        method: 'get',
+        params,
+      });
+    },
+    findOne(hash) {
       return cancelableHttpRequest({
         url: `${Endpoints.assets}/${hash}`,
         method: 'get',

@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import addressStore from '../../../../store/AddressStore';
 import uiStore from '../../../../store/UIStore';
 import config from '../../../../lib/Config';
-import WithSetAddressOnUiStore from '../WithSetAddressOnUiStore';
+import WithSetIdOnUiStore from '../../../../components/hoc/WithSetIdOnUiStore';
 import TextUtils from '../../../../lib/TextUtils';
 import { TabPanel } from '../../../../components/tabs';
 import ItemsTable from '../../../../components/ItemsTable';
@@ -49,4 +49,4 @@ const TransactionsTab = observer(() => {
     </TabPanel>
   );
 });
-export default observer(WithSetAddressOnUiStore(TransactionsTab, 'setAddressTxsTableData'));
+export default observer(WithSetIdOnUiStore(TransactionsTab, 'setAddressTxsTableData', 'address'));

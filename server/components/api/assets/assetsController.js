@@ -2,37 +2,47 @@
 
 const httpStatus = require('http-status');
 const assetsDAL = require('./assetsDAL');
+const assetOutstandingsDAL = require('../assetOutstandings/assetOutstandingsDAL');
 const contractsDAL = require('../contracts/contractsDAL');
 const jsonResponse = require('../../../lib/jsonResponse');
 const HttpError = require('../../../lib/HttpError');
 const createQueryObject = require('../../../lib/createQueryObject');
 
 module.exports = {
+  index: async function(req, res) {
+    const page = req.query.page || 0;
+    const pageSize = req.query.pageSize || 10;
+    const query = createQueryObject({ page, pageSize });
+    const result = await Promise.all([
+      assetOutstandingsDAL.count(),
+      assetOutstandingsDAL.findAll(query),
+    ]).then(assetOutstandingsDAL.getItemsAndCountResult);
+
+    res.status(httpStatus.OK).json(jsonResponse.create(httpStatus.OK, result));
+  },
   show: async function(req, res) {
     const { asset } = req.params;
     if (!asset) {
       throw new HttpError(httpStatus.BAD_REQUEST);
     }
-    // ZP is a special case and need to be treated differently
-    const promises = asset === '00' ? [
-      assetsDAL.findZP(),
-    ] : [
+
+    const [assetOutstanding, contract] = await Promise.all([
       assetsDAL.findOutstanding(asset),
       contractsDAL.findById(asset.substring(0, 72)),
-    ];
-
-    const [assetOutstanding, contract] = await Promise.all(promises);
-    if (asset) {
-      res
-        .status(httpStatus.OK)
-        .json(
-          jsonResponse.create(
-            httpStatus.OK,
-            Object.assign({}, assetOutstanding, contract && {
+    ]);
+    if (assetOutstanding) {
+      res.status(httpStatus.OK).json(
+        jsonResponse.create(
+          httpStatus.OK,
+          Object.assign(
+            {},
+            assetOutstanding,
+            contract && {
               contract: { id: contract.id, address: contract.address },
-            })
+            }
           )
-        );
+        )
+      );
     } else {
       throw new HttpError(httpStatus.NOT_FOUND);
     }

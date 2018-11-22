@@ -3,12 +3,38 @@
 const tags = require('common-tags');
 const dal = require('../../../lib/dal');
 const deepMerge = require('deepmerge');
-const Op = require('sequelize').Op;
 const inputsDAL = require('../inputs/inputsDAL');
 const commandsDAL = require('../commands/commandsDAL');
+const assetOutstandingsDAL = require('../assetOutstandings/assetOutstandingsDAL');
 const AddressUtils = require('../../../../src/common/utils/AddressUtils');
 
 const contractsDAL = dal.createDAL('Contract');
+const sequelize = contractsDAL.db.sequelize;
+const Op = sequelize.Op;
+
+contractsDAL.findAllWithAssetsCountAndCountOrderByNewest = function({ limit = 10, offset = 0 } = {}) {
+  const sql = tags.oneLine`
+  SELECT "Contracts".*, COUNT("Assets".asset) AS "assetCount"
+  FROM "Contracts" 
+  LEFT JOIN 
+    (SELECT asset
+    FROM "AssetOutstandings") AS "Assets"
+  ON "Assets"."asset" LIKE CONCAT("Contracts"."id", '%')
+  GROUP BY "Contracts"."id"
+  ORDER BY "expiryBlock" DESC NULLS LAST, "updatedAt" DESC
+  LIMIT :limit OFFSET :offset;
+  `;
+  return Promise.all([
+    this.count(),
+    sequelize.query(sql, {
+      replacements: {
+        limit,
+        offset,
+      },
+      type: sequelize.QueryTypes.SELECT,
+    })
+  ]).then(this.getItemsAndCountResult);
+};
 
 contractsDAL.findByAddress = function(address) {
   return this.findOne({
@@ -36,7 +62,7 @@ contractsDAL.search = async function(search, limit = 10) {
       attributes: ['address'],
       group: 'address',
       limit,
-    })
+    }),
   ]);
 };
 
@@ -59,39 +85,6 @@ contractsDAL.findAllExpired = function() {
 };
 
 contractsDAL.findAllOutstandingAssets = function(id, { limit = 10, offset = 0 } = {}) {
-  const sequelize = contractsDAL.db.sequelize;
-  const sql = tags.oneLine`
-  SELECT
-    COALESCE("Issued"."asset", "Destroyed"."asset") AS "asset",
-    COALESCE("Issued"."sum", 0) AS "issued",
-    COALESCE("Destroyed"."sum", 0) AS "destroyed",
-    COALESCE("Issued"."sum", 0) -  COALESCE("Destroyed"."sum", 0) AS "outstanding",
-    "Keyholders"."total" AS "keyholders"
-  FROM
-    (SELECT asset, SUM("amount") AS sum
-    FROM "Inputs"
-    WHERE "Inputs"."asset" LIKE :assetSearch
-      AND "Inputs"."isMint" = 'true'
-    GROUP BY "Inputs"."asset") AS "Issued"
-    LEFT JOIN
-    (SELECT asset, SUM("amount") AS sum
-    FROM "Outputs"
-    WHERE "Outputs"."asset" LIKE :assetSearch
-      AND "Outputs"."lockType" = 'Destroy'
-    GROUP BY "Outputs"."asset") AS "Destroyed"
-    ON "Issued"."asset" = "Destroyed"."asset" 
-    LEFT JOIN
-    (SELECT COUNT("UniqueAddresses"."address") AS "total", "UniqueAddresses"."asset"
-    FROM
-      (SELECT "address", "asset"
-      FROM "Outputs"
-      WHERE "Outputs"."asset" LIKE :assetSearch
-      GROUP BY "Outputs"."asset", "Outputs"."address") AS "UniqueAddresses"
-    GROUP BY "UniqueAddresses"."asset") AS "Keyholders"
-    ON "Issued"."asset" = "Keyholders"."asset"
-    LIMIT :limit OFFSET :offset
-  `;
-
   return Promise.all([
     inputsDAL.count({
       col: 'asset',
@@ -103,13 +96,14 @@ contractsDAL.findAllOutstandingAssets = function(id, { limit = 10, offset = 0 } 
       },
       distinct: true,
     }),
-    sequelize.query(sql, {
-      replacements: {
-        assetSearch: `${id}%`,
-        limit,
-        offset,
+    assetOutstandingsDAL.findAll({
+      where: {
+        asset: {
+          [Op.like]: `${id}%`,
+        },
       },
-      type: sequelize.QueryTypes.SELECT,
+      limit,
+      offset,
     }),
   ]).then(this.getItemsAndCountResult);
 };

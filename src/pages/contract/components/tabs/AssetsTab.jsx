@@ -5,7 +5,7 @@ import uiStore from '../../../../store/UIStore';
 import config from '../../../../lib/Config';
 import TextUtils from '../../../../lib/TextUtils';
 import AssetUtils from '../../../../lib/AssetUtils';
-import WithSetAddressOnUiStore from '../WithSetAddressOnUiStore';
+import WithSetIdOnUiStore from '../../../../components/hoc/WithSetIdOnUiStore';
 import { TabPanel } from '../../../../components/tabs';
 import ItemsTable from '../../../../components/ItemsTable';
 import HashLink from '../../../../components/HashLink';
@@ -58,4 +58,4 @@ const AssetsTab = observer(() => {
     </TabPanel>
   );
 });
-export default observer(WithSetAddressOnUiStore(AssetsTab, 'setContractAssetsTableData'));
+export default observer(WithSetIdOnUiStore(AssetsTab, 'setContractAssetsTableData', 'address'));
