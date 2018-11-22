@@ -2,7 +2,6 @@
 
 const tags = require('common-tags');
 const outputsDAL = require('../outputs/outputsDAL');
-const inputsDAL = require('../inputs/inputsDAL');
 const infosDAL = require('../infos/infosDAL');
 const db = require('../../../db/sequelize/models');
 const addressAmountsDAL = require('../addressAmounts/addressAmountsDAL');
@@ -13,36 +12,40 @@ const sequelize = db.sequelize;
 const Op = sequelize.Op;
 
 addressesDAL.findOne = function(address) {
-  return outputsDAL.findAll({
-    where: {
-      address,
-    },
-    limit: 1,
-  }).then((results) => {
-    return results.length ? results[0] : null;
-  });
+  return outputsDAL
+    .findAll({
+      where: {
+        address,
+      },
+      limit: 1,
+    })
+    .then(results => {
+      return results.length ? results[0] : null;
+    });
 };
 
 addressesDAL.addressExists = function(address) {
-  return outputsDAL.findAll({
-    where: {
-      address,
-    },
-    limit: 1,
-  }).then((results) => {
-    return results.length > 0;
-  });
+  return outputsDAL
+    .findAll({
+      where: {
+        address,
+      },
+      limit: 1,
+    })
+    .then(results => {
+      return results.length > 0;
+    });
 };
 
 addressesDAL.search = async function(search, limit = 10) {
   const like = AddressUtils.isAddress(search) ? `${search}%` : `%${search}%`;
-  const prefix = AddressUtils.getPrefix((await infosDAL.findByName('chain') || {}).value);
+  const prefix = AddressUtils.getPrefix(((await infosDAL.findByName('chain')) || {}).value);
   const where = {
     address: {
       [Op.and]: {
         [Op.like]: like,
         [Op.notLike]: `c${prefix}%`,
-      }
+      },
     },
   };
   return Promise.all([
@@ -56,34 +59,15 @@ addressesDAL.search = async function(search, limit = 10) {
       attributes: ['address'],
       group: 'address',
       limit,
-    })
+    }),
   ]);
 };
 
-addressesDAL.getSentSums = async function(address) {
-  return inputsDAL.findAll({
-    attributes: ['Output.asset', [sequelize.fn('sum', sequelize.col('Output.amount')), 'total']],
-    include: [
-      {
-        model: db.Output,
-        where: {
-          address,
-        },
-        attributes: [],
-      },
-    ],
-    group: sequelize.col('Output.asset'),
-    raw: true,
-  });
-};
-addressesDAL.getReceivedSums = async function(address) {
-  return outputsDAL.findAll({
-    attributes: ['asset', [sequelize.fn('sum', sequelize.col('amount')), 'total']],
+addressesDAL.getAssetAmounts = function(address) {
+  return addressAmountsDAL.findAll({
     where: {
       address,
     },
-    group: 'asset',
-    raw: true,
   });
 };
 

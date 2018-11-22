@@ -15,46 +15,15 @@ module.exports = {
       throw new HttpError(httpStatus.NOT_FOUND);
     }
     
-    const [sent, received, assets, totalTxs] = await Promise.all([
-      addressesDAL.getSentSums(address),
-      addressesDAL.getReceivedSums(address),
-      outputsDAL.findAllAddressAssets(address),
+    const [assetAmounts, totalTxs] = await Promise.all([
+      addressesDAL.getAssetAmounts(address),
       transactionsDAL.countByAddress(address),
     ]);
-
-    const alreadyAddedAssets = [];
-    const balance = received.map((item) => {
-      alreadyAddedAssets.push(item.asset);
-      return {
-        asset: item.asset,
-        total: item.total,
-      };
-    });
-
-    sent.forEach((sentItem) => {
-      if(alreadyAddedAssets.includes(sentItem.asset)) {
-        for (let i = 0; i < balance.length; i++) {
-          const balanceItem = balance[i];
-          if (balanceItem.asset === sentItem.asset) {
-            balanceItem.total = Number(balanceItem.total) - Number(sentItem.total);
-          }
-        }
-      }
-      else {
-        balance.push({
-          asset: sent.asset,
-          total: -1 * sent.total,
-        });
-      }
-    });
     
     res.status(httpStatus.OK).json(jsonResponse.create(httpStatus.OK, {
       address,
       totalTxs,
-      assets,
-      received,
-      sent,
-      balance,
+      assetAmounts,
     }));
   },
   findAllAssets: async function(req, res) {

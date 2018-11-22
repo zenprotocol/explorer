@@ -35,10 +35,12 @@ class AddressPage extends Component {
 
   render() {
     const params = RouterUtils.getRouteParams(this.props);
-    let zpBalance = {
-      received: getAssetTotal(addressStore.address.received, '00'),
-      sent: getAssetTotal(addressStore.address.sent, '00'),
-      balance: getAssetTotal(addressStore.address.balance, '00'),
+    let zpBalance = addressStore.address.assetAmounts ? addressStore.address.assetAmounts.find(
+      assetAmount => assetAmount.asset === '00'
+    ) : {
+      balance: 0,
+      received: 0,
+      sent: 0,
     };
     const is404 = addressStore.address.status === 404;
     const renderContent = !is404 && addressStore.address.address;
@@ -83,14 +85,21 @@ class AddressPage extends Component {
                     <tr>
                       <td>NO. ASSET TYPES</td>
                       <td>
-                        {addressStore.address.assets ? addressStore.address.assets.length : ''}
+                        {addressStore.address.assetAmounts
+                          ? addressStore.address.assetAmounts.length
+                          : ''}
                       </td>
                     </tr>
                   </tbody>
                 </table>
               </div>
               <div className="col-lg-6">
-                <AssetsBalancesTable balance={addressStore.address.balance} />
+                <AssetsBalancesTable
+                  balance={addressStore.address.assetAmounts.map(assetAmount => ({
+                    asset: assetAmount.asset,
+                    total: assetAmount.balance,
+                  }))}
+                />
               </div>
             </div>
           )}
@@ -100,18 +109,6 @@ class AddressPage extends Component {
       </Page>
     );
   }
-}
-
-function getAssetTotal(array, asset) {
-  if (array && array.length) {
-    for (let i = 0; i < array.length; i++) {
-      const element = array[i];
-      if (element.asset === asset) {
-        return element.total;
-      }
-    }
-  }
-  return 0;
 }
 
 export default observer(AddressPage);
