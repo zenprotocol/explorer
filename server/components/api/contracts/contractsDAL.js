@@ -1,5 +1,6 @@
 'use strict';
 
+const tags = require('common-tags');
 const dal = require('../../../lib/dal');
 const deepMerge = require('deepmerge');
 const inputsDAL = require('../inputs/inputsDAL');
