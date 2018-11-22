@@ -42,6 +42,9 @@ class AddressStore {
     if (address) {
       this.loading.address = true;
 
+      runInAction(() => {
+        this.address = {};
+      });
       return Service.addresses
         .findByAddress(address)
         .then(response => {
