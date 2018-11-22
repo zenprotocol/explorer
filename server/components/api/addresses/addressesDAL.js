@@ -4,8 +4,13 @@ const tags = require('common-tags');
 const outputsDAL = require('../outputs/outputsDAL');
 const inputsDAL = require('../inputs/inputsDAL');
 const infosDAL = require('../infos/infosDAL');
+const db = require('../../../db/sequelize/models');
+const addressAmountsDAL = require('../addressAmounts/addressAmountsDAL');
 const AddressUtils = require('../../../../src/common/utils/AddressUtils');
 const addressesDAL = {};
+
+const sequelize = db.sequelize;
+const Op = sequelize.Op;
 
 addressesDAL.findOne = function(address) {
   return outputsDAL.findAll({
@@ -30,7 +35,6 @@ addressesDAL.addressExists = function(address) {
 };
 
 addressesDAL.search = async function(search, limit = 10) {
-  const Op = outputsDAL.db.sequelize.Op;
   const like = AddressUtils.isAddress(search) ? `${search}%` : `%${search}%`;
   const prefix = AddressUtils.getPrefix((await infosDAL.findByName('chain') || {}).value);
   const where = {
@@ -42,12 +46,12 @@ addressesDAL.search = async function(search, limit = 10) {
     },
   };
   return Promise.all([
-    outputsDAL.count({
+    addressAmountsDAL.count({
       where,
       distinct: true,
       col: 'address',
     }),
-    outputsDAL.findAll({
+    addressAmountsDAL.findAll({
       where,
       attributes: ['address'],
       group: 'address',
@@ -57,10 +61,8 @@ addressesDAL.search = async function(search, limit = 10) {
 };
 
 addressesDAL.getSentSums = async function(address) {
-  const db = inputsDAL.db;
-  const Sequelize = db.Sequelize;
   return inputsDAL.findAll({
-    attributes: ['Output.asset', [Sequelize.fn('sum', Sequelize.col('Output.amount')), 'total']],
+    attributes: ['Output.asset', [sequelize.fn('sum', sequelize.col('Output.amount')), 'total']],
     include: [
       {
         model: db.Output,
@@ -70,15 +72,13 @@ addressesDAL.getSentSums = async function(address) {
         attributes: [],
       },
     ],
-    group: Sequelize.col('Output.asset'),
+    group: sequelize.col('Output.asset'),
     raw: true,
   });
 };
 addressesDAL.getReceivedSums = async function(address) {
-  const db = outputsDAL.db;
-  const Sequelize = db.Sequelize;
   return outputsDAL.findAll({
-    attributes: ['asset', [Sequelize.fn('sum', Sequelize.col('amount')), 'total']],
+    attributes: ['asset', [sequelize.fn('sum', sequelize.col('amount')), 'total']],
     where: {
       address,
     },
@@ -88,8 +88,6 @@ addressesDAL.getReceivedSums = async function(address) {
 };
 
 addressesDAL.getZpBalance = async function(address) {
-  const db = outputsDAL.db;
-  const sequelize = db.sequelize;
   const sql = tags.oneLine`
   select
   (output_sum - input_sum) / 100000000 as balance
