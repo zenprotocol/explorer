@@ -32,8 +32,8 @@
       margin-left: -1 * $content-padding-x - 1;
 
       .GenericTable {
-        width: auto;
-        margin-left: auto;
+        width: 100%;
+        margin-left: 0;
       }
     }
     @media (min-width: map-get($grid-breakpoints, "lg")) {
@@ -44,8 +44,8 @@
         margin-left: -1 * $content-padding-x-lg - 1;
 
         .GenericTable {
-          width: auto;
-          margin-left: auto;
+          width: 100%;
+          margin-left: 0;
         }
       }
     }
