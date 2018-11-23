@@ -47,7 +47,7 @@ class TransactionAsset extends Component {
 
   getInputs(transactionAsset) {
     if (!transactionAsset.Inputs || !transactionAsset.Inputs.length) {
-      return this.getDataItem({ data: 'No Inputs', isHash: false });
+      return [this.getDataItem({ data: 'No Inputs', isHash: false })];
     } else {
       return transactionAsset.Inputs.map(input => {
         return input.Output.address
@@ -62,7 +62,7 @@ class TransactionAsset extends Component {
 
   getOutputs(transactionAsset) {
     if (!transactionAsset.Outputs || !transactionAsset.Outputs.length) {
-      return this.getDataItem({ data: 'No Outputs', isHash: false });
+      return [this.getDataItem({ data: 'No Outputs', isHash: false })];
     } else {
       return transactionAsset.Outputs.map(output => {
         let amount = output.amount;
