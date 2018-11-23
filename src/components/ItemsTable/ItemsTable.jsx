@@ -118,8 +118,9 @@ class ItemsTable extends Component {
           SubComponent={SubComponent}
           expanded={this.state.expanded}
           getTrProps={(state, rowInfo, column, instance) => {
+            const expanded = rowInfo && state.expanded[rowInfo.index] === true;
             return {
-              className: SubComponent ? 'expandable' : '',
+              className: classNames({expandable: SubComponent, expanded}),
               onClick: (e, handleOriginal) => {
                 if (SubComponent && e.target.tagName.toLowerCase() !== 'a') {
                   this.setState(prevState => ({
