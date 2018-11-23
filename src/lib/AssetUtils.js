@@ -4,10 +4,6 @@ export default {
   isZP(asset) {
     return asset === '00';
   },
-  showAmount(asset) {
-    // maybe later change conditions
-    return true;
-  },
   getAmountDivided(asset, amount) {
     return this.isZP(asset) ? Number(amount) / 100000000 : Number(amount);
   },

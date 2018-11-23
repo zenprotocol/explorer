@@ -37,14 +37,4 @@
       min-width: 88px;
     }
   }
-
-  .TransactionAsset {
-    margin-bottom: 0;
-  }
-  @media (min-width: map-get($grid-breakpoints, "lg")) {
-    .TransactionAsset {
-      width: 70%;
-      align-self: flex-end;
-    }
-  }
 }
