@@ -50,7 +50,9 @@ class ItemsTable extends Component {
       width: 65,
       Expander: ({ isExpanded }) => (
         <div className="expand">
-          {isExpanded ? <i className="fas fa-angle-up" /> : <i className="fas fa-angle-down" />}
+          <div className="arrow">
+            {isExpanded ? <i className="fas fa-angle-up" /> : <i className="fas fa-angle-down" />}
+          </div>
         </div>
       ),
     };
