@@ -78,16 +78,21 @@
 
 @media (min-width: map-get($grid-breakpoints, "lg")) {
   .GenericTable .TransactionAsset  {
-    width: 80%;
-    align-self: flex-end;
+    display: flex;
+    justify-content: flex-end;
+    
 
-    .rt-thead .rt-th {
-      padding-left: $content-padding-x-lg;
-      padding-right: $content-padding-x-lg;
-
-      // &.column-total {
-      //   padding-left: $content-padding-x-lg + 14px;
-      // }
+    .GenericTable {
+      width: 80%;
+  
+      .rt-thead .rt-th {
+        padding-left: $content-padding-x-lg;
+        padding-right: $content-padding-x-lg;
+  
+        // &.column-total {
+        //   padding-left: $content-padding-x-lg + 14px;
+        // }
+      }
     }
   }
 }

@@ -1,5 +1,4 @@
-@import 'style/colors';
-@import 'style/sizes';
+@import 'style/variables';
 
 .GenericTable .ReactTable {
   .rt-thead .rt-tr {
@@ -7,13 +6,18 @@
   }
   .rt-tbody .rt-tr-group {
     border-bottom: none;
+    background-color: $gray-1000;
   }
   
   .rt-td {
     border-bottom: 1px solid $border-color;
   }
+  
+  .rt-tbody .rt-tr {
+    background-color: $table-bg;
+  }
 
-  .rt-tr-group.last .rt-td {
+  .rt-tr-group.last > .rt-tr .rt-td {
     border-bottom-color: transparent;
   }
   
@@ -36,7 +40,6 @@
   
   .rt-tbody {
     overflow: visible;
-    background-color: $table-bg;
   }
   .rt-td {
     font-weight: $font-weight-normal;
@@ -57,6 +60,12 @@
   
   .loading .rt-noData {
     display: none;
+  }
+
+  .GenericTable .ReactTable {
+    .rt-tr {
+      background-color: transparent;
+    }
   }
 
   @media (min-width: map-get($grid-breakpoints, "lg")) {
