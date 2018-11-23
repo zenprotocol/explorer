@@ -22,12 +22,12 @@
   .rt-tr.expandable {
     cursor: pointer;
   }
-  .rt-tr.expanded,
-  .rt-tr.expandable:hover {
+  .rt-tbody .rt-tr.expanded,
+  .rt-tbody .rt-tr.expandable:hover {
     background-color: $table-hover-bg;
   }
-  .rt-tr.-padRow,
-  .rt-tr.-padRow:hover {
+  .rt-tbody .rt-tr.-padRow,
+  .rt-tbody .rt-tr.-padRow:hover {
     background-color: transparent;
     cursor: default;
   }
