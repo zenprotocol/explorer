@@ -1,20 +1,32 @@
-@import 'style/colors';
+@import 'style/variables';
 
 .Footer {
   color: $gray;
-  padding: 10px 0;
+  padding-top: 3rem;
+  padding-bottom: 5rem;
   .navbar-brand {
     margin-right: 2rem;
+    padding: 0;
   }
   img.logo {
     height: 40px;
     width: auto;
   }
-  .FooterLinks a {
-    color: inherit;
+  .row-logo {
+    padding-bottom: 3rem;
   }
-  .FooterLinks a:hover {
-    color: $white;
+  .FooterLinks {
+    a {
+      color: inherit;
+
+      &:hover {
+        color: $white;
+      }
+    }
+
+    li:last-child a {
+      padding-bottom: 0;
+    }
   }
   .separator {
     border-style: solid;
@@ -29,7 +41,23 @@
   .SyncNotification .icon {
     color: #03B358;
   }
-  @media (min-width: 992px) {
+  .FooterSocialContact {
+    align-items: center;
+
+    a {
+      color: $white;
+
+      &:hover {
+        color: $blue-soft;
+      }
+    }
+  }
+  .FooterSocial a {
+    font-size: 1rem;
+    padding-left: $grid-gutter-width / 2;
+    padding-right: $grid-gutter-width / 2;
+  }
+  @media (min-width: map-get($grid-breakpoints, "lg")) {
     .logo-padding {
       padding-left: 30px;
     }
@@ -38,6 +66,18 @@
       border-right-width: 1px;
       padding-bottom: 0;
       margin-bottom: 0;
+    }
+    .FooterSocialContact {
+      align-items: flex-end;
+
+      li:last-child .nav-link {
+        padding-right: 0;
+      }
+    }
+    .FooterSocial a {
+      padding-left: 0;
+      padding-right: $grid-gutter-width;
+      
     }
   }
 }

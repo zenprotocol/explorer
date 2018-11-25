@@ -10,19 +10,19 @@ import './Footer.css';
 export default function Footer(props) {
   return (
     <footer className="Footer container">
-      <div className="row">
+      <div className="row row-logo">
         <div className="col-12">
           <Logo />
           <SyncNotification />
         </div>
       </div>
       <div className="row logo-padding">
-        <div className="col-lg-7 border-dark separator">
+        <div className="col-lg-8 border-dark separator">
           <FooterLinks />
         </div>
-        <div className="col-lg-5">
-          <FooterContact />
+        <div className="FooterSocialContact col-lg-4 d-flex flex-column p-0">
           <FooterSocial />
+          <FooterContact />
           <FooterCopyright />
         </div>
       </div>
@@ -183,79 +183,39 @@ function FooterContact() {
   );
 }
 
-// function FooterNewsSubscribe() {
-//   return (
-//     <div className="subscribe-form">
-//       <p className="footer-title">Subscribe to Zen Protocol news</p>
-//       <p className="show-for-small-only">Send us an email and we will get back to you ASAP.</p>
-//       <form
-//         action="https://zenprotocol.us16.list-manage.com/subscribe/post?u=2d338b2589df4f1d3cf5e6c2a&amp;id=3ffe2cc5fa"
-//         method="post"
-//         id="mc-embedded-subscribe-form"
-//         name="mc-embedded-subscribe-form"
-//         className="validate"
-//         target="_blank"
-//         rel="noopener noreferrer"
-//         novalidate=""
-//       >
-//         <div className="input-group">
-//           <input
-//             placeholder="Your email"
-//             type="email"
-//             value=""
-//             name="EMAIL"
-//             className="input-group-field"
-//             id="mce-EMAIL"
-//           />
-//           <div id="mce-responses" className="clear">
-//             <div className="response" id="mce-error-response" style={{display:'none'}} />
-//             <div className="response" id="mce-success-response" style={{display:'none'}} />
-//           </div>
-//           <div style={{position: 'absolute', left: '-5000px'}} aria-hidden="true">
-//             <input type="text" name="b_2d338b2589df4f1d3cf5e6c2a_3ffe2cc5fa" tabIndex="-1" value="" />
-//           </div>
-//           <div className="input-group-button">
-//             <input type="submit" value="Submit" name="subscribe" id="mc-embedded-subscribe" className="button" />
-//           </div>
-//         </div>
-//       </form>
-//     </div>
-//   );
-// }
-
 function FooterSocial() {
   return (
     <ul className="FooterSocial nav">
       <li className="nav-item">
-        <ExternalLink className="nav-link pr-2 telegram-icon" url="https://t.me/zenprotocol/">
+        <ExternalLink className="nav-link telegram-icon" url="https://t.me/zenprotocol/">
           <i className="fab fa-telegram-plane" />
         </ExternalLink>
       </li>
       <li className="nav-item">
-        <ExternalLink className="nav-link px-2 github-icon" url="https://github.com/zenprotocol">
+        <ExternalLink className="nav-link github-icon" url="https://github.com/zenprotocol">
           <i className="fab fa-github" />
         </ExternalLink>
       </li>
       <li className="nav-item">
-        <ExternalLink className="nav-link px-2 medium-icon" url="https://blog.zenprotocol.com/">
+        <ExternalLink className="nav-link medium-icon" url="https://blog.zenprotocol.com/">
           <i className="fab fa-medium-m" />
         </ExternalLink>
       </li>
       <li className="nav-item">
-        <ExternalLink className="nav-link px-2 twitter-icon" url="https://twitter.com/zen_protocol">
+        <ExternalLink className="nav-link twitter-icon" url="https://twitter.com/zen_protocol">
           <i className="fab fa-twitter" />
         </ExternalLink>
       </li>
       <li className="nav-item">
         <ExternalLink
-          className="nav-link px-2 youtube-icon"
+          className="nav-link youtube-icon"
           url="https://www.youtube.com/channel/UCVm4j3TrmD8mSvvExG_CAIw"
         >
           <i className="fab fa-youtube" />
         </ExternalLink>
       </li>
       <li className="nav-item">
-        <ExternalLink className="nav-link pl-2 discourse-icon" url="https://forum.zenprotocol.com">
+        <ExternalLink className="nav-link discourse-icon" url="https://forum.zenprotocol.com">
           <i className="fab fa-discourse" />
         </ExternalLink>
       </li>
