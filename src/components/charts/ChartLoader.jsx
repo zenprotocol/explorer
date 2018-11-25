@@ -1,6 +1,7 @@
 import React, { PureComponent } from 'react';
 import { Link, withRouter } from 'react-router-dom';
 import PropTypes from 'prop-types';
+import classNames from 'classnames';
 import Service from '../../lib/Service';
 import TextUtils from '../../lib/TextUtils';
 import Loading from '../Loading';
@@ -195,9 +196,10 @@ class ChartLoader extends PureComponent {
     ) : (
       chartConfig.title
     );
+    const clickable = !!titleLinkTo;
 
     return (
-      <div className="Chart" onClick={this.handleChartClick}>
+      <div className={classNames('Chart', { clickable })} onClick={this.handleChartClick}>
         {showTitle && <div className="title display-4 text-white border-dark">{title}</div>}
         {React.createElement(componentType, {
           data: Mappers[chartName](this.chartItems),
