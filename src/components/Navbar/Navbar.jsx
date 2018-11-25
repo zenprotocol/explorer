@@ -103,64 +103,66 @@ class Navbar extends Component {
     const { isCollapsing, collapsed } = this.state;
     return (
       <div className={classnames(this.props.className, 'Navbar')}>
-        <nav className="navbar navbar-dark navbar-expand-lg py-0 px-0">
-          <Logo />
-          <button
-            className="navbar-toggler"
-            type="button"
-            data-toggle="collapse"
-            data-target="#navbarSupportedContent"
-            aria-controls="navbarSupportedContent"
-            aria-expanded="false"
-            aria-label="Toggle navigation"
-            onClick={this.toggle}
-          >
-            <i className="fas fa-bars" />
-          </button>
+        <nav className="navbar fixed-top navbar-dark navbar-expand-lg py-0 px-0">
+          <div className="container">
+            <Logo />
+            <button
+              className="navbar-toggler"
+              type="button"
+              data-toggle="collapse"
+              data-target="#navbarSupportedContent"
+              aria-controls="navbarSupportedContent"
+              aria-expanded="false"
+              aria-label="Toggle navigation"
+              onClick={this.toggle}
+            >
+              <i className="fas fa-bars" />
+            </button>
 
-          <div
-            style={{ height: this.state.height }}
-            className={classnames(
-              'navbar-collapse',
-              { collapse: !isCollapsing },
-              { show: !isCollapsing && !collapsed },
-              { collapsing: isCollapsing }
-            )}
-            id="navbarSupportedContent"
-          >
-            <ul className="navbar-nav mr-auto">
-              <li className="nav-item">
-                <NavLink
-                  className="nav-link"
-                  to="/blocks"
-                  isActive={isNavLinkActive(['', 'blocks', 'tx', 'address'])}
-                >
-                  Blocks
-                </NavLink>
-              </li>
-              <li className="nav-item">
-                <NavLink className="nav-link" to="/contracts">
-                  Contracts
-                </NavLink>
-              </li>
-              <li className="nav-item">
-                <NavLink className="nav-link" to="/assets">
-                  Assets
-                </NavLink>
-              </li>
-              <li className="nav-item">
-                <NavLink className="nav-link" to="/blockchain/info">
-                  Stats
-                </NavLink>
-              </li>
-              {/*
-                
+            <div
+              style={{ height: this.state.height }}
+              className={classnames(
+                'navbar-collapse',
+                { collapse: !isCollapsing },
+                { show: !isCollapsing && !collapsed },
+                { collapsing: isCollapsing }
+              )}
+              id="navbarSupportedContent"
+            >
+              <ul className="navbar-nav mr-auto">
                 <li className="nav-item">
-                  <NavLink className="nav-link" to="/tx">Transactions</NavLink>
+                  <NavLink
+                    className="nav-link"
+                    to="/blocks"
+                    isActive={isNavLinkActive(['', 'blocks', 'tx', 'address'])}
+                  >
+                    Blocks
+                  </NavLink>
                 </li>
-              */}
-            </ul>
-            <SearchBar />
+                <li className="nav-item">
+                  <NavLink className="nav-link" to="/contracts">
+                    Contracts
+                  </NavLink>
+                </li>
+                <li className="nav-item">
+                  <NavLink className="nav-link" to="/assets">
+                    Assets
+                  </NavLink>
+                </li>
+                <li className="nav-item">
+                  <NavLink className="nav-link" to="/blockchain/info">
+                    Stats
+                  </NavLink>
+                </li>
+                {/*
+                  
+                  <li className="nav-item">
+                    <NavLink className="nav-link" to="/tx">Transactions</NavLink>
+                  </li>
+                */}
+              </ul>
+              <SearchBar />
+            </div>
           </div>
         </nav>
       </div>
