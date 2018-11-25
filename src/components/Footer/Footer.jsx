@@ -11,12 +11,12 @@ export default function Footer(props) {
   return (
     <footer className="Footer container">
       <div className="row row-logo">
-        <div className="col-12">
+        <div className="col-12 px-0">
           <Logo />
           <SyncNotification />
         </div>
       </div>
-      <div className="row logo-padding">
+      <div className="row">
         <div className="col-lg-8 border-dark separator">
           <FooterLinks />
         </div>
@@ -48,8 +48,8 @@ const SyncNotification = observer(function() {
 
 function FooterLinks() {
   return (
-    <div className="row FooterLinks">
-      <div className="col-md-4">
+    <div className="FooterLinks">
+      <div className="">
         <ul className="nav flex-column">
           <li className="nav-item">
             <Link className="nav-link text-nowrap" to="/broadcastTx">Broadcast Raw Tx</Link>
@@ -88,7 +88,7 @@ function FooterLinks() {
           </li>
         </ul>
       </div>
-      <div className="col-md-4">
+      <div className="">
         <ul className="nav flex-column">
           <li className="nav-item">
             <ExternalLink className="nav-link text-nowrap" url="https://docs.zenprotocol.com/">
@@ -125,7 +125,7 @@ function FooterLinks() {
           </li>
         </ul>
       </div>
-      <div className="col-md-4">
+      <div className="">
         <ul className="nav flex-column">
           <li className="nav-item">
             <ExternalLink className="nav-link text-nowrap" url="http://blog.zenprotocol.com/">

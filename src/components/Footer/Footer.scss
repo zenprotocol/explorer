@@ -16,7 +16,11 @@
     padding-bottom: 3rem;
   }
   .FooterLinks {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     a {
+      text-align: center;
       color: inherit;
 
       &:hover {
@@ -59,15 +63,39 @@
     padding-left: $grid-gutter-width / 2;
     padding-right: $grid-gutter-width / 2;
   }
-  @media (min-width: map-get($grid-breakpoints, "lg")) {
-    .logo-padding {
-      padding-left: 30px;
+  @media (min-width: map-get($grid-breakpoints, "md")) {
+    .FooterLinks {
+      flex-direction: row;
+      justify-content: space-around;
+      align-items: flex-start;
+
+      a {
+        text-align: left;
+      }
+
+      
     }
+  }
+  @media (min-width: map-get($grid-breakpoints, "lg")) {
     .separator {
       border-bottom-width: 0;
       border-right-width: 1px;
       padding-bottom: 0;
       margin-bottom: 0;
+      @include mixin-content-padding-x();
+    }
+    .FooterLinks {
+      justify-content: flex-start;
+      > div {
+        padding-right: $grid-gutter-width;
+      }
+      > div:first-child {
+        padding-left: 0;
+
+        .nav-link {
+          padding-left: 0;
+        }
+      }
     }
     .FooterSocialContact {
       align-items: flex-end;
