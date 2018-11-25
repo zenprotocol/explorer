@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, withRouter } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import Service from '../../lib/Service';
 import TextUtils from '../../lib/TextUtils';
@@ -105,7 +105,7 @@ const Mappers = {
   },
 };
 
-export default class ChartLoader extends PureComponent {
+class ChartLoader extends PureComponent {
   constructor(props) {
     super(props);
 
@@ -113,6 +113,8 @@ export default class ChartLoader extends PureComponent {
       loading: false,
       data: [],
     };
+
+    this.handleChartClick = this.handleChartClick.bind(this);
   }
 
   componentDidMount() {
@@ -156,6 +158,13 @@ export default class ChartLoader extends PureComponent {
     return this.state.data.length ? this.state.data : this.props.externalChartData || [];
   }
 
+  handleChartClick() {
+    const { titleLinkTo } = this.props;
+    if(titleLinkTo) {
+      this.props.history.push(titleLinkTo);
+    }
+  }
+
   render() {
     const { chartName, showTitle, titleLinkTo } = this.props;
     const chartConfig = ChartConfigs[chartName];
@@ -188,7 +197,7 @@ export default class ChartLoader extends PureComponent {
     );
 
     return (
-      <div className="Chart">
+      <div className="Chart" onClick={this.handleChartClick}>
         {showTitle && <div className="title display-4 text-white border-dark">{title}</div>}
         {React.createElement(componentType, {
           data: Mappers[chartName](this.chartItems),
@@ -211,3 +220,5 @@ ChartLoader.propTypes = {
   externalChartData: PropTypes.array,
   externalChartLoading: PropTypes.bool,
 };
+
+export default withRouter(ChartLoader);
