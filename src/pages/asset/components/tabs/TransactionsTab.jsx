@@ -26,7 +26,7 @@ const TransactionsTab = observer(() => {
           {
             Header: 'Timestamp',
             accessor: 'timestamp',
-            minWidth: config.ui.table.minCellWidth,
+            minWidth: config.ui.table.minCellWidthDate,
             Cell: data => TextUtils.getDateStringFromTimestamp(data.value),
           },
           {

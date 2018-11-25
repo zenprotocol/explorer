@@ -23,7 +23,7 @@ const CommandsTab = observer(() => {
           {
             Header: 'Timestamp',
             accessor: 'Transaction.Block.timestamp',
-            minWidth: config.ui.table.minCellWidth,
+            minWidth: config.ui.table.minCellWidthDate,
             Cell: data => TextUtils.getDateStringFromTimestamp(data.value),
           },
           {

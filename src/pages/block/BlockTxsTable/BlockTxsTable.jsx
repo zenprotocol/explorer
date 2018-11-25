@@ -36,7 +36,7 @@ class BlockTxsTable extends Component {
       {
         Header: 'Timestamp',
         accessor: 'timestamp',
-        minWidth: config.ui.table.minCellWidth,
+        minWidth: config.ui.table.minCellWidthDate,
         Cell: function(data) {
           return TextUtils.getDateStringFromTimestamp(data.value);
         },
