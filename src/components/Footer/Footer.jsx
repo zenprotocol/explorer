@@ -12,7 +12,7 @@ export default function Footer(props) {
     <footer className="Footer container">
       <div className="row">
         <div className="col-12">
-          <Logo hideSubtitle={true} />
+          <Logo />
           <SyncNotification />
         </div>
       </div>

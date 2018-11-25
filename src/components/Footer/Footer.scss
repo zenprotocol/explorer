@@ -3,6 +3,9 @@
 .Footer {
   color: $gray;
   padding: 10px 0;
+  .navbar-brand {
+    margin-right: 2rem;
+  }
   img.logo {
     height: 40px;
     width: auto;
