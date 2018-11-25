@@ -10,26 +10,16 @@
     width: 64px;
     height: 64px;
     margin-right: 20px;
-    font-size: 1.08rem;
+    font-size: 2rem;
   }
   .content-box.chain .icon {
     color: $red !important;
-    font-size: 3rem;
   }
   .content-box.chain .content .value {
     font-family: 'Roboto';
   }
   .content-box.blocks .icon {
     color: $blue !important;
-    font-size: 3.5rem;
-  }
-  .content-box.transactions .icon {
-    font-size: 2.2rem;
-  }
-  .content-box.difficulty .icon,
-  .content-box.hashrate .icon,
-  .content-box.wallet .icon,
-  .content-box.node .icon {
     font-size: 3rem;
   }
   .content-box .title {
