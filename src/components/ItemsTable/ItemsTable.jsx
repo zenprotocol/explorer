@@ -51,7 +51,7 @@ class ItemsTable extends Component {
       Expander: ({ isExpanded }) => (
         <div className="expand">
           <div className="arrow">
-            {isExpanded ? <i className="fas fa-angle-up" /> : <i className="fas fa-angle-down" />}
+            {isExpanded ? <i className="expand-icon fas fa-angle-up" /> : <i className="expand-icon fas fa-angle-down" />}
           </div>
         </div>
       ),
@@ -124,7 +124,9 @@ class ItemsTable extends Component {
             return {
               className: classNames({expandable: SubComponent, expanded}),
               onClick: (e, handleOriginal) => {
-                if (SubComponent && e.target.tagName.toLowerCase() !== 'a') {
+                const tagName = e.target.tagName.toLowerCase();
+                const expandableTags = ['div', 'span'];
+                if (SubComponent && (expandableTags.includes(tagName) || e.target.classList.contains('expand-icon'))) {
                   this.setState(prevState => ({
                     expanded: {
                       [rowInfo.index]: !prevState.expanded[rowInfo.index],
