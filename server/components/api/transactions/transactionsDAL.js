@@ -5,8 +5,12 @@ const deepMerge = require('deepmerge');
 const dal = require('../../../lib/dal');
 const transactionsDAL = dal.createDAL('Transaction');
 const blocksDAL = require('../blocks/blocksDAL');
+const inputsDAL = require('../inputs/inputsDAL');
+const outputsDAL = require('../outputs/outputsDAL');
 const isHash = require('../../../lib/isHash');
 const getFieldsForSelectQuery = require('../../../lib/getFieldsForSelectQuery');
+
+const sequelize = transactionsDAL.db.sequelize;
 
 transactionsDAL.findByHash = async function(hash) {
   return transactionsDAL.findOne({
@@ -17,38 +21,28 @@ transactionsDAL.findByHash = async function(hash) {
       {
         model: this.db.Block,
       },
-      'Outputs',
-      {
-        model: this.db.Input,
-        include: ['Output'],
-      },
     ],
-    order: [[transactionsDAL.db.Input, 'index'], [transactionsDAL.db.Output, 'index']],
   });
 };
 
 transactionsDAL.search = function(search, limit = 10) {
-  const sequelize = this.db.sequelize;
   const where = {
     hash: {
       [sequelize.Op.like]: `%${search}%`,
     },
   };
   return Promise.all([
-    this.count({where}),
+    this.count({ where }),
     this.findAll({
       where,
-      include: [
-        'Block'
-      ],
+      include: ['Block'],
       limit,
       order: [['id', 'DESC']],
-    })
+    }),
   ]);
 };
 
 transactionsDAL.findAllAssetsByAddress = async function(address, { limit = 10, offset = 0 }) {
-  const sequelize = transactionsDAL.db.sequelize;
   const sql = tags.oneLine`
   SELECT
       COALESCE("OutputAsset"."asset", "InputAsset"."asset") AS "asset",
@@ -122,11 +116,17 @@ transactionsDAL.findAllByBlockNumber = async function(blockNumber, options = { l
   );
 };
 
-transactionsDAL.findAllByAddress = async function(address, options = { limit: 10, offset: 0, ascending: false }) {
-  const sequelize = transactionsDAL.db.sequelize;
-  const transactionsSelectFields = getFieldsForSelectQuery(transactionsDAL.db.Transaction, 'Transaction', true);
+transactionsDAL.findAllByAddress = async function(
+  address,
+  options = { limit: 10, offset: 0, ascending: false }
+) {
+  const transactionsSelectFields = getFieldsForSelectQuery(
+    transactionsDAL.db.Transaction,
+    'Transaction',
+    true
+  );
   const blocksSelectFields = getFieldsForSelectQuery(transactionsDAL.db.Block, 'Block', false);
-  const order = options.ascending? 'ASC' : 'DESC';
+  const order = options.ascending ? 'ASC' : 'DESC';
   const sql = tags.oneLine`
   SELECT ${transactionsSelectFields}, ${blocksSelectFields}, COALESCE("Commands"."command", '') AS "firstCommand"
     FROM
@@ -147,22 +147,23 @@ transactionsDAL.findAllByAddress = async function(address, options = { limit: 10
       ORDER BY "Block"."timestamp" ${order}
       LIMIT :limit OFFSET :offset`;
 
-  return sequelize
-    .query(sql, {
-      replacements: {
-        address,
-        limit: options.limit,
-        offset: options.offset,
-      },
-      type: sequelize.QueryTypes.SELECT,
-      raw: false,
-      nest: true,
-    });
+  return sequelize.query(sql, {
+    replacements: {
+      address,
+      limit: options.limit,
+      offset: options.offset,
+    },
+    type: sequelize.QueryTypes.SELECT,
+    raw: false,
+    nest: true,
+  });
 };
 
-transactionsDAL.findAllByAsset = async function(asset, options = { limit: 10, offset: 0, ascending: false }) {
-  const sequelize = transactionsDAL.db.sequelize;
-  const order = options.ascending? 'ASC' : 'DESC';
+transactionsDAL.findAllByAsset = async function(
+  asset,
+  options = { limit: 10, offset: 0, ascending: false }
+) {
+  const order = options.ascending ? 'ASC' : 'DESC';
   const sql = tags.oneLine`
   SELECT 
     :asset AS "asset",
@@ -189,17 +190,16 @@ transactionsDAL.findAllByAsset = async function(asset, options = { limit: 10, of
       ORDER BY "Block"."timestamp" ${order}
       LIMIT :limit OFFSET :offset`;
 
-  return sequelize
-    .query(sql, {
-      replacements: {
-        asset,
-        limit: options.limit,
-        offset: options.offset,
-      },
-      type: sequelize.QueryTypes.SELECT,
-      raw: false,
-      nest: true,
-    });
+  return sequelize.query(sql, {
+    replacements: {
+      asset,
+      limit: options.limit,
+      offset: options.offset,
+    },
+    type: sequelize.QueryTypes.SELECT,
+    raw: false,
+    nest: true,
+  });
 };
 
 transactionsDAL.findAllAssetsByBlock = async function(
@@ -207,7 +207,6 @@ transactionsDAL.findAllAssetsByBlock = async function(
   { limit = 10, offset = 0 }
 ) {
   const blockProp = isHash(hashOrBlockNumber) ? 'hash' : 'blockNumber';
-  const sequelize = transactionsDAL.db.sequelize;
   const sql = tags.oneLine`
   SELECT
     COALESCE("OutputAsset"."asset", "InputAsset"."asset") AS "asset",
@@ -260,7 +259,6 @@ transactionsDAL.findAllAssetsByBlock = async function(
 };
 
 transactionsDAL.countByAddress = async function(address) {
-  const sequelize = transactionsDAL.db.sequelize;
   const sql = tags.oneLine`
   SELECT COUNT("Outputs"."TransactionId")
     FROM
@@ -288,7 +286,6 @@ transactionsDAL.countByAddress = async function(address) {
 };
 
 transactionsDAL.countAssetsByAddress = async function(address) {
-  const sequelize = transactionsDAL.db.sequelize;
   const sql = tags.oneLine`
   SELECT COUNT("OutputAsset"."TransactionId")
     FROM
@@ -321,7 +318,6 @@ transactionsDAL.countAssetsByAddress = async function(address) {
 
 transactionsDAL.countAssetsByBlock = async function(hashOrBlockNumber) {
   const blockProp = isHash(hashOrBlockNumber) ? 'hash' : 'blockNumber';
-  const sequelize = transactionsDAL.db.sequelize;
   const sql = tags.oneLine`
   SELECT COUNT("OutputAsset"."TransactionId")
   FROM
@@ -373,7 +369,6 @@ transactionsDAL.countByBlockNumber = async function(blockNumber) {
 };
 
 transactionsDAL.countByAsset = async function(asset) {
-  const sequelize = transactionsDAL.db.sequelize;
   const sql = tags.oneLine`
   SELECT COUNT("Outputs"."TransactionId")
     FROM
@@ -400,33 +395,101 @@ transactionsDAL.countByAsset = async function(asset) {
     });
 };
 
-transactionsDAL.findTransactionAssetInputsOutputs = async function(id, asset) {
-  return this.findOne({
+transactionsDAL.findTransactionAssetInputsOutputs = function(id, asset) {
+  const inputsPromise = inputsDAL.findAll({
+    attributes: [
+      [sequelize.col('Output.address'), 'address'],
+      [sequelize.fn('MAX', sequelize.col('Output.lockType')), 'lockType'],
+      [sequelize.fn('MAX', sequelize.col('Input.index')), 'index'],
+    ],
     where: {
-      id,
+      TransactionId: id,
     },
     include: [
       {
-        model: this.db.Block,
-      },
-      {
         model: this.db.Output,
+        attributes: [],
         where: {
           asset,
         },
       },
+    ],
+    group: [sequelize.col('Output.address')],
+    order: [sequelize.literal('"index"')],
+  });
+
+  const outputsPromise = outputsDAL.findAll({
+    attributes: ['address', 'lockType', 'amount'],
+    where: {
+      [sequelize.Op.and]: {
+        TransactionId: id,
+        asset,
+      },
+    },
+    order: ['index'],
+  });
+
+  return Promise.all([inputsPromise, outputsPromise]).then(([inputs, Outputs]) => {
+    // todo - change ui that we will not have to do this
+    const Inputs = inputs.map((input, index) => ({
+      id: index + 1,
+      Output: {
+        address: input.get('address'),
+        lockType: input.get('lockType'),
+      },
+    }));
+    return {
+      Inputs,
+      Outputs,
+    };
+  });
+};
+
+transactionsDAL.findAllTransactionAssetsInputsOutputs = function(id) {
+  const inputsPromise = inputsDAL.findAll({
+    attributes: [
+      [sequelize.col('Output.asset'), 'asset'],
+      [sequelize.col('Output.address'), 'address'],
+      [sequelize.fn('MAX', sequelize.col('Output.lockType')), 'lockType'],
+      [sequelize.fn('MAX', sequelize.col('Input.index')), 'index'],
+    ],
+    where: {
+      TransactionId: id,
+    },
+    include: [
       {
-        model: this.db.Input,
-        include: [
-          {
-            model: this.db.Output,
-            where: {
-              asset,
-            },
-          },
-        ],
+        model: this.db.Output,
+        attributes: [],
       },
     ],
+    group: [sequelize.col('Output.asset'), sequelize.col('Output.address')],
+    order: [sequelize.col('Output.asset'), sequelize.literal('"index"')],
+  });
+
+  const outputsPromise = outputsDAL.findAll({
+    attributes: ['asset', 'address', 'lockType', 'amount'],
+    where: {
+      [sequelize.Op.and]: {
+        TransactionId: id,
+      },
+    },
+    order: ['asset', 'index'],
+  });
+
+  return Promise.all([inputsPromise, outputsPromise]).then(([inputs, Outputs]) => {
+    // todo - change ui that we will not have to do this
+    const Inputs = inputs.map((input, index) => ({
+      id: index + 1,
+      Output: {
+        asset: input.get('asset'),
+        address: input.get('address'),
+        lockType: input.get('lockType'),
+      },
+    }));
+    return {
+      Inputs,
+      Outputs,
+    };
   });
 };
 
