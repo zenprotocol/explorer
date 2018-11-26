@@ -406,6 +406,7 @@ transactionsDAL.findTransactionAssetInputsOutputs = function(id, asset) {
     attributes: [
       [sequelize.col('Output.address'), 'address'],
       [sequelize.fn('MAX', sequelize.col('Output.lockType')), 'lockType'],
+      [sequelize.fn('MAX', sequelize.col('Input.index')), 'index'],
     ],
     where: {
       TransactionId: id,
@@ -420,6 +421,7 @@ transactionsDAL.findTransactionAssetInputsOutputs = function(id, asset) {
       },
     ],
     group: [sequelize.col('Output.address')],
+    order: [sequelize.literal('"index"')],
   });
 
   const outputsPromise = outputsDAL.findAll({
@@ -430,6 +432,7 @@ transactionsDAL.findTransactionAssetInputsOutputs = function(id, asset) {
         asset,
       },
     },
+    order: ['index'],
   });
 
   return Promise.all([inputsPromise, outputsPromise]).then(([inputs, Outputs]) => {
