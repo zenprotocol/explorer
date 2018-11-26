@@ -1,12 +1,15 @@
 'use strict';
 
+const Loadable = require('react-loadable');
 const app = require('./app');
 const config = require('./config/Config');
 
 const start = () => {
   const port = config.any(['PORT', 'server:port']);
-  app.listen(port, () => {
-    console.log(`Server running on port ${port}`);
+  Loadable.preloadAll().then(() => {
+    app.listen(port, () => {
+      console.log(`Server running on port ${port}`);
+    });
   });
 };
 
