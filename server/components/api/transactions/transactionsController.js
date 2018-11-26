@@ -67,7 +67,10 @@ module.exports = {
     if (transaction) {
       const customTX = transactionsDAL.toJSON(transaction);
       customTX.isCoinbase = isCoinbaseTX(transaction);
-      customTX['assets'] = getTransactionAssets(customTX);
+      const insOuts = await transactionsDAL.findAllTransactionAssetsInputsOutputs(transaction.id);
+      customTX.Inputs = insOuts.Inputs;
+      customTX.Outputs = insOuts.Outputs;
+      customTX['assets'] = getTransactionAssets(customTX); 
       delete customTX.Inputs;
       delete customTX.Outputs;
       res.status(httpStatus.OK).json(jsonResponse.create(httpStatus.OK, customTX));

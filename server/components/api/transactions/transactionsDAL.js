@@ -21,13 +21,7 @@ transactionsDAL.findByHash = async function(hash) {
       {
         model: this.db.Block,
       },
-      'Outputs',
-      {
-        model: this.db.Input,
-        include: ['Output'],
-      },
     ],
-    order: [[transactionsDAL.db.Input, 'index'], [transactionsDAL.db.Output, 'index']],
   });
 };
 
@@ -440,6 +434,54 @@ transactionsDAL.findTransactionAssetInputsOutputs = function(id, asset) {
     const Inputs = inputs.map((input, index) => ({
       id: index + 1,
       Output: {
+        address: input.get('address'),
+        lockType: input.get('lockType'),
+      },
+    }));
+    return {
+      Inputs,
+      Outputs,
+    };
+  });
+};
+
+transactionsDAL.findAllTransactionAssetsInputsOutputs = function(id) {
+  const inputsPromise = inputsDAL.findAll({
+    attributes: [
+      [sequelize.col('Output.asset'), 'asset'],
+      [sequelize.col('Output.address'), 'address'],
+      [sequelize.fn('MAX', sequelize.col('Output.lockType')), 'lockType'],
+      [sequelize.fn('MAX', sequelize.col('Input.index')), 'index'],
+    ],
+    where: {
+      TransactionId: id,
+    },
+    include: [
+      {
+        model: this.db.Output,
+        attributes: [],
+      },
+    ],
+    group: [sequelize.col('Output.asset'), sequelize.col('Output.address')],
+    order: [sequelize.col('Output.asset'), sequelize.literal('"index"')],
+  });
+
+  const outputsPromise = outputsDAL.findAll({
+    attributes: ['asset', 'address', 'lockType', 'amount'],
+    where: {
+      [sequelize.Op.and]: {
+        TransactionId: id,
+      },
+    },
+    order: ['asset', 'index'],
+  });
+
+  return Promise.all([inputsPromise, outputsPromise]).then(([inputs, Outputs]) => {
+    // todo - change ui that we will not have to do this
+    const Inputs = inputs.map((input, index) => ({
+      id: index + 1,
+      Output: {
+        asset: input.get('asset'),
         address: input.get('address'),
         lockType: input.get('lockType'),
       },
