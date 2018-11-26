@@ -95,7 +95,6 @@ class AddressTxsTable extends Component {
               transactionAssets={addressStore.addressTransactionAssets}
               index={row.index}
               timestamp={row.original.timestamp}
-              total={Number(row.original.totalSum)}
               address={address}
               addressFoundIn={addressFoundIn}
             />
