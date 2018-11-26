@@ -13,7 +13,7 @@ class AssetsTable extends Component {
   getTableColumns() {
     return [
       {
-        Header: 'ASSET',
+        Header: 'Asset Identifier',
         accessor: 'asset',
         minWidth: config.ui.table.minCellWidth,
         Cell: ({ value }) => (
