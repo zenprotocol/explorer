@@ -124,7 +124,6 @@ module.exports = {
   asset: async function(req, res) {
     // get a specific asset from a tx. /tx/:hash/:assetName 
     const { id, asset } = req.params;
-    const { address } = req.query;
 
     if(!id || !asset) {
       throw new HttpError(httpStatus.NOT_FOUND);
