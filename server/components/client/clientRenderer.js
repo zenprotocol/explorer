@@ -43,8 +43,7 @@ module.exports = (req, res, next) => {
       // inject the rendered app into our html and send it
       res.send(
         htmlData
-          .replace('<div id="root"></div>', `<div id="root">${html}</div>`)
-          .replace('</body>', extraChunks.join('') + '</body>')
+          .replace('<div id="root"></div>', `<div id="root">${html}</div>${extraChunks.join('')}`)
       );
     }
   } catch (err) {
