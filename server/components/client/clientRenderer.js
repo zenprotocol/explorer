@@ -7,9 +7,9 @@ import { useStaticRendering } from 'mobx-react';
 import Loadable from 'react-loadable';
 import manifest from '../../../build/asset-manifest.json';
 
-const extractAssets = (assets, chunks) =>
+const extractAssets = (assets, chunks, extension) =>
   Object.keys(assets)
-    .filter(asset => chunks.indexOf(asset.replace('.js', '')) > -1)
+    .filter(asset => chunks.indexOf(asset.replace(`.${extension}`, '')) > -1)
     .map(k => assets[k]);
 
 useStaticRendering(true);
@@ -31,11 +31,16 @@ module.exports = (req, res, next) => {
       </Loadable.Capture>
     );
 
-    // then, after Loadable.Capture
-    const extraChunks = extractAssets(
+    const extraChunksScripts = extractAssets(
       manifest,
-      modules.map(module => module.substring(module.lastIndexOf('/') + 1))
-    ).map(c => `<script type="text/javascript" src="/public/${c}"></script>`);
+      modules.map(module => module.substring(module.lastIndexOf('/') + 1)),
+      'js'
+    ).map(c => `<script type="text/javascript" src="${c}"></script>`);
+    const extraChunksStyles = extractAssets(
+      manifest,
+      modules.map(module => module.substring(module.lastIndexOf('/') + 1)),
+      'css'
+    ).map(c => `<link rel="stylesheet" href="${c}">`);
 
     if (context.url) {
       res.redirect(301, context.url);
@@ -43,7 +48,8 @@ module.exports = (req, res, next) => {
       // inject the rendered app into our html and send it
       res.send(
         htmlData
-          .replace('<div id="root"></div>', `<div id="root">${html}</div>${extraChunks.join('')}`)
+          .replace('</head>', extraChunksStyles.join('') + '</head>')
+          .replace('<div id="root"></div>', `<div id="root">${html}</div>${extraChunksScripts.join('')}`)
       );
     }
   } catch (err) {
