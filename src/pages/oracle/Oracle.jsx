@@ -11,7 +11,7 @@ import HashLink from '../../components/HashLink';
 import TickersTable from './components/TickersTable';
 import Filters from './components/Filters';
 import LocalStoreContainer from '../../components/containers/LocalStoreContainer';
-import './Oracle.css';
+import './Oracle.scss';
 
 class OraclePage extends Component {
   constructor(props) {

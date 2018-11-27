@@ -5,7 +5,7 @@ import config from '../../lib/Config';
 import PaginationComponent from './Pagination.jsx';
 import LoadingWithBG from './LoadingWithBG.jsx';
 import 'react-table/react-table.css';
-import './GenericTable.css';
+import './GenericTable.scss';
 
 export default function GenericTable(props) {
   const {

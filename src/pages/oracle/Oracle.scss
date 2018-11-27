@@ -1,5 +1,4 @@
-@import 'style/sizes';
-@import 'style/colors';
+@import 'src/style/variables';
 .Oracle {
   @media (min-width: map-get($grid-breakpoints, "lg")) {
     .SummaryTable,

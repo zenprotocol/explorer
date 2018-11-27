@@ -5,7 +5,7 @@ import service from '../../lib/Service';
 import config from '../../lib/Config';
 import LocalStoreContainer from '../../components/containers/LocalStoreContainer';
 import ContractTemplates from './ContractTemplates.jsx';
-import './ContractTemplates.css';
+import './ContractTemplates.scss';
 
 class ContractTemplatesContainer extends Component {
   constructor(props) {

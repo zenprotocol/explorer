@@ -4,7 +4,7 @@ import { BrowserRouter } from 'react-router-dom';
 import Loadable from 'react-loadable';
 import App from './App.js';
 import './polyfills';
-import './style/index.css';
+import './style/index.scss';
 // import registerServiceWorker from './registerServiceWorker';
 const Main = (
   <BrowserRouter>

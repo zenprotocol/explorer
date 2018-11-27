@@ -13,7 +13,7 @@ import Loading from '../../components/Loading';
 import HashLink from '../../components/HashLink';
 import Page from '../../components/Page';
 import ItemNotFound from '../../components/ItemNotFound';
-import './Block.css';
+import './Block.scss';
 
 class BlockPage extends Component {
   constructor(props) {

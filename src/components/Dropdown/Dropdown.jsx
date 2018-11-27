@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDropdown from 'react-dropdown';
-import './Dropdown.css';
+import './Dropdown.scss';
 
 export default function Dropdown(props) {
   return (

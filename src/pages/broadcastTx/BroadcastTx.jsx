@@ -12,7 +12,7 @@ import { SuccessMessage } from '../../components/messages';
 import { ErrorMessage } from '../../components/messages';
 import { TransactionAsset } from '../../components/Transactions';
 import Page from '../../components/Page';
-import './BroadcastTx.css';
+import './BroadcastTx.scss';
 
 const INVALID_TXT = 'Invalid transaction';
 const BROADCAST_FAILED_TXT = 'Oops! Something Went Wrong.';

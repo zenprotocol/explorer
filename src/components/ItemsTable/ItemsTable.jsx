@@ -6,7 +6,7 @@ import classNames from 'classnames';
 import config from '../../lib/Config';
 import GenericTable from '../GenericTable';
 import Dropdown from '../Dropdown';
-import './ItemsTable.css';
+import './ItemsTable.scss';
 
 class ItemsTable extends Component {
   constructor(props) {

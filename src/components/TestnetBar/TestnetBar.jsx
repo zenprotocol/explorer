@@ -2,7 +2,7 @@ import React from 'react';
 import { observer } from 'mobx-react';
 import rootStore from '../../store/RootStore';
 import Button from '../buttons/Button';
-import './TestnetBar.css';
+import './TestnetBar.scss';
 
 function TestnetBar() {
   if(!rootStore.isTestnet) {

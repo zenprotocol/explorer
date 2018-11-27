@@ -4,7 +4,7 @@ import classNames from 'classnames';
 import { Link } from 'react-router-dom';
 import clipboard from 'clipboard-polyfill/build/clipboard-polyfill.promise';
 import TextUtils from '../../lib/TextUtils';
-import './HashLink.css';
+import './HashLink.scss';
 
 export default class HashLink extends Component {
   constructor(props) {

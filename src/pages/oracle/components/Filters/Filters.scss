@@ -1,4 +1,4 @@
-@import 'style/sizes';
+@import 'src/style/variables';
 
 .Filters {
   @include mixin-content-padding-x();

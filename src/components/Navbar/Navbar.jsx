@@ -4,7 +4,7 @@ import { NavLink, withRouter } from 'react-router-dom';
 import classnames from 'classnames';
 import Logo from '../Logo';
 import SearchBar from '../SearchBar';
-import './Navbar.css';
+import './Navbar.scss';
 
 const ANIMATION_TIME = 350;
 
