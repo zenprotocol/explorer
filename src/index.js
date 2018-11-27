@@ -6,15 +6,17 @@ import App from './App.js';
 import './polyfills';
 import './style/index.css';
 // import registerServiceWorker from './registerServiceWorker';
-
-window.onload = () => {
+const Main = (
+  <BrowserRouter>
+    <App />
+  </BrowserRouter>
+);
+const root = document.getElementById('root');
+if (root.hasChildNodes() === true) {
   Loadable.preloadReady().then(() => {
-    ReactDOM.hydrate(
-      <BrowserRouter>
-        <App />
-      </BrowserRouter>,
-      document.getElementById('root')
-    );
+    ReactDOM.hydrate(Main, root);
   });
-};
+} else {
+  ReactDOM.render(Main, root);
+}
 // registerServiceWorker();
