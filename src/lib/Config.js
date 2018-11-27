@@ -18,4 +18,7 @@ export default {
       breakpointMd: 768,
     },
   },
+  loadable: {
+    delay: 300,
+  },
 };

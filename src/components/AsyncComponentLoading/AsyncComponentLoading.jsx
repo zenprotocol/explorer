@@ -1,8 +1,8 @@
 import React from 'react';
 import Loading from '../Loading';
 
-export default function AsyncComponentLoading({isLoading, error}) {
-  if (isLoading) {
+export default function AsyncComponentLoading({pastDelay, error}) {
+  if (pastDelay) {
     return <Loading />;
   }
   else if (error) {
