@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
-import './Message.css';
+import './Message.scss';
 
 const LINK_TYPE_NAMES = ['Link', 'a', 'HashLink'];
 

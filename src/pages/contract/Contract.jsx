@@ -13,7 +13,7 @@ import PageTitle from '../../components/PageTitle';
 import Page from '../../components/Page';
 import { Tabs, TabHead, TabBody, Tab } from '../../components/tabs';
 import { AssetsTab, CodeTab, CommandsTab, TransactionsTab } from './components/tabs';
-import './Contract.css';
+import './Contract.scss';
 
 class ContractPage extends Component {
   componentDidMount() {

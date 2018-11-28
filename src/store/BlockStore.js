@@ -110,9 +110,7 @@ class BlockStore {
   }
 
   get numberOfTransactions() {
-    if (this.block.Transactions) {
-      return this.block.Transactions.length;
-    }
+    return this.block.Transactions? this.block.Transactions.length : 0;
   }
 
   confirmations(blockNumber) {

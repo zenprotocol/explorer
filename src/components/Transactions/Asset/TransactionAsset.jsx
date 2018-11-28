@@ -7,7 +7,7 @@ import config from '../../../lib/Config';
 import HashLink from '../../../components/HashLink';
 import AddressLink from '../../../components/AddressLink';
 import GenericTable from '../../../components/GenericTable';
-import './TransactionAsset.css';
+import './TransactionAsset.scss';
 
 class TransactionAsset extends Component {
   render() {

@@ -5,7 +5,7 @@ import uiStore from '../../store/UIStore';
 import Config from '../../lib/Config';
 import Logo from '../Logo';
 import ExternalLink from '../ExternalLink';
-import './Footer.css';
+import './Footer.scss';
 
 export default function Footer(props) {
   return (

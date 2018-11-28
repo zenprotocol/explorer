@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
-import './PageTitle.css';
+import './PageTitle.scss';
 
 export default function PageTitle({ title, subtitle, tagline, margin }) {
   return (

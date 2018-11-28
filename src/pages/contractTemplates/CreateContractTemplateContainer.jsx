@@ -5,7 +5,7 @@ import service from '../../lib/Service';
 import RouterUtils from '../../lib/RouterUtils';
 import CreateContractTemplate from './CreateContractTemplate.jsx';
 import Loading from '../../components/Loading';
-import './ContractTemplates.css';
+import './ContractTemplates.scss';
 
 class CreateContractTemplateContainer extends Component {
   constructor(props) {

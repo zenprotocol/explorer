@@ -7,7 +7,7 @@ import TextUtils from '../../lib/TextUtils';
 import Loading from '../Loading';
 import LineChart from './LineChart.jsx';
 import PieChart from './PieChart.jsx';
-import './ChartLoader.css';
+import './ChartLoader.scss';
 
 const PrivateConfigs = {
   distributionMap: {

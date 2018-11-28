@@ -1,5 +1,4 @@
-@import 'style/sizes';
-@import 'style/colors';
+@import 'src/style/variables';
 .Button {
   &.btn {
     font-size: $font-size-base * 1.15;

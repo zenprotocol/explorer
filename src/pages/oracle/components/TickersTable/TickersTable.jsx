@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import clipboard from 'clipboard-polyfill/build/clipboard-polyfill.promise';
+import * as clipboard from 'clipboard-polyfill';
 import service from '../../../../lib/Service';
 import ItemsTable from '../../../../components/ItemsTable';
 
@@ -148,7 +148,8 @@ class CopyProof extends Component {
               onFocus={this.handleInputFocus}
             />
           ) : (
-            <a onClick={this.handleClick}>Copy proof</a>
+            <button className="btn btn-link p-0 border-0 text-light" onClick={this.handleClick}>Copy proof</button>
+            // <a onClick={this.handleClick}>Copy proof</a>
           )}
         </div>
       </div>

@@ -12,7 +12,7 @@ import ItemNotFound from '../../components/ItemNotFound';
 import PageTitle from '../../components/PageTitle';
 import AssetsBalancesTable from '../../components/AssetsBalancesTable';
 import Page from '../../components/Page';
-import './Address.css';
+import './Address.scss';
 
 class AddressPage extends Component {
   componentDidMount() {

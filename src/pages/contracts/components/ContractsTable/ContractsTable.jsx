@@ -26,7 +26,7 @@ class ContractsTable extends Component {
       {
         Header: '',
         accessor: 'expiryBlock',
-        Cell: ({value}) => value ? 'active' : 'inactive',
+        Cell: ({value}) => value ? 'Active' : 'Inactive',
       },
       {
         Header: 'Active until',

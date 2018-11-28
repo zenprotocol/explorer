@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import './Tabs.css';
+import './Tabs.scss';
 
 export default function Tabs({ children }) {
   return <div className="Tabs">{children}</div>;

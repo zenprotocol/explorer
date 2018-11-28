@@ -8,7 +8,7 @@ import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import TestnetBar from './components/TestnetBar';
 
-import './App.css';
+import './App.scss';
 
 class App extends Component {
   constructor(props) {

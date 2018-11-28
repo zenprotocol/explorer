@@ -5,7 +5,7 @@ import Page from '../../components/Page';
 import PageTitle from '../../components/PageTitle';
 import ItemsTable from '../../components/ItemsTable';
 import Button from '../../components/buttons/Button';
-import './ContractTemplates.css';
+import './ContractTemplates.scss';
 
 function ContractTemplates({ loading, itemsCount, items, pageSize, curPage, tableDataSetter }) {
   return (

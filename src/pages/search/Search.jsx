@@ -13,7 +13,7 @@ import SearchResultsTable from './SearchResultsTable';
 import Page from '../../components/Page';
 import HashLink from '../../components/HashLink';
 import AddressLink from '../../components/AddressLink';
-import './Search.css';
+import './Search.scss';
 
 class SearchResultsPage extends Component {
   constructor(props) {
