@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import RouterUtils from '../../lib/RouterUtils';
 import { ChartLoader } from '../../components/charts';
 import Page from '../../components/Page';
-import './Chart.css';
+import './Chart.scss';
 
 const PARAM_TO_CHART_MAP = {
   transactions: {

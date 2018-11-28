@@ -7,7 +7,7 @@ import Loading from '../../components/Loading';
 import Button from '../../components/buttons/Button';
 import { ChartLoader } from '../../components/charts';
 import Page from '../../components/Page';
-import './Info.css';
+import './Info.scss';
 
 function ContentBox(props) {
   return (

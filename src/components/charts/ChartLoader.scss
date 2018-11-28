@@ -1,5 +1,4 @@
-@import 'style/colors';
-@import 'style/sizes';
+@import 'src/style/variables';
 .Chart {
   background-color: $gray-900;
   .title {

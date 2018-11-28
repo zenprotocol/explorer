@@ -7,7 +7,7 @@ import TextUtils from '../../../../lib/TextUtils';
 import DatePicker from '../../../../components/DatePicker';
 import Dropdown from '../../../../components/Dropdown';
 import Button from '../../../../components/buttons/Button';
-import './Filters.css';
+import './Filters.scss';
 
 class Filters extends Component {
   constructor(props) {

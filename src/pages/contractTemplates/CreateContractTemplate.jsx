@@ -11,7 +11,7 @@ import Button from '../../components/buttons/Button';
 import Dropdown from '../../components/Dropdown';
 import DatePicker from '../../components/DatePicker';
 import NotFound from '../notFound';
-import './CreateContractTemplate.css';
+import './CreateContractTemplate.scss';
 
 class CreateContractTemplate extends Component {
   constructor(props) {

@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
-import './Button.css';
+import './Button.scss';
 
 export default function Button(props) {
   return props.href ? <LinkButton {...props} /> : <InputButton {...props} />;

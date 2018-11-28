@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 import SearchUtils from '../../lib/SearchUtils';
 import AddressUtils from '../../lib/AddressUtils';
 import searchStore from '../../store/SearchStore';
-import './SearchBar.css';
+import './SearchBar.scss';
 
 const SUBMIT_AFTER_MS = 1000;
 const SUBMIT_IMMEDIATE_MS = 100;

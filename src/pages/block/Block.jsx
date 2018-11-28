@@ -13,7 +13,7 @@ import Loading from '../../components/Loading';
 import HashLink from '../../components/HashLink';
 import Page from '../../components/Page';
 import ItemNotFound from '../../components/ItemNotFound';
-import './Block.css';
+import './Block.scss';
 
 class BlockPage extends Component {
   constructor(props) {
@@ -106,7 +106,7 @@ class BlockPage extends Component {
             </Link>
           </li>
           <li className="page-item disabled">
-            <a className="page-link bg-transparent border-0">BLOCK {blockNumber}</a>
+            <div className="page-link bg-transparent border-0">BLOCK {blockNumber}</div>
           </li>
           <li className={classNames('page-item', { disabled: nextDisabled })}>
             <Link

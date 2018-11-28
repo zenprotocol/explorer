@@ -8,7 +8,7 @@ import TextUtils from '../../lib/TextUtils';
 import { Transaction } from '../../components/Transactions';
 import Loading from '../../components/Loading';
 import Page from '../../components/Page';
-import './Transaction.css';
+import './Transaction.scss';
 
 class TransactionPage extends Component {
   constructor(props) {

@@ -5,7 +5,7 @@ import AssetUtils from '../../../lib/AssetUtils';
 import OutputUtils from '../../../lib/OutputUtils';
 import HashLink from '../../../components/HashLink';
 import AddressLink from '../../../components/AddressLink';
-import './TransactionAsset.css';
+import './TransactionAsset.scss';
 
 class TransactionAsset extends Component {
   render() {
