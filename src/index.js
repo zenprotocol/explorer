@@ -5,7 +5,8 @@ import Loadable from 'react-loadable';
 import App from './App.js';
 import './polyfills';
 import './style/index.scss';
-// import registerServiceWorker from './registerServiceWorker';
+import * as serviceWorker from './serviceWorker';
+
 const Main = (
   <BrowserRouter>
     <App />
@@ -19,4 +20,4 @@ if (root.hasChildNodes() === true) {
 } else {
   ReactDOM.render(Main, root);
 }
-// registerServiceWorker();
+serviceWorker.register();
