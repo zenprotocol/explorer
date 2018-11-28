@@ -1,3 +1,4 @@
+@import 'style/variables';
 .HashLink {
   position: relative;
   display: inline-block;
@@ -5,22 +6,31 @@
     padding-right: 30px;
   }
   .copy {
-    display: none;
+    display: block;
     position: absolute;
-    top: 0;
+    top: -3px;
     right: 0;
-    z-index: 9999;
-  }
-  @media (max-width: 767.98px) {
-    .copy {
-      display: block;
+    z-index: 1001;
+
+    button {
+      cursor: pointer;
+      background-color: transparent;
+      color: $white;
+      border: 1px solid $border-color;
+      border-radius: $border-radius;
+      padding: 2px 6px;
+
+      &:hover {
+        background-color: $blue;
+      }
     }
   }
   &:hover .copy {
     display: block;
   }
-  .copy button {
-    border: none;
-    cursor: pointer;
+  @media (min-width: map-get($grid-breakpoints, "lg")) {
+    .copy {
+      display: none;
+    }
   }
 }

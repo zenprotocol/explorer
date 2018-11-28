@@ -47,9 +47,7 @@ class App extends Component {
       <div className="App">
         <TestnetBar />
         <div className="navbar-container">
-          <div className="container">
-            <Navbar />
-          </div>
+          <Navbar />
         </div>
         <div className="App-separator mb-3 mb-lg-7" />
         <div className="body-container">

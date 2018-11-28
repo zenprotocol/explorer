@@ -72,7 +72,6 @@ class BlockTxsTable extends Component {
               transactionAssets={blockStore.blockTransactionAssets}
               index={row.index}
               timestamp={row.original.timestamp}
-              total={Number(row.original.outputSum)}
             />
           );
         }}

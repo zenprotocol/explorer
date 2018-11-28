@@ -13,20 +13,29 @@
   }
   
   .expand {
+    display: flex;
+    justify-content: center;
     cursor: 'pointer';
     padding: 0;
     text-align: center;
     user-select: none;
+
+    .arrow {
+      border-radius: $border-radius;
+      background-color: $gray-800;
+      padding: 0 6px;
+    }
   }
   
   .rt-tr.expandable {
     cursor: pointer;
   }
-  .rt-tr.expandable:hover {
+  .rt-tbody .rt-tr.expanded,
+  .rt-tbody .rt-tr:hover {
     background-color: $table-hover-bg;
   }
-  .rt-tr.-padRow,
-  .rt-tr.-padRow:hover {
+  .rt-tbody .rt-tr.-padRow,
+  .rt-tbody .rt-tr.-padRow:hover {
     background-color: transparent;
     cursor: default;
   }
@@ -35,19 +44,6 @@
     color: $gray;
     .Dropdown-control {
       min-width: 88px;
-    }
-  }
-
-  
-
-  @media (min-width: map-get($grid-breakpoints, "lg")) {
-    .TransactionAsset {
-      width: 70%;
-      align-self: flex-end;
-      margin: $content-padding-x * 2;
-    }
-    .TransactionAsset:last-child {
-      margin: $content-padding-x * 2;
     }
   }
 }

@@ -3,155 +3,194 @@ import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import AssetUtils from '../../../lib/AssetUtils';
 import OutputUtils from '../../../lib/OutputUtils';
+import config from '../../../lib/Config';
 import HashLink from '../../../components/HashLink';
 import AddressLink from '../../../components/AddressLink';
+import GenericTable from '../../../components/GenericTable';
 import './TransactionAsset.scss';
 
 class TransactionAsset extends Component {
   render() {
-    const { transactionAsset, asset, showHeader, addressFoundIn, showAsset } = this.props;
+    const {
+      transactionAsset,
+      asset,
+      address,
+      showHeader,
+      addressFoundIn,
+      showAsset,
+      total,
+    } = this.props;
     if (!transactionAsset) {
       return null;
     }
 
-    const outputs = this.getOutputs(transactionAsset, asset);
+    const outputs = this.getOutputs(transactionAsset);
     const inputs = this.getInputs(transactionAsset);
-    const inputCol = showAsset ? 'col-4' : 'col-6';
+    const rowsData = this.getRowsData({ asset, address, inputs, outputs, total });
+    
     return (
-      <div className={classNames('TransactionAsset', addressFoundIn)}>
-        {showHeader && (
-          <div className="row mx-0">
-            {showAsset && <div className="col-2 border-bottom th">ASSET</div>}
-            <div className={`${inputCol} border-bottom th`}>INPUT</div>
-            <div className="col-6 border-bottom pr-0">
-              <div className="row mx-0">
-                <div className="col-6 p-0 th">OUTPUT</div>
-                <div className="col-6 p-0 th">TOTAL</div>
-              </div>
-            </div>
-          </div>
-        )}
-
-        <div className="row mx-0">
-          {showAsset && (
-            <div className="col-2 break-word">
-              <HashLink hash={AssetUtils.getAssetNameFromCode(asset)} value={asset} url={`/assets/${asset}`} />
-            </div>
-          )}
-          <div className={`${inputCol} py-0`}>
-            <div className="inputs">{inputs.rowsToRender}</div>
-            <div className="arrow">
-              <i className="fas fa-arrow-right" />
-            </div>
-          </div>
-          <div className="col-6 py-0 pr-0">
-            <div className="outputs">
-              {outputs.rowsToRender}
-              {this.renderTotal()}
-            </div>
-          </div>
-        </div>
+      <div
+        className={classNames('TransactionAsset', addressFoundIn, { 'hide-header': !showHeader })}
+      >
+        <GenericTable
+          loading={false}
+          data={rowsData}
+          columns={this.getTableColumns({ showAsset })}
+          defaultPageSize={rowsData.length}
+          pages={1}
+          page={0}
+          pageSize={rowsData.length}
+        />
       </div>
     );
   }
 
   getInputs(transactionAsset) {
-    let rowsToRender = [];
-
     if (!transactionAsset.Inputs || !transactionAsset.Inputs.length) {
-      const title = 'No Inputs';
-      rowsToRender.push(this.renderInputOutputItem('1', title));
+      return [this.getDataItem({ data: 'No Inputs', isHash: false })];
     } else {
-      rowsToRender = transactionAsset.Inputs.reduce((all, input) => {
-        if (input.Output.address) {
-          all.push(
-            this.renderInputOutputItem(input.id, input.Output.address, input.Output.address)
-          );
-        } else {
-          const title = OutputUtils.getTextByLockType(input.Output.lockType);
-          all.push(this.renderInputOutputItem(input.id, title));
-        }
-
-        return all;
-      }, []);
+      return transactionAsset.Inputs.map(input => {
+        return input.Output.address
+          ? this.getDataItem({ data: input.Output.address })
+          : this.getDataItem({
+              data: OutputUtils.getTextByLockType(input.Output.lockType),
+              isHash: false,
+            });
+      });
     }
-
-    return { rowsToRender };
   }
 
-  getOutputs(transactionAsset, asset) {
-    let rowsToRender = [];
-    let key = 0;
-    const showAmount = AssetUtils.showAmount(transactionAsset);
+  getOutputs(transactionAsset) {
     if (!transactionAsset.Outputs || !transactionAsset.Outputs.length) {
-      rowsToRender.push(this.renderInputOutputItem(key, 'No Outputs'));
+      return [this.getDataItem({ data: 'No Outputs', isHash: false })];
     } else {
-      rowsToRender = transactionAsset.Outputs.map(output => {
-        key++;
-        let amount = showAmount ? AssetUtils.getAmountString(asset, output.amount) : null;
-        const title = output.address
-          ? output.address
-          : OutputUtils.getTextByLockType(output.lockType);
-        const address = output.address ? output.address : '';
-        return this.renderInputOutputItem(key, title, address, amount);
+      return transactionAsset.Outputs.map(output => {
+        let amount = output.amount;
+        return output.address
+          ? this.getDataItem({ data: output.address, amount })
+          : this.getDataItem({
+              data: OutputUtils.getTextByLockType(output.lockType),
+              amount,
+              isHash: false,
+            });
+      });
+    }
+  }
+
+  getDataItem({ data, amount, isHash = true } = {}) {
+    return {
+      data,
+      amount,
+      isHash,
+    };
+  }
+
+  getRowsData({ asset, address, inputs, outputs, total } = {}) {
+    const rowsData = [];
+    const maxLength = Math.max(1, outputs.length, inputs.length);
+    for (let i = 0; i < maxLength; i++) {
+      const input = i < inputs.length ? inputs[i] : {};
+      const output = i < outputs.length ? outputs[i] : {};
+      rowsData.push({
+        asset: i === 0 ? asset : '',
+        input: input.data,
+        isInputHash: input.isHash,
+        isInputActive: input.isHash && input.data !== address,
+        output: output.data,
+        isOutputHash: output.isHash,
+        isOutputActive: output.isHash && output.data !== address,
+        amount: output.amount,
       });
     }
 
-    return { rowsToRender };
-  }
-
-  renderTotal() {
-    const { total, asset } = this.props;
-    if (!total) {
-      return null;
+    // total
+    if (typeof total !== 'undefined') {
+      rowsData.push({
+        amount: total,
+        isTotal: true,
+      });
     }
 
-    return (
-      <div className="row mx-0">
-        <div className="col d-flex justify-content-end">
-          <div className="total rounded">{AssetUtils.getAmountString(asset, total)}</div>
-        </div>
-      </div>
-    );
+    return rowsData;
   }
 
-  getEmptyRows(array, numOfRows, lastIndexForKey) {
-    let key = lastIndexForKey;
-    let addedRowsArray = [];
-    if (array.length < numOfRows) {
-      for (let i = 0; i < numOfRows - array.length; i++) {
-        key++;
-        addedRowsArray.push(this.renderInputOutputItem(key, ''));
-      }
-    }
-    return addedRowsArray;
-  }
-
-  renderInputOutputItem(key, title, address, amount, isTotal) {
-    title = title || '\u00a0'; // no break space
-    const addressLinkActive = address && address !== this.props.address;
-    return (
-      <div className="row mx-0" key={key}>
-        <div
-          className={classNames('address break-word px-0', `col-${amount ? '6' : '12'}`)}
-          title={title}
-        >
-          {address ? (
-            <AddressLink address={address} active={addressLinkActive} hash={address} />
+  getTableColumns({ showAsset } = {}) {
+    const { asset } = this.props;
+    return [
+      ...(showAsset
+        ? [
+            {
+              Header: 'Asset',
+              accessor: 'asset',
+              minWidth: config.ui.table.minCellWidth,
+              Cell: ({ value }) =>
+                value && (
+                  <HashLink
+                    hash={AssetUtils.getAssetNameFromCode(value)}
+                    value={value}
+                    url={`/assets/${value}`}
+                  />
+                ),
+            },
+          ]
+        : []),
+      {
+        Header: 'Input',
+        accessor: 'input',
+        minWidth: config.ui.table.minCellWidth,
+        Cell: data =>
+          data.original.isInputHash ? (
+            <AddressLink
+              address={data.value}
+              active={data.original.isInputActive}
+              hash={data.value}
+            />
           ) : (
-            title
-          )}
-        </div>
-        {amount && (
-          <div
-            className={classNames('col-6 address break-word px-0', { 'font-weight-bold': isTotal })}
-            title={amount}
-          >
-            {amount}
-          </div>
-        )}
-      </div>
-    );
+            data.value || '\u00a0'
+          ),
+      },
+      {
+        Header: '',
+        maxWidth: 30,
+        Cell: data =>
+          data.index === 0 ? (
+            <div className="arrow">
+              <i className="fas fa-arrow-right" />
+            </div>
+          ) : (
+            ''
+          ),
+      },
+      {
+        Header: 'Output',
+        accessor: 'output',
+        minWidth: config.ui.table.minCellWidth,
+        Cell: data =>
+          data.original.isOutputHash ? (
+            <AddressLink
+              address={data.value}
+              active={data.original.isOutputActive}
+              hash={data.value}
+            />
+          ) : (
+            data.value || '\u00a0'
+          ),
+      },
+      {
+        Header: 'Total',
+        accessor: 'amount',
+        className: 'column-total',
+        headerClassName: 'column-total',
+        Cell: ({ value, original }) =>
+          typeof value !== 'undefined' ? (
+            <div className={classNames('amount rounded', { total: original.isTotal })}>
+              {AssetUtils.getAmountString(asset, Number(value))}
+            </div>
+          ) : (
+            ''
+          ),
+      },
+    ];
   }
 }
 

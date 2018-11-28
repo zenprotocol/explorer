@@ -1,13 +1,31 @@
 @import 'src/style/variables';
+body {
+  padding-top: 56px;
+}
+@media (min-width: map-get($grid-breakpoints, "lg")) {
+  body {
+    padding-top: 78px;
+  }
+}
+
 .Navbar {
   font-size: $font-size-lg;
+
+  .navbar {
+    background-color: $gray-800;
+  }
+
+  .navbar-expand-lg > .container, 
+  .navbar-expand-lg > .container-fluid {
+    padding-left: $grid-gutter-width / 2;
+    padding-right: $grid-gutter-width / 2;
+  }
   
   .navbar-brand {
     padding: 0.5rem 0;
     img.logo {
       height: 40px;
       width: auto;
-      margin-right: 10px;
     }
   }
 

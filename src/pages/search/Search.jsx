@@ -108,7 +108,7 @@ class SearchResultsPage extends Component {
           <div className="row">
             <div className="col-sm">
               <h1 className="d-block text-white mb-1 mb-lg-5">
-                {total ? `${total} Search Results` : 'No search results found for'}
+                {total ? `${total} Search Results For:` : 'No search results found for:'}
                 <div
                   className={classNames('search-string text-light', {
                     'border-top border-dark mt-3': !total,

@@ -8,6 +8,7 @@ $gray-600: #1b2024;
 $gray-700: #14171a;
 $gray-800: #0f1113;
 $gray-900: #08090a;
+$gray-1000: #010203;
 $gray: $gray-500;
 $black : #000000;
 $black-accent: $gray-900;
@@ -68,7 +69,7 @@ $theme-colors: map-merge((
 
 $body-bg: $black;
 $body-color: $gray-400;
-$mark-bg: $yellow;
+$mark-bg: $gray-400;
 $border-color: $dark;
 
 $table-head-bg: $gray-800;

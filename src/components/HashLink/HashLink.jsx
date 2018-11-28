@@ -40,10 +40,10 @@ export default class HashLink extends Component {
           onClick={() => {
             this.copyToClipboard(valueToCopy);
           }}
-          className="button btn-link"
-          title="Copy hash to clipboard"
+          title=""
+          className="btn"
         >
-          <i className="far fa-copy" />
+          <i className="fal fa-copy" />
         </button>
       </div>
     );

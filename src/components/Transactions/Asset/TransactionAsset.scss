@@ -1,49 +1,89 @@
 @import 'src/style/variables';
 .TransactionAsset {
-  margin-bottom: 40px;
-  .th {
-    font-size: $font-size-md;
-  }
+  margin-bottom: 20px;
   &:last-child {
-    margin-bottom: 10px;
+    margin-bottom: 0;
   }
-  .outputs .total {
+
+  &.hide-header {
+    .rt-thead {
+      display: none;
+    }
+  }
+  .GenericTable .ReactTable .pagination-bottom {
+    display: none;
+  }
+
+  .amount {
     display: inline-block;
-    padding: 5px;
-    border: solid 1px $body-color;
+    padding: 2px 14px;
+    border: solid 1px transparent;
+  }
+  .total {
+    border-color: $gray;
   }
   &.output .arrow,
-  &.output .outputs .total {
+  &.output .total {
     color: $green;
     border-color: $green;
   }
   &.input .arrow,
-  &.input .outputs .total {
+  &.input .total {
     color: $red;
     border-color: $red;
   }
   &.input.output .arrow,
-  &.input.output .outputs .total {
+  &.input.output .total {
     color: $red;
     border-color: $red;
   }
-  div[class^="col"],
-  .address {
-    padding: 0.75rem;
-    border-color: $border-color;
+
+  .rt-td.column-total {
+    padding-top: 0;
+    padding-bottom: 0;
+    display: flex;
+    align-items: center;
   }
-  .address {
-    border-bottom-width: 1px;
-    border-bottom-style: solid;
+
+  .rt-th.column-total {
+    padding-left: $content-padding-x + 14px !important;
   }
-  .inputs .address {
-    border-color: transparent !important;
+  @media (min-width: map-get($grid-breakpoints, "lg")) {
+    .rt-th.column-total {
+      padding-left: $content-padding-x-lg + 14px !important;
+    }
   }
-  .arrow {
-    position: absolute;
-    top: 0;
-    right: 0;
-    padding: 0.75rem;
-    background-color: $table-bg;
+}
+
+// A TransactionAsset as a sub component of a GenericTable
+.GenericTable .TransactionAsset {
+  margin-bottom: 0;
+
+  .rt-thead {
+    background-color: transparent;
+
+    .rt-tr {
+      border-bottom-color: $border-color;
+    }
+    .rt-th {
+      padding: $table-padding-y $content-padding-x;
+    }
+  }
+  
+}
+
+@media (min-width: map-get($grid-breakpoints, "lg")) {
+  .GenericTable .TransactionAsset  {
+    align-self: flex-end;
+    width: 80%;
+
+    .GenericTable {
+      
+  
+      .rt-thead .rt-th {
+        padding-left: $content-padding-x-lg;
+        padding-right: $content-padding-x-lg;
+      }
+    }
   }
 }

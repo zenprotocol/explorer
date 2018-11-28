@@ -54,7 +54,6 @@ const TransactionsTab = observer(() => {
             <TransactionAssetLoader
               transactionAssets={assetStore.assetTxs}
               index={row.index}
-              total={Number(row.original.totalSum)}
             />
           );
         }}
