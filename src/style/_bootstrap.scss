@@ -26,30 +26,6 @@ $table-cell-padding-sm : .3rem !default;
 $table-border-width : $border-width !default;
 $table-border-color : $border-color !default;
 
-// Pagination
-$pagination-padding-y : .5rem !default;
-$pagination-padding-x : .75rem !default;
-$pagination-padding-y-sm : .5rem !default;
-$pagination-padding-x-sm : .5rem !default;
-$pagination-padding-y-lg : .75rem !default;
-$pagination-padding-x-lg : 1.5rem !default;
-$pagination-line-height : 1.25 !default;
-$pagination-color : $gray;
-$pagination-bg : $gray-700;
-$pagination-border-width : 0;
-$pagination-border-color : $black;
-$pagination-focus-box-shadow : 0;
-$pagination-focus-outline : 0;
-$pagination-hover-color : $white;
-$pagination-hover-bg : $gray-600;
-$pagination-hover-border-color : $black;
-$pagination-active-color : $white;
-$pagination-active-bg : $pagination-hover-bg;
-$pagination-active-border-color : $pagination-hover-border-color;
-$pagination-disabled-color : $pagination-color;
-$pagination-disabled-bg : $pagination-bg;
-$pagination-disabled-border-color : $black;
-
 // Navbar
 $navbar-dark-color:                 $gray;
 $navbar-dark-hover-color:           $white;
@@ -113,24 +89,6 @@ $display4-weight : 400;
 @import '../../node_modules/bootstrap/scss/carousel';
 @import '../../node_modules/bootstrap/scss/utilities';
 @import '../../node_modules/bootstrap/scss/print';
-
-.page-item {
-  a.page-link {
-    user-select: none;
-    border-right-width: 1px;
-    color: $pagination-color;
-  }
-  &:last-child a.page-link {
-    border-right-width: 0;
-  }
-  &.active a.page-link {
-    font-weight: $font-weight-bold;
-    
-    &:hover {
-      color: $white;
-    } 
-  }
-}
 
 .table-zen {
   thead th {

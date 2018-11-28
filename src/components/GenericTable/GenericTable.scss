@@ -68,6 +68,39 @@
     }
   }
 
+  .page-item {
+    .page-link {
+      user-select: none;
+      border-right-width: 1px;
+      color: $pagination-color;
+
+      &.page-number {
+        display: none;
+      }
+    }
+    &:last-child .page-link {
+      border-right-width: 0;
+    }
+    &.active .page-link {
+      font-weight: $font-weight-bold;
+      
+      &:hover {
+        color: $white;
+      } 
+      &.page-number {
+        display: block;
+      }
+    }
+  }
+
+  @media (min-width: map-get($grid-breakpoints, "md")) {
+    .page-item {
+      .page-link.page-number {
+        display: block;
+      }
+    }
+  }
+
   @media (min-width: map-get($grid-breakpoints, "lg")) {
     .rt-thead .rt-th,
     .rt-td {

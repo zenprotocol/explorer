@@ -74,21 +74,6 @@ export default class ReactTablePagination extends Component {
     );
   }
 
-  getPageButton(page, active, text, key) {
-    return (
-      <li key={key || page} className={classnames('page-item', { active })}>
-        <button
-          onClick={() => {
-            this.changePage(page);
-          }}
-          className="page-link"
-        >
-          {text || page + 1}
-        </button>
-      </li>
-    );
-  }
-
   getPageButtons(page, pages) {
     const pageButtonsNumbers = [];
     
@@ -116,5 +101,20 @@ export default class ReactTablePagination extends Component {
     }
 
     return pageButtons;
+  }
+
+  getPageButton(page, active, text, key) {
+    return (
+      <li key={key || page} className={classnames('page-item', { active })}>
+        <button
+          onClick={() => {
+            this.changePage(page);
+          }}
+          className="page-link page-number"
+        >
+          {text || page + 1}
+        </button>
+      </li>
+    );
   }
 }
