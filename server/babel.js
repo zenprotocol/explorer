@@ -10,8 +10,8 @@ require('asset-require-hook')({
 });
 require('url-loader');
 require('file-loader');
-require('babel-register')({
+require('@babel/register')({
   ignore: [/(build|node_modules)/],
-  presets: ['env', 'react-app'],
-  plugins: ['syntax-dynamic-import', 'dynamic-import-node', 'react-loadable/babel'],
+  presets: ['@babel/preset-env', 'react-app-babel-7'],
+  plugins: ['@babel/plugin-syntax-dynamic-import', 'dynamic-import-node', 'react-loadable/babel'],
 });
