@@ -26,8 +26,14 @@ class TransactionAsset extends Component {
 
     const outputs = this.getOutputs(transactionAsset);
     const inputs = this.getInputs(transactionAsset);
-    const rowsData = this.getRowsData({ asset, address, inputs, outputs, total });
-    
+    const rowsData = this.getRowsData({
+      asset,
+      address,
+      inputs,
+      outputs: this.filterOutputsByAddress(outputs, address, addressFoundIn),
+      total,
+    });
+
     return (
       <div
         className={classNames('TransactionAsset', addressFoundIn, { 'hide-header': !showHeader })}
@@ -75,6 +81,13 @@ class TransactionAsset extends Component {
             });
       });
     }
+  }
+
+  filterOutputsByAddress(outputs, address, addressFoundIn) {
+    if (!address || addressFoundIn.includes('input')) {
+      return outputs;
+    }
+    return outputs.filter(output => output.data === address);
   }
 
   getDataItem({ data, amount, isHash = true } = {}) {
