@@ -21,7 +21,7 @@ const createDAL = modelName => {
     async findById(id, options = {}) {
       return new Promise((resolve, reject) => {
         this.db[this.model]
-          .findById(id, options)
+          .findByPk(id, options)
           .then(resolve)
           .catch(error => {
             reject(wrapORMErrors(error));
@@ -81,7 +81,7 @@ const createDAL = modelName => {
     async update(id, values = {}, options = {}) {
       return new Promise((resolve, reject) => {
         this.db[this.model]
-          .findById(id)
+          .findByPk(id)
           .then((model) => {
             return model.update(values, deepMerge({individualHooks: true }, options));
           })
