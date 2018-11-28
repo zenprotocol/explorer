@@ -38,6 +38,7 @@
     border-bottom-width: 1px;
     padding-bottom: 20px;
     margin-bottom: 20px;
+    @include mixin-content-padding-x();
   }
   .SyncNotification {
     display: inline-block;
@@ -57,6 +58,7 @@
         color: $blue-soft;
       }
     }
+    @include mixin-content-padding-x();
   }
   .FooterSocial a {
     font-size: 1rem;
@@ -83,7 +85,7 @@
       border-right-width: 1px;
       padding-bottom: 0;
       margin-bottom: 0;
-      @include mixin-content-padding-x();
+      
     }
     .FooterLinks {
       justify-content: flex-start;

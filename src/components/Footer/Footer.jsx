@@ -20,7 +20,7 @@ export default function Footer(props) {
         <div className="col-lg-8 border-dark separator">
           <FooterLinks />
         </div>
-        <div className="FooterSocialContact col-lg-4 d-flex flex-column p-0">
+        <div className="FooterSocialContact col-lg-4 d-flex flex-column">
           <FooterSocial />
           <FooterContact />
           <FooterCopyright />
