@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { Link } from 'react-router-dom';
-import clipboard from 'clipboard-polyfill/build/clipboard-polyfill.promise';
+import * as clipboard from 'clipboard-polyfill';
 import TextUtils from '../../lib/TextUtils';
 import './HashLink.scss';
 

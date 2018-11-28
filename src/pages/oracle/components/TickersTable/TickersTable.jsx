@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import clipboard from 'clipboard-polyfill/build/clipboard-polyfill.promise';
+import * as clipboard from 'clipboard-polyfill';
 import service from '../../../../lib/Service';
 import ItemsTable from '../../../../components/ItemsTable';
 
