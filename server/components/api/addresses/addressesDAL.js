@@ -64,11 +64,25 @@ addressesDAL.search = async function(search, limit = 10) {
 };
 
 addressesDAL.getAssetAmounts = function(address) {
-  return addressAmountsDAL.findAll({
-    where: {
-      address,
-    },
-  });
+  return addressAmountsDAL
+    .findAll({
+      where: {
+        address,
+      },
+    })
+    .then(result => {
+      return result.length > 0
+        ? result
+        : [
+            {
+              address,
+              asset: '00',
+              balance: '0',
+              received: '0',
+              sent: '0',
+            },
+          ];
+    });
 };
 
 addressesDAL.getZpBalance = async function(address) {
