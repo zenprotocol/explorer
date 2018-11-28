@@ -15,14 +15,17 @@
 
   .CopyProof {
     position: relative;
-    a {
-      cursor: pointer;
-    }
   
     input {
       width: 100%;
       position: absolute;
       top: -7.5px;
+      left: 0;
+    }
+
+    button {
+      position: absolute;
+      top: 0;
       left: 0;
     }
   }

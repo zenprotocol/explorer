@@ -44,7 +44,7 @@ export default class ReactTablePagination extends Component {
         <nav aria-label="Page navigation">
           <ul className="pagination pagination-sm">
             <li className="page-item">
-              <a
+              <button
                 className="page-link"
                 onClick={() => {
                   if (!canPrevious) return;
@@ -53,11 +53,11 @@ export default class ReactTablePagination extends Component {
                 disabled={!canPrevious}
               >
                 {this.props.previousText}
-              </a>
+              </button>
             </li>
             {this.getPageButtons(page, pages)}
             <li className="page-item">
-              <a
+              <button
                 className="page-link"
                 onClick={() => {
                   if (!canNext) return;
@@ -66,7 +66,7 @@ export default class ReactTablePagination extends Component {
                 disabled={!canNext}
               >
                 {this.props.nextText}
-              </a>
+              </button>
             </li>
           </ul>
         </nav>
@@ -77,14 +77,14 @@ export default class ReactTablePagination extends Component {
   getPageButton(page, active, text, key) {
     return (
       <li key={key || page} className={classnames('page-item', { active })}>
-        <a
+        <button
           onClick={() => {
             this.changePage(page);
           }}
           className="page-link"
         >
           {text || page + 1}
-        </a>
+        </button>
       </li>
     );
   }
