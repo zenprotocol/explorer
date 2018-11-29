@@ -45,9 +45,12 @@ class BlocksAdder {
           blockNumber <= latestBlockNumberToAdd;
           blockNumber++
         ) {
-          const nodeBlock = await this.networkHelper.getBlockFromNode(blockNumber);
-          logger.info(`Got block #${nodeBlock.header.blockNumber} from NODE...`);
+          const nodeBlock = await Promise.all([
+            this.networkHelper.getBlockFromNode(blockNumber),
+            this.networkHelper.getBlockRewardFromNode(blockNumber),
+          ]).then(([block, reward]) => Object.assign(block, { reward }));
 
+          logger.info(`Got block #${nodeBlock.header.blockNumber} from NODE...`);
           blocks.push(await this.addBlock({ job, nodeBlock, dbTransaction }));
         }
         const blockIds = blocks.map(block => {
@@ -228,6 +231,7 @@ class BlocksAdder {
         nonce1: nodeBlock.header.nonce[0],
         nonce2: nodeBlock.header.nonce[1],
         transactionCount: Object.keys(nodeBlock.transactions).length,
+        reward: nodeBlock.reward,
       },
       { transaction: dbTransaction }
     );

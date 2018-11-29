@@ -11,6 +11,7 @@ const Endpoints = {
   blocks: {
     info: '/blockchain/info',
     block: '/blockchain/block?blockNumber=',
+    blockReward: '/blockchain/blockreward?blockNumber=',
   },
   contracts: {
     active: '/contract/active',
@@ -55,6 +56,12 @@ module.exports = {
     async getBlock(blockNumber) {
       return sendHttpRequest({
         url: Endpoints.blocks.block + blockNumber,
+        method: 'get',
+      }).then(response => response.data);
+    },
+    async getBlockReward(blockNumber) {
+      return sendHttpRequest({
+        url: Endpoints.blocks.blockReward + blockNumber,
         method: 'get',
       }).then(response => response.data);
     },
