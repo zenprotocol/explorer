@@ -34,5 +34,8 @@ module.exports = {
         tip: '00000000000024d4325b6411830b85df6c2eca39803184fa8f68be9f2366f7b8',
       };
     };
+    networkHelper.getBlockRewardFromNode = function() {
+      return 5000000000;
+    };
   },
 };

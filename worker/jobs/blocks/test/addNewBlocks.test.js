@@ -42,6 +42,7 @@ test('BlocksAdder.addNewBlocks()', async function(t) {
         1,
         `${given}: The latest block number should be 1`
       );
+      t.equal(latestBlockAfterAdd.reward, '5000000000', `${given}: The added block should contain reward`);
     } catch (error) {
       t.equals(error.name, 'NetworkError', `${given}: Should throw a custom NetworkError`);
     }

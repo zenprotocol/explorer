@@ -19,9 +19,9 @@ class BlocksPage extends Component {
   }
 
   fetchBlocksCount() {
-    Service.blocks.find({ pageSize: 1 }).then(response => {
-      if (response.data.total !== blockStore.blocksCount) {
-        blockStore.setBlocksCount(Number(response.data.total));
+    Service.blocks.count().then(response => {
+      if (Number(response.data) !== blockStore.blocksCount) {
+        blockStore.setBlocksCount(Number(response.data));
       }
       this.blocksTimer = setTimeout(this.fetchBlocksCount, 30000);
     });

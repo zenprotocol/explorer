@@ -96,6 +96,12 @@ export default {
         params,
       });
     },
+    async count() {
+      return sendHttpRequest({
+        url: `${Endpoints.blocks}/count`,
+        method: 'get',
+      });
+    },
     async findById(id) {
       return sendHttpRequest({
         url: `${Endpoints.blocks}/${id}`,
