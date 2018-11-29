@@ -5,7 +5,7 @@ module.exports = async () => {
   await db.Block.destroy({ where: {}, force: true });
   return await Promise.all(
     Object.keys(db).map((key) => {
-      if (['sequelize', 'Sequelize', 'ZpTransaction', 'AddressAmount'].includes(key)) return null;
+      if (['sequelize', 'Sequelize', 'ZpTransaction', 'AddressAmount', 'AssetOutstanding'].includes(key)) return null;
       return db[key].destroy({ where: {}, force: true });
     })
   );
