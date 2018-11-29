@@ -47,7 +47,7 @@ class SearchBar extends Component {
   }
 
   canSearchImmediately(search) {
-    return AddressUtils.isComplete(search);
+    return search.length >= 63;
   }
 
   render() {

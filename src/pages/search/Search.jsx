@@ -38,11 +38,19 @@ class SearchResultsPage extends Component {
 
   componentWillUnmount() {
     searchStore.clearSearchString();
+    this.blurSearchBar();
+  }
+
+  blurSearchBar() {
+    const el = document.querySelector(':focus');
+    if (el) {
+      setTimeout(() => { el.blur(); }, 1);
+    }
   }
 
   search(value) {
     const search = SearchUtils.formatSearchString(value);
-    if(!this.redirectBeforeSearch(search)) {
+    if (!this.redirectBeforeSearch(search)) {
       searchStore.search(search);
       this.setState({ initialSearchDone: true });
     }
@@ -50,11 +58,10 @@ class SearchResultsPage extends Component {
 
   redirectBeforeSearch(search) {
     let redirect = false;
-    if(search === '00' || search === 'zp') {
+    if (search === '00' || search === 'zp') {
       this.props.history.push('/assets/00');
       redirect = true;
-    }
-    else if (AddressUtils.isComplete(search)) {
+    } else if (AddressUtils.isComplete(search)) {
       if (AddressUtils.isContract(search)) {
         this.props.history.push(`/contracts/${search}`);
         redirect = true;
