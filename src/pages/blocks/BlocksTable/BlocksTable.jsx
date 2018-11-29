@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { Link } from 'react-router-dom';
 import TextUtils from '../../../lib/TextUtils';
+import AssetUtils from '../../../lib/AssetUtils';
 import uiStore from '../../../store/UIStore';
 import blockStore from '../../../store/BlockStore';
 import config from '../../../lib/Config';
@@ -31,7 +32,7 @@ class BlocksTable extends Component {
         accessor: 'hash',
         minWidth: config.ui.table.minCellWidth,
         hideOnMobile: true,
-        Cell: ({value}) => {
+        Cell: ({ value }) => {
           return <HashLink url={`/blocks/${value}`} hash={value} />;
         },
       },
@@ -40,7 +41,7 @@ class BlocksTable extends Component {
         accessor: 'parent',
         minWidth: config.ui.table.minCellWidth,
         hideOnMobile: true,
-        Cell: ({value}) => {
+        Cell: ({ value }) => {
           return <HashLink url={`/blocks/${value}`} hash={value} />;
         },
       },
@@ -55,6 +56,16 @@ class BlocksTable extends Component {
       {
         Header: 'Txs',
         accessor: 'transactionCount',
+      },
+      {
+        Header: 'Fees',
+        accessor: 'coinbaseAmount',
+        Cell: data => AssetUtils.getAmountString('00', Number(data.value) - Number(data.original.reward)),
+      },
+      {
+        Header: 'Reward',
+        accessor: 'reward',
+        Cell: ({ value }) => AssetUtils.getAmountString('00', Number(value)),
       },
     ];
   }
