@@ -11,6 +11,7 @@ module.exports = (sequelize, DataTypes) => {
     nonce1: DataTypes.BIGINT,
     nonce2: DataTypes.BIGINT,
     transactionCount: DataTypes.BIGINT,
+    reward: DataTypes.BIGINT,
   }, {});
   Block.associate = function(models) {
     Block.hasMany(models.Transaction);
