@@ -12,27 +12,15 @@ class ContractsTable extends Component {
   getTableColumns() {
     return [
       {
-        Header: 'Hash',
-        accessor: 'id',
-        minWidth: config.ui.table.minCellWidth,
-        Cell: (data) => <HashLink url={`/contracts/${data.original.address}`} hash={data.value} />,
-      },
-      {
         Header: 'Address',
         accessor: 'address',
         minWidth: config.ui.table.minCellWidth,
         Cell: ({value}) => <HashLink url={`/contracts/${value}`} hash={value} />,
       },
       {
-        Header: '',
+        Header: 'Status',
         accessor: 'expiryBlock',
-        Cell: ({value}) => value ? 'Active' : 'Inactive',
-      },
-      {
-        Header: 'Active until',
-        accessor: 'expiryBlock',
-        hideOnMobile: true,
-        Cell: ({value}) => value ? `Block #${value}` : '',
+        Cell: ({value}) => value ? `Active until block ${value}` : 'Inactive',
       },
       {
         Header: 'Assets Issued',
