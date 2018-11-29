@@ -5,6 +5,8 @@ const wrapAsync = require('../../../lib/wrapAsyncForExpressErrors');
 
 router.route('/').get(wrapAsync(controller.index));
 
+router.route('/count').get(wrapAsync(controller.count));
+
 router.route('/id/:id').get(wrapAsync(controller.getById));
 
 router.route('/:hashOrBlockNumber').get(wrapAsync(controller.show));

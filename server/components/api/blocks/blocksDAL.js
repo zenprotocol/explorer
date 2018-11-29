@@ -6,6 +6,32 @@ const wrapORMErrors = require('../../../lib/wrapORMErrors');
 
 const blocksDAL = dal.createDAL('Block');
 
+blocksDAL.findAllWithCoinbase = function(options = {}) {
+  options.include = [
+    {
+      model: this.db.Transaction,
+      where: {
+        index: 0,
+      },
+      include: [
+        {
+          model: this.db.Output,
+          where: {
+            index: 0,
+          },
+        },
+      ],
+    },
+  ];
+  return this.findAll(options).then(blocks => blocks.map(block => {
+    const customBlock = this.toJSON(block);
+    delete customBlock.Transactions;
+    const coinbaseOutput = (block.Transactions[0] || {}).Outputs[0] || {};
+    customBlock.coinbaseAmount = coinbaseOutput.amount;
+    return customBlock;
+  }));
+};
+
 blocksDAL.findLatest = function({ transaction } = {}) {
   const options = {
     order: [['blockNumber', 'DESC']],

@@ -17,7 +17,7 @@ module.exports = {
         : [{ id: 'blockNumber', desc: true }];
 
     const query = createQueryObject({ page, pageSize, sorted });
-    const [count, allBlocks] = await Promise.all([blocksDAL.count(), blocksDAL.findAll(query)]);
+    const [count, allBlocks] = await Promise.all([blocksDAL.count(), blocksDAL.findAllWithCoinbase(query)]);
 
     res.status(httpStatus.OK).json(
       jsonResponse.create(httpStatus.OK, {
@@ -41,6 +41,13 @@ module.exports = {
     } else {
       throw new HttpError(httpStatus.NOT_FOUND);
     }
+  },
+  count: async function(req, res) {
+    const count = await blocksDAL.count();
+
+    res.status(httpStatus.OK).json(
+      jsonResponse.create(httpStatus.OK, count)
+    );
   },
   getById: async function(req, res) {
     const block = await blocksDAL.findById(req.params.id);
