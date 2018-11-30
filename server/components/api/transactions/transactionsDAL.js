@@ -460,6 +460,7 @@ transactionsDAL.findAllTransactionAssetsInputsOutputs = function(id) {
       {
         model: this.db.Output,
         attributes: [],
+        required: true,
       },
     ],
     group: [sequelize.col('Output.asset'), sequelize.col('Output.address')],
