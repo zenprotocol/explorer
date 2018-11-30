@@ -11,7 +11,7 @@ module.exports = {
     const page = req.query.page || 0;
     const pageSize = req.query.pageSize || 10;
     const query = createQueryObject({ page, pageSize });
-    const contracts = await contractsDAL.findAllWithAssetsCountAndCountOrderByNewest(query);
+    const contracts = await contractsDAL.findAllWithAssetsCountTxCountAndCountOrderByNewest(query);
 
     res.status(httpStatus.OK).json(
       jsonResponse.create(httpStatus.OK, contracts)

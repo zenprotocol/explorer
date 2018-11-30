@@ -23,8 +23,14 @@ class ContractsTable extends Component {
         Cell: ({value}) => value ? `Active until block ${value}` : 'Inactive',
       },
       {
+        Header: 'Txs',
+        accessor: 'transactionsCount',
+        hideOnMobile: true,
+        Cell: ({value}) => TextUtils.formatNumber(value),
+      },
+      {
         Header: 'Assets Issued',
-        accessor: 'assetCount',
+        accessor: 'assetsCount',
         hideOnMobile: true,
         Cell: ({value}) => TextUtils.formatNumber(value),
       },

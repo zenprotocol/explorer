@@ -12,17 +12,40 @@ const contractsDAL = dal.createDAL('Contract');
 const sequelize = contractsDAL.db.sequelize;
 const Op = sequelize.Op;
 
-contractsDAL.findAllWithAssetsCountAndCountOrderByNewest = function({ limit = 10, offset = 0 } = {}) {
+contractsDAL.findAllWithAssetsCountTxCountAndCountOrderByNewest = function({ limit = 10, offset = 0 } = {}) {
   const sql = tags.oneLine`
-  SELECT "Contracts".*, COUNT("Assets".asset) AS "assetCount"
-  FROM "Contracts" 
-  LEFT JOIN 
-    (SELECT asset
-    FROM "AssetOutstandings") AS "Assets"
-  ON "Assets"."asset" LIKE CONCAT("Contracts"."id", '%')
-  GROUP BY "Contracts"."id"
-  ORDER BY "expiryBlock" DESC NULLS LAST, "updatedAt" DESC
-  LIMIT :limit OFFSET :offset;
+  WITH "ContractsFinal" AS 
+  (SELECT "Contracts".*, COUNT("Assets".asset) AS "assetsCount"
+    FROM "Contracts" 
+    LEFT JOIN 
+      (SELECT asset
+      FROM "AssetOutstandings") AS "Assets"
+    ON "Assets"."asset" LIKE CONCAT("Contracts"."id", '%')
+    GROUP BY "Contracts"."id"
+    ORDER BY "expiryBlock" DESC NULLS LAST, "updatedAt" DESC
+    LIMIT :limit OFFSET :offset)
+
+  SELECT 
+    "ContractsFinal".*,
+    COALESCE("Txs"."total", 0) AS "transactionsCount"
+  FROM "ContractsFinal"
+  LEFT JOIN
+  (SELECT 
+    COUNT(COALESCE("Outputs"."TransactionId", "Inputs"."TransactionId")) AS "total",
+    COALESCE("Outputs"."address", "Inputs"."address") AS "address"
+    FROM
+      (SELECT "TransactionId", "address"
+        FROM "Outputs" 
+        WHERE "Outputs"."address" IN (SELECT ADDRESS FROM "ContractsFinal")
+        GROUP BY "TransactionId", "address") AS "Outputs"
+      FULL OUTER JOIN (SELECT "Inputs"."TransactionId", "Outputs"."address"
+        FROM "Inputs" JOIN "Outputs" 
+        ON "Inputs"."OutputId" = "Outputs"."id" 
+        AND "Outputs"."address" IN (SELECT ADDRESS FROM "ContractsFinal")
+        GROUP BY "Inputs"."TransactionId", "Outputs"."address" ) AS "Inputs"
+      ON "Outputs"."TransactionId" = "Inputs"."TransactionId" and "Outputs"."address" = "Inputs"."address"
+    GROUP BY COALESCE("Outputs"."address", "Inputs"."address")) AS "Txs"
+  ON "Txs"."address" = "ContractsFinal"."address"
   `;
   return Promise.all([
     this.count(),
