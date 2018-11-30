@@ -31,7 +31,7 @@ contractsDAL.findAllWithAssetsCountTxCountAndCountOrderByNewest = function({ lim
   FROM "ContractsFinal"
   LEFT JOIN
   (SELECT 
-    COUNT(COALESCE("Outputs"."TransactionId", "Inputs"."TransactionId")) AS "total",
+    COUNT(*) AS "total",
     COALESCE("Outputs"."address", "Inputs"."address") AS "address"
     FROM
       (SELECT "TransactionId", "address"

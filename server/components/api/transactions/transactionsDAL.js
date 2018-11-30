@@ -260,7 +260,7 @@ transactionsDAL.findAllAssetsByBlock = async function(
 
 transactionsDAL.countByAddress = async function(address) {
   const sql = tags.oneLine`
-  SELECT COUNT(COALESCE("Inputs"."TransactionId", "Outputs"."TransactionId"))
+  SELECT COUNT(*)
     FROM
       (SELECT "TransactionId" 
         FROM "Outputs" 
@@ -287,7 +287,7 @@ transactionsDAL.countByAddress = async function(address) {
 
 transactionsDAL.countAssetsByAddress = async function(address) {
   const sql = tags.oneLine`
-  SELECT COUNT("OutputAsset"."TransactionId")
+  SELECT COUNT(*)
     FROM
       (SELECT "Output"."TransactionId",
             "Output"."asset"
@@ -319,7 +319,7 @@ transactionsDAL.countAssetsByAddress = async function(address) {
 transactionsDAL.countAssetsByBlock = async function(hashOrBlockNumber) {
   const blockProp = isHash(hashOrBlockNumber) ? 'hash' : 'blockNumber';
   const sql = tags.oneLine`
-  SELECT COUNT("OutputAsset"."TransactionId")
+  SELECT COUNT(*)
   FROM
     (SELECT SUM("Output"."amount") AS "outputSum",
       "Output"."asset",
@@ -370,7 +370,7 @@ transactionsDAL.countByBlockNumber = async function(blockNumber) {
 
 transactionsDAL.countByAsset = async function(asset) {
   const sql = tags.oneLine`
-  SELECT COUNT("Outputs"."TransactionId")
+  SELECT COUNT(*)
     FROM
       (SELECT "TransactionId" 
         FROM "Outputs" 
