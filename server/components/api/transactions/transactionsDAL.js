@@ -260,7 +260,7 @@ transactionsDAL.findAllAssetsByBlock = async function(
 
 transactionsDAL.countByAddress = async function(address) {
   const sql = tags.oneLine`
-  SELECT COUNT("Outputs"."TransactionId")
+  SELECT COUNT(COALESCE("Inputs"."TransactionId", "Outputs"."TransactionId"))
     FROM
       (SELECT "TransactionId" 
         FROM "Outputs" 
