@@ -12,6 +12,12 @@ class ContractsTable extends Component {
   getTableColumns() {
     return [
       {
+        Header: 'Name',
+        accessor: 'id',
+        minWidth: config.ui.table.minCellWidth,
+        Cell: (data) => <HashLink url={`/contracts/${data.original.address}`} hash={data.value} />,
+      },
+      {
         Header: 'Address',
         accessor: 'address',
         minWidth: config.ui.table.minCellWidth,
