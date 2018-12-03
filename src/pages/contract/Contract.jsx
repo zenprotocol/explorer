@@ -74,16 +74,14 @@ class ContractPage extends Component {
               </tr>
             </thead>
             <tbody>
-              {contract.expiryBlock ? (
-                <tr>
-                  <td>ACTIVE UNTIL</td>
-                  <td>Block {contract.expiryBlock}</td>
-                </tr>
-              ) : (
-                <tr>
-                  <td colSpan="2">INACTIVE</td>
-                </tr>
-              )}
+              <tr>
+                <td>CONTRACT ID</td>
+                <td><HashLink hash={contract.id} /></td>
+              </tr>
+              <tr>
+                <td>STATUS</td>
+                <td>{contract.expiryBlock ? `Active until block ${contract.expiryBlock}` : 'Inactive'}</td>
+              </tr>
               <tr>
                 <td>TRANSACTIONS</td>
                 <td>{TextUtils.formatNumber(address.totalTxs)}</td>
