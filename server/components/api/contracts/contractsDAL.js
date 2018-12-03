@@ -42,12 +42,12 @@ contractsDAL.findAllWithAssetsCountTxCountAndCountOrderByNewest = function({ lim
     FROM
       (SELECT "TransactionId", "address"
         FROM "Outputs" 
-        WHERE "Outputs"."address" IN (SELECT ADDRESS FROM "ContractsFinal")
+        WHERE "Outputs"."address" IN (SELECT address FROM "ContractsFinal")
         GROUP BY "TransactionId", "address") AS "Outputs"
       FULL OUTER JOIN (SELECT "Inputs"."TransactionId", "Outputs"."address"
         FROM "Inputs" JOIN "Outputs" 
         ON "Inputs"."OutputId" = "Outputs"."id" 
-        AND "Outputs"."address" IN (SELECT ADDRESS FROM "ContractsFinal")
+        AND "Outputs"."address" IN (SELECT address FROM "ContractsFinal")
         GROUP BY "Inputs"."TransactionId", "Outputs"."address" ) AS "Inputs"
       ON "Outputs"."TransactionId" = "Inputs"."TransactionId" and "Outputs"."address" = "Inputs"."address"
     GROUP BY COALESCE("Outputs"."address", "Inputs"."address")) AS "Txs"
