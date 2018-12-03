@@ -36,6 +36,25 @@
     text-align: left;
     padding: $table-header-padding-y $content-padding-x;
     border-right-color: transparent;
+
+    &.-cursor-pointer::after,
+    &.-sort-asc::after,
+    &.-sort-desc::after {
+      font-family: "Font Awesome 5 Pro";
+      position: absolute;
+      right: 0;
+      top: 50%;
+      transform: translateY(-50%);
+    }
+    &.-cursor-pointer::after {
+      content: '\F0DC';
+    }
+    &.-sort-asc::after {
+      content: '\F0DE';
+    }
+    &.-sort-desc::after {
+      content: '\F0DD';
+    }
   }
   
   .rt-tbody {

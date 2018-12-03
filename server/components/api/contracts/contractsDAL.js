@@ -12,7 +12,14 @@ const contractsDAL = dal.createDAL('Contract');
 const sequelize = contractsDAL.db.sequelize;
 const Op = sequelize.Op;
 
-contractsDAL.findAllWithAssetsCountTxCountAndCountOrderByNewest = function({ limit = 10, offset = 0 } = {}) {
+// When sorted by expiryBlock, add a 2nd sort by createdAt
+const expiryBlockOrderMap = {
+  asc: 'NULLS FIRST, "createdAt" ASC',
+  desc: 'NULLS LAST, "createdAt" DESC',
+};
+
+contractsDAL.findAllWithAssetsCountTxCountAndCountOrderByNewest = function({ limit = 10, offset = 0, order = [] } = {}) {
+  const orderBy = order.map(item => `"${item[0]}" ${item[1]} ${item[0] === 'expiryBlock' ? expiryBlockOrderMap[item[1].toLowerCase()] : ''}`).join(', ');
   const sql = tags.oneLine`
   WITH "ContractsFinal" AS 
   (SELECT "Contracts".*, COUNT("Assets".asset) AS "assetsCount"
@@ -21,9 +28,8 @@ contractsDAL.findAllWithAssetsCountTxCountAndCountOrderByNewest = function({ lim
       (SELECT asset
       FROM "AssetOutstandings") AS "Assets"
     ON "Assets"."asset" LIKE CONCAT("Contracts"."id", '%')
-    GROUP BY "Contracts"."id"
-    ORDER BY "expiryBlock" DESC NULLS LAST, "updatedAt" DESC
-    LIMIT :limit OFFSET :offset)
+    GROUP BY "Contracts"."id" 
+    LIMIT (SELECT COUNT(*) FROM "Contracts"))
 
   SELECT 
     "ContractsFinal".*,
@@ -46,6 +52,8 @@ contractsDAL.findAllWithAssetsCountTxCountAndCountOrderByNewest = function({ lim
       ON "Outputs"."TransactionId" = "Inputs"."TransactionId" and "Outputs"."address" = "Inputs"."address"
     GROUP BY COALESCE("Outputs"."address", "Inputs"."address")) AS "Txs"
   ON "Txs"."address" = "ContractsFinal"."address"
+  ORDER BY ${orderBy}
+  LIMIT :limit OFFSET :offset
   `;
   return Promise.all([
     this.count(),

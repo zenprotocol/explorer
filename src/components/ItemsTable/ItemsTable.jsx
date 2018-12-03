@@ -19,6 +19,7 @@ class ItemsTable extends Component {
 
     this.setPageSize = this.setPageSize.bind(this);
     this.onPageChange = this.onPageChange.bind(this);
+    this.onSortedChange = this.onSortedChange.bind(this);
     this.setWindowWidth = this.setWindowWidth.bind(this);
     this.setWindowWidthThrottled = throttle(this.setWindowWidth, 200);
   }
@@ -81,8 +82,12 @@ class ItemsTable extends Component {
     this.props.tableDataSetter({ curPage: page });
   }
 
+  onSortedChange(sorted) {
+    this.props.tableDataSetter({ sorted });
+  }
+
   render() {
-    const { loading, itemsCount, items, pageSize, curPage, SubComponent, topContent } = this.props;
+    const { loading, itemsCount, items, pageSize, curPage, SubComponent, topContent, ...rest } = this.props;
     const numOfPages = Math.ceil(itemsCount / pageSize);
     const showPageSizes = itemsCount > config.ui.table.pageSizes[0];
     const showTopRow = showPageSizes || topContent;
@@ -116,6 +121,7 @@ class ItemsTable extends Component {
           page={curPage}
           pageSizes={config.ui.table.pageSizes}
           onPageChange={this.onPageChange}
+          onSortedChange={this.onSortedChange}
           pageSize={pageSize}
           SubComponent={SubComponent}
           expanded={this.state.expanded}
@@ -139,6 +145,7 @@ class ItemsTable extends Component {
               },
             };
           }}
+          {...rest}
         />
       </div>
     );

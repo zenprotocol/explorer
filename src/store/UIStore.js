@@ -37,6 +37,7 @@ class UIStore {
     this.contractsTable = {
       pageSize: config.ui.table.defaultPageSize,
       curPage: 0,
+      sorted: [],
     };
 
     this.contractAssetsTable = {
@@ -178,6 +179,7 @@ class UIStore {
       contractStore.loadContracts({
         page: this.contractsTable.curPage,
         pageSize: this.contractsTable.pageSize,
+        sorted: JSON.stringify(this.contractsTable.sorted),
       });
     }
   }
@@ -283,12 +285,15 @@ class UIStore {
     }
   }
 
-  setContractsTableData({ pageSize, curPage } = {}) {
+  setContractsTableData({ pageSize, curPage, sorted } = {}) {
     if (pageSize) {
       this.contractsTable.pageSize = pageSize;
     }
     if (curPage !== undefined) {
       this.contractsTable.curPage = curPage;
+    }
+    if (sorted) {
+      this.contractsTable.sorted = sorted;
     }
   }
 

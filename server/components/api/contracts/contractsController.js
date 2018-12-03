@@ -10,7 +10,11 @@ module.exports = {
   index: async function(req, res) {
     const page = req.query.page || 0;
     const pageSize = req.query.pageSize || 10;
-    const query = createQueryObject({ page, pageSize });
+    const sorted =
+      req.query.sorted && req.query.sorted != '[]'
+        ? JSON.parse(req.query.sorted)
+        : [{ id: 'expiryBlock', desc: true }];
+    const query = createQueryObject({ page, pageSize, sorted });
     const contracts = await contractsDAL.findAllWithAssetsCountTxCountAndCountOrderByNewest(query);
 
     res.status(httpStatus.OK).json(

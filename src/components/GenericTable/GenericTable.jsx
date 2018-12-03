@@ -13,6 +13,9 @@ export default function GenericTable(props) {
     pageSizes,
     resizable,
     sortable,
+    multiSort,
+    defaultSorted,
+    defaultSortDesc,
     onFetchData,
     data,
     columns,
@@ -21,6 +24,7 @@ export default function GenericTable(props) {
     page,
     pageSize,
     onPageChange,
+    onSortedChange,
     SubComponent,
     pivotBy,
     expanded,
@@ -33,6 +37,9 @@ export default function GenericTable(props) {
         loading={loading}
         resizable={resizable}
         sortable={sortable}
+        multiSort={multiSort}
+        defaultSorted={defaultSorted}
+        defaultSortDesc={defaultSortDesc}
         data={data}
         columns={columns}
         onFetchData={onFetchData}
@@ -43,6 +50,7 @@ export default function GenericTable(props) {
         page={page}
         pageSize={pageSize}
         onPageChange={onPageChange}
+        onSortedChange={onSortedChange}
         PaginationComponent={PaginationComponent}
         LoadingComponent={LoadingWithBG}
         previousText={<i className="fas fa-angle-double-left" />}
@@ -73,6 +81,9 @@ GenericTable.propTypes = {
   pageSizes: PropTypes.array,
   resizable: PropTypes.bool,
   sortable: PropTypes.bool,
+  multiSort: PropTypes.bool,
+  defaultSorted: PropTypes.array,
+  defaultSortDesc: PropTypes.bool,
   data: PropTypes.array,
   columns: PropTypes.array,
   onFetchData: PropTypes.func,
@@ -81,6 +92,7 @@ GenericTable.propTypes = {
   page: PropTypes.number,
   pageSize: PropTypes.number,
   onPageChange: PropTypes.func,
+  onSortedChange: PropTypes.func,
   SubComponent: PropTypes.any,
   pivotBy: PropTypes.array,
   expanded: PropTypes.object,
@@ -91,6 +103,8 @@ GenericTable.defaultProps = {
   pageSizes: config.ui.table.pageSizes,
   resizable: false,
   sortable: false,
+  multiSort: false,
+  defaultSorted: [],
   defaultPageSize: config.ui.table.defaultPageSize,
   page: 0,
 };
