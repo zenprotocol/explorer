@@ -116,7 +116,7 @@ class AssetPage extends Component {
                 </td>
               </tr>
               <tr>
-                <td>UNIQUE KEYHOLDERS</td>
+                <td>UNIQUE ADDRESSES</td>
                 <td>{TextUtils.formatNumber(assetStore.asset.keyholders)}</td>
               </tr>
             </tbody>
