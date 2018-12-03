@@ -71,6 +71,7 @@ export default function GenericTable(props) {
           const rowIndex = rowInfo.index;
           return { className: rowIndex === dataLength - 1 ? 'last' : '' };
         }}
+        NoDataComponent={() => null}
       />
     </div>
   );
