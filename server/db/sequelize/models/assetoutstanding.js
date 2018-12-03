@@ -7,7 +7,8 @@ module.exports = (sequelize, DataTypes) => {
       issued: DataTypes.BIGINT,
       destroyed: DataTypes.BIGINT,
       outstanding: DataTypes.BIGINT,
-      keyholders: DataTypes.INTEGER,
+      keyholders: DataTypes.BIGINT,
+      transactionsCount: DataTypes.BIGINT,
     },
     {
       timestamps: false,
