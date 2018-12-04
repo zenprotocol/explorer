@@ -44,7 +44,7 @@ test('BlocksAdder.addNewBlocks()', async function(t) {
       );
       t.equal(latestBlockAfterAdd.reward, '5000000000', `${given}: The added block should contain reward`);
     } catch (error) {
-      t.equals(error.name, 'NetworkError', `${given}: Should throw a custom NetworkError`);
+      t.fail(`${given}: Should not throw an error`);
     }
   });
 
@@ -90,7 +90,7 @@ test('BlocksAdder.addNewBlocks()', async function(t) {
       await blocksAdder.addNewBlocks({ data: { limitBlocks: 1 } });
       t.fail(`${given}: Should throw an error`);
     } catch (error) {
-      t.equals(error.name, 'NetworkError', `${given}: Should throw a custom NetworkError`);
+      t.pass(`${given}: Should throw an error`);
     }
 
     Service.config.setBaseUrl(Config.get('zp:node'));
@@ -117,7 +117,7 @@ test('BlocksAdder.addNewBlocks()', async function(t) {
       });
       t.assert(transactions.length > 0, `${given}: There should be transactions for this block`);
     } catch (error) {
-      t.equals(error.name, 'NetworkError', `${given}: Should throw a custom NetworkError`);
+      t.fail(`${given}: Should not throw an error`);
     }
   });
   await wrapTest('Given new blocks with a falsy transaction', async given => {
@@ -279,7 +279,7 @@ if (Config.get('RUN_REAL_DATA_TESTS')) {
       t.assert(latestBlockAfterAdd !== null, 'There should be new blocks in the db');
     } catch (error) {
       console.log('An error had occurred trying to get the chain info! check the node status!!!');
-      t.equals(error.name, 'NetworkError', 'Should throw a custom NetworkError');
+      t.fail('Should not throw an error');
     }
   });
 }

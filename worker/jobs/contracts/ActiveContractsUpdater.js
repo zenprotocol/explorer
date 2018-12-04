@@ -2,6 +2,7 @@
 
 const logger = require('../../lib/logger')('contracts');
 const contractsDAL = require('../../../server/components/api/contracts/contractsDAL');
+const QueueError = require('../../lib/QueueError');
 
 class ActiveContractsUpdater {
   constructor(networkHelper) {
@@ -16,7 +17,7 @@ class ActiveContractsUpdater {
       return numOfRowsAffected;
     } catch (error) {
       logger.error(`An Error has occurred when processing contracts: ${error.message}`);
-      throw error;
+      throw new QueueError(error);
     }
   }
 
