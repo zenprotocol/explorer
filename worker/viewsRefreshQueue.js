@@ -27,9 +27,9 @@ viewsRefreshQueue.on('completed', function(job, result) {
 });
 
 viewsRefreshQueue.on('failed', function(job, error) {
-  logger.error(`A job has failed. ID=${job.id}, error=${error}`);
+  logger.error(`A job has failed. ID=${job.id}, error=${error.message}`);
   taskTimeLimiter.executeTask(() => {
-    slackLogger.error(`A viewsRefreshQueue job has failed, error=${error}`);
+    slackLogger.error(`A viewsRefreshQueue job has failed, error=${error.message}`);
   });
 });
 

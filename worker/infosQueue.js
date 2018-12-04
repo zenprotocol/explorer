@@ -18,10 +18,6 @@ const taskTimeLimiter = new TaskTimeLimiter(Config.get('queues:slackTimeLimit') 
 updateGeneralInfosQueue.process(path.join(__dirname, 'jobs/infos/updateGeneralInfos.handler.js'));
 
 // events
-updateGeneralInfosQueue.on('error', function(error) {
-  logger.error('A job error has occurred', error);
-});
-
 updateGeneralInfosQueue.on('active', function(job, jobPromise) {
   logger.info(`A job has started. ID=${job.id}`);
 });
@@ -31,9 +27,9 @@ updateGeneralInfosQueue.on('completed', function(job, result) {
 });
 
 updateGeneralInfosQueue.on('failed', function(job, error) {
-  logger.error(`A job has failed. ID=${job.id}, error=${error}`);
+  logger.error(`A job has failed. ID=${job.id}, error=${error.message}`);
   taskTimeLimiter.executeTask(() => {
-    slackLogger.error(`An UpdateGeneralInfos job has failed, error=${error}`);
+    slackLogger.error(`An UpdateGeneralInfos job has failed, error=${error.message}`);
   });
 });
 

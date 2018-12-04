@@ -18,10 +18,6 @@ const taskTimeLimiter = new TaskTimeLimiter(Config.get('queues:slackTimeLimit') 
 contractsQueue.process(path.join(__dirname, 'jobs/contracts/contracts.handler.js'));
 
 // events
-contractsQueue.on('error', function(error) {
-  logger.error('A job error has occurred', error);
-});
-
 contractsQueue.on('active', function(job, jobPromise) {
   logger.info(`A job has started. ID=${job.id}`);
 });
@@ -31,9 +27,9 @@ contractsQueue.on('completed', function(job, result) {
 });
 
 contractsQueue.on('failed', function(job, error) {
-  logger.error(`A job has failed. ID=${job.id}, error=${error}`);
+  logger.error(`A job has failed. ID=${job.id}, error=${error.message}`);
   taskTimeLimiter.executeTask(() => {
-    slackLogger.error(`A Contracts job has failed, error=${error}`);
+    slackLogger.error(`A Contracts job has failed, error=${error.message}`);
   });
 });
 

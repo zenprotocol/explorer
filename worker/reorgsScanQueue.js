@@ -34,9 +34,9 @@ reorgScanQueue.on('completed', function(job, result) {
 });
 
 reorgScanQueue.on('failed', function(job, error) {
-  logger.error(`A job has failed. ID=${job.id}, error=${error}`);
+  logger.error(`A job has failed. ID=${job.id}, error=${error.message}`);
   taskTimeLimiter.executeTask(() => {
-    slackLogger.error(`A reorgsQueue job has failed, error=${error}`);
+    slackLogger.error(`A reorgsQueue job has failed, error=${error.message}`);
   });
 });
 
