@@ -3,6 +3,7 @@
 const infosDAL = require('../../../server/components/api/infos/infosDAL');
 const statsDAL = require('../../../server/components/api/stats/statsDAL');
 const logger = require('../../lib/logger')('infos');
+const QueueError = require('../../lib/QueueError');
 
 function createOrUpdateInfos(infos) {
   const promises = [];
@@ -45,7 +46,7 @@ class InfosAdder {
       logger.info('Hash rate in infos updated');
     } catch (error) {
       logger.error(`An Error has occurred when adding infos: ${error.message}`);
-      throw error;
+      throw new QueueError(error);
     }
   }
 

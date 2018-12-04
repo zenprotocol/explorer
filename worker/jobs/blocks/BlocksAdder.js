@@ -8,6 +8,7 @@ const infosDAL = require('../../../server/components/api/infos/infosDAL');
 const contractsDAL = require('../../../server/components/api/contracts/contractsDAL');
 const logger = require('../../lib/logger')('blocks');
 const getJobData = require('../../lib/getJobData');
+const QueueError = require('../../lib/QueueError');
 
 class BlocksAdder {
   constructor(networkHelper, blockchainParser) {
@@ -17,29 +18,30 @@ class BlocksAdder {
 
   async addNewBlocks(job) {
     const startTime = process.hrtime();
-    let latestBlockNumberInDB = await this.getLatestBlockNumberInDB();
-    const latestBlockNumberInNode = await this.networkHelper.getLatestBlockNumberFromNode();
-    const latestBlockNumberToAdd = getJobData(job, 'limitBlocks')
-      ? Math.min(
-          latestBlockNumberInDB + Number(getJobData(job, 'limitBlocks')),
-          latestBlockNumberInNode
-        )
-      : latestBlockNumberInNode;
+    let dbTransaction = null;
+    try {
+      let latestBlockNumberInDB = await this.getLatestBlockNumberInDB();
+      const latestBlockNumberInNode = await this.networkHelper.getLatestBlockNumberFromNode();
+      const latestBlockNumberToAdd = getJobData(job, 'limitBlocks')
+        ? Math.min(
+            latestBlockNumberInDB + Number(getJobData(job, 'limitBlocks')),
+            latestBlockNumberInNode
+          )
+        : latestBlockNumberInNode;
 
-    logger.info(
-      `latestBlockNumberInDB=${latestBlockNumberInDB}, latestBlockNumberToAdd=${latestBlockNumberToAdd}`
-    );
+      logger.info(
+        `latestBlockNumberInDB=${latestBlockNumberInDB}, latestBlockNumberToAdd=${latestBlockNumberToAdd}`
+      );
 
-    const blocks = [];
+      const blocks = [];
 
-    if (latestBlockNumberToAdd > latestBlockNumberInDB) {
-      await this.setSyncingStatus({ syncing: true });
-      const infos = await this.updateInfos();
-      this.blockchainParser.setChain(infos.chain);
+      if (latestBlockNumberToAdd > latestBlockNumberInDB) {
+        await this.setSyncingStatus({ syncing: true });
+        const infos = await this.updateInfos();
+        this.blockchainParser.setChain(infos.chain);
 
-      const dbTransaction = await blocksDAL.db.sequelize.transaction();
+        dbTransaction = await blocksDAL.db.sequelize.transaction();
 
-      try {
         for (
           let blockNumber = latestBlockNumberInDB + 1;
           blockNumber <= latestBlockNumberToAdd;
@@ -63,16 +65,18 @@ class BlocksAdder {
 
         logger.info('Commit the database transaction');
         await dbTransaction.commit();
-      } catch (error) {
-        logger.error(`An Error has occurred when adding blocks: ${error.message}`);
+      }
+      const hrEnd = process.hrtime(startTime);
+      logger.info(`AddNewBlocks Finished. Time elapsed = ${hrEnd[0]}s ${hrEnd[1] / 1000000}ms`);
+      return blocks.length;
+    } catch (error) {
+      logger.error(`An Error has occurred when adding blocks: ${error.message}`);
+      if (dbTransaction) {
         logger.info('Rollback the database transaction');
         await dbTransaction.rollback();
-        throw error;
       }
+      throw new QueueError(error);
     }
-    const hrEnd = process.hrtime(startTime);
-    logger.info(`AddNewBlocks Finished. Time elapsed = ${hrEnd[0]}s ${hrEnd[1] / 1000000}ms`);
-    return blocks.length;
   }
 
   async getLatestBlockNumberInDB() {

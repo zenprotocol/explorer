@@ -6,6 +6,7 @@ const contractsDAL = require('../../../server/components/api/contracts/contracts
 const transactionsDAL = require('../../../server/components/api/transactions/transactionsDAL');
 const commandsDAL = require('../../../server/components/api/commands/commandsDAL');
 const getJobData = require('../../lib/getJobData');
+const QueueError = require('../../lib/QueueError');
 
 const DEFAULT_NUM_OF_COMMANDS_TO_TAKE = 100;
 
@@ -37,7 +38,7 @@ class CommandsAdder {
       return numOfRowsAffected;
     } catch (error) {
       logger.error(`An Error has occurred when processing commands: ${error.message}`);
-      throw error;
+      // throw new QueueError(error);
     }
   }
 

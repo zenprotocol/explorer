@@ -5,6 +5,7 @@ const logger = require('../../lib/logger')('reorg');
 const blocksDAL = require('../../../server/components/api/blocks/blocksDAL');
 const Op = require('../../../server/db/sequelize/models').sequelize.Op;
 const getJobData = require('../../lib/getJobData');
+const QueueError = require('../../lib/QueueError');
 
 const MAX_ALLOWED_BLOCKS_TO_DELETE = 500;
 
@@ -48,7 +49,7 @@ class ReorgProcessor extends EventEmitter {
       return { forks, deleted };
     } catch (error) {
       logger.error(`An Error has occurred when processing a reorg: ${error.message}`);
-      throw error;
+      throw new QueueError(error);
     }
   }
 
