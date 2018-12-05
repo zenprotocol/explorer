@@ -49,8 +49,8 @@ class BlockTxsTable extends Component {
         },
       },
       {
-        Header: 'Total',
-        accessor: 'outputSum',
+        Header: 'Total Moved',
+        accessor: 'totalMoved',
         Cell: data => AssetUtils.getAmountString(data.original.asset, Number(data.value)),
       },
     ];
