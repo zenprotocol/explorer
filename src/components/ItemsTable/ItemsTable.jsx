@@ -52,7 +52,11 @@ class ItemsTable extends Component {
       Expander: ({ isExpanded }) => (
         <div className="expand">
           <div className="arrow">
-            {isExpanded ? <i className="expand-icon fas fa-angle-up" /> : <i className="expand-icon fas fa-angle-down" />}
+            {isExpanded ? (
+              <i className="expand-icon fas fa-angle-up" />
+            ) : (
+              <i className="expand-icon fas fa-angle-down" />
+            )}
           </div>
         </div>
       ),
@@ -87,7 +91,18 @@ class ItemsTable extends Component {
   }
 
   render() {
-    const { loading, itemsCount, items, pageSize, curPage, SubComponent, topContent, ...rest } = this.props;
+    const {
+      loading,
+      itemsCount,
+      items,
+      pageSize,
+      curPage,
+      SubComponent,
+      topContent,
+      multiSort,
+      defaultSorted,
+      defaultSortDesc,
+    } = this.props;
     const numOfPages = Math.ceil(itemsCount / pageSize);
     const showPageSizes = itemsCount > config.ui.table.pageSizes[0];
     const showTopRow = showPageSizes || topContent;
@@ -123,16 +138,22 @@ class ItemsTable extends Component {
           onPageChange={this.onPageChange}
           onSortedChange={this.onSortedChange}
           pageSize={pageSize}
+          multiSort={multiSort}
+          defaultSorted={defaultSorted}
+          defaultSortDesc={defaultSortDesc}
           SubComponent={SubComponent}
           expanded={this.state.expanded}
           getTrProps={(state, rowInfo, column, instance) => {
             const expanded = rowInfo && state.expanded[rowInfo.index] === true;
             return {
-              className: classNames({expandable: SubComponent, expanded}),
+              className: classNames({ expandable: SubComponent, expanded }),
               onClick: (e, handleOriginal) => {
                 const tagName = e.target.tagName.toLowerCase();
                 const expandableTags = ['div', 'span'];
-                if (SubComponent && (expandableTags.includes(tagName) || e.target.classList.contains('expand-icon'))) {
+                if (
+                  SubComponent &&
+                  (expandableTags.includes(tagName) || e.target.classList.contains('expand-icon'))
+                ) {
                   this.setState(prevState => ({
                     expanded: {
                       [rowInfo.index]: !prevState.expanded[rowInfo.index],
@@ -145,7 +166,6 @@ class ItemsTable extends Component {
               },
             };
           }}
-          {...rest}
         />
       </div>
     );
@@ -167,6 +187,9 @@ ItemsTable.propTypes = {
   tableDataSetter: PropTypes.func.isRequired,
   SubComponent: PropTypes.any,
   topContent: PropTypes.any,
+  multiSort: PropTypes.bool,
+  defaultSorted: PropTypes.array,
+  defaultSortDesc: PropTypes.bool,
 };
 
 export default observer(ItemsTable);
