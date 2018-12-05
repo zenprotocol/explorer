@@ -20,6 +20,7 @@ class BlocksAdder {
     const startTime = process.hrtime();
     let dbTransaction = null;
     try {
+      await this.setSyncingStatus({ syncing: true });
       let latestBlockNumberInDB = await this.getLatestBlockNumberInDB();
       const latestBlockNumberInNode = await this.networkHelper.getLatestBlockNumberFromNode();
       const latestBlockNumberToAdd = getJobData(job, 'limitBlocks')
@@ -36,7 +37,6 @@ class BlocksAdder {
       const blocks = [];
 
       if (latestBlockNumberToAdd > latestBlockNumberInDB) {
-        await this.setSyncingStatus({ syncing: true });
         const infos = await this.updateInfos();
         this.blockchainParser.setChain(infos.chain);
 
@@ -61,11 +61,10 @@ class BlocksAdder {
 
         await this.relateAllOutpointInputsToOutputs({ dbTransaction, blockIds });
 
-        await this.setSyncingStatus({ syncing: false });
-
         logger.info('Commit the database transaction');
         await dbTransaction.commit();
       }
+      await this.setSyncingStatus({ syncing: false });
       const hrEnd = process.hrtime(startTime);
       logger.info(`AddNewBlocks Finished. Time elapsed = ${hrEnd[0]}s ${hrEnd[1] / 1000000}ms`);
       return blocks.length;
