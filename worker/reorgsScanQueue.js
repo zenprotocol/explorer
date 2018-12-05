@@ -6,6 +6,7 @@ const TaskTimeLimiter = require('./lib/TaskTimeLimiter');
 const Config = require('../server/config/Config');
 const logger = require('./lib/logger')('reorg-scan');
 const slackLogger = require('../server/lib/slackLogger');
+const getChain = require('./lib/getChain');
 
 const reorgScanQueue = new Queue(
   Config.get('queues:reorgs-scan:name'),
@@ -36,7 +37,9 @@ reorgScanQueue.on('completed', function(job, result) {
 reorgScanQueue.on('failed', function(job, error) {
   logger.error(`A job has failed. ID=${job.id}, error=${error.message}`);
   taskTimeLimiter.executeTask(() => {
-    slackLogger.error(`A reorgsQueue job has failed, error=${error.message}`);
+    getChain().then(chain => {
+      slackLogger.error(`A reorgsQueue job has failed, error=${error.message} chain=${chain}`);
+    });
   });
 });
 

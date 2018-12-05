@@ -8,6 +8,7 @@ const makeLogger = require('./lib/logger');
 const loggerBlocks = makeLogger('blocks');
 const loggerReorg = makeLogger('reorg');
 const slackLogger = require('../server/lib/slackLogger');
+const getChain = require('./lib/getChain');
 const NUM_OF_BLOCKS_IN_CHUNK = Config.get('queues:addBlocks:limitBlocks');
 
 const addBlocksQueue = new Queue(
@@ -40,7 +41,9 @@ addBlocksQueue.on('completed', function(job, result) {
 addBlocksQueue.on('failed', function(job, error) {
   loggerBlocks.error(`A job has failed. ID=${job.id}, error=${error.message}`);
   taskTimeLimiter.executeTask(() => {
-    slackLogger.error(`An AddBlocks job has failed, error=${error.message}`);
+    getChain().then(chain => {
+      slackLogger.error(`An AddBlocks job has failed, error=${error.message} chain=${chain}`);
+    });
   });
   if (error.message === 'Reorg') {
     const message = 'Found a reorg! starting the reorg processor...';

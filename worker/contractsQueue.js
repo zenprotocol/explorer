@@ -6,6 +6,7 @@ const TaskTimeLimiter = require('./lib/TaskTimeLimiter');
 const Config = require('../server/config/Config');
 const logger = require('./lib/logger')('contracts');
 const slackLogger = require('../server/lib/slackLogger');
+const getChain = require('./lib/getChain');
 
 const contractsQueue = new Queue(
   Config.get('queues:contracts:name'),
@@ -29,7 +30,9 @@ contractsQueue.on('completed', function(job, result) {
 contractsQueue.on('failed', function(job, error) {
   logger.error(`A job has failed. ID=${job.id}, error=${error.message}`);
   taskTimeLimiter.executeTask(() => {
-    slackLogger.error(`A Contracts job has failed, error=${error.message}`);
+    getChain().then(chain => {
+      slackLogger.error(`A Contracts job has failed, error=${error.message} chain=${chain}`);
+    });
   });
 });
 

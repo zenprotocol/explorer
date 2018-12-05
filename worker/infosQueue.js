@@ -6,6 +6,7 @@ const TaskTimeLimiter = require('./lib/TaskTimeLimiter');
 const Config = require('../server/config/Config');
 const logger = require('./lib/logger')('infos');
 const slackLogger = require('../server/lib/slackLogger');
+const getChain = require('./lib/getChain');
 
 const updateGeneralInfosQueue = new Queue(
   Config.get('queues:updateGeneralInfos:name'),
@@ -29,7 +30,9 @@ updateGeneralInfosQueue.on('completed', function(job, result) {
 updateGeneralInfosQueue.on('failed', function(job, error) {
   logger.error(`A job has failed. ID=${job.id}, error=${error.message}`);
   taskTimeLimiter.executeTask(() => {
-    slackLogger.error(`An UpdateGeneralInfos job has failed, error=${error.message}`);
+    getChain().then(chain => {
+      slackLogger.error(`An UpdateGeneralInfos job has failed, error=${error.message} chain=${chain}`);
+    });
   });
 });
 
