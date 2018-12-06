@@ -9,7 +9,25 @@ import AddressLink from '../../../components/AddressLink';
 import GenericTable from '../../../components/GenericTable';
 import './TransactionAsset.scss';
 
+const NUM_OF_INITIAL_ROWS = 5;
+
 class TransactionAsset extends Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      showMore: false,
+    };
+
+    this.toggleShowMore = this.toggleShowMore.bind(this);
+  }
+
+  toggleShowMore() {
+    this.setState(state => ({
+      showMore: !state.showMore,
+    }));
+  }
+
   render() {
     const {
       transactionAsset,
@@ -34,18 +52,31 @@ class TransactionAsset extends Component {
       total,
     });
 
+    const { showMore } = this.state;
+
+    // all rows if less than the limit, otherwise the limit
+    const numOfRows =
+      rowsData.length <= NUM_OF_INITIAL_ROWS || showMore ? rowsData.length : NUM_OF_INITIAL_ROWS;
+    const rowsToRender = rowsData.slice(0, numOfRows);
+    // add a show more row to the table's data
+    if (rowsData.length > NUM_OF_INITIAL_ROWS) {
+      rowsToRender.push({
+        showMore,
+      });
+    }
+
     return (
       <div
         className={classNames('TransactionAsset', addressFoundIn, { 'hide-header': !showHeader })}
       >
         <GenericTable
           loading={false}
-          data={rowsData}
+          data={rowsToRender}
           columns={this.getTableColumns({ showAsset })}
-          defaultPageSize={rowsData.length}
+          defaultPageSize={rowsToRender.length}
           pages={1}
           page={0}
-          pageSize={rowsData.length}
+          pageSize={rowsToRender.length}
         />
       </div>
     );
@@ -136,14 +167,21 @@ class TransactionAsset extends Component {
               Header: 'Asset',
               accessor: 'asset',
               minWidth: config.ui.table.minCellWidth,
-              Cell: ({ value }) =>
-                value && (
-                  <HashLink
-                    hash={AssetUtils.getAssetNameFromCode(value)}
-                    value={value}
-                    url={`/assets/${value}`}
-                  />
-                ),
+              Cell: ({ value, original }) => {
+                if (typeof original.showMore !== 'undefined') {
+                  return <ButtonShowMore showMore={original.showMore} onClick={this.toggleShowMore} />;
+                } else {
+                  return (
+                    value && (
+                      <HashLink
+                        hash={AssetUtils.getAssetNameFromCode(value)}
+                        value={value}
+                        url={`/assets/${value}`}
+                      />
+                    )
+                  );
+                }
+              },
             },
           ]
         : []),
@@ -151,16 +189,18 @@ class TransactionAsset extends Component {
         Header: 'Input',
         accessor: 'input',
         minWidth: config.ui.table.minCellWidth,
-        Cell: data =>
-          data.original.isInputHash ? (
-            <AddressLink
-              address={data.value}
-              active={data.original.isInputActive}
-              hash={data.value}
-            />
-          ) : (
-            data.value || '\u00a0'
-          ),
+        Cell: ({ value, original }) => {
+          if (typeof original.showMore !== 'undefined') {
+            // make sure the button does not appear in the asset column already
+            return !showAsset && <ButtonShowMore showMore={original.showMore} onClick={this.toggleShowMore} />;
+          } else {
+            return original.isInputHash ? (
+              <AddressLink address={value} active={original.isInputActive} hash={value} />
+            ) : (
+              value || '\u00a0'
+            );
+          }
+        },
       },
       {
         Header: '',
@@ -194,14 +234,15 @@ class TransactionAsset extends Component {
         accessor: 'amount',
         className: 'column-total',
         headerClassName: 'column-total',
-        Cell: ({ value, original }) =>
-          typeof value !== 'undefined' ? (
+        Cell: ({ value, original }) => {
+          return typeof value !== 'undefined' ? (
             <div className={classNames('amount rounded', { total: original.isTotal })}>
               {AssetUtils.getAmountString(asset, Number(value))}
             </div>
           ) : (
             ''
-          ),
+          );
+        },
       },
     ];
   }
@@ -218,6 +259,19 @@ TransactionAsset.propTypes = {
 };
 TransactionAsset.defaultProps = {
   address: '',
+};
+
+function ButtonShowMore({ showMore, onClick }) {
+  const btnText = showMore ? 'Show less' : 'Show more';
+  return (
+    <button className="btn btn-link p-0" onClick={onClick}>
+      {btnText}
+    </button>
+  );
+}
+ButtonShowMore.propTypes = {
+  showMore: PropTypes.bool,
+  onClick: PropTypes.func,
 };
 
 export default TransactionAsset;
