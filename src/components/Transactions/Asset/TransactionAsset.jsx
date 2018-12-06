@@ -9,7 +9,7 @@ import AddressLink from '../../../components/AddressLink';
 import GenericTable from '../../../components/GenericTable';
 import './TransactionAsset.scss';
 
-const NUM_OF_INITIAL_ROWS = 5;
+const SHOW_LESS_SIZE = 5;
 
 class TransactionAsset extends Component {
   constructor(props) {
@@ -17,9 +17,28 @@ class TransactionAsset extends Component {
 
     this.state = {
       showMore: false,
+      rowsData: [],
     };
 
     this.toggleShowMore = this.toggleShowMore.bind(this);
+  }
+
+  componentDidMount() {
+    const { transactionAsset, asset, address, addressFoundIn, total } = this.props;
+
+    if (transactionAsset) {
+      const outputs = this.getOutputs(transactionAsset);
+      const inputs = this.getInputs(transactionAsset);
+      this.setState({
+        rowsData: this.getRowsData({
+          asset,
+          address,
+          inputs,
+          outputs: this.filterOutputsByAddress(outputs, address, addressFoundIn),
+          total,
+        }),
+      });
+    }
   }
 
   toggleShowMore() {
@@ -29,37 +48,19 @@ class TransactionAsset extends Component {
   }
 
   render() {
-    const {
-      transactionAsset,
-      asset,
-      address,
-      showHeader,
-      addressFoundIn,
-      showAsset,
-      total,
-    } = this.props;
-    if (!transactionAsset) {
+    const { transactionAsset, showHeader, addressFoundIn, showAsset } = this.props;
+    const { showMore, rowsData } = this.state;
+
+    if (!transactionAsset || rowsData.length === 0) {
       return null;
     }
 
-    const outputs = this.getOutputs(transactionAsset);
-    const inputs = this.getInputs(transactionAsset);
-    const rowsData = this.getRowsData({
-      asset,
-      address,
-      inputs,
-      outputs: this.filterOutputsByAddress(outputs, address, addressFoundIn),
-      total,
-    });
-
-    const { showMore } = this.state;
-
-    // all rows if less than the limit, otherwise the limit
+    // show all rows if less than the limit, otherwise the limit
     const numOfRows =
-      rowsData.length <= NUM_OF_INITIAL_ROWS || showMore ? rowsData.length : NUM_OF_INITIAL_ROWS;
+      rowsData.length <= SHOW_LESS_SIZE || showMore ? rowsData.length : SHOW_LESS_SIZE;
     const rowsToRender = rowsData.slice(0, numOfRows);
     // add a show more row to the table's data
-    if (rowsData.length > NUM_OF_INITIAL_ROWS) {
+    if (rowsData.length > SHOW_LESS_SIZE) {
       rowsToRender.push({
         showMore,
       });
@@ -169,7 +170,9 @@ class TransactionAsset extends Component {
               minWidth: config.ui.table.minCellWidth,
               Cell: ({ value, original }) => {
                 if (typeof original.showMore !== 'undefined') {
-                  return <ButtonShowMore showMore={original.showMore} onClick={this.toggleShowMore} />;
+                  return (
+                    <ButtonShowMore showMore={original.showMore} onClick={this.toggleShowMore} />
+                  );
                 } else {
                   return (
                     value && (
@@ -192,7 +195,11 @@ class TransactionAsset extends Component {
         Cell: ({ value, original }) => {
           if (typeof original.showMore !== 'undefined') {
             // make sure the button does not appear in the asset column already
-            return !showAsset && <ButtonShowMore showMore={original.showMore} onClick={this.toggleShowMore} />;
+            return (
+              !showAsset && (
+                <ButtonShowMore showMore={original.showMore} onClick={this.toggleShowMore} />
+              )
+            );
           } else {
             return original.isInputHash ? (
               <AddressLink address={value} active={original.isInputActive} hash={value} />
