@@ -9,30 +9,62 @@ import AddressLink from '../../../components/AddressLink';
 import GenericTable from '../../../components/GenericTable';
 import './TransactionAsset.scss';
 
+const SHOW_LESS_SIZE = 5;
+
 class TransactionAsset extends Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      showMore: false,
+      rowsData: [],
+    };
+
+    this.toggleShowMore = this.toggleShowMore.bind(this);
+  }
+
+  componentDidMount() {
+    const { transactionAsset, asset, address, addressFoundIn, total } = this.props;
+
+    if (transactionAsset) {
+      const outputs = this.getOutputs(transactionAsset);
+      const inputs = this.getInputs(transactionAsset);
+      this.setState({
+        rowsData: this.getRowsData({
+          asset,
+          address,
+          inputs,
+          outputs: this.filterOutputsByAddress(outputs, address, addressFoundIn),
+          total,
+        }),
+      });
+    }
+  }
+
+  toggleShowMore() {
+    this.setState(state => ({
+      showMore: !state.showMore,
+    }));
+  }
+
   render() {
-    const {
-      transactionAsset,
-      asset,
-      address,
-      showHeader,
-      addressFoundIn,
-      showAsset,
-      total,
-    } = this.props;
-    if (!transactionAsset) {
+    const { transactionAsset, showHeader, addressFoundIn, showAsset } = this.props;
+    const { showMore, rowsData } = this.state;
+
+    if (!transactionAsset || rowsData.length === 0) {
       return null;
     }
 
-    const outputs = this.getOutputs(transactionAsset);
-    const inputs = this.getInputs(transactionAsset);
-    const rowsData = this.getRowsData({
-      asset,
-      address,
-      inputs,
-      outputs: this.filterOutputsByAddress(outputs, address, addressFoundIn),
-      total,
-    });
+    // show all rows if less than the limit, otherwise the limit
+    const numOfRows =
+      rowsData.length <= SHOW_LESS_SIZE || showMore ? rowsData.length : SHOW_LESS_SIZE;
+    const rowsToRender = rowsData.slice(0, numOfRows);
+    // add a show more row to the table's data
+    if (rowsData.length > SHOW_LESS_SIZE) {
+      rowsToRender.push({
+        showMore,
+      });
+    }
 
     return (
       <div
@@ -40,12 +72,12 @@ class TransactionAsset extends Component {
       >
         <GenericTable
           loading={false}
-          data={rowsData}
+          data={rowsToRender}
           columns={this.getTableColumns({ showAsset })}
-          defaultPageSize={rowsData.length}
+          defaultPageSize={rowsToRender.length}
           pages={1}
           page={0}
-          pageSize={rowsData.length}
+          pageSize={rowsToRender.length}
         />
       </div>
     );
@@ -136,14 +168,23 @@ class TransactionAsset extends Component {
               Header: 'Asset',
               accessor: 'asset',
               minWidth: config.ui.table.minCellWidth,
-              Cell: ({ value }) =>
-                value && (
-                  <HashLink
-                    hash={AssetUtils.getAssetNameFromCode(value)}
-                    value={value}
-                    url={`/assets/${value}`}
-                  />
-                ),
+              Cell: ({ value, original }) => {
+                if (typeof original.showMore !== 'undefined') {
+                  return (
+                    <ButtonShowMore showMore={original.showMore} onClick={this.toggleShowMore} />
+                  );
+                } else {
+                  return (
+                    value && (
+                      <HashLink
+                        hash={AssetUtils.getAssetNameFromCode(value)}
+                        value={value}
+                        url={`/assets/${value}`}
+                      />
+                    )
+                  );
+                }
+              },
             },
           ]
         : []),
@@ -151,16 +192,22 @@ class TransactionAsset extends Component {
         Header: 'Input',
         accessor: 'input',
         minWidth: config.ui.table.minCellWidth,
-        Cell: data =>
-          data.original.isInputHash ? (
-            <AddressLink
-              address={data.value}
-              active={data.original.isInputActive}
-              hash={data.value}
-            />
-          ) : (
-            data.value || '\u00a0'
-          ),
+        Cell: ({ value, original }) => {
+          if (typeof original.showMore !== 'undefined') {
+            // make sure the button does not appear in the asset column already
+            return (
+              !showAsset && (
+                <ButtonShowMore showMore={original.showMore} onClick={this.toggleShowMore} />
+              )
+            );
+          } else {
+            return original.isInputHash ? (
+              <AddressLink address={value} active={original.isInputActive} hash={value} />
+            ) : (
+              value || '\u00a0'
+            );
+          }
+        },
       },
       {
         Header: '',
@@ -194,14 +241,15 @@ class TransactionAsset extends Component {
         accessor: 'amount',
         className: 'column-total',
         headerClassName: 'column-total',
-        Cell: ({ value, original }) =>
-          typeof value !== 'undefined' ? (
+        Cell: ({ value, original }) => {
+          return typeof value !== 'undefined' ? (
             <div className={classNames('amount rounded', { total: original.isTotal })}>
               {AssetUtils.getAmountString(asset, Number(value))}
             </div>
           ) : (
             ''
-          ),
+          );
+        },
       },
     ];
   }
@@ -218,6 +266,19 @@ TransactionAsset.propTypes = {
 };
 TransactionAsset.defaultProps = {
   address: '',
+};
+
+function ButtonShowMore({ showMore, onClick }) {
+  const btnText = showMore ? 'Show less' : 'Show more';
+  return (
+    <button className="btn btn-link p-0" onClick={onClick}>
+      {btnText}
+    </button>
+  );
+}
+ButtonShowMore.propTypes = {
+  showMore: PropTypes.bool,
+  onClick: PropTypes.func,
 };
 
 export default TransactionAsset;
