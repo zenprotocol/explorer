@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import Service from './lib/Service';
-import rootStore from './store/RootStore';
+import infoStore from './store/InfoStore';
 import blockStore from './store/BlockStore';
 import uiStore from './store/UIStore';
 import MainRoutes from './MainRoutes.jsx';
@@ -18,7 +18,7 @@ class App extends Component {
   }
 
   componentDidMount() {
-    rootStore.loadChain();
+    infoStore.loadChain();
     this.fetchBlocksCount();
     this.fetchSyncingTimeout();
   }

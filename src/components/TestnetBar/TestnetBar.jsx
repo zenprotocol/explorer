@@ -1,11 +1,11 @@
 import React from 'react';
 import { observer } from 'mobx-react';
-import rootStore from '../../store/RootStore';
+import infoStore from '../../store/InfoStore';
 import Button from '../buttons/Button';
 import './TestnetBar.scss';
 
 function TestnetBar() {
-  if(!rootStore.isTestnet) {
+  if(!infoStore.isTestnet) {
     return null;
   }
   return (
