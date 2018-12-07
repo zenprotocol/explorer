@@ -95,6 +95,7 @@ Promise.all([
   addBlocksQueue.add({ limitBlocks: NUM_OF_BLOCKS_IN_CHUNK }, { repeat: { cron: '* * * * *' } });
   // now
   addBlocksQueue.add({ limitBlocks: NUM_OF_BLOCKS_IN_CHUNK });
+  addBlocksQueue.resume();
 });
 
 setInterval(() => {
