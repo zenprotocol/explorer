@@ -1,11 +1,9 @@
 import React, { Component } from 'react';
-import { observer } from 'mobx-react';
+import { observer, inject } from 'mobx-react';
 import { Link } from 'react-router-dom';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
-import blockStore from '../../store/BlockStore';
 import RouterUtils from '../../lib/RouterUtils';
-import uiStore from '../../store/UIStore';
 import TextUtils from '../../lib/TextUtils';
 import BlockUtils from '../../lib/BlockUtils';
 import BlockTxsTable from './BlockTxsTable';
@@ -23,8 +21,17 @@ class BlockPage extends Component {
       blockNumber: 0,
     };
   }
+
+  get blockStore() {
+    return this.props.rootStore.blockStore;
+  }
+
+  get uiStore() {
+    return this.props.rootStore.uiStore;
+  }
+
   componentDidMount() {
-    blockStore.fetchBlock(this.hashOrBlockNumber).then(block => {
+    this.blockStore.fetchBlock(this.hashOrBlockNumber).then(block => {
       this.switchBlock(block.blockNumber);
     });
     this.setBlockInUiTable(this.hashOrBlockNumber);
@@ -33,7 +40,7 @@ class BlockPage extends Component {
   componentDidUpdate(prevProps) {
     const prevHashOrBlockNumber = RouterUtils.getRouteParams(prevProps).id;
     if (this.hashOrBlockNumber !== prevHashOrBlockNumber) {
-      blockStore.fetchBlock(this.hashOrBlockNumber).then(block => {
+      this.blockStore.fetchBlock(this.hashOrBlockNumber).then(block => {
         this.switchBlock(block.blockNumber);
       });
       this.setBlockInUiTable(this.hashOrBlockNumber);
@@ -45,7 +52,7 @@ class BlockPage extends Component {
   }
 
   setBlockInUiTable(hashOrBlockNumber) {
-    uiStore.setBlockTxTableData({ hashOrBlockNumber });
+    this.uiStore.setBlockTxTableData({ hashOrBlockNumber });
   }
 
   switchBlock(blockNumber) {
@@ -53,7 +60,7 @@ class BlockPage extends Component {
   }
 
   render() {
-    const block = blockStore.block;
+    const block = this.blockStore.block;
     const blockDateStr = block.timestamp
       ? TextUtils.getDateStringFromTimestamp(block.timestamp)
       : '';
@@ -61,7 +68,7 @@ class BlockPage extends Component {
     const is404 = block.status === 404;
     const renderContent = !is404 && block.blockNumber;
 
-    if (blockStore.loading.block) return <Loading />;
+    if (this.blockStore.loading.block) return <Loading />;
 
     return (
       <Page className="Block">
@@ -89,7 +96,7 @@ class BlockPage extends Component {
   renderPagination() {
     const { blockNumber } = this.state;
     let prevDisabled = blockNumber <= 1;
-    let nextDisabled = blockNumber >= blockStore.blocksCount;
+    let nextDisabled = blockNumber >= this.blockStore.blocksCount;
 
     return (
       <nav aria-label="Page navigation" className="float-sm-right">
@@ -125,7 +132,7 @@ class BlockPage extends Component {
   }
 
   renderTopTables() {
-    const block = blockStore.block;
+    const block = this.blockStore.block;
     const blockDateStr = block.timestamp
       ? TextUtils.getDateStringFromTimestamp(block.timestamp)
       : '';
@@ -170,7 +177,7 @@ class BlockPage extends Component {
               </tr>
               <tr>
                 <td>CONFIRMATIONS</td>
-                <td className="no-text-transform">{blockStore.confirmations(block.blockNumber)}</td>
+                <td className="no-text-transform">{this.blockStore.confirmations(block.blockNumber)}</td>
               </tr>
               <tr>
                 <td>PARENT</td>
@@ -193,6 +200,7 @@ class BlockPage extends Component {
 
 BlockPage.propTypes = {
   match: PropTypes.object,
+  rootStore: PropTypes.object,
 };
 
-export default observer(BlockPage);
+export default inject('rootStore')(observer(BlockPage));

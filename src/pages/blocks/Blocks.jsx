@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import blockStore from '../../store/BlockStore';
+import PropTypes from 'prop-types';
+import { inject } from 'mobx-react';
 import Service from '../../lib/Service.js';
 import BlocksTable from './BlocksTable';
 import Page from '../../components/Page';
@@ -19,6 +20,7 @@ class BlocksPage extends Component {
   }
 
   fetchBlocksCount() {
+    const { blockStore } = this.props.rootStore;
     Service.blocks.count().then(response => {
       if (Number(response.data) !== blockStore.blocksCount) {
         blockStore.setBlocksCount(Number(response.data));
@@ -38,4 +40,8 @@ class BlocksPage extends Component {
   }
 }
 
-export default BlocksPage;
+BlocksPage.propTypes = {
+  rootStore: PropTypes.object,
+};
+
+export default inject('rootStore')(BlocksPage);

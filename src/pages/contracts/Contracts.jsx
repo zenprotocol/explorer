@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
-import { observer } from 'mobx-react';
-import contractStore from '../../store/ContractStore';
+import PropTypes from 'prop-types';
+import { observer, inject } from 'mobx-react';
 import ContractsTable from './components/ContractsTable';
 import Page from '../../components/Page';
 
 class ContractsPage extends Component {
   componentDidMount() {
-    contractStore.loadContracts({}, { setItems: false });
+    this.props.rootStore.contractStore.loadContracts({}, { setItems: false });
   }
 
   render() {
@@ -20,4 +20,8 @@ class ContractsPage extends Component {
   }
 }
 
-export default observer(ContractsPage);
+ContractsPage.propTypes = {
+  rootStore: PropTypes.object,
+};
+
+export default inject('rootStore')(observer(ContractsPage));

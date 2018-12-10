@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
-import { observer } from 'mobx-react';
-import uiStore from '../../../../store/UIStore';
-import assetStore from '../../../../store/AssetStore';
+import PropTypes from 'prop-types';
+import { observer, inject } from 'mobx-react';
 import config from '../../../../lib/Config';
 import AssetUtils from '../../../../lib/AssetUtils';
 import TextUtils from '../../../../lib/TextUtils';
@@ -53,14 +52,15 @@ class AssetsTable extends Component {
   }
 
   render() {
+    const { assetStore, uiStore } = this.props.rootStore;
     return (
       <ItemsTable
         columns={this.getTableColumns()}
         loading={assetStore.loading.assets}
         itemsCount={assetStore.assetsCount}
         items={assetStore.assets}
-        pageSize={uiStore.assetsTable.pageSize}
-        curPage={uiStore.assetsTable.curPage}
+        pageSize={uiStore.state.assetsTable.pageSize}
+        curPage={uiStore.state.assetsTable.curPage}
         tableDataSetter={uiStore.setAssetsTableData.bind(uiStore)}
         topContent={<PageTitle title="Assets" margin={false} />}
       />
@@ -68,4 +68,8 @@ class AssetsTable extends Component {
   }
 }
 
-export default observer(AssetsTable);
+AssetsTable.propTypes = {
+  rootStore: PropTypes.object,
+};
+
+export default inject('rootStore')(observer(AssetsTable));

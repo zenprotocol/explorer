@@ -1,8 +1,9 @@
 import { observable, decorate, action, runInAction } from 'mobx';
 import Service from '../lib/Service';
 
-class AddressStore {
-  constructor() {
+export default class AddressStore {
+  constructor(rootStore) {
+    this.rootStore = rootStore;
     this.address = {};
     this.addressTransactions = [];
     this.addressTransactionsCount = 0;
@@ -99,5 +100,3 @@ decorate(AddressStore, {
   loadAddressTransactions: action,
   resetAddressTransactionAssets: action,
 });
-
-export default new AddressStore();

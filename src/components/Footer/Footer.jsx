@@ -1,7 +1,6 @@
 import React from 'react';
-import { observer } from 'mobx-react';
+import { observer, inject } from 'mobx-react';
 import { Link } from 'react-router-dom';
-import uiStore from '../../store/UIStore';
 import Config from '../../lib/Config';
 import Logo from '../Logo';
 import ExternalLink from '../ExternalLink';
@@ -30,21 +29,24 @@ export default function Footer(props) {
   );
 }
 
-const SyncNotification = observer(function() {
-  return (
-    <div className="SyncNotification">
-      {uiStore.syncing ? (
-        <span className="syncing">
-          <i className="icon far fa-spinner-third zen-spin" /> Syncing...
-        </span>
-      ) : (
-        <span className="synced">
-          <i className="icon fas fa-circle" /> Synced.
-        </span>
-      )}
-    </div>
-  );
-});
+const SyncNotification = inject('rootStore')(
+  observer(props => {
+    const { uiStore } = props.rootStore;
+    return (
+      <div className="SyncNotification">
+        {uiStore.state.syncing ? (
+          <span className="syncing">
+            <i className="icon far fa-spinner-third zen-spin" /> Syncing...
+          </span>
+        ) : (
+          <span className="synced">
+            <i className="icon fas fa-circle" /> Synced.
+          </span>
+        )}
+      </div>
+    );
+  })
+);
 
 function FooterLinks() {
   return (
@@ -52,10 +54,14 @@ function FooterLinks() {
       <div className="">
         <ul className="nav flex-column">
           <li className="nav-item">
-            <Link className="nav-link text-nowrap" to="/broadcastTx">Broadcast Raw Tx</Link>
+            <Link className="nav-link text-nowrap" to="/broadcastTx">
+              Broadcast Raw Tx
+            </Link>
           </li>
           <li className="nav-item">
-            <Link className="nav-link text-nowrap" to="/oracle">Oracle</Link>
+            <Link className="nav-link text-nowrap" to="/oracle">
+              Oracle
+            </Link>
           </li>
           {/* <li className="nav-item">
             <Link className="nav-link text-nowrap" to="/templates/contract">Contract templates</Link>
@@ -104,7 +110,10 @@ function FooterLinks() {
             </ExternalLink>
           </li>
           <li className="nav-item">
-            <ExternalLink className="nav-link text-nowrap" url="https://github.com/zenprotocol/ZFS-SDK">
+            <ExternalLink
+              className="nav-link text-nowrap"
+              url="https://github.com/zenprotocol/ZFS-SDK"
+            >
               Developers SDK
             </ExternalLink>
           </li>
@@ -114,7 +123,10 @@ function FooterLinks() {
             </ExternalLink>
           </li>
           <li className="nav-item">
-            <ExternalLink className="nav-link text-nowrap" url="https://docs.zenprotocol.com/zen_js">
+            <ExternalLink
+              className="nav-link text-nowrap"
+              url="https://docs.zenprotocol.com/zen_js"
+            >
               Zen.JS
             </ExternalLink>
           </li>
@@ -174,7 +186,11 @@ function FooterContact() {
       <li className="nav-item text-nowrap">
         <span className="nav-link">
           Contact us:{' '}
-          <ExternalLink className=" pl-0 d-inline-block" target="_top" url={`mailto:${Config.constants.zenInfoMail}`}>
+          <ExternalLink
+            className=" pl-0 d-inline-block"
+            target="_top"
+            url={`mailto:${Config.constants.zenInfoMail}`}
+          >
             {Config.constants.zenInfoMail}
           </ExternalLink>
         </span>

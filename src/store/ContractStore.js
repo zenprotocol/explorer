@@ -1,8 +1,9 @@
 import { observable, decorate, action, runInAction } from 'mobx';
 import Service from '../lib/Service';
 
-class ContractStore {
-  constructor() {
+export default class ContractStore {
+  constructor(rootStore) {
+    this.rootStore = rootStore;
     this.contracts = [];
     this.contractsCount = 0;
     this.contract = {};
@@ -138,8 +139,6 @@ decorate(ContractStore, {
   loadAssets: action,
   loadCommands: action,
 });
-
-export default new ContractStore();
 
 export class Contract {
   constructor({ id = '', address = '', code = '', expiryBlock = null } = {}) {

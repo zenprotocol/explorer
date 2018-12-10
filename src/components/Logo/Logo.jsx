@@ -1,13 +1,13 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
-import { observer } from 'mobx-react';
 import PropTypes from 'prop-types';
-import infoStore from '../../store/InfoStore';
+import { observer, inject } from 'mobx-react';
+import { Link } from 'react-router-dom';
 import logo from '../../assets/logo.png';
 import logoAll from '../../assets/logo_all.png';
 import logoAllTestnet from '../../assets/logo_all_testnet.png';
 
 function Logo(props) {
+  const { infoStore } = props.rootStore;
   const imgSrc = props.hideSubtitle ? logo : infoStore.isTestnet ? logoAllTestnet : logoAll;
   return (
     <Link className="navbar-brand text-primary" to="/">
@@ -18,6 +18,7 @@ function Logo(props) {
 
 Logo.propTypes = {
   hideSubtitle: PropTypes.bool,
+  rootStore: PropTypes.object,
 };
 
-export default observer(Logo);
+export default inject('rootStore')(observer(Logo));

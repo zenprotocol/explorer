@@ -1,8 +1,9 @@
 import { observable, decorate, action, runInAction, computed } from 'mobx';
 import service from '../lib/Service';
 
-class InfoStore {
-  constructor() {
+export default class InfoStore {
+  constructor(rootStore) {
+    this.rootStore = rootStore;
     this.chain = 'main';
     this.loading = {
       chain: false,
@@ -15,20 +16,24 @@ class InfoStore {
 
   loadChain() {
     this.loading.chain = true;
-    return service.infos.find().then(response => {
-      runInAction(() => {
-        const chain = response.data.chain || 'main';
-        this.chain = chain.endsWith('net') ? chain.substring(0, chain.length - 3) : chain;
+    return service.infos
+      .find()
+      .then(response => {
+        runInAction(() => {
+          const chain = response.data.chain || 'main';
+          this.chain = chain.endsWith('net') ? chain.substring(0, chain.length - 3) : chain;
+        });
+      })
+      .catch(() => {
+        runInAction(() => {
+          this.chain = 'main';
+        });
+      })
+      .then(() => {
+        runInAction(() => {
+          this.loading.chain = false;
+        });
       });
-    }).catch(() => {
-      runInAction(() => {
-        this.chain = 'main';
-      });
-    }).then(() => {
-      runInAction(() => {
-        this.loading.chain = false;
-      });
-    });
   }
 }
 
@@ -38,5 +43,3 @@ decorate(InfoStore, {
   loadChain: action,
   isTestnet: computed,
 });
-
-export default new InfoStore();

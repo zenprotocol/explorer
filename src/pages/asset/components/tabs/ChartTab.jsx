@@ -1,11 +1,11 @@
 import React from 'react';
-import { observer } from 'mobx-react';
-import assetStore from '../../../../store/AssetStore';
+import { observer, inject } from 'mobx-react';
 import RouterUtils from '../../../../lib/RouterUtils';
 import { TabPanel } from '../../../../components/tabs';
 import { ChartLoader } from '../../../../components/charts';
 
-const ChartTab = observer(props => {
+const ChartTab = inject('rootStore')(observer(props => {
+  const assetStore = props.rootStore.assetStore;
   const { data, loading } = assetStore.assetDistributionData;
   const { asset } = RouterUtils.getRouteParams(props);
   const count = data.length
@@ -25,5 +25,5 @@ const ChartTab = observer(props => {
       />
     </TabPanel>
   );
-});
+}));
 export default ChartTab;

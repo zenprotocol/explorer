@@ -2,8 +2,9 @@ import { observable, decorate, action, runInAction, computed } from 'mobx';
 import Service from '../lib/Service';
 import TextUtils from '../lib/TextUtils';
 
-class BlockStore {
-  constructor() {
+export default class BlockStore {
+  constructor(rootStore) {
+    this.rootStore = rootStore;
     this.blocks = [];
     this.blocksCount = 0;
     this.block = {};
@@ -110,7 +111,7 @@ class BlockStore {
   }
 
   get numberOfTransactions() {
-    return this.block.Transactions? this.block.Transactions.length : 0;
+    return this.block.Transactions ? this.block.Transactions.length : 0;
   }
 
   confirmations(blockNumber) {
@@ -139,5 +140,3 @@ decorate(BlockStore, {
   fetchMedianTime: action,
   resetBlockTransactionAssets: action,
 });
-
-export default new BlockStore();

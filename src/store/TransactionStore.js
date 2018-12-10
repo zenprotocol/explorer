@@ -1,8 +1,9 @@
 import { observable, decorate, action, runInAction } from 'mobx';
 import Service from '../lib/Service';
 
-class TransactionStore {
-  constructor() {
+export default class TransactionStore {
+  constructor(rootStore) {
+    this.rootStore = rootStore;
     this.transactions = [];
     this.transactionsCount = 0;
     this.transaction = null;
@@ -74,5 +75,3 @@ decorate(TransactionStore, {
   fetchTransactions: action,
   fetchTransactionAsset: action,
 });
-
-export default new TransactionStore();

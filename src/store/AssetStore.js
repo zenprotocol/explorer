@@ -2,8 +2,9 @@ import { observable, decorate, action, runInAction } from 'mobx';
 import Service from '../lib/Service';
 import AssetUtils from '../lib/AssetUtils';
 
-class AssetStore {
-  constructor() {
+export default class AssetStore {
+  constructor(rootStore) {
+    this.rootStore = rootStore;
     this.assets = [];
     this.assetsCount = 0;
     this.asset = {};
@@ -166,5 +167,3 @@ decorate(AssetStore, {
   loadAssetDistributionData: action,
   loadAssetKeyholders: action,
 });
-
-export default new AssetStore();

@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
-import { observer } from 'mobx-react';
-import assetStore from '../../store/AssetStore';
+import PropTypes from 'prop-types';
+import { observer, inject } from 'mobx-react';
 import AssetsTable from './components/AssetsTable';
 import Page from '../../components/Page';
 
 class AssetsPage extends Component {
   componentDidMount() {
-    assetStore.loadAssets({}, { setItems: false });
+    this.props.rootStore.assetStore.loadAssets({}, { setItems: false });
   }
 
   render() {
@@ -20,4 +20,8 @@ class AssetsPage extends Component {
   }
 }
 
-export default observer(AssetsPage);
+AssetsPage.propTypes = {
+  rootStore: PropTypes.object,
+};
+
+export default inject('rootStore')(observer(AssetsPage));
