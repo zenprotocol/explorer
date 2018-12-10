@@ -112,7 +112,11 @@ class CommandsAdder {
         (async () => {
           const tx = await transactionsDAL.findOne({ where: { hash: command.txHash } });
           if (!tx) {
-            logger.error(`Error - could not find a referenced tx with hash=${command.txHash}`);
+            throw new Error(
+              `Could not find a referenced tx with hash=${
+                command.txHash
+              }, contractId=${contractId}`
+            );
           }
           return {
             command: command.command,
