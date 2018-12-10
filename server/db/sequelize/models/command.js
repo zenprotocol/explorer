@@ -4,7 +4,7 @@ module.exports = (sequelize, DataTypes) => {
     'Command',
     {
       command: DataTypes.STRING,
-      messageBody: DataTypes.STRING,
+      messageBody: DataTypes.TEXT,
       TransactionId: DataTypes.BIGINT,
       indexInTransaction: DataTypes.INTEGER,
       ContractId: DataTypes.STRING,
