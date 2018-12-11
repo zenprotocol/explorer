@@ -2,17 +2,22 @@ import { observable, decorate, action, runInAction } from 'mobx';
 import Service from '../lib/Service';
 
 export default class TransactionStore {
-  constructor(rootStore) {
+  constructor(rootStore, initialState = {}) {
     this.rootStore = rootStore;
-    this.transactions = [];
-    this.transactionsCount = 0;
-    this.transaction = null;
+    this.transactions = initialState.transactions || [];
+    this.transactionsCount = initialState.transactionsCount || 0;
+    this.transaction = initialState.transaction || null;
     this.loading = {
       transaction: false,
       transactions: false,
     };
   }
+
   fetchTransaction(hash) {
+    if(this.transaction && this.transaction.hash === hash) {
+      return Promise.resolve(this.transaction);
+    }
+    
     this.loading.transaction = true;
 
     return Service.transactions
