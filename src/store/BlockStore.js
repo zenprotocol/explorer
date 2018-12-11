@@ -3,14 +3,15 @@ import Service from '../lib/Service';
 import TextUtils from '../lib/TextUtils';
 
 export default class BlockStore {
-  constructor(rootStore) {
+  constructor(rootStore, initialState = {}) {
     this.rootStore = rootStore;
-    this.blocks = [];
-    this.blocksCount = 0;
-    this.block = {};
-    this.blockTransactionAssets = [];
-    this.blockTransactionAssetsCount = 0;
-    this.medianTime = null;
+    this.blocks = initialState.blocks || [];
+    this.blocksCount = initialState.blocksCount || 0;
+    this.hashOrBlockNumber = initialState.hashOrBlockNumber || 0;
+    this.block = initialState.block || {};
+    this.blockTransactionAssets = initialState.blockTransactionAssets || [];
+    this.blockTransactionAssetsCount = initialState.blockTransactionAssetsCount || 0;
+    this.medianTime = initialState.medianTime || null;
 
     this.loading = {
       blocks: false,
@@ -31,7 +32,7 @@ export default class BlockStore {
       .then(response => {
         runInAction(() => {
           this.blocks = response.data.items;
-          this.blocksCount = response.data.total;
+          this.blocksCount = response.data.count;
         });
       })
       .catch(() => {})
@@ -43,6 +44,10 @@ export default class BlockStore {
   }
 
   fetchBlock(id) {
+    if(id === this.hashOrBlockNumber) {
+      return Promise.resolve(this.block);
+    }
+    this.hashOrBlockNumber = id;
     this.loading.block = true;
 
     return Service.blocks
@@ -126,6 +131,7 @@ export default class BlockStore {
 decorate(BlockStore, {
   blocks: observable,
   blocksCount: observable,
+  hashOrBlockNumber: observable,
   block: observable,
   blockTransactionAssets: observable,
   blockTransactionAssetsCount: observable,

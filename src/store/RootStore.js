@@ -8,14 +8,14 @@ import TransactionStore from './TransactionStore';
 import UIStore from './UIStore';
 
 export default class RootStore {
-  constructor() {
-    this.addressStore = new AddressStore(this);
-    this.assetStore = new AssetStore(this);
-    this.blockStore = new BlockStore(this);
-    this.contractStore = new ContractStore(this);
-    this.infoStore = new InfoStore(this);
-    this.searchStore = new SearchStore(this);
-    this.transactionStore = new TransactionStore(this);
-    this.uiStore = UIStore(this);
+  constructor(initialState = {}) {
+    this.addressStore = new AddressStore(this, initialState.addressStore);
+    this.assetStore = new AssetStore(this, initialState.assetStore);
+    this.blockStore = new BlockStore(this, initialState.blockStore);
+    this.contractStore = new ContractStore(this, initialState.contractStore);
+    this.infoStore = new InfoStore(this, initialState.infoStore);
+    this.searchStore = new SearchStore(this, initialState.searchStore);
+    this.transactionStore = new TransactionStore(this, initialState.transactionStore);
+    this.uiStore = UIStore(this, initialState.uiStore);
   }
 }

@@ -10,7 +10,7 @@ import './style/index.scss';
 import * as serviceWorker from './serviceWorker';
 
 const Main = (
-  <Provider rootStore={new RootStore()}>
+  <Provider rootStore={new RootStore(window.__INITIAL_STATE__)}>
     <BrowserRouter>
       <App />
     </BrowserRouter>

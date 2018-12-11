@@ -4,10 +4,10 @@ import { observer, inject } from 'mobx-react';
 import config from '../../../lib/Config';
 import TextUtils from '../../../lib/TextUtils';
 import AssetUtils from '../../../lib/AssetUtils';
-import HashLink from '../../../components/HashLink/HashLink';
-import ItemsTable from '../../../components/ItemsTable/ItemsTable';
+import HashLink from '../../../components/HashLink';
+import ItemsTable from '../../../components/ItemsTable';
 import PageTitle from '../../../components/PageTitle';
-import TransactionAssetLoader from '../../../components/Transactions/Asset/TransactionAssetLoader';
+import { TransactionAssetLoader } from '../../../components/Transactions';
 
 class BlockTxsTable extends Component {
   get blockStore() {

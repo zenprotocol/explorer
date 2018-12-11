@@ -39,7 +39,7 @@ class App extends Component {
   fetchBlocksCount() {
     Service.blocks.find({ pageSize: 1 }).then(response => {
       if (response.data.total !== this.blockStore.blocksCount) {
-        this.blockStore.setBlocksCount(Number(response.data.total));
+        this.blockStore.setBlocksCount(Number(response.data.count));
       }
     });
   }
