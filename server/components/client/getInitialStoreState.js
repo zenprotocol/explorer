@@ -1,5 +1,6 @@
 
 const blocksBLL = require('../api/blocks/blocksBLL');
+const transactionsBLL = require('../api/transactions/transactionsBLL');
 
 module.exports = async req => {
   const { routeName } = req;
@@ -14,7 +15,9 @@ module.exports = async req => {
     uiStore: {},
   };
   const promises = [];
+  // blocks
   promises.push(blocksBLL.count().then(count => (initialState.blockStore.blocksCount = count)));
+
   if (routeName === 'block') {
     const hashOrBlockNumber = req.params.hashOrBlockNumber;
     promises.push(
@@ -23,6 +26,16 @@ module.exports = async req => {
         .then(block => {
           initialState.blockStore.block = block;
           initialState.blockStore.hashOrBlockNumber = hashOrBlockNumber;
+        })
+    );
+  }
+  else if(routeName === 'tx') {
+    const hash = req.params.hash;
+    promises.push(
+      transactionsBLL
+        .findOne({ hash })
+        .then(tx => {
+          initialState.transactionStore.transaction = tx;
         })
     );
   }

@@ -8,6 +8,7 @@ router.use('/public',
 );
 router.get('/blocks', insertRouteName('blocks'), clientRenderer);
 router.get('/blocks/:hashOrBlockNumber', insertRouteName('block'), clientRenderer);
+router.get('/tx/:hash', insertRouteName('tx'), clientRenderer);
 router.get('*', clientRenderer);
 
 function insertRouteName(name) {
