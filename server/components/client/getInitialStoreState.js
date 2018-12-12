@@ -1,6 +1,7 @@
 const blocksBLL = require('../api/blocks/blocksBLL');
 const transactionsBLL = require('../api/transactions/transactionsBLL');
 const addressesBLL = require('../api/addresses/addressesBLL');
+const contractsBLL = require('../api/contracts/contractsBLL');
 
 module.exports = async req => {
   const { routeName } = req;
@@ -30,6 +31,10 @@ module.exports = async req => {
     case 'address':
       promises.push(getAddressStoreData(req).then(data => (initialState.addressStore = data)));
       break;
+    case 'contract':
+      promises.push(getContractStoreData(req).then(data => (initialState.contractStore = data)));
+      promises.push(getAddressStoreData(req).then(data => (initialState.addressStore = data)));
+      break;
   }
 
   await Promise.all(promises);
@@ -56,5 +61,12 @@ async function getAddressStoreData(req) {
   const address = await addressesBLL.findOne({ address: req.params.address });
   return {
     address,
+  };
+}
+
+async function getContractStoreData(req) {
+  const contract = await contractsBLL.findByAddress({ address: req.params.address });
+  return {
+    contract,
   };
 }

@@ -76,7 +76,7 @@ export default class AddressStore {
       .then(response => {
         runInAction(() => {
           this.addressTransactions = response.data.items;
-          this.addressTransactionsCount = Number(response.data.total);
+          this.addressTransactionsCount = Number(response.data.count);
         });
       })
       .catch(() => {})

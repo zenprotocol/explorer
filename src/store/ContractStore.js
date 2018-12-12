@@ -2,15 +2,15 @@ import { observable, decorate, action, runInAction } from 'mobx';
 import Service from '../lib/Service';
 
 export default class ContractStore {
-  constructor(rootStore) {
+  constructor(rootStore, initialState = {}) {
     this.rootStore = rootStore;
-    this.contracts = [];
-    this.contractsCount = 0;
-    this.contract = {};
-    this.assets = [];
-    this.assetsCount = 0;
-    this.commands = [];
-    this.commandsCount = 0;
+    this.contracts = initialState.contracts || [];
+    this.contractsCount = initialState.contractsCount || 0;
+    this.contract = initialState.contract || {};
+    this.assets = initialState.assets || [];
+    this.assetsCount = initialState.assetsCount || 0;
+    this.commands = initialState.commands || [];
+    this.commandsCount = initialState.commandsCount || 0;
     this.loading = {
       contracts: false,
       contract: false,
@@ -50,6 +50,10 @@ export default class ContractStore {
   }
 
   loadContract(address) {
+    if (!address || (this.contract || {}).address === address) {
+      return Promise.resolve(this.contract);
+    }
+
     this.loading.contract = true;
 
     return Service.contracts
