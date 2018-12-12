@@ -3,19 +3,19 @@ import Service from '../lib/Service';
 import AssetUtils from '../lib/AssetUtils';
 
 export default class AssetStore {
-  constructor(rootStore) {
+  constructor(rootStore, initialState = {}) {
     this.rootStore = rootStore;
-    this.assets = [];
-    this.assetsCount = 0;
-    this.asset = {};
-    this.assetTxs = [];
-    this.assetTxsCount = 0;
-    this.assetDistributionData = {
+    this.assets = initialState.assets || [];
+    this.assetsCount = initialState.assetsCount || 0;
+    this.asset = initialState.asset || {};
+    this.assetTxs = initialState.assetTxs || [];
+    this.assetTxsCount = initialState.assetTxsCount || 0;
+    this.assetDistributionData = initialState.assetDistributionData || {
       loading: false,
       data: [],
     };
-    this.assetKeyholders = [];
-    this.assetKeyholdersCount = 0;
+    this.assetKeyholders = initialState.assetKeyholders || [];
+    this.assetKeyholdersCount = initialState.assetKeyholdersCount || 0;
     this.loading = {
       assets: false,
       asset: false,
@@ -57,6 +57,10 @@ export default class AssetStore {
   }
 
   loadAsset(hash) {
+    if (!hash || (this.asset || {}).asset === hash) {
+      return Promise.resolve(this.asset);
+    }
+
     this.loading.asset = true;
 
     return Service.assets
@@ -78,6 +82,7 @@ export default class AssetStore {
         runInAction(() => {
           this.loading.asset = false;
         });
+        return this.asset;
       });
   }
 
@@ -89,7 +94,7 @@ export default class AssetStore {
       .then(({ data }) => {
         runInAction(() => {
           this.assetTxs = data.items;
-          this.assetTxsCount = Number(data.total);
+          this.assetTxsCount = Number(data.count);
         });
       })
       .catch(() => {

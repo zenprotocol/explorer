@@ -2,6 +2,7 @@ const blocksBLL = require('../api/blocks/blocksBLL');
 const transactionsBLL = require('../api/transactions/transactionsBLL');
 const addressesBLL = require('../api/addresses/addressesBLL');
 const contractsBLL = require('../api/contracts/contractsBLL');
+const assetsBLL = require('../api/assets/assetsBLL');
 
 module.exports = async req => {
   const { routeName } = req;
@@ -35,6 +36,9 @@ module.exports = async req => {
       promises.push(getContractStoreData(req).then(data => (initialState.contractStore = data)));
       promises.push(getAddressStoreData(req).then(data => (initialState.addressStore = data)));
       break;
+    case 'asset':
+      promises.push(getAssetStoreData(req).then(data => (initialState.assetStore = data)));
+      break;
   }
 
   await Promise.all(promises);
@@ -45,7 +49,7 @@ async function getBlockStoreData(req) {
   const hashOrBlockNumber = req.params.hashOrBlockNumber;
   const block = await blocksBLL.findByHashOrBlockNumber({ hashOrBlockNumber: hashOrBlockNumber });
   return {
-    block,
+    block: block || { statue: 404 },
     hashOrBlockNumber,
   };
 }
@@ -60,13 +64,20 @@ async function getTransactionStoreData(req) {
 async function getAddressStoreData(req) {
   const address = await addressesBLL.findOne({ address: req.params.address });
   return {
-    address,
+    address: address || { statue: 404 },
   };
 }
 
 async function getContractStoreData(req) {
   const contract = await contractsBLL.findByAddress({ address: req.params.address });
   return {
-    contract,
+    contract: contract || { statue: 404 },
+  };
+}
+
+async function getAssetStoreData(req) {
+  const asset = await assetsBLL.findOne({ asset: req.params.asset });
+  return {
+    asset: asset || { statue: 404 },
   };
 }
