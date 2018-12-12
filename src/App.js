@@ -27,7 +27,7 @@ class App extends Component {
   }
 
   componentDidMount() {
-    this.infoStore.loadChain();
+    this.infoStore.loadInfos();
     this.fetchBlocksCount();
     this.fetchSyncingTimeout();
   }

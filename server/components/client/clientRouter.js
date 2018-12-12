@@ -13,6 +13,7 @@ router.get('/tx/:hash', insertRouteName('tx'), clientRenderer);
 router.get('/address/:address', insertRouteName('address'), clientRenderer);
 router.get('/contracts/:address/:tab?', insertRouteName('contract'), clientRenderer);
 router.get('/assets/:asset/:tab?', insertRouteName('asset'), clientRenderer);
+router.get('/blockchain/info', insertRouteName('info'), clientRenderer);
 router.get('*', clientRenderer);
 
 function insertRouteName(name) {

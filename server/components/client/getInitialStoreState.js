@@ -3,6 +3,7 @@ const transactionsBLL = require('../api/transactions/transactionsBLL');
 const addressesBLL = require('../api/addresses/addressesBLL');
 const contractsBLL = require('../api/contracts/contractsBLL');
 const assetsBLL = require('../api/assets/assetsBLL');
+const infosBLL = require('../api/infos/infosBLL');
 
 module.exports = async req => {
   const { routeName } = req;
@@ -38,6 +39,9 @@ module.exports = async req => {
       break;
     case 'asset':
       promises.push(getAssetStoreData(req).then(data => (initialState.assetStore = data)));
+      break;
+    case 'info':
+      promises.push(getInfoStoreData(req).then(data => (initialState.infoStore = data)));
       break;
   }
 
@@ -79,5 +83,12 @@ async function getAssetStoreData(req) {
   const asset = await assetsBLL.findOne({ asset: req.params.asset });
   return {
     asset: asset || { statue: 404 },
+  };
+}
+
+async function getInfoStoreData() {
+  const infos = await infosBLL.findAll();
+  return {
+    infos,
   };
 }

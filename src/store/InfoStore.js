@@ -2,44 +2,47 @@ import { observable, decorate, action, runInAction, computed } from 'mobx';
 import service from '../lib/Service';
 
 export default class InfoStore {
-  constructor(rootStore) {
+  constructor(rootStore, initialState = {}) {
     this.rootStore = rootStore;
-    this.chain = 'main';
+    this.infos = initialState.infos || { chain: 'main' };
     this.loading = {
-      chain: false,
+      infos: false,
     };
   }
 
   get isTestnet() {
-    return this.chain === 'test';
+    return (this.infos || {}).chain === 'test';
   }
 
-  loadChain() {
-    this.loading.chain = true;
+  loadInfos() {
+    this.loading.infos = true;
     return service.infos
       .find()
       .then(response => {
         runInAction(() => {
           const chain = response.data.chain || 'main';
-          this.chain = chain.endsWith('net') ? chain.substring(0, chain.length - 3) : chain;
+          this.infos = Object.assign({}, response.data, {
+            chain: chain.endsWith('net') ? chain.substring(0, chain.length - 3) : chain,
+          });
         });
       })
       .catch(() => {
         runInAction(() => {
-          this.chain = 'main';
+          this.infos = { chain: 'main' };
         });
       })
       .then(() => {
         runInAction(() => {
-          this.loading.chain = false;
+          this.loading.infos = false;
         });
+        return this.infos;
       });
   }
 }
 
 decorate(InfoStore, {
-  chain: observable,
+  infos: observable,
   loading: observable,
-  loadChain: action,
+  loadInfos: action,
   isTestnet: computed,
 });
