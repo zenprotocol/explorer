@@ -3,12 +3,14 @@ const express = require('express');
 const router = express.Router();
 const clientRenderer = require('./clientRenderer');
 
-router.use('/public',
+router.use(
+  '/public',
   express.static(path.join(__dirname, '..', '..', '..', 'build'), { maxAge: '30d', index: false })
 );
 router.get('/blocks', insertRouteName('blocks'), clientRenderer);
 router.get('/blocks/:hashOrBlockNumber', insertRouteName('block'), clientRenderer);
 router.get('/tx/:hash', insertRouteName('tx'), clientRenderer);
+router.get('/address/:address', insertRouteName('address'), clientRenderer);
 router.get('*', clientRenderer);
 
 function insertRouteName(name) {
