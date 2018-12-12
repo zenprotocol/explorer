@@ -23,7 +23,6 @@ import App from '../../../src/App';
 module.exports = wrapAsync(async (req, res) => {
   const filePath = path.resolve(__dirname, '..', '..', '..', 'build', 'index.html');
   const initialState = await getInitialStoreState(req);
-  console.log(initialState);
   const rootStore = new RootStore(initialState);
   const initialStateScript = tags.oneLine`
   <script>
