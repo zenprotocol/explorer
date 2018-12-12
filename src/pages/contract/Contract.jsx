@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { observer, inject } from 'mobx-react';
 import { Route, Switch, Redirect } from 'react-router-dom';
+import { Helmet } from 'react-helmet';
 import RouterUtils from '../../lib/RouterUtils';
 import TextUtils from '../../lib/TextUtils';
 import Loading from '../../components/Loading';
@@ -48,6 +49,9 @@ class ContractPage extends Component {
 
     return (
       <Page className="Contract">
+        <Helmet>
+          <title>{TextUtils.getHtmlTitle('Contract', this.addressProp)}</title>
+        </Helmet>
         <section>
           <PageTitle
             title="Contract"

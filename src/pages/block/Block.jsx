@@ -3,6 +3,7 @@ import { observer, inject } from 'mobx-react';
 import { Link } from 'react-router-dom';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
+import { Helmet } from 'react-helmet';
 import RouterUtils from '../../lib/RouterUtils';
 import TextUtils from '../../lib/TextUtils';
 import BlockUtils from '../../lib/BlockUtils';
@@ -64,7 +65,7 @@ class BlockPage extends Component {
     const blockDateStr = block.timestamp
       ? TextUtils.getDateStringFromTimestamp(block.timestamp)
       : '';
-    const blockNumberStr = block.blockNumber ? `#${block.blockNumber}` :this.hashOrBlockNumber;
+    const blockNumberStr = block.blockNumber ? `#${block.blockNumber}` : this.hashOrBlockNumber;
     const is404 = block.status === 404;
     const renderContent = !is404 && block.blockNumber;
 
@@ -72,6 +73,9 @@ class BlockPage extends Component {
 
     return (
       <Page className="Block">
+        <Helmet>
+          <title>{TextUtils.getHtmlTitle('Block', block.blockNumber ? String(block.blockNumber) : '')}</title>
+        </Helmet>
         <section>
           <div className="row">
             <div className="col-sm">
@@ -86,9 +90,7 @@ class BlockPage extends Component {
           {renderContent && this.renderTopTables()}
         </section>
 
-        <section>
-          {renderContent && <BlockTxsTable />}
-        </section>
+        <section>{renderContent && <BlockTxsTable />}</section>
       </Page>
     );
   }
@@ -177,7 +179,9 @@ class BlockPage extends Component {
               </tr>
               <tr>
                 <td>CONFIRMATIONS</td>
-                <td className="no-text-transform">{this.blockStore.confirmations(block.blockNumber)}</td>
+                <td className="no-text-transform">
+                  {this.blockStore.confirmations(block.blockNumber)}
+                </td>
               </tr>
               <tr>
                 <td>PARENT</td>

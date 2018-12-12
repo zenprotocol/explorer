@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
 import PropTypes from 'prop-types';
+import { Helmet } from 'react-helmet';
+import TextUtils from '../../lib/TextUtils';
 import Page from '../../components/Page';
 import PageTitle from '../../components/PageTitle';
 import ItemsTable from '../../components/ItemsTable';
@@ -10,6 +12,9 @@ import './ContractTemplates.scss';
 function ContractTemplates({ loading, itemsCount, items, pageSize, curPage, tableDataSetter }) {
   return (
     <Page className="ContractTemplates">
+      <Helmet>
+        <title>{TextUtils.getHtmlTitle('Contract Templates')}</title>
+      </Helmet>
       <section>
         <ItemsTable
           columns={[

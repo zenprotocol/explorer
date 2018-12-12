@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { observable, action, reaction, decorate, computed } from 'mobx';
 import { observer } from 'mobx-react';
 import PropTypes from 'prop-types';
+import { Helmet } from 'react-helmet';
 import fileDownload from 'js-file-download';
 import Service from '../../lib/Service';
 import TextUtils from '../../lib/TextUtils';
@@ -185,6 +186,9 @@ class CreateContractTemplate extends Component {
 
     return (
       <Page className="CreateContractTemplate">
+        <Helmet>
+          <title>{TextUtils.getHtmlTitle('Create a Contract Template')}</title>
+        </Helmet>
         <section>
           <PageTitle title={`${template.name}`} />
           <div className="row">

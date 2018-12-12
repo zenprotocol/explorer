@@ -2,8 +2,10 @@ import React, { Component } from 'react';
 import { observable, decorate, computed, runInAction, action, autorun } from 'mobx';
 import { observer } from 'mobx-react';
 import PropTypes from 'prop-types';
+import { Helmet } from 'react-helmet';
 import config from '../../lib/Config';
 import service from '../../lib/Service';
+import TextUtils from '../../lib/TextUtils';
 import Page from '../../components/Page';
 import PageTitle from '../../components/PageTitle';
 import ExternalLink from '../../components/ExternalLink';
@@ -131,6 +133,9 @@ class OraclePage extends Component {
     const { pageSize, curPage } = this.tableState;
     return (
       <Page className="Oracle">
+        <Helmet>
+          <title>{TextUtils.getHtmlTitle('Oracle', 'Intrinio')}</title>
+        </Helmet>
         <section>
           <PageTitle
             title={

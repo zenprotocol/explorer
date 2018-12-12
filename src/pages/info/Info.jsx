@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { observer, inject } from 'mobx-react';
 import classNames from 'classnames';
+import { Helmet } from 'react-helmet';
 import TextUtils from '../../lib/TextUtils.js';
 import Loading from '../../components/Loading';
 import Button from '../../components/buttons/Button';
@@ -92,6 +93,9 @@ class InfoPage extends Component {
 
     return (
       <Page className="Info">
+        <Helmet>
+          <title>{TextUtils.getHtmlTitle('Statistics')}</title>
+        </Helmet>
         <section className="container">
           <div className="row">
             <ContentBox

@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { observer, inject } from 'mobx-react';
+import { Helmet } from 'react-helmet';
+import TextUtils from '../../lib/TextUtils';
 import AssetsTable from './components/AssetsTable';
 import Page from '../../components/Page';
 
@@ -12,6 +14,9 @@ class AssetsPage extends Component {
   render() {
     return (
       <Page className="Assets">
+        <Helmet>
+          <title>{TextUtils.getHtmlTitle('Assets')}</title>
+        </Helmet>
         <section>
           <AssetsTable />
         </section>

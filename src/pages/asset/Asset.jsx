@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
 import { Route, Switch, Redirect } from 'react-router-dom';
 import PropTypes from 'prop-types';
+import { Helmet } from 'react-helmet';
 import RouterUtils from '../../lib/RouterUtils';
 import TextUtils from '../../lib/TextUtils';
 import AssetUtils from '../../lib/AssetUtils';
@@ -18,7 +19,7 @@ class AssetPage extends Component {
   get assetStore() {
     return this.props.rootStore.assetStore;
   }
-  
+
   componentDidMount() {
     this.setAsset(this.assetProp);
   }
@@ -41,15 +42,19 @@ class AssetPage extends Component {
 
   render() {
     const is404 = this.assetStore.asset.status === 404;
+    const assetName = AssetUtils.getAssetNameFromCode(this.assetProp);
 
     return (
       <Page className="Asset">
+        <Helmet>
+          <title>{TextUtils.getHtmlTitle('Asset', assetName)}</title>
+        </Helmet>
         <section>
           <PageTitle
             title="Asset"
             subtitle={
               <HashLink
-                hash={AssetUtils.getAssetNameFromCode(this.assetProp)}
+                hash={assetName}
                 value={this.assetProp}
                 truncate={false}
                 copy={true}
@@ -135,7 +140,7 @@ class AssetPage extends Component {
             </thead>
           </table>
           <ChartLoader
-            chartName={asset.asset === '00'? 'zpRichList' : 'assetDistributionMap'}
+            chartName={asset.asset === '00' ? 'zpRichList' : 'assetDistributionMap'}
             showTitle={false}
             params={{ asset: this.assetProp }}
             externalChartData={this.assetStore.assetDistributionData.data}

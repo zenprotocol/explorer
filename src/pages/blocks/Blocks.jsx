@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { inject } from 'mobx-react';
-import Service from '../../lib/Service.js';
+import { Helmet } from 'react-helmet';
+import Service from '../../lib/Service';
+import TextUtils from '../../lib/TextUtils';
 import BlocksTable from './BlocksTable';
 import Page from '../../components/Page';
 
@@ -32,6 +34,9 @@ class BlocksPage extends Component {
   render() {
     return (
       <Page className="Blocks">
+        <Helmet>
+          <title>{TextUtils.getHtmlTitle('Blocks')}</title>
+        </Helmet>
         <section>
           <BlocksTable title="LATEST BLOCKS" />
         </section>

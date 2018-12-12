@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { observer, inject } from 'mobx-react';
+import { Helmet } from 'react-helmet';
 import { Link } from 'react-router-dom';
 import TextUtils from '../../lib/TextUtils';
 import RouterUtils from '../../lib/RouterUtils';
@@ -81,6 +82,9 @@ class TransactionPage extends Component {
 
     return (
       <Page className="Transaction">
+        <Helmet>
+          <title>{TextUtils.getHtmlTitle('Transaction', transaction.hash)}</title>
+        </Helmet>
         <section>
           <div className="row">
             <div className="col-sm">

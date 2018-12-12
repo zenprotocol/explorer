@@ -5,6 +5,7 @@ import React from 'react';
 import ReactDOMServer from 'react-dom/server';
 import { StaticRouter as Router } from 'react-router-dom';
 import { useStaticRendering, Provider } from 'mobx-react';
+import { Helmet } from 'react-helmet';
 import Loadable from 'react-loadable';
 import manifest from '../../../build/asset-manifest.json';
 import getInitialStoreState from './getInitialStoreState';
@@ -26,7 +27,7 @@ module.exports = wrapAsync(async (req, res) => {
   const rootStore = new RootStore(initialState);
   const initialStateScript = tags.oneLine`
   <script>
-      window.__INITIAL_STATE__ = ${ JSON.stringify(initialState) };
+      window.__INITIAL_STATE__ = ${JSON.stringify(initialState)};
   </script>
   `;
   const htmlData = fs.readFileSync(filePath, { encoding: 'utf8' });
@@ -42,6 +43,7 @@ module.exports = wrapAsync(async (req, res) => {
       </Provider>
     </Loadable.Capture>
   );
+  const helmet = Helmet.renderStatic();
 
   const extraChunksScripts = extractAssets(
     manifest,
@@ -60,8 +62,12 @@ module.exports = wrapAsync(async (req, res) => {
     // inject the rendered app into our html and send it
     res.send(
       htmlData
+        .replace('<title></title>', helmet.title.toString())
         .replace('</head>', extraChunksStyles.join('') + initialStateScript + '</head>')
-        .replace('<div id="root"></div>', `<div id="root">${html}</div>${extraChunksScripts.join('')}`)
+        .replace(
+          '<div id="root"></div>',
+          `<div id="root">${html}</div>${extraChunksScripts.join('')}`
+        )
     );
   }
 });

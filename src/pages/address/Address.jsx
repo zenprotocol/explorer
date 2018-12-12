@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { observer, inject } from 'mobx-react';
+import { Helmet } from 'react-helmet';
 import RouterUtils from '../../lib/RouterUtils';
 import AssetUtils from '../../lib/AssetUtils';
 import TextUtils from '../../lib/TextUtils';
@@ -34,18 +35,21 @@ class AddressPage extends Component {
 
   render() {
     const params = RouterUtils.getRouteParams(this.props);
-    let zpBalance = this.addressStore.address.assetAmounts ? this.addressStore.address.assetAmounts.find(
-      assetAmount => assetAmount.asset === '00'
-    ) : {
-      balance: 0,
-      received: 0,
-      sent: 0,
-    };
+    let zpBalance = this.addressStore.address.assetAmounts
+      ? this.addressStore.address.assetAmounts.find(assetAmount => assetAmount.asset === '00')
+      : {
+          balance: 0,
+          received: 0,
+          sent: 0,
+        };
     const is404 = this.addressStore.address.status === 404;
     const renderContent = !is404 && this.addressStore.address.address;
 
     return (
       <Page className="Address">
+        <Helmet>
+          <title>{TextUtils.getHtmlTitle('Address', params.address)}</title>
+        </Helmet>
         <section>
           <PageTitle
             title="ADDRESS"

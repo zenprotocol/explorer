@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { observer, inject } from 'mobx-react';
 import { Link, Redirect } from 'react-router-dom';
 import classNames from 'classnames';
+import { Helmet } from 'react-helmet';
 import RouterUtils from '../../lib/RouterUtils';
 import TextUtils from '../../lib/TextUtils';
 import SearchUtils from '../../lib/SearchUtils';
@@ -116,6 +117,9 @@ class SearchResultsPage extends Component {
 
     return (
       <Page className="SearchResults">
+        <Helmet>
+          <title>{TextUtils.getHtmlTitle('Search')}</title>
+        </Helmet>
         <section>
           <div className="row">
             <div className="col-sm">
