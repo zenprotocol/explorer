@@ -88,34 +88,39 @@
   }
 
   .page-item {
+    &.page-number {
+      display: none;
+    }
     .page-link {
       user-select: none;
       border-right-width: 1px;
       color: $pagination-color;
-
-      &.page-number {
-        display: none;
-      }
     }
     &:last-child .page-link {
       border-right-width: 0;
     }
-    &.active .page-link {
-      font-weight: $font-weight-bold;
-      
-      &:hover {
-        color: $white;
-      } 
+    &.active { 
       &.page-number {
         display: block;
+      }
+      .page-link {
+        font-weight: $font-weight-bold;
+        
+        &:hover {
+          color: $white;
+        } 
       }
     }
   }
 
   @media (min-width: map-get($grid-breakpoints, "md")) {
     .page-item {
-      .page-link.page-number {
+      &.page-number {
         display: block;
+      }
+      &.page-skip-first,
+      &.page-skip-last {
+        display: none;
       }
     }
   }
