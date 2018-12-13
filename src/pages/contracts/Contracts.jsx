@@ -8,7 +8,8 @@ import Page from '../../components/Page';
 
 class ContractsPage extends Component {
   componentDidMount() {
-    this.props.rootStore.contractStore.loadContracts({}, { setItems: false });
+    // must have contracts count
+    this.props.rootStore.contractStore.loadContracts({ pageSize: 1 }, { setItems: false });
   }
 
   render() {

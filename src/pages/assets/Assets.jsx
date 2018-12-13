@@ -8,7 +8,8 @@ import Page from '../../components/Page';
 
 class AssetsPage extends Component {
   componentDidMount() {
-    this.props.rootStore.assetStore.loadAssets({}, { setItems: false });
+    // must have assets count
+    this.props.rootStore.assetStore.loadAssets({ pageSize: 1 }, { setItems: false });
   }
 
   render() {
