@@ -204,7 +204,7 @@ transactionsDAL.findAllByAsset = async function(
 
 transactionsDAL.findAllAssetsByBlock = async function(
   hashOrBlockNumber,
-  { limit = 10, offset = 0 }
+  { limit = 10, offset = 0 } = {}
 ) {
   const blockProp = isHash(hashOrBlockNumber) ? 'hash' : 'blockNumber';
   const sql = tags.oneLine`
