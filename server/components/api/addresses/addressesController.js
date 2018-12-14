@@ -15,8 +15,9 @@ module.exports = {
       throw new HttpError(httpStatus.NOT_FOUND);
     }
     
-    const [assetAmounts, totalTxs] = await Promise.all([
+    const [assetAmounts, zpAmounts, totalTxs] = await Promise.all([
       addressesDAL.getAssetAmounts(address),
+      addressesDAL.getZpSentReceived(address),
       transactionsDAL.countByAddress(address),
     ]);
     
@@ -24,6 +25,7 @@ module.exports = {
       address,
       totalTxs,
       assetAmounts,
+      zpAmounts,
     }));
   },
   findAllAssets: async function(req, res) {
@@ -37,10 +39,10 @@ module.exports = {
   },
   balanceZp: async function(req, res) {
     const address = req.params.address;
-    const balance = await addressesDAL.getZpBalance(address);
+    const zpAmounts = await addressesDAL.getZpBalance(address);
 
-    if (balance.length > 0) {
-      res.status(httpStatus.OK).json(Number(balance[0].balance));
+    if (zpAmounts) {
+      res.status(httpStatus.OK).json(Number(zpAmounts.balance) / 100000000);
     } else {
       throw new HttpError(httpStatus.NOT_FOUND);
     }

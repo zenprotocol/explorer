@@ -35,9 +35,7 @@ class AddressPage extends Component {
 
   render() {
     const params = RouterUtils.getRouteParams(this.props);
-    let zpBalance = addressStore.address.assetAmounts ? addressStore.address.assetAmounts.find(
-      assetAmount => assetAmount.asset === '00'
-    ) : {
+    let zpBalance = addressStore.address.zpAmounts || {
       balance: 0,
       received: 0,
       sent: 0,
