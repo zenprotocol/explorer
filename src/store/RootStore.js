@@ -1,42 +1,21 @@
-import { observable, decorate, action, runInAction, computed } from 'mobx';
-import service from '../lib/Service';
+import AddressStore from './AddressStore';
+import AssetStore from './AssetStore';
+import BlockStore from './BlockStore';
+import ContractStore from './ContractStore';
+import InfoStore from './InfoStore';
+import SearchStore from './SearchStore';
+import TransactionStore from './TransactionStore';
+import UIStore from './UIStore';
 
-class RootStore {
-  constructor() {
-    this.chain = 'main';
-    this.loading = {
-      chain: false,
-    };
-  }
-
-  get isTestnet() {
-    return this.chain === 'test';
-  }
-
-  loadChain() {
-    this.loading.chain = true;
-    return service.infos.find().then(response => {
-      runInAction(() => {
-        const chain = response.data.chain || 'main';
-        this.chain = chain.endsWith('net') ? chain.substring(0, chain.length - 3) : chain;
-      });
-    }).catch(() => {
-      runInAction(() => {
-        this.chain = 'main';
-      });
-    }).then(() => {
-      runInAction(() => {
-        this.loading.chain = false;
-      });
-    });
+export default class RootStore {
+  constructor(initialState = {}) {
+    this.addressStore = new AddressStore(this, initialState.addressStore);
+    this.assetStore = new AssetStore(this, initialState.assetStore);
+    this.blockStore = new BlockStore(this, initialState.blockStore);
+    this.contractStore = new ContractStore(this, initialState.contractStore);
+    this.infoStore = new InfoStore(this, initialState.infoStore);
+    this.searchStore = new SearchStore(this, initialState.searchStore);
+    this.transactionStore = new TransactionStore(this, initialState.transactionStore);
+    this.uiStore = UIStore(this, initialState.uiStore);
   }
 }
-
-decorate(RootStore, {
-  chain: observable,
-  loading: observable,
-  loadChain: action,
-  isTestnet: computed,
-});
-
-export default new RootStore();

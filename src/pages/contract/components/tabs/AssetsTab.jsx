@@ -1,7 +1,6 @@
 import React from 'react';
-import { observer } from 'mobx-react';
-import contractStore from '../../../../store/ContractStore';
-import uiStore from '../../../../store/UIStore';
+import PropTypes from 'prop-types';
+import { observer, inject } from 'mobx-react';
 import config from '../../../../lib/Config';
 import TextUtils from '../../../../lib/TextUtils';
 import AssetUtils from '../../../../lib/AssetUtils';
@@ -10,7 +9,8 @@ import { TabPanel } from '../../../../components/tabs';
 import ItemsTable from '../../../../components/ItemsTable';
 import HashLink from '../../../../components/HashLink';
 
-const AssetsTab = observer(() => {
+const AssetsTab = observer(props => {
+  const { contractStore, uiStore } = props.rootStore;
   return (
     <TabPanel>
       <ItemsTable
@@ -51,11 +51,18 @@ const AssetsTab = observer(() => {
         loading={contractStore.loading.assets}
         itemsCount={contractStore.assetsCount}
         items={contractStore.assets}
-        pageSize={uiStore.contractAssetsTable.pageSize}
-        curPage={uiStore.contractAssetsTable.curPage}
+        pageSize={uiStore.state.contractAssetsTable.pageSize}
+        curPage={uiStore.state.contractAssetsTable.curPage}
         tableDataSetter={uiStore.setContractAssetsTableData.bind(uiStore)}
       />
     </TabPanel>
   );
 });
-export default observer(WithSetIdOnUiStore(AssetsTab, 'setContractAssetsTableData', 'address'));
+
+AssetsTab.propTypes = {
+  rootStore: PropTypes.object,
+};
+
+export default inject('rootStore')(
+  observer(WithSetIdOnUiStore(AssetsTab, 'setContractAssetsTableData', 'address'))
+);

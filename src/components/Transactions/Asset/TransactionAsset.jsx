@@ -17,29 +17,22 @@ class TransactionAsset extends Component {
 
     this.state = {
       showMore: false,
-      rowsData: [],
+      rowsData: this.getRowsData(props),
     };
 
     this.toggleShowMore = this.toggleShowMore.bind(this);
   }
 
   componentDidMount() {
-    const { transactionAsset, asset, address, addressFoundIn, total } = this.props;
+    const { transactionAsset } = this.props;
 
     if (transactionAsset) {
-      const outputs = this.getOutputs(transactionAsset);
-      const inputs = this.getInputs(transactionAsset);
       this.setState({
-        rowsData: this.getRowsData({
-          asset,
-          address,
-          inputs,
-          outputs: this.filterOutputsByAddress(outputs, address, addressFoundIn),
-          total,
-        }),
+        rowsData: this.getRowsData(this.props),
       });
     }
   }
+  
 
   toggleShowMore() {
     this.setState(state => ({
@@ -81,6 +74,38 @@ class TransactionAsset extends Component {
         />
       </div>
     );
+  }
+
+  getRowsData(props = {}) {
+    const { transactionAsset, asset, address, addressFoundIn, total } = props;
+    const outputs = this.filterOutputsByAddress(this.getOutputs(transactionAsset), address, addressFoundIn);
+    const inputs = this.getInputs(transactionAsset);
+    const rowsData = [];
+    const maxLength = Math.max(1, outputs.length, inputs.length);
+    for (let i = 0; i < maxLength; i++) {
+      const input = i < inputs.length ? inputs[i] : {};
+      const output = i < outputs.length ? outputs[i] : {};
+      rowsData.push({
+        asset: i === 0 ? asset : '',
+        input: input.data,
+        isInputHash: input.isHash,
+        isInputActive: input.isHash && input.data !== address,
+        output: output.data,
+        isOutputHash: output.isHash,
+        isOutputActive: output.isHash && output.data !== address,
+        amount: output.amount,
+      });
+    }
+
+    // total
+    if (typeof total !== 'undefined') {
+      rowsData.push({
+        amount: total,
+        isTotal: true,
+      });
+    }
+
+    return rowsData;
   }
 
   getInputs(transactionAsset) {
@@ -130,34 +155,7 @@ class TransactionAsset extends Component {
     };
   }
 
-  getRowsData({ asset, address, inputs, outputs, total } = {}) {
-    const rowsData = [];
-    const maxLength = Math.max(1, outputs.length, inputs.length);
-    for (let i = 0; i < maxLength; i++) {
-      const input = i < inputs.length ? inputs[i] : {};
-      const output = i < outputs.length ? outputs[i] : {};
-      rowsData.push({
-        asset: i === 0 ? asset : '',
-        input: input.data,
-        isInputHash: input.isHash,
-        isInputActive: input.isHash && input.data !== address,
-        output: output.data,
-        isOutputHash: output.isHash,
-        isOutputActive: output.isHash && output.data !== address,
-        amount: output.amount,
-      });
-    }
-
-    // total
-    if (typeof total !== 'undefined') {
-      rowsData.push({
-        amount: total,
-        isTotal: true,
-      });
-    }
-
-    return rowsData;
-  }
+  
 
   getTableColumns({ showAsset } = {}) {
     const { asset } = this.props;

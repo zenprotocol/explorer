@@ -1,9 +1,8 @@
 import React, { Component } from 'react';
-import { observer } from 'mobx-react';
-import { withRouter } from 'react-router-dom';
 import PropTypes from 'prop-types';
+import { observer, inject } from 'mobx-react';
+import { withRouter } from 'react-router-dom';
 import SearchUtils from '../../lib/SearchUtils';
-import searchStore from '../../store/SearchStore';
 import './SearchBar.scss';
 
 const SUBMIT_AFTER_MS = 1000;
@@ -20,10 +19,14 @@ class SearchBar extends Component {
     this.canSearchImmediately = this.canSearchImmediately.bind(this);
   }
 
+  get searchStore() {
+    return this.props.rootStore.searchStore;
+  }
+
   handleChange(event) {
-    searchStore.setSearchString(SearchUtils.formatSearchString(event.target.value));
+    this.searchStore.setSearchString(SearchUtils.formatSearchString(event.target.value));
     clearTimeout(this.timeout);
-    const time = this.canSearchImmediately(searchStore.searchString)
+    const time = this.canSearchImmediately(this.searchStore.searchString)
       ? SUBMIT_IMMEDIATE_MS
       : SUBMIT_AFTER_MS;
     this.timeout = setTimeout(this.submit, time);
@@ -36,13 +39,13 @@ class SearchBar extends Component {
 
   submit() {
     clearTimeout(this.timeout);
-    if (searchStore.searchStringValid && searchStore.searchString !== searchStore.searchStringPrev) {
-      this.props.history.push(`/search/${searchStore.searchString}`);
+    if (this.searchStore.searchStringValid && this.searchStore.searchString !== this.searchStore.searchStringPrev) {
+      this.props.history.push(`/search/${this.searchStore.searchString}`);
     }
   }
 
   clear() {
-    searchStore.setSearchString('');
+    this.searchStore.setSearchString('');
   }
 
   canSearchImmediately(search) {
@@ -54,7 +57,7 @@ class SearchBar extends Component {
       <form onSubmit={this.handleSubmit} className="SearchBar form-search my-3 my-lg-0">
         <div className="input-group">
           <input
-            value={searchStore.searchString}
+            value={this.searchStore.searchString}
             onChange={this.handleChange}
             className="input-search form-control"
             type="search"
@@ -62,7 +65,7 @@ class SearchBar extends Component {
             aria-label="Search"
           />
           <div className="input-group-append">
-            {searchStore.searchString ? (
+            {this.searchStore.searchString ? (
               <button className="btn btn-outline-dark btn-clear" type="button" onClick={this.clear}>
                 <i className="fas fa-times" />
               </button>
@@ -80,6 +83,7 @@ class SearchBar extends Component {
 
 SearchBar.propTypes = {
   history: PropTypes.object,
+  rootStore: PropTypes.object,
 };
 
-export default withRouter(observer(SearchBar));
+export default withRouter(inject('rootStore')(observer(SearchBar)));

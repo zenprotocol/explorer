@@ -1,13 +1,16 @@
 import React, { Component } from 'react';
-import classNames from 'classnames';
 import PropTypes from 'prop-types';
-import Service from '../../lib/Service';
+import { observer, inject } from 'mobx-react';
+import classNames from 'classnames';
+import { Helmet } from 'react-helmet';
 import TextUtils from '../../lib/TextUtils.js';
 import Loading from '../../components/Loading';
 import Button from '../../components/buttons/Button';
 import { ChartLoader } from '../../components/charts';
 import Page from '../../components/Page';
 import './Info.scss';
+
+const FETCH_TIMEOUT = 30000;
 
 function ContentBox(props) {
   return (
@@ -42,35 +45,39 @@ class InfoPage extends Component {
     super(props);
 
     this.state = {
-      loading: false,
-      infos: {},
+      isFirstLoad: true,
     };
 
     this.fetchInfos = this.fetchInfos.bind(this);
   }
 
+  get infoStore() {
+    return this.props.rootStore.infoStore;
+  }
+
   componentDidMount() {
-    this.fetchInfos(true);
+    // infos should be loaded already from App
+    this.fetchTimer = setTimeout(this.fetchInfos, FETCH_TIMEOUT);
   }
 
   componentWillUnmount() {
     clearTimeout(this.fetchTimer);
   }
 
-  fetchInfos(setLoading) {
-    setLoading && this.setState({ loading: true });
-    Service.infos.find().then(result => {
-      this.setState({ loading: false, infos: result.data });
-      this.fetchTimer = setTimeout(this.fetchInfos, 30000);
+  fetchInfos() {
+    this.setState({ isFirstLoad: false });
+    this.infoStore.loadInfos().then(() => {
+      this.fetchTimer = setTimeout(this.fetchInfos, FETCH_TIMEOUT);
     });
   }
 
   render() {
-    if (this.state.loading) {
+    if (this.state.isFirstLoad && this.infoStore.loading.infos) {
       return <Loading />;
     }
 
-    if (Object.keys(this.state.infos).length === 0) {
+    const {infos} = this.infoStore;
+    if (Object.keys(infos).length === 0) {
       return null;
     }
 
@@ -82,10 +89,13 @@ class InfoPage extends Component {
       hashRate,
       nodeVersion,
       walletVersion,
-    } = this.state.infos;
+    } = infos;
 
     return (
       <Page className="Info">
+        <Helmet>
+          <title>{TextUtils.getHtmlTitle('Statistics')}</title>
+        </Helmet>
         <section className="container">
           <div className="row">
             <ContentBox
@@ -186,6 +196,10 @@ class InfoPage extends Component {
   }
 }
 
+InfoPage.propTypes = {
+  rootStore: PropTypes.object,
+};
+
 const addNetToChainName = chain => {
   if (!chain || typeof chain !== 'string') {
     return chain;
@@ -194,4 +208,4 @@ const addNetToChainName = chain => {
   return chain.endsWith(append) ? chain : chain + append;
 };
 
-export default InfoPage;
+export default inject('rootStore')(observer(InfoPage));

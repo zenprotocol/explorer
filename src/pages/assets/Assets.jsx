@@ -1,17 +1,23 @@
 import React, { Component } from 'react';
-import { observer } from 'mobx-react';
-import assetStore from '../../store/AssetStore';
+import PropTypes from 'prop-types';
+import { observer, inject } from 'mobx-react';
+import { Helmet } from 'react-helmet';
+import TextUtils from '../../lib/TextUtils';
 import AssetsTable from './components/AssetsTable';
 import Page from '../../components/Page';
 
 class AssetsPage extends Component {
   componentDidMount() {
-    assetStore.loadAssets({}, { setItems: false });
+    // must have assets count
+    this.props.rootStore.assetStore.loadAssets({ pageSize: 1 }, { setItems: false });
   }
 
   render() {
     return (
       <Page className="Assets">
+        <Helmet>
+          <title>{TextUtils.getHtmlTitle('Assets')}</title>
+        </Helmet>
         <section>
           <AssetsTable />
         </section>
@@ -20,4 +26,8 @@ class AssetsPage extends Component {
   }
 }
 
-export default observer(AssetsPage);
+AssetsPage.propTypes = {
+  rootStore: PropTypes.object,
+};
+
+export default inject('rootStore')(observer(AssetsPage));

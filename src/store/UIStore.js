@@ -1,404 +1,242 @@
-import { observable, decorate, action, autorun, toJS, runInAction } from 'mobx';
-import blockStore from './BlockStore';
-import addressStore from './AddressStore';
-import contractStore from './ContractStore';
-import assetStore from './AssetStore';
+import { observable, action, autorun, toJS, runInAction } from 'mobx';
 import localStore from '../lib/localStore';
 import Service from '../lib/Service';
 import config from '../lib/Config';
 
-class UIStore {
-  constructor() {
-    this.syncing = false;
+export default function UIStore(rootStore) {
+  const blockStore = rootStore.blockStore;
+  const addressStore = rootStore.addressStore;
+  const contractStore = rootStore.contractStore;
+  const assetStore = rootStore.assetStore;
 
-    this.blocksTable = {
+  const state = observable({
+    syncing: false,
+
+    blocksTable: {
       pageSize: config.ui.table.defaultPageSize,
       curPage: 0,
-    };
+    },
 
-    this.blockTxTable = {
+    blockTxTable: {
       hashOrBlockNumber: '0',
       pageSize: config.ui.table.defaultPageSize,
       curPage: 0,
-    };
+    },
 
-    this.addressTxAssetsTable = {
+    addressTxAssetsTable: {
       address: '',
       pageSize: config.ui.table.defaultPageSize,
       curPage: 0,
-    };
+    },
 
-    this.addressTxsTable = {
+    addressTxsTable: {
       address: '',
       pageSize: config.ui.table.defaultPageSize,
       curPage: 0,
-    };
+    },
 
-    this.contractsTable = {
+    contractsTable: {
       pageSize: config.ui.table.defaultPageSize,
       curPage: 0,
       sorted: [],
-    };
+    },
 
-    this.contractAssetsTable = {
+    contractAssetsTable: {
       address: '',
       pageSize: config.ui.table.defaultPageSize,
       curPage: 0,
-    };
+    },
 
-    this.contractCommandsTable = {
+    contractCommandsTable: {
       address: '',
       pageSize: config.ui.table.defaultPageSize,
       curPage: 0,
-    };
+    },
 
-    this.assetsTable = {
+    assetsTable: {
       pageSize: config.ui.table.defaultPageSize,
       curPage: 0,
-    };
+    },
 
-    this.assetTxsTable = {
+    assetTxsTable: {
       asset: '',
       pageSize: config.ui.table.defaultPageSize,
       curPage: 0,
-    };
+    },
 
-    this.assetKeyholdersTable = {
+    assetKeyholdersTable: {
       asset: '',
       pageSize: config.ui.table.defaultPageSize,
       curPage: 0,
-    };
+    },
+  });
 
-    let firstRun = true;
-    autorun(() => {
-      if (firstRun) {
-        this.loadFromStorage();
-      }
-      this.saveToStorage(this);
-    });
-    firstRun = false;
-
-    autorun(() => {
-      this.fetchBlocksOnChange();
-    });
-
-    autorun(() => {
-      this.runOnBlockChange();
-    });
-
-    autorun(() => {
-      this.fetchBlockTransactionAssetsOnChange();
-    });
-
-    autorun(() => {
-      this.runOnAddressChange();
-    });
-
-    autorun(() => {
-      this.fetchAddressTxAssetsOnChange();
-    });
-
-    autorun(() => {
-      this.fetchAddressTxsOnChange();
-    });
-
-    autorun(() => {
-      this.fetchContractsOnChange();
-    });
-
-    autorun(() => {
-      this.fetchContractAssetsOnChange();
-    });
-
-    autorun(() => {
-      this.fetchContractCommandsOnChange();
-    });
-
-    autorun(() => {
-      this.fetchAssetsOnChange();
-    });
-    
-    autorun(() => {
-      this.fetchAssetTxsOnChange();
-    });
-
-    autorun(() => {
-      this.fetchAssetKeyholdersOnChange();
-    });
-  }
-
-  fetchSyncing() {
+  const fetchSyncing = action(() => {
     return Service.infos
       .findByName('syncing')
       .then(response => {
         runInAction(() => {
-          this.syncing = response.success && response.data.value === 'true';
+          state.syncing = response.success && response.data.value === 'true';
         });
       })
       .catch(() => {});
-  }
+  });
 
-  fetchBlocksOnChange() {
-    if (this.blocksTable.curPage * this.blocksTable.pageSize < blockStore.blocksCount) {
-      blockStore.fetchBlocks({
-        page: this.blocksTable.curPage,
-        pageSize: this.blocksTable.pageSize,
-      });
-    }
-  }
+  const setBlocksTableData = action(setTableData({objectToSet: state.blocksTable}));
+  const setBlockTxTableData = action(setTableData({nameOfIdentifier: 'hashOrBlockNumber', objectToSet: state.blockTxTable}));
+  const setAddressTxAssetsTableData = action(setTableData({nameOfIdentifier: 'address', objectToSet: state.addressTxAssetsTable}));
+  const setAddressTxsTableData = action(setTableData({nameOfIdentifier: 'address', objectToSet: state.addressTxsTable}));
+  const setContractsTableData = action(setTableData({objectToSet: state.contractsTable}));
+  const setContractAssetsTableData = action(setTableData({nameOfIdentifier: 'address', objectToSet: state.contractAssetsTable}));
+  const setContractCommandsTableData = action(setTableData({nameOfIdentifier: 'address', objectToSet: state.contractCommandsTable}));
+  const setAssetsTableData = action(setTableData({objectToSet: state.assetsTable}));
+  const setAssetTxsTableData = action(setTableData({nameOfIdentifier: 'asset', objectToSet: state.assetTxsTable}));
+  const setAssetKeyholdersTableData = action(setTableData({nameOfIdentifier: 'asset', objectToSet: state.assetKeyholdersTable}));
 
-  fetchBlockTransactionAssetsOnChange() {
-    if (hashOrBlockNumberNotEmpty(this.blockTxTable.hashOrBlockNumber)) {
-      blockStore.fetchBlockTransactionAssets(this.blockTxTable.hashOrBlockNumber, {
-        page: this.blockTxTable.curPage,
-        pageSize: this.blockTxTable.pageSize,
-      });
-    }
-  }
+  const saveToStorage = action((state) => {
+    localStore.set('ui-store', state);
+  });
 
-  fetchAddressTxAssetsOnChange() {
-    if (this.addressTxAssetsTable.address) {
-      addressStore.fetchAddressTransactionAssets(this.addressTxAssetsTable.address, {
-        page: this.addressTxAssetsTable.curPage,
-        pageSize: this.addressTxAssetsTable.pageSize,
-      });
-    }
-  }
-
-  fetchAddressTxsOnChange() {
-    if (this.addressTxsTable.address) {
-      addressStore.loadAddressTransactions(this.addressTxsTable.address, {
-        page: this.addressTxsTable.curPage,
-        pageSize: this.addressTxsTable.pageSize,
-      });
-    }
-  }
-
-  fetchContractsOnChange() {
-    if (this.contractsTable.curPage * this.contractsTable.pageSize < contractStore.contractsCount) {
-      contractStore.loadContracts({
-        page: this.contractsTable.curPage,
-        pageSize: this.contractsTable.pageSize,
-        sorted: JSON.stringify(this.contractsTable.sorted),
-      });
-    }
-  }
-
-  fetchContractAssetsOnChange() {
-    if (this.contractAssetsTable.address) {
-      contractStore.loadAssets(this.contractAssetsTable.address, {
-        page: this.contractAssetsTable.curPage,
-        pageSize: this.contractAssetsTable.pageSize,
-      });
-    }
-  }
-
-  fetchContractCommandsOnChange() {
-    if (this.contractCommandsTable.address) {
-      contractStore.loadCommands(this.contractCommandsTable.address, {
-        page: this.contractCommandsTable.curPage,
-        pageSize: this.contractCommandsTable.pageSize,
-      });
-    }
-  }
-
-  fetchAssetsOnChange() {
-    if (this.assetsTable.curPage * this.assetsTable.pageSize < assetStore.assetsCount) {
-      assetStore.loadAssets({
-        page: this.assetsTable.curPage,
-        pageSize: this.assetsTable.pageSize,
-      });
-    }
-  }
-
-  fetchAssetTxsOnChange() {
-    if (this.assetTxsTable.asset) {
-      assetStore.loadAssetTxs(this.assetTxsTable.asset, {
-        page: this.assetTxsTable.curPage,
-        pageSize: this.assetTxsTable.pageSize,
-      });
-    }
-  }
-
-  fetchAssetKeyholdersOnChange() {
-    if (this.assetKeyholdersTable.asset) {
-      assetStore.loadAssetKeyholders(this.assetKeyholdersTable.asset, {
-        page: this.assetKeyholdersTable.curPage,
-        pageSize: this.assetKeyholdersTable.pageSize,
-      });
-    }
-  }
-
-  runOnAddressChange() {
-    addressStore.resetAddressTransactionAssets(this.addressTxAssetsTable.address);
-    addressStore.fetchAddress(this.addressTxAssetsTable.address);
-  }
-
-  runOnBlockChange() {
-    blockStore.resetBlockTransactionAssets(this.blockTxTable.hashOrBlockNumber);
-  }
-
-  setBlocksTableData({ pageSize, curPage } = {}) {
-    if (pageSize) {
-      this.blocksTable.pageSize = pageSize;
-    }
-    if (curPage !== undefined) {
-      this.blocksTable.curPage = curPage;
-    }
-  }
-
-  setBlockTxTableData({ hashOrBlockNumber, pageSize, curPage } = {}) {
-    if (typeof hashOrBlockNumber !== 'undefined') {
-      this.blockTxTable.hashOrBlockNumber = hashOrBlockNumber;
-    }
-    if (pageSize) {
-      this.blockTxTable.pageSize = pageSize;
-    }
-    if (curPage !== undefined) {
-      this.blockTxTable.curPage = curPage;
-    }
-  }
-
-  setAddressTxAssetsTableData({ address, pageSize, curPage } = {}) {
-    if (address && address !== this.addressTxAssetsTable.address) {
-      this.addressTxAssetsTable.address = address;
-      this.addressTxAssetsTable.curPage = 0;
-    }
-    if (pageSize) {
-      this.addressTxAssetsTable.pageSize = pageSize;
-    }
-    if (curPage !== undefined) {
-      this.addressTxAssetsTable.curPage = curPage;
-    }
-  }
-
-  setAddressTxsTableData({ address, pageSize, curPage } = {}) {
-    if (address && address !== this.addressTxsTable.address) {
-      this.addressTxsTable.address = address;
-      this.addressTxsTable.curPage = 0;
-    }
-    if (pageSize) {
-      this.addressTxsTable.pageSize = pageSize;
-    }
-    if (curPage !== undefined) {
-      this.addressTxsTable.curPage = curPage;
-    }
-  }
-
-  setContractsTableData({ pageSize, curPage, sorted } = {}) {
-    if (pageSize) {
-      this.contractsTable.pageSize = pageSize;
-    }
-    if (curPage !== undefined) {
-      this.contractsTable.curPage = curPage;
-    }
-    if (sorted) {
-      this.contractsTable.sorted = sorted;
-    }
-  }
-
-  setContractAssetsTableData({ address, pageSize, curPage } = {}) {
-    if (address && address !== this.contractAssetsTable.address) {
-      this.contractAssetsTable.address = address;
-      this.contractAssetsTable.curPage = 0;
-    }
-    if (pageSize) {
-      this.contractAssetsTable.pageSize = pageSize;
-    }
-    if (curPage !== undefined) {
-      this.contractAssetsTable.curPage = curPage;
-    }
-  }
-
-  setContractCommandsTableData({ address, pageSize, curPage } = {}) {
-    if (address && address !== this.contractCommandsTable.address) {
-      this.contractCommandsTable.address = address;
-      this.contractCommandsTable.curPage = 0;
-    }
-    if (pageSize) {
-      this.contractCommandsTable.pageSize = pageSize;
-    }
-    if (curPage !== undefined) {
-      this.contractCommandsTable.curPage = curPage;
-    }
-  }
-
-  setAssetsTableData({ pageSize, curPage } = {}) {
-    if (pageSize) {
-      this.assetsTable.pageSize = pageSize;
-    }
-    if (curPage !== undefined) {
-      this.assetsTable.curPage = curPage;
-    }
-  }
-
-  setAssetTxsTableData({ asset, pageSize, curPage } = {}) {
-    if (asset && asset !== this.assetTxsTable.asset) {
-      this.assetTxsTable.asset = asset;
-      this.assetTxsTable.curPage = 0;
-    }
-    if (pageSize) {
-      this.assetTxsTable.pageSize = pageSize;
-    }
-    if (curPage !== undefined) {
-      this.assetTxsTable.curPage = curPage;
-    }
-  }
-
-  setAssetKeyholdersTableData({ asset, pageSize, curPage } = {}) {
-    if (asset && asset !== this.assetKeyholdersTable.asset) {
-      this.assetKeyholdersTable.asset = asset;
-      this.assetKeyholdersTable.curPage = 0;
-    }
-    if (pageSize) {
-      this.assetKeyholdersTable.pageSize = pageSize;
-    }
-    if (curPage !== undefined) {
-      this.assetKeyholdersTable.curPage = curPage;
-    }
-  }
-
-  saveToStorage(store) {
-    localStore.set('ui-store', toJS(store));
-  }
-
-  loadFromStorage() {
+  const loadFromStorage = action(() => {
     const data = localStore.get('ui-store');
     if (data) {
       Object.keys(data).forEach(key => {
-        if (data[key].pageSize && this[key]) {
-          this[key].pageSize = data[key].pageSize;
+        if (data[key].pageSize && state[key]) {
+          state[key].pageSize = data[key].pageSize;
         }
       });
     }
-  }
-}
+  });
 
-decorate(UIStore, {
-  syncing: observable,
-  blocksTable: observable,
-  addressTxAssetsTable: observable,
-  addressTxsTable: observable,
-  blockTxTable: observable,
-  contractsTable: observable,
-  contractAssetsTable: observable,
-  contractCommandsTable: observable,
-  assetsTable: observable,
-  assetTxsTable: observable,
-  assetKeyholdersTable: observable,
-  fetchSyncing: action,
-  setBlocksTableData: action,
-  setBlockTxTableData: action,
-  setAddressTxAssetsTableData: action,
-  setAddressTxsTableData: action,
-  setContractsTableData: action,
-  setContractAssetsTableData: action,
-  setContractCommandsTableData: action,
-  setAssetsTableData: action,
-  setAssetTxsTableData: action,
-  setAssetKeyholdersTableData: action,
-  loadFromStorage: action,
-});
+  (function setAutoRuns() {
+    let firstRun = true;
+    autorun(() => {
+      if (firstRun) {
+        loadFromStorage();
+      }
+      saveToStorage(toJS(state)); // toJS makes this work for all inner properties
+    });
+    firstRun = false;
+
+    autorun(function fetchBlocksOnChange() {
+      if (state.blocksTable.curPage * state.blocksTable.pageSize < blockStore.blocksCount) {
+        blockStore.fetchBlocks({
+          page: state.blocksTable.curPage,
+          pageSize: state.blocksTable.pageSize,
+        });
+      }
+    });
+
+    autorun(function runOnBlockChange() {
+      blockStore.resetBlockTransactionAssets(state.blockTxTable.hashOrBlockNumber);
+    });
+
+    autorun(function fetchBlockTransactionAssetsOnChange() {
+      if (hashOrBlockNumberNotEmpty(state.blockTxTable.hashOrBlockNumber)) {
+        blockStore.fetchBlockTransactionAssets(state.blockTxTable.hashOrBlockNumber, {
+          page: state.blockTxTable.curPage,
+          pageSize: state.blockTxTable.pageSize,
+        });
+      }
+    });
+
+    autorun(function runOnAddressChange() {
+      addressStore.resetAddressTransactionAssets(state.addressTxAssetsTable.address);
+      addressStore.fetchAddress(state.addressTxAssetsTable.address);
+    });
+
+    autorun(function fetchAddressTxAssetsOnChange() {
+      if (state.addressTxAssetsTable.address) {
+        addressStore.fetchAddressTransactionAssets(state.addressTxAssetsTable.address, {
+          page: state.addressTxAssetsTable.curPage,
+          pageSize: state.addressTxAssetsTable.pageSize,
+        });
+      }
+    });
+
+    autorun(function fetchAddressTxsOnChange() {
+      if (state.addressTxsTable.address) {
+        addressStore.loadAddressTransactions(state.addressTxsTable.address, {
+          page: state.addressTxsTable.curPage,
+          pageSize: state.addressTxsTable.pageSize,
+        });
+      }
+    });
+
+    autorun(function fetchContractsOnChange() {
+      if (
+        state.contractsTable.curPage * state.contractsTable.pageSize <
+        contractStore.contractsCount
+      ) {
+        contractStore.loadContracts({
+          page: state.contractsTable.curPage,
+          pageSize: state.contractsTable.pageSize,
+          sorted: JSON.stringify(state.contractsTable.sorted),
+        });
+      }
+    });
+
+    autorun(function fetchContractAssetsOnChange() {
+      if (state.contractAssetsTable.address) {
+        contractStore.loadAssets(state.contractAssetsTable.address, {
+          page: state.contractAssetsTable.curPage,
+          pageSize: state.contractAssetsTable.pageSize,
+        });
+      }
+    });
+
+    autorun(function fetchContractCommandsOnChange() {
+      if (state.contractCommandsTable.address) {
+        contractStore.loadCommands(state.contractCommandsTable.address, {
+          page: state.contractCommandsTable.curPage,
+          pageSize: state.contractCommandsTable.pageSize,
+        });
+      }
+    });
+
+    autorun(function fetchAssetsOnChange() {
+      if (state.assetsTable.curPage * state.assetsTable.pageSize < assetStore.assetsCount) {
+        assetStore.loadAssets({
+          page: state.assetsTable.curPage,
+          pageSize: state.assetsTable.pageSize,
+        });
+      }
+    });
+
+    autorun(function fetchAssetTxsOnChange() {
+      if (state.assetTxsTable.asset) {
+        assetStore.loadAssetTxs(state.assetTxsTable.asset, {
+          page: state.assetTxsTable.curPage,
+          pageSize: state.assetTxsTable.pageSize,
+        });
+      }
+    });
+
+    autorun(function fetchAssetKeyholdersOnChange() {
+      if (state.assetKeyholdersTable.asset) {
+        assetStore.loadAssetKeyholders(state.assetKeyholdersTable.asset, {
+          page: state.assetKeyholdersTable.curPage,
+          pageSize: state.assetKeyholdersTable.pageSize,
+        });
+      }
+    });
+  })();
+
+  return Object.freeze({
+    setAddressTxAssetsTableData,
+    setAddressTxsTableData,
+    setAssetKeyholdersTableData,
+    setAssetTxsTableData,
+    setAssetsTableData,
+    setBlockTxTableData,
+    setBlocksTableData,
+    setContractAssetsTableData,
+    setContractCommandsTableData,
+    setContractsTableData,
+    fetchSyncing,
+    state,
+  });
+}
 
 function hashOrBlockNumberNotEmpty(hashOrBlockNumber) {
   return (
@@ -409,24 +247,28 @@ function hashOrBlockNumberNotEmpty(hashOrBlockNumber) {
   );
 }
 
-// todo - use this for all common table setters
-// function setTableData({nameOfIdentifier, objectToSet} = {}) {
-//   return (params = {}) => {
-//     const id = params[nameOfIdentifier];
-//     const pageSize = params.pageSize;
-//     const curPage = params.curPage;
+/**
+ * Creates a tableDataSetter function with a custom id name
+ */
+function setTableData({nameOfIdentifier, objectToSet} = {}) {
+  return (params = {}) => {
+    const id = nameOfIdentifier ? params[nameOfIdentifier] : null;
+    const pageSize = params.pageSize;
+    const curPage = params.curPage;
+    const sorted = params.sorted;
 
-//     if (id && id !== objectToSet[nameOfIdentifier]) {
-//       objectToSet[nameOfIdentifier] = id;
-//       objectToSet.curPage = 0;
-//     }
-//     if (pageSize) {
-//       objectToSet.pageSize = pageSize;
-//     }
-//     if (curPage !== undefined) {
-//       objectToSet.curPage = curPage;
-//     }
-//   };
-// }
-
-export default new UIStore();
+    if (id && id !== objectToSet[nameOfIdentifier]) {
+      objectToSet[nameOfIdentifier] = id;
+      objectToSet.curPage = 0;
+    }
+    if (pageSize) {
+      objectToSet.pageSize = pageSize;
+    }
+    if (curPage !== undefined) {
+      objectToSet.curPage = curPage;
+    }
+    if (sorted) {
+      objectToSet.sorted = sorted;
+    }
+  };
+}

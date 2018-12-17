@@ -1,20 +1,27 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import TransactionAsset from './Asset/TransactionAsset';
+import { TransactionAsset } from './index';
 import HashLink from '../HashLink';
-import TextUtils from '../../lib/TextUtils.js';
+import TextUtils from '../../lib/TextUtils';
 
 export default function Transaction(props) {
   const { transaction, address, disableTXLinks } = props;
-  const timestamp = transaction.Block && transaction.Block.timestamp ? transaction.Block.timestamp : null;
+  const timestamp =
+    transaction.Block && transaction.Block.timestamp ? transaction.Block.timestamp : null;
   return (
     <div className="Transaction" key={transaction.id}>
       <div className="hash mb-4 no-text-transform font-size-md">
         {transaction.isCoinbase ? (
-          <span className="coinbase d-inline-block mr-1 text-white font-weight-bold">Coinbase - </span>
+          <span className="coinbase d-inline-block mr-1 text-white font-weight-bold">
+            Coinbase -{' '}
+          </span>
         ) : null}
         <HashLink url={disableTXLinks ? '' : `/tx/${transaction.hash}`} hash={transaction.hash} />
-        {timestamp? <span className="date float-sm-right d-block text-white">{TextUtils.getDateStringFromTimestamp(timestamp)}</span> : null}
+        {timestamp ? (
+          <span className="date float-sm-right d-block text-white">
+            {TextUtils.getDateStringFromTimestamp(timestamp)}
+          </span>
+        ) : null}
       </div>
       <div className="assets">
         {transaction.assets &&

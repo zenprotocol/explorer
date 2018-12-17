@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
-import { observer } from 'mobx-react';
-import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
-import blockStore from '../../store/BlockStore';
-import transactionStore from '../../store/TransactionStore';
+import { observer, inject } from 'mobx-react';
+import { Helmet } from 'react-helmet';
+import { Link } from 'react-router-dom';
 import TextUtils from '../../lib/TextUtils';
+import RouterUtils from '../../lib/RouterUtils';
 import { Transaction } from '../../components/Transactions';
 import Loading from '../../components/Loading';
 import Page from '../../components/Page';
@@ -22,16 +22,22 @@ class TransactionPage extends Component {
     this.pollIntervalAddition = 1; // will change over time
   }
 
+  get blockStore() {
+    return this.props.rootStore.blockStore;
+  }
+
+  get transactionStore() {
+    return this.props.rootStore.transactionStore;
+  }
+
   componentDidMount() {
-    const {
-      match: { params },
-    } = this.props;
-    this.setState({ hash: Number(params.hash) });
-    transactionStore.fetchTransaction(params.hash).then(transaction => {
+    const {hash} = RouterUtils.getRouteParams(this.props);
+    this.setState({ hash: Number(hash) });
+    this.transactionStore.fetchTransaction(hash).then(transaction => {
       if (!transaction) {
         // In case the tx is new and will be included soon in a block
         this.setState({ polling: true });
-        this.pollForTx(params.hash);
+        this.pollForTx(hash);
       }
     });
   }
@@ -43,7 +49,7 @@ class TransactionPage extends Component {
   pollForTx(hash) {
     clearTimeout(this.txPollingTimeout);
     this.txPollingTimeout = setTimeout(() => {
-      transactionStore.fetchTransaction(hash).then(transaction => {
+      this.transactionStore.fetchTransaction(hash).then(transaction => {
         if (!transaction) {
           this.pollForTx(hash);
         } else {
@@ -60,9 +66,9 @@ class TransactionPage extends Component {
   }
 
   render() {
-    const transaction = transactionStore.transaction;
+    const transaction = this.transactionStore.transaction;
 
-    if (transactionStore.loading.transaction && !this.state.polling) {
+    if (this.transactionStore.loading.transaction && !this.state.polling) {
       return <Loading />;
     }
 
@@ -76,6 +82,9 @@ class TransactionPage extends Component {
 
     return (
       <Page className="Transaction">
+        <Helmet>
+          <title>{TextUtils.getHtmlTitle('Transaction', transaction.hash)}</title>
+        </Helmet>
         <section>
           <div className="row">
             <div className="col-sm">
@@ -105,7 +114,7 @@ class TransactionPage extends Component {
                   <tr>
                     <td>Confirmations</td>
                     <td className="no-text-transform">
-                      {blockStore.confirmations(transaction.Block.blockNumber)}
+                      {this.blockStore.confirmations(transaction.Block.blockNumber)}
                     </td>
                   </tr>
                 </tbody>
@@ -123,6 +132,7 @@ class TransactionPage extends Component {
 
 TransactionPage.propTypes = {
   match: PropTypes.object,
+  rootStore: PropTypes.object,
 };
 
 const NotFoundDisplay = () => {
@@ -136,4 +146,4 @@ const NotFoundDisplay = () => {
   );
 };
 
-export default observer(TransactionPage);
+export default inject('rootStore')(observer(TransactionPage));

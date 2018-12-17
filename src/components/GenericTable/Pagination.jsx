@@ -1,11 +1,20 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import classnames from 'classnames';
 
 const PAGES_TO_SHOW = 4;
+const MIN_PAGE_SKIP = 10;
+const PAGE_SKIP_MULTIPLIER = 2;
 
 export default class ReactTablePagination extends Component {
   constructor(props) {
     super(props);
+
+    // multiplied after each sequential click
+    this.state = {
+      skipUp: MIN_PAGE_SKIP,
+      skipDown: MIN_PAGE_SKIP,
+    };
 
     this.getSafePage = this.getSafePage.bind(this);
     this.changePage = this.changePage.bind(this);
@@ -23,6 +32,33 @@ export default class ReactTablePagination extends Component {
     if (this.props.page !== page) {
       this.props.onPageChange(page);
     }
+    this.calculateNextPageSkips(page);
+  }
+
+  calculateNextPageSkips(page) {
+    if (
+      [0, this.props.pages - 1].includes(page) ||
+      Math.abs(page - this.props.page) < MIN_PAGE_SKIP
+    ) {
+      // reset
+      this.setState({
+        skipUp: MIN_PAGE_SKIP,
+        skipDown: MIN_PAGE_SKIP,
+      });
+    } else {
+      // multiply
+      if (page > this.props.page) {
+        this.setState(state => ({
+          skipUp: state.skipUp * PAGE_SKIP_MULTIPLIER,
+          skipDown: MIN_PAGE_SKIP,
+        }));
+      } else {
+        this.setState(state => ({
+          skipUp: MIN_PAGE_SKIP,
+          skipDown: state.skipDown * PAGE_SKIP_MULTIPLIER,
+        }));
+      }
+    }
   }
 
   render() {
@@ -35,14 +71,26 @@ export default class ReactTablePagination extends Component {
       canNext,
       className,
     } = this.props;
-    
-    if(pages < 2) {
+
+    if (pages < 2) {
       return null;
     }
+
     return (
       <div className={classnames(className, '-pagination')} style={this.props.style}>
         <nav aria-label="Page navigation">
           <ul className="pagination pagination-sm">
+            <li className="page-item page-skip-first">
+              <button
+                className="page-link"
+                onClick={() => {
+                  this.changePage(0);
+                }}
+                disabled={!canPrevious}
+              >
+                {this.props.firstText}
+              </button>
+            </li>
             <li className="page-item">
               <button
                 className="page-link"
@@ -68,6 +116,17 @@ export default class ReactTablePagination extends Component {
                 {this.props.nextText}
               </button>
             </li>
+            <li className="page-item page-skip-last">
+              <button
+                className="page-link"
+                onClick={() => {
+                  this.changePage(pages - 1);
+                }}
+                disabled={!canNext}
+              >
+                {this.props.lastText}
+              </button>
+            </li>
           </ul>
         </nav>
       </div>
@@ -76,7 +135,7 @@ export default class ReactTablePagination extends Component {
 
   getPageButtons(page, pages) {
     const pageButtonsNumbers = [];
-    
+
     for (let i = 0; i < pages; i++) {
       if (
         i === 0 ||
@@ -91,11 +150,31 @@ export default class ReactTablePagination extends Component {
     const pageButtons = [];
     for (let i = 0; i < pageButtonsNumbers.length; i++) {
       const curPageNumber = pageButtonsNumbers[i];
-      pageButtons.push(this.getPageButton(curPageNumber, curPageNumber === page));
-      if(i < pageButtonsNumbers.length - 1) {
+      pageButtons.push(
+        this.getPageButton({
+          page: curPageNumber,
+          active: curPageNumber === page,
+          classNames: 'page-number',
+        })
+      );
+      if (i < pageButtonsNumbers.length - 1) {
         const nextPageNumber = pageButtonsNumbers[i + 1];
         if (nextPageNumber - curPageNumber > 1) {
-          pageButtons.push(this.getPageButton(Math.floor((nextPageNumber + curPageNumber) / 2), false, '...', curPageNumber + pages));
+          const skipHalf = Math.floor((nextPageNumber + curPageNumber) / 2);
+          const skipToPage =
+            page < curPageNumber
+              ? Math.min(curPageNumber + this.state.skipUp, skipHalf)
+              : Math.max(nextPageNumber - this.state.skipDown, skipHalf);
+              
+          pageButtons.push(
+            this.getPageButton({
+              page: skipToPage,
+              active: false,
+              text: '...',
+              key: curPageNumber + pages,
+              classNames: 'page-skip',
+            })
+          );
         }
       }
     }
@@ -103,14 +182,14 @@ export default class ReactTablePagination extends Component {
     return pageButtons;
   }
 
-  getPageButton(page, active, text, key) {
+  getPageButton({ page, active, text, key, classNames } = {}) {
     return (
-      <li key={key || page} className={classnames('page-item', { active })}>
+      <li key={key || page} className={classnames('page-item', { active }, classNames)}>
         <button
           onClick={() => {
             this.changePage(page);
           }}
-          className="page-link page-number"
+          className="page-link"
         >
           {text || page + 1}
         </button>
@@ -118,3 +197,16 @@ export default class ReactTablePagination extends Component {
     );
   }
 }
+
+ReactTablePagination.propTypes = {
+  pages: PropTypes.number,
+  page: PropTypes.number,
+  canPrevious: PropTypes.bool,
+  canNext: PropTypes.bool,
+  className: PropTypes.string,
+  firstText: PropTypes.any,
+  lastText: PropTypes.any,
+  nextText: PropTypes.any,
+  previousText: PropTypes.any,
+  style: PropTypes.any,
+};

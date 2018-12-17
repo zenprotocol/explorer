@@ -1,7 +1,5 @@
 import React from 'react';
-import { observer } from 'mobx-react';
-import assetStore from '../../../../store/AssetStore';
-import uiStore from '../../../../store/UIStore';
+import { observer, inject } from 'mobx-react';
 import config from '../../../../lib/Config';
 import WithSetIdOnUiStore from '../../../../components/hoc/WithSetIdOnUiStore';
 import AssetUtils from '../../../../lib/AssetUtils';
@@ -9,7 +7,9 @@ import { TabPanel } from '../../../../components/tabs';
 import ItemsTable from '../../../../components/ItemsTable';
 import HashLink from '../../../../components/HashLink';
 
-const KeyholdersTab = observer(() => {
+const KeyholdersTab = observer((props) => {
+  const assetStore = props.rootStore.assetStore;
+  const uiStore = props.rootStore.uiStore;
   const totalIssued = Number(assetStore.asset.issued || 0);
   return (
     <TabPanel>
@@ -28,7 +28,7 @@ const KeyholdersTab = observer(() => {
           {
             Header: 'QUANTITY',
             accessor: 'balance',
-            Cell: data => AssetUtils.getAmountString(uiStore.assetKeyholdersTable.asset, data.value),
+            Cell: data => AssetUtils.getAmountString(uiStore.state.assetKeyholdersTable.asset, data.value),
           },
           {
             Header: '%',
@@ -41,8 +41,8 @@ const KeyholdersTab = observer(() => {
         loading={assetStore.loading.assetKeyholders}
         itemsCount={assetStore.assetKeyholdersCount}
         items={assetStore.assetKeyholders}
-        pageSize={uiStore.assetKeyholdersTable.pageSize}
-        curPage={uiStore.assetKeyholdersTable.curPage}
+        pageSize={uiStore.state.assetKeyholdersTable.pageSize}
+        curPage={uiStore.state.assetKeyholdersTable.curPage}
         tableDataSetter={uiStore.setAssetKeyholdersTableData.bind(uiStore)}
         topContent={
           <div>{assetStore.assetKeyholdersCount} unique keyholders found for this asset</div>
@@ -51,4 +51,4 @@ const KeyholdersTab = observer(() => {
     </TabPanel>
   );
 });
-export default observer(WithSetIdOnUiStore(KeyholdersTab, 'setAssetKeyholdersTableData', 'asset'));
+export default inject('rootStore')(observer(WithSetIdOnUiStore(KeyholdersTab, 'setAssetKeyholdersTableData', 'asset')));

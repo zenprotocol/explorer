@@ -1,18 +1,23 @@
 import React, { Component } from 'react';
-import { observer } from 'mobx-react';
+import { observer, inject } from 'mobx-react';
 import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
-import uiStore from '../../../store/UIStore';
 import config from '../../../lib/Config';
 import AssetUtils from '../../../lib/AssetUtils';
 import TextUtils from '../../../lib/TextUtils';
-import addressStore from '../../../store/AddressStore';
 import HashLink from '../../../components/HashLink';
 import ItemsTable from '../../../components/ItemsTable';
 import PageTitle from '../../../components/PageTitle';
 import { TransactionAssetLoader } from '../../../components/Transactions';
 
 class AddressTxsTable extends Component {
+  get uiStore() {
+    return this.props.rootStore.uiStore;
+  }
+  get addressStore() {
+    return this.props.rootStore.addressStore;
+  }
+
   getTableColumns() {
     return [
       {
@@ -77,12 +82,12 @@ class AddressTxsTable extends Component {
     return (
       <ItemsTable
         columns={this.getTableColumns()}
-        loading={addressStore.loading.addressTransactionAssets}
-        itemsCount={addressStore.addressTransactionAssetsCount}
-        items={addressStore.addressTransactionAssets}
-        pageSize={uiStore.addressTxAssetsTable.pageSize}
-        curPage={uiStore.addressTxAssetsTable.curPage}
-        tableDataSetter={uiStore.setAddressTxAssetsTableData.bind(uiStore)}
+        loading={this.addressStore.loading.addressTransactionAssets}
+        itemsCount={this.addressStore.addressTransactionAssetsCount}
+        items={this.addressStore.addressTransactionAssets}
+        pageSize={this.uiStore.state.addressTxAssetsTable.pageSize}
+        curPage={this.uiStore.state.addressTxAssetsTable.curPage}
+        tableDataSetter={this.uiStore.setAddressTxAssetsTableData.bind(this.uiStore)}
         topContent={<PageTitle title="Transactions" margin={false} />}
         SubComponent={row => {
           const addressFoundIn = [];
@@ -92,7 +97,7 @@ class AddressTxsTable extends Component {
           }
           return (
             <TransactionAssetLoader
-              transactionAssets={addressStore.addressTransactionAssets}
+              transactionAssets={this.addressStore.addressTransactionAssets}
               index={row.index}
               timestamp={row.original.timestamp}
               address={address}
@@ -107,6 +112,7 @@ class AddressTxsTable extends Component {
 
 AddressTxsTable.propTypes = {
   address: PropTypes.string,
+  rootStore: PropTypes.object,
 };
 
-export default observer(AddressTxsTable);
+export default inject('rootStore')(observer(AddressTxsTable));

@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
-import { observer } from 'mobx-react';
-import uiStore from '../../../../store/UIStore';
-import contractStore from '../../../../store/ContractStore';
+import PropTypes from 'prop-types';
+import { observer, inject } from 'mobx-react';
 import config from '../../../../lib/Config';
 import TextUtils from '../../../../lib/TextUtils';
 import HashLink from '../../../../components/HashLink';
@@ -46,14 +45,15 @@ class ContractsTable extends Component {
   }
 
   render() {
+    const {contractStore, uiStore} = this.props.rootStore;
     return (
       <ItemsTable
         columns={this.getTableColumns()}
         loading={contractStore.loading.contracts}
         itemsCount={contractStore.contractsCount}
         items={contractStore.contracts}
-        pageSize={uiStore.contractsTable.pageSize}
-        curPage={uiStore.contractsTable.curPage}
+        pageSize={uiStore.state.contractsTable.pageSize}
+        curPage={uiStore.state.contractsTable.curPage}
         tableDataSetter={uiStore.setContractsTableData.bind(uiStore)}
         topContent={<PageTitle title="Contracts" margin={false} />}
         defaultSorted={[{ id: 'expiryBlock', desc: true }]}
@@ -63,4 +63,8 @@ class ContractsTable extends Component {
   }
 }
 
-export default observer(ContractsTable);
+ContractsTable.propTypes = {
+  rootStore: PropTypes.object,
+};
+
+export default inject('rootStore')(observer(ContractsTable));
