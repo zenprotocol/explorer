@@ -204,12 +204,46 @@ transactionsDAL.findAllByAsset = async function(
 
 transactionsDAL.findAllAssetsByBlock = async function(
   hashOrBlockNumber,
-  { limit = 10, offset = 0 }
+  { limit = 10, offset = 0 } = {}
 ) {
   const blockProp = isHash(hashOrBlockNumber) ? 'hash' : 'blockNumber';
   const sql = tags.oneLine`
-  SELECT
-    COALESCE("OutputAsset"."asset", "InputAsset"."asset") AS "asset",
+  WITH "AddressAmounts" AS ( 
+    SELECT 
+      COALESCE("OutputAsset"."TransactionId", "InputAsset"."TransactionId") AS "TransactionId",
+      COALESCE("OutputAsset"."asset", "InputAsset"."asset") AS "asset",
+      COALESCE("OutputAsset"."address", "InputAsset"."address") AS "address",
+      COALESCE("OutputAsset"."outputSum", 0) AS "outputSum",
+      COALESCE("InputAsset"."inputSum", 0) AS "inputSum"
+    FROM
+      (SELECT SUM("Output"."amount") AS "outputSum",
+        "Output"."asset",
+        "Output"."address",
+        "Output"."TransactionId"
+      FROM "Outputs" AS "Output"
+        JOIN "Transactions" ON "Output"."TransactionId" = "Transactions"."id"
+        JOIN "Blocks" ON "Transactions"."BlockId" = "Blocks"."id" AND "Blocks"."${blockProp}" = :hashOrBlockNumber
+      GROUP BY "Output"."TransactionId", "Output"."asset", "Output"."address") AS "OutputAsset"
+  
+      FULL OUTER JOIN
+  
+      (SELECT SUM("Output"."amount") AS "inputSum",
+        "Output"."asset",
+        "Output"."address",
+        "Input"."TransactionId"
+      FROM "Inputs" AS "Input"
+        INNER JOIN "Outputs" as "Output" ON "Input"."OutputId" = "Output"."id"
+        JOIN "Transactions" ON "Input"."TransactionId" = "Transactions"."id"
+        JOIN "Blocks" ON "Transactions"."BlockId" = "Blocks"."id" AND "Blocks"."${blockProp}" = :hashOrBlockNumber
+      GROUP BY "Input"."TransactionId", "Output"."asset", "Output"."address") AS "InputAsset"
+  
+      ON "OutputAsset"."TransactionId" = "InputAsset"."TransactionId"
+        AND "OutputAsset"."asset" = "InputAsset"."asset"
+        AND "OutputAsset"."address" = "InputAsset"."address"
+  )
+  
+  SELECT 
+    "AllAmounts"."asset",
     "Block"."timestamp" AS "timestamp",
     "Block"."hash" AS "blockHash",
     "Transaction"."id" AS "transactionId",
@@ -217,36 +251,39 @@ transactionsDAL.findAllAssetsByBlock = async function(
     CASE WHEN "Transaction"."index" = 0 THEN true
             ELSE false
             END AS "isCoinbaseTx",
-    COALESCE("OutputAsset"."outputSum", 0) AS "outputSum",
-    COALESCE("InputAsset"."inputSum", 0) AS "inputSum",
-    COALESCE("outputSum", 0) -  COALESCE("inputSum", 0) AS "totalSum"
+    "AllAmounts"."outputSum",
+    "AllAmounts"."inputSum",
+    "AllAmounts"."totalMoved",
+    "AllAmounts"."totalSum"
   FROM
-    (SELECT SUM("Output"."amount") AS "outputSum",
-      "Output"."asset",
-      "Output"."TransactionId"
-    FROM "Outputs" AS "Output"
-      JOIN "Transactions" ON "Output"."TransactionId" = "Transactions"."id"
-      JOIN "Blocks" ON "Transactions"."BlockId" = "Blocks"."id" AND "Blocks"."${blockProp}" = :hashOrBlockNumber
-    GROUP BY "Output"."TransactionId", "Output"."asset") AS "OutputAsset"
-
-    FULL OUTER JOIN
-
-    (SELECT SUM("Output"."amount") AS "inputSum",
-      "Output"."asset",
-      "Input"."TransactionId"
-    FROM "Inputs" AS "Input"
-      INNER JOIN "Outputs" as "Output" ON "Input"."OutputId" = "Output"."id"
-      JOIN "Transactions" ON "Input"."TransactionId" = "Transactions"."id"
-      JOIN "Blocks" ON "Transactions"."BlockId" = "Blocks"."id" AND "Blocks"."${blockProp}" = :hashOrBlockNumber
-    GROUP BY "Input"."TransactionId", "Output"."asset") AS "InputAsset"
-
-    ON "OutputAsset"."TransactionId" = "InputAsset"."TransactionId"
-      AND "OutputAsset"."asset" = "InputAsset"."asset"
-    INNER JOIN "Transactions" AS "Transaction" ON "OutputAsset"."TransactionId" = "Transaction"."id" OR "InputAsset"."TransactionId" = "Transaction"."id"
-    INNER JOIN "Blocks" AS "Block" ON "Transaction"."BlockId" = "Block"."id"
-  WHERE "Block"."${blockProp}" = :hashOrBlockNumber
+    (SELECT
+      "AddressAmounts"."TransactionId",
+      "AddressAmounts"."asset",
+      sum("AddressAmounts"."outputSum") AS "outputSum",
+      sum("AddressAmounts"."inputSum") AS "inputSum",
+      max("TotalMoved"."total") AS "totalMoved",
+      sum("AddressAmounts"."outputSum") -  sum("AddressAmounts"."inputSum") AS "totalSum"
+    FROM
+      "AddressAmounts"
+      LEFT JOIN
+      (SELECT 
+        SUM("AddressAmounts"."outputSum") AS "total", 
+        "AddressAmounts"."TransactionId",
+        "AddressAmounts"."asset"
+        FROM "AddressAmounts"
+        WHERE "AddressAmounts"."inputSum" = 0
+        GROUP BY 
+        "AddressAmounts"."TransactionId", "AddressAmounts"."asset"
+      ) AS "TotalMoved"
+      ON "AddressAmounts"."TransactionId" = "TotalMoved"."TransactionId"
+      AND "AddressAmounts"."asset" = "TotalMoved"."asset"
+    GROUP BY 
+        "AddressAmounts"."TransactionId", "AddressAmounts"."asset") AS "AllAmounts"
+  INNER JOIN "Transactions" AS "Transaction" ON "AllAmounts"."TransactionId" = "Transaction"."id"
+  INNER JOIN "Blocks" AS "Block" ON "Transaction"."BlockId" = "Block"."id"
   ORDER BY "Transaction"."index"
-  LIMIT :limit OFFSET :offset`;
+  LIMIT :limit OFFSET :offset
+  `;
 
   return sequelize.query(sql, {
     replacements: {
