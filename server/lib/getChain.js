@@ -1,4 +1,4 @@
-const infosDAL = require('../../server/components/api/infos/infosDAL');
+const infosDAL = require('../components/api/infos/infosDAL');
 
 let chain = '';
 

@@ -8,7 +8,7 @@ const makeLogger = require('./lib/logger');
 const loggerBlocks = makeLogger('blocks');
 const loggerReorg = makeLogger('reorg');
 const slackLogger = require('../server/lib/slackLogger');
-const getChain = require('./lib/getChain');
+const getChain = require('../server/lib/getChain');
 const NUM_OF_BLOCKS_IN_CHUNK = Config.get('queues:addBlocks:limitBlocks');
 
 const addBlocksQueue = new Queue(

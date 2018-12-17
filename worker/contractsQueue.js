@@ -6,7 +6,7 @@ const TaskTimeLimiter = require('./lib/TaskTimeLimiter');
 const Config = require('../server/config/Config');
 const logger = require('./lib/logger')('contracts');
 const slackLogger = require('../server/lib/slackLogger');
-const getChain = require('./lib/getChain');
+const getChain = require('../server/lib/getChain');
 
 const contractsQueue = new Queue(
   Config.get('queues:contracts:name'),
