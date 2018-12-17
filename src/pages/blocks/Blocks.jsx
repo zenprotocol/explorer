@@ -32,10 +32,15 @@ class BlocksPage extends Component {
   }
 
   render() {
+    const { pathname } = this.props.location;
+    const title =
+      pathname === '/'
+        ? TextUtils.getHtmlTitle('Block Explorer')
+        : TextUtils.getHtmlTitle('Blocks', '', true);
     return (
       <Page className="Blocks">
         <Helmet>
-          <title>{TextUtils.getHtmlTitle('Blocks')}</title>
+          <title>{title}</title>
         </Helmet>
         <section>
           <BlocksTable title="LATEST BLOCKS" />
@@ -47,6 +52,7 @@ class BlocksPage extends Component {
 
 BlocksPage.propTypes = {
   rootStore: PropTypes.object,
+  location: PropTypes.object,
 };
 
 export default inject('rootStore')(BlocksPage);

@@ -16,7 +16,7 @@ class ContractsPage extends Component {
     return (
       <Page className="Contract">
         <Helmet>
-          <title>{TextUtils.getHtmlTitle('Contracts')}</title>
+          <title>{TextUtils.getHtmlTitle('Contracts', '', true)}</title>
         </Helmet>
         <section>
           <ContractsTable />
