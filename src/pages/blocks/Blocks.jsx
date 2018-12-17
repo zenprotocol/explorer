@@ -1,6 +1,9 @@
 import React, { Component } from 'react';
-import blockStore from '../../store/BlockStore';
-import Service from '../../lib/Service.js';
+import PropTypes from 'prop-types';
+import { inject } from 'mobx-react';
+import { Helmet } from 'react-helmet';
+import Service from '../../lib/Service';
+import TextUtils from '../../lib/TextUtils';
 import BlocksTable from './BlocksTable';
 import Page from '../../components/Page';
 
@@ -11,7 +14,7 @@ class BlocksPage extends Component {
     this.fetchBlocksCount = this.fetchBlocksCount.bind(this);
   }
   componentDidMount() {
-    this.fetchBlocksCount(); // MUST HAVE THE BLOCK COUNT FIRST, FOR INNER PAGES TOO!
+    this.fetchBlocksCount();
   }
 
   componentWillUnmount() {
@@ -19,6 +22,7 @@ class BlocksPage extends Component {
   }
 
   fetchBlocksCount() {
+    const { blockStore } = this.props.rootStore;
     Service.blocks.count().then(response => {
       if (Number(response.data) !== blockStore.blocksCount) {
         blockStore.setBlocksCount(Number(response.data));
@@ -30,6 +34,9 @@ class BlocksPage extends Component {
   render() {
     return (
       <Page className="Blocks">
+        <Helmet>
+          <title>{TextUtils.getHtmlTitle('Blocks')}</title>
+        </Helmet>
         <section>
           <BlocksTable title="LATEST BLOCKS" />
         </section>
@@ -38,4 +45,8 @@ class BlocksPage extends Component {
   }
 }
 
-export default BlocksPage;
+BlocksPage.propTypes = {
+  rootStore: PropTypes.object,
+};
+
+export default inject('rootStore')(BlocksPage);

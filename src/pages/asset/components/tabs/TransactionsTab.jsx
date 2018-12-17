@@ -1,8 +1,6 @@
 import React from 'react';
-import { observer } from 'mobx-react';
+import { observer, inject } from 'mobx-react';
 import { Link } from 'react-router-dom';
-import assetStore from '../../../../store/AssetStore';
-import uiStore from '../../../../store/UIStore';
 import config from '../../../../lib/Config';
 import WithSetIdOnUiStore from '../../../../components/hoc/WithSetIdOnUiStore';
 import TextUtils from '../../../../lib/TextUtils';
@@ -12,7 +10,9 @@ import ItemsTable from '../../../../components/ItemsTable';
 import HashLink from '../../../../components/HashLink';
 import { TransactionAssetLoader } from '../../../../components/Transactions';
 
-const TransactionsTab = observer(() => {
+const TransactionsTab = observer((props) => {
+  const uiStore = props.rootStore.uiStore;
+  const assetStore = props.rootStore.assetStore;
   return (
     <TabPanel>
       <ItemsTable
@@ -37,14 +37,14 @@ const TransactionsTab = observer(() => {
           {
             Header: 'Output total',
             accessor: 'outputSum',
-            Cell: data => AssetUtils.getAmountString(uiStore.assetTxsTable.asset, data.value),
+            Cell: data => AssetUtils.getAmountString(uiStore.state.assetTxsTable.asset, data.value),
           },
         ]}
         loading={assetStore.loading.assetTxs}
         itemsCount={assetStore.assetTxsCount}
         items={assetStore.assetTxs}
-        pageSize={uiStore.assetTxsTable.pageSize}
-        curPage={uiStore.assetTxsTable.curPage}
+        pageSize={uiStore.state.assetTxsTable.pageSize}
+        curPage={uiStore.state.assetTxsTable.curPage}
         tableDataSetter={uiStore.setAssetTxsTableData.bind(uiStore)}
         topContent={
           <div>Total of {assetStore.assetTxsCount} transactions found involving this asset</div>
@@ -61,4 +61,4 @@ const TransactionsTab = observer(() => {
     </TabPanel>
   );
 });
-export default observer(WithSetIdOnUiStore(TransactionsTab, 'setAssetTxsTableData', 'asset'));
+export default inject('rootStore')(observer(WithSetIdOnUiStore(TransactionsTab, 'setAssetTxsTableData', 'asset')));

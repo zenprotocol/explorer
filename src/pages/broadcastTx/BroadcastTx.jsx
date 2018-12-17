@@ -2,7 +2,9 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import debounce from 'lodash.debounce';
+import { Helmet } from 'react-helmet';
 import Service from '../../lib/Service';
+import TextUtils from '../../lib/TextUtils';
 import RouterUtils from '../../lib/RouterUtils';
 import BrowserUtils from '../../lib/BrowserUtils';
 import Loading from '../../components/Loading';
@@ -59,6 +61,9 @@ class BroadcastTx extends Component {
     const { hex, progress, broadcastResponse, error } = this.state;
     return (
       <Page className="BroadcastTx">
+        <Helmet>
+          <title>{TextUtils.getHtmlTitle('Broadcast a Transaction')}</title>
+        </Helmet>
         <section>
           <h1 className="d-block d-sm-inline-block text-white mb-3 mb-lg-5">{PAGE_TITLE}</h1>
           <form onSubmit={this.handleSubmit}>

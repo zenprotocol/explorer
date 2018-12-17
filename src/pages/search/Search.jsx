@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
-import { observer } from 'mobx-react';
+import PropTypes from 'prop-types';
+import { observer, inject } from 'mobx-react';
 import { Link, Redirect } from 'react-router-dom';
 import classNames from 'classnames';
-import searchStore from '../../store/SearchStore';
+import { Helmet } from 'react-helmet';
 import RouterUtils from '../../lib/RouterUtils';
 import TextUtils from '../../lib/TextUtils';
 import SearchUtils from '../../lib/SearchUtils';
@@ -23,6 +24,11 @@ class SearchResultsPage extends Component {
       initialSearchDone: false,
     };
   }
+
+  get searchStore() {
+    return this.props.rootStore.searchStore;
+  }
+
   componentDidMount() {
     const { search } = RouterUtils.getRouteParams(this.props);
     this.search(search);
@@ -37,7 +43,7 @@ class SearchResultsPage extends Component {
   }
 
   componentWillUnmount() {
-    searchStore.clearSearchString();
+    this.searchStore.clearSearchString();
     this.blurSearchBar();
   }
 
@@ -51,7 +57,7 @@ class SearchResultsPage extends Component {
   search(value) {
     const search = SearchUtils.formatSearchString(value);
     if (!this.redirectBeforeSearch(search)) {
-      searchStore.search(search);
+      this.searchStore.search(search);
       this.setState({ initialSearchDone: true });
     }
   }
@@ -77,14 +83,14 @@ class SearchResultsPage extends Component {
     if (!this.state.initialSearchDone) {
       return null;
     }
-    if (searchStore.loading.searchResults) {
+    if (this.searchStore.loading.searchResults) {
       return <Loading />;
     }
 
     let { search } = RouterUtils.getRouteParams(this.props);
     search = SearchUtils.formatSearchString(search);
 
-    const results = searchStore.searchResults;
+    const results = this.searchStore.searchResults;
     const total = results.total;
     const { blocks, transactions, addresses, contracts, assets, outputs } = results.items;
 
@@ -111,6 +117,9 @@ class SearchResultsPage extends Component {
 
     return (
       <Page className="SearchResults">
+        <Helmet>
+          <title>{TextUtils.getHtmlTitle('Search')}</title>
+        </Helmet>
         <section>
           <div className="row">
             <div className="col-sm">
@@ -296,4 +305,8 @@ class SearchResultsPage extends Component {
   }
 }
 
-export default observer(SearchResultsPage);
+SearchResultsPage.propTypes = {
+  rootStore: PropTypes.object,
+};
+
+export default inject('rootStore')(observer(SearchResultsPage));

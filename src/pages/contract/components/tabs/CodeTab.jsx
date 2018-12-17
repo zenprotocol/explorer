@@ -1,11 +1,11 @@
 import React from 'react';
-import { observer } from 'mobx-react';
+import { observer, inject } from 'mobx-react';
 import Highlight from 'react-highlight';
-import contractStore from '../../../../store/ContractStore';
 import { TabPanel } from '../../../../components/tabs';
 import Loading from '../../../../components/Loading';
 
-export default observer(function CodeTab() {
+export default inject('rootStore')(observer(function CodeTab(props) {
+  const { contractStore } = props.rootStore;
   if (contractStore.loading.contract) {
     return <Loading />;
   }
@@ -14,4 +14,4 @@ export default observer(function CodeTab() {
       <Highlight className="fsharp">{contractStore.contract.code}</Highlight>
     </TabPanel>
   );
-});
+}));

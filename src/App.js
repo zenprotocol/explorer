@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import { inject } from 'mobx-react';
 import Service from './lib/Service';
-import rootStore from './store/RootStore';
-import blockStore from './store/BlockStore';
-import uiStore from './store/UIStore';
 import MainRoutes from './MainRoutes.jsx';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
@@ -17,8 +16,18 @@ class App extends Component {
     this.fetchSyncingTimeout = this.fetchSyncingTimeout.bind(this);
   }
 
+  get infoStore() {
+    return this.props.rootStore.infoStore;
+  }
+  get blockStore() {
+    return this.props.rootStore.blockStore;
+  }
+  get uiStore() {
+    return this.props.rootStore.uiStore;
+  }
+
   componentDidMount() {
-    rootStore.loadChain();
+    this.infoStore.loadInfos();
     this.fetchBlocksCount();
     this.fetchSyncingTimeout();
   }
@@ -28,16 +37,15 @@ class App extends Component {
   }
 
   fetchBlocksCount() {
-    Service.blocks.find({ pageSize: 1 }).then(response => {
-      if (response.data.total !== blockStore.blocksCount) {
-        blockStore.setBlocksCount(Number(response.data.total));
+    Service.blocks.count().then(response => {
+      if (Number(response.data) !== this.blockStore.blocksCount) {
+        this.blockStore.setBlocksCount(Number(response.data));
       }
     });
   }
 
-
   fetchSyncingTimeout() {
-    uiStore.fetchSyncing().then(() => {
+    this.uiStore.fetchSyncing().then(() => {
       this.syncingTimer = setTimeout(this.fetchSyncingTimeout, 60000);
     });
   }
@@ -65,4 +73,8 @@ class App extends Component {
   }
 }
 
-export default App;
+App.propTypes = {
+  rootStore: PropTypes.object,
+};
+
+export default inject('rootStore')(App);

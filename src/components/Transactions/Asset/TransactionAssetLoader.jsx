@@ -1,15 +1,14 @@
 import React, { Component } from 'react';
-import {observer} from 'mobx-react';
+import { observer, inject } from 'mobx-react';
 import PropTypes from 'prop-types';
-import transactionStore from '../../../store/TransactionStore';
 import TransactionAsset from './TransactionAsset.jsx';
 import Loading from '../../Loading';
 
 class TransactionAssetLoader extends Component {
   componentDidMount() {
-    const { transactionAssets, index } = this.props;
+    const { transactionAssets, index, rootStore } = this.props;
     if (!this.transactionAssetAlreadyLoaded) {
-      transactionStore.fetchTransactionAsset(transactionAssets, index);
+      rootStore.transactionStore.fetchTransactionAsset(transactionAssets, index);
     }
   }
   render() {
@@ -42,6 +41,7 @@ TransactionAssetLoader.propTypes = {
   address: PropTypes.string,
   addressFoundIn: PropTypes.array,
   total: PropTypes.number,
+  rootStore: PropTypes.object,
 };
 
-export default observer(TransactionAssetLoader);
+export default inject('rootStore')(observer(TransactionAssetLoader));

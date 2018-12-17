@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import RouterUtils from '../../../lib/RouterUtils';
-import uiStore from '../../../store/UIStore';
 
 export default function WithSetIdOnUiStore(WrappedComponent, uiStoreFunctionName, nameOfId) {
   return class HOC extends Component {
@@ -20,7 +19,7 @@ export default function WithSetIdOnUiStore(WrappedComponent, uiStoreFunctionName
     }
 
     setId() {
-      uiStore[uiStoreFunctionName]({ [nameOfId]: this.idProp });
+      this.props.rootStore.uiStore[uiStoreFunctionName]({ [nameOfId]: this.idProp });
     }
 
     render() {

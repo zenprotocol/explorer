@@ -1,11 +1,12 @@
 import React from 'react';
-import { observer } from 'mobx-react';
-import rootStore from '../../store/RootStore';
+import PropTypes from 'prop-types';
+import { observer, inject } from 'mobx-react';
 import Button from '../buttons/Button';
 import './TestnetBar.scss';
 
-function TestnetBar() {
-  if(!rootStore.isTestnet) {
+function TestnetBar(props) {
+  const { infoStore } = props.rootStore;
+  if(!infoStore.isTestnet) {
     return null;
   }
   return (
@@ -16,4 +17,8 @@ function TestnetBar() {
   );
 }
 
-export default observer(TestnetBar);
+TestnetBar.propTypes = {
+  rootStore: PropTypes.object,
+};
+
+export default inject('rootStore')(observer(TestnetBar));

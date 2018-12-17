@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
-import { observer } from 'mobx-react';
+import PropTypes from 'prop-types';
+import { observer, inject } from 'mobx-react';
 import { Route, Switch, Redirect } from 'react-router-dom';
-import contractStore from '../../store/ContractStore';
-import addressStore from '../../store/AddressStore';
+import { Helmet } from 'react-helmet';
 import RouterUtils from '../../lib/RouterUtils';
 import TextUtils from '../../lib/TextUtils';
 import Loading from '../../components/Loading';
@@ -16,6 +16,18 @@ import { AssetsTab, CodeTab, CommandsTab, TransactionsTab } from './components/t
 import './Contract.scss';
 
 class ContractPage extends Component {
+  get contractStore() {
+    return this.props.rootStore.contractStore;
+  }
+
+  get addressStore() {
+    return this.props.rootStore.addressStore;
+  }
+
+  get addressProp() {
+    return RouterUtils.getRouteParams(this.props).address;
+  }
+
   componentDidMount() {
     this.setAddress(this.addressProp);
   }
@@ -28,23 +40,27 @@ class ContractPage extends Component {
   }
 
   setAddress(address) {
-    contractStore.loadContract(address);
-    addressStore.fetchAddress(address);
-  }
-
-  get addressProp() {
-    return RouterUtils.getRouteParams(this.props).address;
+    this.contractStore.loadContract(address);
+    this.addressStore.fetchAddress(address);
   }
 
   render() {
-    const is404 = contractStore.contract.status === 404;
+    const is404 = this.contractStore.contract.status === 404;
 
     return (
       <Page className="Contract">
+        <Helmet>
+          <title>{TextUtils.getHtmlTitle('Contract', this.addressProp)}</title>
+        </Helmet>
         <section>
           <PageTitle
             title="Contract"
-            subtitle={<div><strong>Contract address</strong>: <HashLink hash={this.addressProp} truncate={false} copy={true} /></div>}
+            subtitle={
+              <div>
+                <strong>Contract address</strong>:{' '}
+                <HashLink hash={this.addressProp} truncate={false} copy={true} />
+              </div>
+            }
           />
           {is404 ? <ItemNotFound item="contract" /> : this.renderTopTables()}
         </section>
@@ -54,11 +70,11 @@ class ContractPage extends Component {
   }
 
   renderTopTables() {
-    if (contractStore.loading.contract || addressStore.loading.address) {
+    if (this.contractStore.loading.contract || this.addressStore.loading.address) {
       return <Loading />;
     }
-    const contract = contractStore.contract;
-    const address = addressStore.address;
+    const contract = this.contractStore.contract;
+    const address = this.addressStore.address;
     if (!contract.id) {
       return null;
     }
@@ -76,11 +92,15 @@ class ContractPage extends Component {
             <tbody>
               <tr>
                 <td>CONTRACT ID</td>
-                <td><HashLink hash={contract.id} /></td>
+                <td>
+                  <HashLink hash={contract.id} />
+                </td>
               </tr>
               <tr>
                 <td>STATUS</td>
-                <td>{contract.expiryBlock ? `Active until block ${contract.expiryBlock}` : 'Inactive'}</td>
+                <td>
+                  {contract.expiryBlock ? `Active until block ${contract.expiryBlock}` : 'Inactive'}
+                </td>
               </tr>
               <tr>
                 <td>TRANSACTIONS</td>
@@ -102,7 +122,7 @@ class ContractPage extends Component {
   }
 
   renderTabs() {
-    if (!contractStore.contract.id) {
+    if (!this.contractStore.contract.id) {
       return null;
     }
     const currentPath = this.props.match.path;
@@ -128,4 +148,9 @@ class ContractPage extends Component {
   }
 }
 
-export default observer(ContractPage);
+ContractPage.propTypes = {
+  match: PropTypes.object,
+  rootStore: PropTypes.object,
+};
+
+export default inject('rootStore')(observer(ContractPage));

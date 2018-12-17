@@ -1,16 +1,23 @@
 import React, { Component } from 'react';
-import { observer } from 'mobx-react';
-import uiStore from '../../../store/UIStore';
-import blockStore from '../../../store/BlockStore';
+import PropTypes from 'prop-types';
+import { observer, inject } from 'mobx-react';
 import config from '../../../lib/Config';
 import TextUtils from '../../../lib/TextUtils';
 import AssetUtils from '../../../lib/AssetUtils';
-import HashLink from '../../../components/HashLink/HashLink';
-import ItemsTable from '../../../components/ItemsTable/ItemsTable';
+import HashLink from '../../../components/HashLink';
+import ItemsTable from '../../../components/ItemsTable';
 import PageTitle from '../../../components/PageTitle';
-import TransactionAssetLoader from '../../../components/Transactions/Asset/TransactionAssetLoader';
+import { TransactionAssetLoader } from '../../../components/Transactions';
 
 class BlockTxsTable extends Component {
+  get blockStore() {
+    return this.props.rootStore.blockStore;
+  }
+
+  get uiStore() {
+    return this.props.rootStore.uiStore;
+  }
+
   getTableColumns() {
     return [
       {
@@ -59,17 +66,17 @@ class BlockTxsTable extends Component {
     return (
       <ItemsTable
         columns={this.getTableColumns()}
-        loading={blockStore.loading.blockTransactionAssets}
-        itemsCount={blockStore.blockTransactionAssetsCount}
-        items={blockStore.blockTransactionAssets}
-        pageSize={uiStore.blockTxTable.pageSize}
-        curPage={uiStore.blockTxTable.curPage}
-        tableDataSetter={uiStore.setBlockTxTableData.bind(uiStore)}
+        loading={this.blockStore.loading.blockTransactionAssets}
+        itemsCount={this.blockStore.blockTransactionAssetsCount}
+        items={this.blockStore.blockTransactionAssets}
+        pageSize={this.uiStore.state.blockTxTable.pageSize}
+        curPage={this.uiStore.state.blockTxTable.curPage}
+        tableDataSetter={this.uiStore.setBlockTxTableData.bind(this.uiStore)}
         topContent={<PageTitle title="Transactions" margin={false} />}
         SubComponent={row => {
           return (
             <TransactionAssetLoader
-              transactionAssets={blockStore.blockTransactionAssets}
+              transactionAssets={this.blockStore.blockTransactionAssets}
               index={row.index}
               timestamp={row.original.timestamp}
             />
@@ -80,4 +87,8 @@ class BlockTxsTable extends Component {
   }
 }
 
-export default observer(BlockTxsTable);
+BlockTxsTable.propTypes = {
+  rootStore: PropTypes.object,
+};
+
+export default inject('rootStore')(observer(BlockTxsTable));

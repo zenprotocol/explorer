@@ -1,17 +1,23 @@
 import React, { Component } from 'react';
-import { observer } from 'mobx-react';
-import contractStore from '../../store/ContractStore';
+import PropTypes from 'prop-types';
+import { observer, inject } from 'mobx-react';
+import { Helmet } from 'react-helmet';
+import TextUtils from '../../lib/TextUtils';
 import ContractsTable from './components/ContractsTable';
 import Page from '../../components/Page';
 
 class ContractsPage extends Component {
   componentDidMount() {
-    contractStore.loadContracts({}, { setItems: false });
+    // must have contracts count
+    this.props.rootStore.contractStore.loadContracts({ pageSize: 1 }, { setItems: false });
   }
 
   render() {
     return (
       <Page className="Contract">
+        <Helmet>
+          <title>{TextUtils.getHtmlTitle('Contracts')}</title>
+        </Helmet>
         <section>
           <ContractsTable />
         </section>
@@ -20,4 +26,8 @@ class ContractsPage extends Component {
   }
 }
 
-export default observer(ContractsPage);
+ContractsPage.propTypes = {
+  rootStore: PropTypes.object,
+};
+
+export default inject('rootStore')(observer(ContractsPage));

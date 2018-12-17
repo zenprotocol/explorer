@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
+import { Helmet } from 'react-helmet';
 import RouterUtils from '../../lib/RouterUtils';
+import TextUtils from '../../lib/TextUtils';
 import { ChartLoader } from '../../components/charts';
 import Page from '../../components/Page';
 import './Chart.scss';
@@ -36,6 +38,9 @@ class Chart extends Component {
 
     return (
       <Page className="ChartPage">
+        <Helmet>
+          <title>{TextUtils.getHtmlTitle(chartConfig.title)}</title>
+        </Helmet>
         <section>
           <h1 className="d-block d-sm-inline-block text-white mb-3 mb-lg-5">{chartConfig.title}</h1>
           <ChartLoader chartName={chartConfig.name} />

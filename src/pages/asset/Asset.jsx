@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
-import { observer } from 'mobx-react';
+import { observer, inject } from 'mobx-react';
 import { Route, Switch, Redirect } from 'react-router-dom';
-import assetStore from '../../store/AssetStore';
+import PropTypes from 'prop-types';
+import { Helmet } from 'react-helmet';
 import RouterUtils from '../../lib/RouterUtils';
 import TextUtils from '../../lib/TextUtils';
 import AssetUtils from '../../lib/AssetUtils';
@@ -15,6 +16,10 @@ import { Tabs, TabHead, TabBody, Tab } from '../../components/tabs';
 import { TransactionsTab, ChartTab, KeyholdersTab } from './components/tabs';
 
 class AssetPage extends Component {
+  get assetStore() {
+    return this.props.rootStore.assetStore;
+  }
+
   componentDidMount() {
     this.setAsset(this.assetProp);
   }
@@ -27,8 +32,8 @@ class AssetPage extends Component {
   }
 
   setAsset(asset) {
-    assetStore.loadAsset(asset);
-    assetStore.loadAssetDistributionData(asset);
+    this.assetStore.loadAsset(asset);
+    this.assetStore.loadAssetDistributionData(asset);
   }
 
   get assetProp() {
@@ -36,16 +41,20 @@ class AssetPage extends Component {
   }
 
   render() {
-    const is404 = assetStore.asset.status === 404;
+    const is404 = this.assetStore.asset.status === 404;
+    const assetName = AssetUtils.getAssetNameFromCode(this.assetProp);
 
     return (
       <Page className="Asset">
+        <Helmet>
+          <title>{TextUtils.getHtmlTitle('Asset', assetName)}</title>
+        </Helmet>
         <section>
           <PageTitle
             title="Asset"
             subtitle={
               <HashLink
-                hash={AssetUtils.getAssetNameFromCode(this.assetProp)}
+                hash={assetName}
                 value={this.assetProp}
                 truncate={false}
                 copy={true}
@@ -60,10 +69,10 @@ class AssetPage extends Component {
   }
 
   renderTopTables() {
-    if (assetStore.loading.asset) {
+    if (this.assetStore.loading.asset) {
       return <Loading />;
     }
-    const asset = assetStore.asset;
+    const asset = this.assetStore.asset;
     const contract = asset.contract || {};
     if (!Object.keys(asset).length) {
       return null;
@@ -92,8 +101,8 @@ class AssetPage extends Component {
                 <td>TOKENS OUTSTANDING</td>
                 <td>
                   {AssetUtils.getAmountString(
-                    assetStore.asset.asset,
-                    assetStore.asset.outstanding
+                    this.assetStore.asset.asset,
+                    this.assetStore.asset.outstanding
                   )}
                 </td>
               </tr>
@@ -101,8 +110,8 @@ class AssetPage extends Component {
                 <td>TOTAL ISSUED</td>
                 <td>
                   {AssetUtils.getAmountString(
-                    assetStore.asset.asset,
-                    assetStore.asset.issued
+                    this.assetStore.asset.asset,
+                    this.assetStore.asset.issued
                   )}
                 </td>
               </tr>
@@ -110,14 +119,14 @@ class AssetPage extends Component {
                 <td>DESTROYED</td>
                 <td>
                   {AssetUtils.getAmountString(
-                    assetStore.asset.asset,
-                    assetStore.asset.destroyed
+                    this.assetStore.asset.asset,
+                    this.assetStore.asset.destroyed
                   )}
                 </td>
               </tr>
               <tr>
                 <td>UNIQUE ADDRESSES</td>
-                <td>{TextUtils.formatNumber(assetStore.asset.keyholders)}</td>
+                <td>{TextUtils.formatNumber(this.assetStore.asset.keyholders)}</td>
               </tr>
             </tbody>
           </table>
@@ -131,11 +140,11 @@ class AssetPage extends Component {
             </thead>
           </table>
           <ChartLoader
-            chartName={asset.asset === '00'? 'zpRichList' : 'assetDistributionMap'}
+            chartName={asset.asset === '00' ? 'zpRichList' : 'assetDistributionMap'}
             showTitle={false}
             params={{ asset: this.assetProp }}
-            externalChartData={assetStore.assetDistributionData.data}
-            externalChartLoading={assetStore.assetDistributionData.loading}
+            externalChartData={this.assetStore.assetDistributionData.data}
+            externalChartLoading={this.assetStore.assetDistributionData.loading}
           />
         </div>
       </div>
@@ -143,7 +152,7 @@ class AssetPage extends Component {
   }
 
   renderTabs() {
-    if (!Object.keys(assetStore.asset)) {
+    if (!Object.keys(this.assetStore.asset)) {
       return null;
     }
     const currentPath = this.props.match.path;
@@ -167,4 +176,8 @@ class AssetPage extends Component {
   }
 }
 
-export default observer(AssetPage);
+AssetPage.propTypes = {
+  rootStore: PropTypes.object,
+};
+
+export default inject('rootStore')(observer(AssetPage));

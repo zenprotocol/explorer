@@ -1,10 +1,9 @@
 import React, { Component } from 'react';
-import { observer } from 'mobx-react';
+import PropTypes from 'prop-types';
+import { observer, inject } from 'mobx-react';
 import { Link } from 'react-router-dom';
 import TextUtils from '../../../lib/TextUtils';
 import AssetUtils from '../../../lib/AssetUtils';
-import uiStore from '../../../store/UIStore';
-import blockStore from '../../../store/BlockStore';
 import config from '../../../lib/Config';
 import BlockUtils from '../../../lib/BlockUtils';
 import ItemsTable from '../../../components/ItemsTable';
@@ -71,14 +70,15 @@ class BlocksTable extends Component {
   }
 
   render() {
+    const {blockStore, uiStore} = this.props.rootStore;
     return (
       <ItemsTable
         columns={this.getTableColumns()}
         loading={blockStore.loading.blocks}
         itemsCount={blockStore.blocksCount}
         items={blockStore.blocks}
-        pageSize={uiStore.blocksTable.pageSize}
-        curPage={uiStore.blocksTable.curPage}
+        pageSize={uiStore.state.blocksTable.pageSize}
+        curPage={uiStore.state.blocksTable.curPage}
         tableDataSetter={uiStore.setBlocksTableData.bind(uiStore)}
         topContent={<PageTitle title="Blocks" margin={false} />}
       />
@@ -86,4 +86,8 @@ class BlocksTable extends Component {
   }
 }
 
-export default observer(BlocksTable);
+BlocksTable.propTypes = {
+  rootStore: PropTypes.object,
+};
+
+export default inject('rootStore')(observer(BlocksTable));

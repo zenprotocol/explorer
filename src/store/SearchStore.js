@@ -2,8 +2,9 @@ import { observable, decorate, action, runInAction, computed } from 'mobx';
 import Service from '../lib/Service';
 import SearchUtils from '../lib/SearchUtils';
 
-class SearchStore {
-  constructor() {
+export default class SearchStore {
+  constructor(rootStore) {
+    this.rootStore = rootStore;
     this.searchString = '';
     this.searchStringPrev = '';
     this.searchResults = {};
@@ -73,5 +74,3 @@ decorate(SearchStore, {
   searchStringValid: computed,
   resetSearchResults: action,
 });
-
-export default new SearchStore();

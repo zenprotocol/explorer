@@ -2,14 +2,16 @@ import { observable, decorate, action, runInAction, computed } from 'mobx';
 import Service from '../lib/Service';
 import TextUtils from '../lib/TextUtils';
 
-class BlockStore {
-  constructor() {
-    this.blocks = [];
-    this.blocksCount = 0;
-    this.block = {};
-    this.blockTransactionAssets = [];
-    this.blockTransactionAssetsCount = 0;
-    this.medianTime = null;
+export default class BlockStore {
+  constructor(rootStore, initialState = {}) {
+    this.rootStore = rootStore;
+    this.blocks = initialState.blocks || [];
+    this.blocksCount = initialState.blocksCount || 0;
+    this.hashOrBlockNumber = initialState.hashOrBlockNumber || 0;
+    this.block = initialState.block || {};
+    this.blockTransactionAssets = initialState.blockTransactionAssets || [];
+    this.blockTransactionAssetsCount = initialState.blockTransactionAssetsCount || 0;
+    this.medianTime = initialState.medianTime || null;
 
     this.loading = {
       blocks: false,
@@ -30,7 +32,7 @@ class BlockStore {
       .then(response => {
         runInAction(() => {
           this.blocks = response.data.items;
-          this.blocksCount = response.data.total;
+          this.blocksCount = response.data.count;
         });
       })
       .catch(() => {})
@@ -42,6 +44,10 @@ class BlockStore {
   }
 
   fetchBlock(id) {
+    if(id === this.hashOrBlockNumber) {
+      return Promise.resolve(this.block);
+    }
+    this.hashOrBlockNumber = id;
     this.loading.block = true;
 
     return Service.blocks
@@ -110,7 +116,7 @@ class BlockStore {
   }
 
   get numberOfTransactions() {
-    return this.block.Transactions? this.block.Transactions.length : 0;
+    return this.block.Transactions ? this.block.Transactions.length : 0;
   }
 
   confirmations(blockNumber) {
@@ -125,6 +131,7 @@ class BlockStore {
 decorate(BlockStore, {
   blocks: observable,
   blocksCount: observable,
+  hashOrBlockNumber: observable,
   block: observable,
   blockTransactionAssets: observable,
   blockTransactionAssetsCount: observable,
@@ -139,5 +146,3 @@ decorate(BlockStore, {
   fetchMedianTime: action,
   resetBlockTransactionAssets: action,
 });
-
-export default new BlockStore();

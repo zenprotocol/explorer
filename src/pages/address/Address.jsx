@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import { observer } from 'mobx-react';
-import addressStore from '../../store/AddressStore';
-import uiStore from '../../store/UIStore';
+import PropTypes from 'prop-types';
+import { observer, inject } from 'mobx-react';
+import { Helmet } from 'react-helmet';
 import RouterUtils from '../../lib/RouterUtils';
 import AssetUtils from '../../lib/AssetUtils';
 import TextUtils from '../../lib/TextUtils';
@@ -30,29 +30,32 @@ class AddressPage extends Component {
   }
 
   setAddress(address) {
-    uiStore.setAddressTxAssetsTableData({ address });
+    this.uiStore.setAddressTxAssetsTableData({ address });
   }
 
   render() {
     const params = RouterUtils.getRouteParams(this.props);
-    let zpBalance = addressStore.address.assetAmounts ? addressStore.address.assetAmounts.find(
-      assetAmount => assetAmount.asset === '00'
-    ) : {
-      balance: 0,
-      received: 0,
-      sent: 0,
-    };
-    const is404 = addressStore.address.status === 404;
-    const renderContent = !is404 && addressStore.address.address;
+    let zpBalance = this.addressStore.address.assetAmounts
+      ? this.addressStore.address.assetAmounts.find(assetAmount => assetAmount.asset === '00')
+      : {
+          balance: 0,
+          received: 0,
+          sent: 0,
+        };
+    const is404 = this.addressStore.address.status === 404;
+    const renderContent = !is404 && this.addressStore.address.address;
 
     return (
       <Page className="Address">
+        <Helmet>
+          <title>{TextUtils.getHtmlTitle('Address', params.address)}</title>
+        </Helmet>
         <section>
           <PageTitle
             title="ADDRESS"
             subtitle={<HashLink hash={params.address} truncate={false} />}
           />
-          {addressStore.loading.address && <Loading />}
+          {this.addressStore.loading.address && <Loading />}
           {is404 && <ItemNotFound item="address" />}
           {renderContent && (
             <div className="row">
@@ -72,7 +75,7 @@ class AddressPage extends Component {
                     </tr>
                     <tr>
                       <td>TRANSACTIONS</td>
-                      <td>{TextUtils.formatNumber(addressStore.address.totalTxs)}</td>
+                      <td>{TextUtils.formatNumber(this.addressStore.address.totalTxs)}</td>
                     </tr>
                     <tr>
                       <td>TOTAL RECEIVED</td>
@@ -85,8 +88,8 @@ class AddressPage extends Component {
                     <tr>
                       <td>NO. ASSET TYPES</td>
                       <td>
-                        {addressStore.address.assetAmounts
-                          ? addressStore.address.assetAmounts.length
+                        {this.addressStore.address.assetAmounts
+                          ? this.addressStore.address.assetAmounts.length
                           : ''}
                       </td>
                     </tr>
@@ -95,7 +98,7 @@ class AddressPage extends Component {
               </div>
               <div className="col-lg-6">
                 <AssetsBalancesTable
-                  balance={addressStore.address.assetAmounts.map(assetAmount => ({
+                  balance={this.addressStore.address.assetAmounts.map(assetAmount => ({
                     asset: assetAmount.asset,
                     total: assetAmount.balance,
                   }))}
@@ -109,6 +112,18 @@ class AddressPage extends Component {
       </Page>
     );
   }
+
+  get uiStore() {
+    return this.props.rootStore.uiStore;
+  }
+
+  get addressStore() {
+    return this.props.rootStore.addressStore;
+  }
 }
 
-export default observer(AddressPage);
+AddressPage.propTypes = {
+  rootStore: PropTypes.object,
+};
+
+export default inject('rootStore')(observer(AddressPage));
