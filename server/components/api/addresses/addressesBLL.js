@@ -11,8 +11,9 @@ module.exports = {
       return null;
     }
 
-    const [assetAmounts, totalTxs] = await Promise.all([
+    const [assetAmounts, zpAmounts, totalTxs] = await Promise.all([
       addressesDAL.getAssetAmounts(address),
+      addressesDAL.getZpSentReceived(address),
       transactionsDAL.countByAddress(address),
     ]);
 
@@ -20,16 +21,17 @@ module.exports = {
       address,
       totalTxs,
       assetAmounts,
+      zpAmounts,
     };
   },
   findAllAssets: async function({ address } = {}) {
     return await outputsDAL.findAllAddressAssets(address);
   },
   balanceZp: async function({ address } = {}) {
-    const balance = await addressesDAL.getZpBalance(address);
+    const zpAmounts = await addressesDAL.getZpBalance(address);
 
-    if (balance.length > 0) {
-      return Number(balance[0].balance);
+    if (zpAmounts) {
+      return Number(zpAmounts.balance) / 100000000;
     }
     return null;
   },

@@ -85,44 +85,63 @@ addressesDAL.getAssetAmounts = function(address) {
     });
 };
 
-addressesDAL.getZpBalance = async function(address) {
+/**
+ * Get the send and received amounts for an address taking change-back into account
+ * divides the calculation per tx
+ */
+addressesDAL.getZpSentReceived = function(address) {
   const sql = tags.oneLine`
-  select
-  (output_sum - input_sum) / 100000000 as balance
-  from
-    (select
-      coalesce(osums.address, isums.address) as address,
-      osums.output_sum,
-      case
-      when isums.input_sum is null
-      then 0
-      else isums.input_sum
-      end
-    from
-      (select
-        o.address,
-        sum(o.amount) as output_sum
-      from "Outputs" o
-      where o.asset = '00' AND o.address = :address
-      group by address) as osums
-      full outer join
-      (select
-        io.address,
-        sum(io.amount) as input_sum
-      from
+  SELECT
+    sum(bothsums.sent) AS sent,
+    sum(bothsums.received) AS received,
+    sum(bothsums.received) - sum(bothsums.sent) AS balance
+  FROM
+    (SELECT
+      CASE
+        WHEN COALESCE(isums.input_sum, 0) = 0 THEN COALESCE(osums.output_sum, 0)
+        ELSE 0
+      END AS received,
+      CASE
+        WHEN COALESCE(isums.input_sum, 0) > 0 THEN isums.input_sum - COALESCE(osums.output_sum, 0)
+        ELSE 0
+      END AS sent
+    FROM
+      (SELECT
+        o."TransactionId",
+        SUM(o.amount) AS output_sum
+      FROM "Outputs" o
+      WHERE o.address = :address
+        AND o.asset = '00'
+      GROUP BY "TransactionId") AS osums
+      FULL OUTER JOIN
+      (SELECT
+        i."TransactionId",
+        SUM(io.amount) AS input_sum
+      FROM
         "Outputs" io
-        join "Inputs" i
-        on i."OutputId" = io.id
-      where io.asset = '00' AND io.address = :address
-      group by io.address) as isums
-      on osums.address = isums.address) as bothsums
-  where output_sum <> input_sum
+        JOIN "Inputs" i
+        ON i."OutputId" = io.id
+      WHERE io.address = :address
+        AND io.asset = '00'
+      GROUP BY i."TransactionId") AS isums
+      ON osums."TransactionId" = isums."TransactionId") AS bothsums;
   `;
 
-  return sequelize.query(sql, {
-    type: sequelize.QueryTypes.SELECT,
-    replacements: {
+  return sequelize
+    .query(sql, {
+      replacements: {
+        address,
+      },
+      type: sequelize.QueryTypes.SELECT,
+    })
+    .then(results => (results.length ? results[0] : null));
+};
+
+addressesDAL.getZpBalance = async function(address) {
+  return addressAmountsDAL.findOne({
+    where: {
       address,
+      asset: '00',
     },
   });
 };

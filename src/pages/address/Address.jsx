@@ -35,13 +35,11 @@ class AddressPage extends Component {
 
   render() {
     const params = RouterUtils.getRouteParams(this.props);
-    let zpBalance = this.addressStore.address.assetAmounts
-      ? this.addressStore.address.assetAmounts.find(assetAmount => assetAmount.asset === '00')
-      : {
-          balance: 0,
-          received: 0,
-          sent: 0,
-        };
+    let zpBalance = this.addressStore.address.zpAmounts || {
+      balance: 0,
+      received: 0,
+      sent: 0,
+    };
     const is404 = this.addressStore.address.status === 404;
     const renderContent = !is404 && this.addressStore.address.address;
 
