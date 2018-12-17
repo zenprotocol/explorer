@@ -53,8 +53,10 @@ export default function GenericTable(props) {
         onSortedChange={onSortedChange}
         PaginationComponent={PaginationComponent}
         LoadingComponent={LoadingWithBG}
-        previousText={<i className="fas fa-angle-double-left" />}
-        nextText={<i className="fas fa-angle-double-right" />}
+        previousText={<i className="fas fa-chevron-left" />}
+        nextText={<i className="fas fa-chevron-right" />}
+        firstText={<i className="fas fa-chevron-double-left" />}
+        lastText={<i className="fas fa-chevron-double-right" />}
         SubComponent={SubComponent}
         pivotBy={pivotBy}
         expanded={expanded}
