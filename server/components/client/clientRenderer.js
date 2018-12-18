@@ -11,6 +11,9 @@ import manifest from '../../../build/asset-manifest.json';
 import getInitialStoreState from './getInitialStoreState';
 const wrapAsync = require('../../lib/wrapAsyncForExpressErrors');
 import RootStore from '../../../src/store/RootStore';
+import App from '../../../src/App';
+const config = require('../../config/Config');
+const getAnalyticsScript = require('./analyticsScript');
 
 const extractAssets = (assets, chunks, extension) =>
   Object.keys(assets)
@@ -19,8 +22,7 @@ const extractAssets = (assets, chunks, extension) =>
 
 useStaticRendering(true); // https://github.com/mobxjs/mobx-react#server-side-rendering-with-usestaticrendering
 
-// import our main App component
-import App from '../../../src/App';
+const analyticsScript = getAnalyticsScript({ googleTrackingId: config.get('GOOGLE_TRACKING_ID') });
 module.exports = wrapAsync(async (req, res) => {
   const filePath = path.resolve(__dirname, '..', '..', '..', 'build', 'index.html');
   const initialState = await getInitialStoreState(req);
@@ -63,7 +65,10 @@ module.exports = wrapAsync(async (req, res) => {
     res.send(
       htmlData
         .replace('<title></title>', helmet.title.toString())
-        .replace('</head>', extraChunksStyles.join('') + initialStateScript + '</head>')
+        .replace(
+          '</head>',
+          extraChunksStyles.join('') + initialStateScript + analyticsScript + '</head>'
+        )
         .replace(
           '<div id="root"></div>',
           `<div id="root">${html}</div>${extraChunksScripts.join('')}`
