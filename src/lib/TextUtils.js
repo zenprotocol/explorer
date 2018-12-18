@@ -55,9 +55,10 @@ export default {
   getSingularOrPlural(count, singular, plural) {
     return count > 1 ? plural : singular;
   },
-  getHtmlTitle(page, item) {
+  getHtmlTitle(page, item, showSeparator = false) {
     const itemDisplay = item ? ` ${item}` : '';
-    return `${page}${itemDisplay} | Zen Protocol Block Explorer`;
+    const separator = showSeparator ? ' - ' : ' ';
+    return `Zen Protocol${separator}${page}${itemDisplay}`;
   }
 };
 

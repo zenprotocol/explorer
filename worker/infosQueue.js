@@ -6,7 +6,7 @@ const TaskTimeLimiter = require('./lib/TaskTimeLimiter');
 const Config = require('../server/config/Config');
 const logger = require('./lib/logger')('infos');
 const slackLogger = require('../server/lib/slackLogger');
-const getChain = require('./lib/getChain');
+const getChain = require('../server/lib/getChain');
 
 const updateGeneralInfosQueue = new Queue(
   Config.get('queues:updateGeneralInfos:name'),

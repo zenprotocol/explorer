@@ -94,7 +94,7 @@ class InfoPage extends Component {
     return (
       <Page className="Info">
         <Helmet>
-          <title>{TextUtils.getHtmlTitle('Statistics')}</title>
+          <title>{TextUtils.getHtmlTitle('Block Explorer - Statistics')}</title>
         </Helmet>
         <section className="container">
           <div className="row">

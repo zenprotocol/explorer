@@ -16,7 +16,7 @@ class AssetsPage extends Component {
     return (
       <Page className="Assets">
         <Helmet>
-          <title>{TextUtils.getHtmlTitle('Assets')}</title>
+          <title>{TextUtils.getHtmlTitle('Assets', '', true)}</title>
         </Helmet>
         <section>
           <AssetsTable />

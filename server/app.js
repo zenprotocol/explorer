@@ -13,6 +13,7 @@ const errorHandlers = require('./errorHandlers');
 // routers
 const clientRouter = require('./components/client/clientRouter');
 const apiRouter = require('./components/api');
+const sitemapsRouter = require('./components/sitemaps/sitemapRoutes');
 
 const app = express();
 app.use(compression());
@@ -33,6 +34,7 @@ app.use(helmet());
 
 // routes
 app.use('/api', apiRouter);
+app.use('/sitemaps', sitemapsRouter);
 app.get('/.well-known/pki-validation/confirmation.html', (req, res) => {
   res.send('E476-F512-0D78-51F5-66BA-2D18-2F70-2E0B');
 });

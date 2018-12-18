@@ -74,7 +74,7 @@ class BlockPage extends Component {
     return (
       <Page className="Block">
         <Helmet>
-          <title>{TextUtils.getHtmlTitle('Block', block.blockNumber ? String(block.blockNumber) : '')}</title>
+          <title>{TextUtils.getHtmlTitle('Block', block.blockNumber ? `${block.blockNumber} / ${block.hash}` : '')}</title>
         </Helmet>
         <section>
           <div className="row">
