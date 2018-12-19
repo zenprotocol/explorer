@@ -62,9 +62,6 @@ class BlockPage extends Component {
 
   render() {
     const block = this.blockStore.block;
-    const blockDateStr = block.timestamp
-      ? TextUtils.getDateStringFromTimestamp(block.timestamp)
-      : '';
     const blockNumberStr = block.blockNumber ? `#${block.blockNumber}` : this.hashOrBlockNumber;
     const is404 = block.status === 404;
     const renderContent = !is404 && block.blockNumber;
@@ -79,7 +76,6 @@ class BlockPage extends Component {
         <section>
           <div className="row">
             <div className="col-sm">
-              <div className="font-size-md mb-1 mb-lg-2">{blockDateStr}</div>
               <h1 className="d-block d-sm-inline-block text-white mb-3 mb-lg-5">
                 BLOCK {blockNumberStr}
               </h1>
