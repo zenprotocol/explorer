@@ -1,35 +1,43 @@
 'use strict';
 
 const deepMerge = require('deepmerge');
+const tags = require('common-tags');
 const dal = require('../../../lib/dal');
 const wrapORMErrors = require('../../../lib/wrapORMErrors');
 
 const blocksDAL = dal.createDAL('Block');
+const sequelize = blocksDAL.db.sequelize;
 
-blocksDAL.findAllWithCoinbase = function(options = {}) {
-  options.include = [
-    {
-      model: this.db.Transaction,
-      where: {
-        index: 0,
+blocksDAL.findAllWithCoinbase = function({ limit = 10, offset = 0 } = {}) {
+  const sql = tags.oneLine`
+  WITH "BlocksLimited" AS 
+      (SELECT "Blocks".*
+      FROM "Blocks"
+      ORDER BY  "Blocks"."blockNumber" DESC LIMIT :limit OFFSET :offset)
+  SELECT "BlocksLimited".*,
+          "Outputs"."amount" AS "coinbaseAmount"
+  FROM "BlocksLimited"
+  JOIN 
+      (SELECT id,
+          "BlockId"
+      FROM "Transactions"
+      WHERE "Transactions"."BlockId" IN 
+          (SELECT id
+          FROM "BlocksLimited")
+                  AND "Transactions"."index" = 0 ) AS "CoinbaseTx"
+          ON "CoinbaseTx"."BlockId" = "BlocksLimited".id
+  JOIN "Outputs"
+      ON "Outputs"."TransactionId" = "CoinbaseTx"."id"
+          AND "Outputs"."index" = 0
+  `;
+  return sequelize
+    .query(sql, {
+      replacements: {
+        limit,
+        offset,
       },
-      include: [
-        {
-          model: this.db.Output,
-          where: {
-            index: 0,
-          },
-        },
-      ],
-    },
-  ];
-  return this.findAll(options).then(blocks => blocks.map(block => {
-    const customBlock = this.toJSON(block);
-    delete customBlock.Transactions;
-    const coinbaseOutput = (block.Transactions[0] || {}).Outputs[0] || {};
-    customBlock.coinbaseAmount = coinbaseOutput.amount;
-    return customBlock;
-  }));
+      type: sequelize.QueryTypes.SELECT,
+    });
 };
 
 blocksDAL.findLatest = function({ transaction } = {}) {
