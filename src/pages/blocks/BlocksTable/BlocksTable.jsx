@@ -9,6 +9,7 @@ import BlockUtils from '../../../lib/BlockUtils';
 import ItemsTable from '../../../components/ItemsTable';
 import PageTitle from '../../../components/PageTitle';
 import HashLink from '../../../components/HashLink';
+import UrlPaginationReflector from '../../../components/UrlPaginationReflector';
 
 class BlocksTable extends Component {
   getTableColumns() {
@@ -69,19 +70,30 @@ class BlocksTable extends Component {
     ];
   }
 
+  get tableDataSetter() {
+    const {uiStore} = this.props.rootStore;
+    return uiStore.setBlocksTableData.bind(uiStore);
+  }
+
   render() {
     const {blockStore, uiStore} = this.props.rootStore;
     return (
-      <ItemsTable
-        columns={this.getTableColumns()}
-        loading={blockStore.loading.blocks}
-        itemsCount={blockStore.blocksCount}
-        items={blockStore.blocks}
-        pageSize={uiStore.state.blocksTable.pageSize}
-        curPage={uiStore.state.blocksTable.curPage}
-        tableDataSetter={uiStore.setBlocksTableData.bind(uiStore)}
-        topContent={<PageTitle title="Blocks" margin={false} />}
-      />
+      <React.Fragment>
+        <ItemsTable
+          columns={this.getTableColumns()}
+          loading={blockStore.loading.blocks}
+          itemsCount={blockStore.blocksCount}
+          items={blockStore.blocks}
+          pageSize={uiStore.state.blocksTable.pageSize}
+          curPage={uiStore.state.blocksTable.curPage}
+          tableDataSetter={this.tableDataSetter}
+          topContent={<PageTitle title="Blocks" margin={false} />}
+        />
+        <UrlPaginationReflector 
+          tableDataSetter={this.tableDataSetter}
+          dataTable={uiStore.state.blocksTable}
+        />
+      </React.Fragment>
     );
   }
 }
