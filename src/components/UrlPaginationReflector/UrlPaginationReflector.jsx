@@ -1,12 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { observer } from 'mobx-react';
-import { withRouter } from 'react-router-dom';
 import config from '../../lib/Config';
 
 /**
  * Reflects the data in the supplied observable dataTable into the url search params
- * Sets the table data from the search params on first load
+ * Sets the table data from the search params on change
  * dependant on mobx
  */
 class UrlPaginationReflector extends React.Component {
@@ -20,39 +19,66 @@ class UrlPaginationReflector extends React.Component {
     this.updateTableDataFromSearchParams();
   }
 
-  componentDidUpdate() {
-    this.updateSearchParamsOnTableDataChange();
+  componentDidUpdate({location: prevLocation}) {
+    // responsible for both when search changes (back/forward buttons) AND dataTable changes
+    if(prevLocation.search !== this.props.location.search) {
+      this.updateTableDataFromSearchParams();
+      this.updateLastData(this.props.dataTable);
+    }
+    else {
+      this.updateSearchParamsOnTableDataChange();
+    }
   }
 
   updateTableDataFromSearchParams() {
-    this.props.tableDataSetter(this.searchParams);
+    this.props.tableDataSetter(this.paginationParams);
   }
 
   updateSearchParamsOnTableDataChange() {
     const { curPage, pageSize } = this.props.dataTable;
-    const currentPathname = this.props.location.pathname;
-    if (this.lastData.curPage !== curPage || this.lastData.pageSize !== pageSize) {
-      this.lastData = { curPage, pageSize };
-      this.props.history.push({ pathname: currentPathname, search: `?p=${curPage + 1}&s=${pageSize}` });
+    const numOfPages = Math.ceil(this.props.itemsCount / pageSize);
+    if (numOfPages > 1) {
+      const currentPathname = this.props.location.pathname;
+      const firstLoad = Object.keys(this.lastData).length === 0;
+      if (this.lastData.curPage !== curPage || this.lastData.pageSize !== pageSize) {
+        this.updateLastData({ curPage, pageSize });
+        if(!firstLoad) {
+          this.props.history.push({
+            pathname: currentPathname,
+            search: `?p=${curPage + 1}&s=${pageSize}`,
+          });
+        }
+      }
     }
+  }
+
+  updateLastData({ curPage, pageSize }) {
+    this.lastData = { curPage, pageSize };
+  }
+
+  get paginationParams() {
+    return {
+      curPage: this.safePage - 1,
+      pageSize: this.safePageSize,
+    };
   }
 
   get searchParams() {
     let params = new URLSearchParams(this.props.location.search);
-    const curPage = this.safePage(params.get('p')) - 1;
-    const pageSize = this.safePageSize(params.get('s'));
     return {
-      curPage,
-      pageSize,
+      curPage: params.get('p'),
+      pageSize: params.get('s'),
     };
   }
 
-  safePage(page) {
-    let safePage = Number(page);
+  get safePage() {
+    const { curPage } = this.searchParams;
+    let safePage = Number(curPage);
     return isNaN(safePage) || safePage < 1 ? 1 : safePage;
   }
 
-  safePageSize(pageSize) {
+  get safePageSize() {
+    const { pageSize } = this.searchParams;
     let safeSize = Number(pageSize);
     return isNaN(safeSize) || !config.ui.table.pageSizes.includes(safeSize)
       ? this.props.dataTable.pageSize || config.ui.table.defaultPageSize
@@ -67,8 +93,13 @@ class UrlPaginationReflector extends React.Component {
 UrlPaginationReflector.propTypes = {
   dataTable: PropTypes.object.isRequired,
   tableDataSetter: PropTypes.func.isRequired,
-  location: PropTypes.object,
-  history: PropTypes.object,
+  itemsCount: PropTypes.number,
+  location: PropTypes.object.isRequired,
+  history: PropTypes.object.isRequired,
 };
 
-export default withRouter(observer(UrlPaginationReflector));
+UrlPaginationReflector.defaultProps = {
+  itemsCount: 0,
+};
+
+export default observer(UrlPaginationReflector);

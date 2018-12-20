@@ -6,11 +6,11 @@ import WithSetIdOnUiStore from '../../../../components/hoc/WithSetIdOnUiStore';
 import TextUtils from '../../../../lib/TextUtils';
 import AssetUtils from '../../../../lib/AssetUtils';
 import { TabPanel } from '../../../../components/tabs';
-import ItemsTable from '../../../../components/ItemsTable';
+import { ItemsTable } from '../../../../components/ItemsTable';
 import HashLink from '../../../../components/HashLink';
 import { TransactionAssetLoader } from '../../../../components/Transactions';
 
-const TransactionsTab = observer((props) => {
+const TransactionsTab = observer(props => {
   const uiStore = props.rootStore.uiStore;
   const assetStore = props.rootStore.assetStore;
   return (
@@ -51,14 +51,13 @@ const TransactionsTab = observer((props) => {
         }
         SubComponent={row => {
           return (
-            <TransactionAssetLoader
-              transactionAssets={assetStore.assetTxs}
-              index={row.index}
-            />
+            <TransactionAssetLoader transactionAssets={assetStore.assetTxs} index={row.index} />
           );
         }}
       />
     </TabPanel>
   );
 });
-export default inject('rootStore')(observer(WithSetIdOnUiStore(TransactionsTab, 'setAssetTxsTableData', 'asset')));
+export default inject('rootStore')(
+  observer(WithSetIdOnUiStore(TransactionsTab, 'setAssetTxsTableData', 'asset'))
+);

@@ -6,7 +6,7 @@ import config from '../../../../lib/Config';
 import WithSetIdOnUiStore from '../../../../components/hoc/WithSetIdOnUiStore';
 import TextUtils from '../../../../lib/TextUtils';
 import { TabPanel } from '../../../../components/tabs';
-import ItemsTable from '../../../../components/ItemsTable';
+import { ItemsTable } from '../../../../components/ItemsTable';
 import HashLink from '../../../../components/HashLink';
 
 const TransactionsTab = observer(props => {

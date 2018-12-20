@@ -5,7 +5,7 @@ import config from '../../../lib/Config';
 import TextUtils from '../../../lib/TextUtils';
 import AssetUtils from '../../../lib/AssetUtils';
 import HashLink from '../../../components/HashLink';
-import ItemsTable from '../../../components/ItemsTable';
+import { ItemsTable } from '../../../components/ItemsTable';
 import PageTitle from '../../../components/PageTitle';
 import { TransactionAssetLoader } from '../../../components/Transactions';
 

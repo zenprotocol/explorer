@@ -5,7 +5,7 @@ import { Helmet } from 'react-helmet';
 import TextUtils from '../../lib/TextUtils';
 import Page from '../../components/Page';
 import PageTitle from '../../components/PageTitle';
-import ItemsTable from '../../components/ItemsTable';
+import { ItemsTable } from '../../components/ItemsTable';
 import Button from '../../components/buttons/Button';
 import './ContractTemplates.scss';
 
@@ -28,13 +28,15 @@ function ContractTemplates({ loading, itemsCount, items, pageSize, curPage, tabl
               accessor: 'description',
               hideOnMobile: true,
               className: 'description',
-              Cell: data => <p dangerouslySetInnerHTML={{__html: data.value}} />,
+              Cell: data => <p dangerouslySetInnerHTML={{ __html: data.value }} />,
             },
             {
               Header: '',
               accessor: 'template',
               className: 'create',
-              Cell: data => <CreateButtonWithRouter active={!!data.value} slug={data.original.slug} />,
+              Cell: data => (
+                <CreateButtonWithRouter active={!!data.value} slug={data.original.slug} />
+              ),
             },
           ]}
           loading={loading}
