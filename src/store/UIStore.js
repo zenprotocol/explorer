@@ -82,18 +82,32 @@ export default function UIStore(rootStore) {
       .catch(() => {});
   });
 
-  const setBlocksTableData = action(setTableData({objectToSet: state.blocksTable}));
-  const setBlockTxTableData = action(setTableData({nameOfIdentifier: 'hashOrBlockNumber', objectToSet: state.blockTxTable}));
-  const setAddressTxAssetsTableData = action(setTableData({nameOfIdentifier: 'address', objectToSet: state.addressTxAssetsTable}));
-  const setAddressTxsTableData = action(setTableData({nameOfIdentifier: 'address', objectToSet: state.addressTxsTable}));
-  const setContractsTableData = action(setTableData({objectToSet: state.contractsTable}));
-  const setContractAssetsTableData = action(setTableData({nameOfIdentifier: 'address', objectToSet: state.contractAssetsTable}));
-  const setContractCommandsTableData = action(setTableData({nameOfIdentifier: 'address', objectToSet: state.contractCommandsTable}));
-  const setAssetsTableData = action(setTableData({objectToSet: state.assetsTable}));
-  const setAssetTxsTableData = action(setTableData({nameOfIdentifier: 'asset', objectToSet: state.assetTxsTable}));
-  const setAssetKeyholdersTableData = action(setTableData({nameOfIdentifier: 'asset', objectToSet: state.assetKeyholdersTable}));
+  const setBlocksTableData = action(setTableData({ objectToSet: state.blocksTable }));
+  const setBlockTxTableData = action(
+    setTableData({ nameOfIdentifier: 'hashOrBlockNumber', objectToSet: state.blockTxTable })
+  );
+  const setAddressTxAssetsTableData = action(
+    setTableData({ nameOfIdentifier: 'address', objectToSet: state.addressTxAssetsTable })
+  );
+  const setAddressTxsTableData = action(
+    setTableData({ nameOfIdentifier: 'address', objectToSet: state.addressTxsTable })
+  );
+  const setContractsTableData = action(setTableData({ objectToSet: state.contractsTable }));
+  const setContractAssetsTableData = action(
+    setTableData({ nameOfIdentifier: 'address', objectToSet: state.contractAssetsTable })
+  );
+  const setContractCommandsTableData = action(
+    setTableData({ nameOfIdentifier: 'address', objectToSet: state.contractCommandsTable })
+  );
+  const setAssetsTableData = action(setTableData({ objectToSet: state.assetsTable }));
+  const setAssetTxsTableData = action(
+    setTableData({ nameOfIdentifier: 'asset', objectToSet: state.assetTxsTable })
+  );
+  const setAssetKeyholdersTableData = action(
+    setTableData({ nameOfIdentifier: 'asset', objectToSet: state.assetKeyholdersTable })
+  );
 
-  const saveToStorage = action((state) => {
+  const saveToStorage = action(state => {
     localStore.set('ui-store', state);
   });
 
@@ -250,7 +264,7 @@ function hashOrBlockNumberNotEmpty(hashOrBlockNumber) {
 /**
  * Creates a tableDataSetter function with a custom id name
  */
-function setTableData({nameOfIdentifier, objectToSet} = {}) {
+function setTableData({ nameOfIdentifier, objectToSet } = {}) {
   return (params = {}) => {
     const id = nameOfIdentifier ? params[nameOfIdentifier] : null;
     const pageSize = params.pageSize;
@@ -258,8 +272,12 @@ function setTableData({nameOfIdentifier, objectToSet} = {}) {
     const sorted = params.sorted;
 
     if (id && id !== objectToSet[nameOfIdentifier]) {
+      const prevId = objectToSet[nameOfIdentifier];
       objectToSet[nameOfIdentifier] = id;
-      objectToSet.curPage = 0;
+      // When resetting the curPage when this is the first set, it can interfere other objects which try to set the page as well
+      if (prevId) {
+        objectToSet.curPage = 0;
+      }
     }
     if (pageSize) {
       objectToSet.pageSize = pageSize;
