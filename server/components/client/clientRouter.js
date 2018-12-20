@@ -7,11 +7,14 @@ router.use(
   '/public',
   express.static(path.join(__dirname, '..', '..', '..', 'build'), { maxAge: '30d', index: false })
 );
+router.get('/', insertRouteName('blocks'), clientRenderer);
 router.get('/blocks', insertRouteName('blocks'), clientRenderer);
 router.get('/blocks/:hashOrBlockNumber', insertRouteName('block'), clientRenderer);
 router.get('/tx/:hash', insertRouteName('tx'), clientRenderer);
 router.get('/address/:address', insertRouteName('address'), clientRenderer);
+router.get('/contracts', insertRouteName('contracts'), clientRenderer);
 router.get('/contracts/:address/:tab?', insertRouteName('contract'), clientRenderer);
+router.get('/assets', insertRouteName('assets'), clientRenderer);
 router.get('/assets/:asset/:tab?', insertRouteName('asset'), clientRenderer);
 router.get('/blockchain/info', insertRouteName('info'), clientRenderer);
 router.get('*', clientRenderer);
