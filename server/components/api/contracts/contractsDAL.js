@@ -32,7 +32,10 @@ contractsDAL.findAllWithAssetsCountTxCountAndCountOrderByNewest = function({ lim
     LIMIT (SELECT COUNT(*) FROM "Contracts"))
 
   SELECT 
-    "ContractsFinal".*,
+    "ContractsFinal"."id",
+    "ContractsFinal"."address",
+    "ContractsFinal"."expiryBlock",
+    "ContractsFinal"."assetsCount",
     COALESCE("Txs"."total", 0) AS "transactionsCount"
   FROM "ContractsFinal"
   LEFT JOIN
