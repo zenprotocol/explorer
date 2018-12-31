@@ -1,4 +1,4 @@
-import { observable, decorate, action, runInAction, computed } from 'mobx';
+import { observable, decorate, action, runInAction, computed, autorun } from 'mobx';
 import Service from '../lib/Service';
 import TextUtils from '../lib/TextUtils';
 
@@ -8,6 +8,7 @@ export default class BlockStore {
     this.blocks = initialState.blocks || [];
     this.blocksCount = initialState.blocksCount || 0;
     this.hashOrBlockNumber = initialState.hashOrBlockNumber || 0;
+    this.latestBlock = initialState.latestBlock || {};
     this.block = initialState.block || {};
     this.blockTransactionAssets = initialState.blockTransactionAssets || [];
     this.blockTransactionAssetsCount = initialState.blockTransactionAssetsCount || 0;
@@ -15,9 +16,15 @@ export default class BlockStore {
 
     this.loading = {
       blocks: false,
+      latestBlock: false,
       block: false,
       blockTransactionAssets: false,
     };
+
+    // Automatic loading
+    autorun(() => {
+      this.fetchLatestBlockOnBlocksCountChange();
+    });
   }
 
   setBlocksCount(count) {
@@ -40,6 +47,38 @@ export default class BlockStore {
         runInAction(() => {
           this.loading.blocks = false;
         });
+      });
+  }
+
+  fetchLatestBlockOnBlocksCountChange() {
+    if (this.blocksCount) {
+      this.fetchLatestBlock();
+    }
+  }
+
+  fetchLatestBlock() {
+    this.loading.latestBlock = true;
+
+    return Service.blocks
+      .findById(this.blocksCount)
+      .then(response => {
+        runInAction(() => {
+          this.latestBlock = response.data;
+        });
+      })
+      .catch(error => {
+        runInAction(() => {
+          this.latestBlock = {};
+          if (error.status === 404) {
+            this.latestBlock.status = 404;
+          }
+        });
+      })
+      .then(() => {
+        runInAction(() => {
+          this.loading.latestBlock = false;
+        });
+        return this.latestBlock;
       });
   }
 
@@ -132,6 +171,7 @@ decorate(BlockStore, {
   blocks: observable,
   blocksCount: observable,
   hashOrBlockNumber: observable,
+  latestBlock: observable,
   block: observable,
   blockTransactionAssets: observable,
   blockTransactionAssetsCount: observable,
