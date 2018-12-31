@@ -10,6 +10,7 @@ const getChain = require('../../lib/getChain');
 
 const sequelize = blocksDAL.db.sequelize;
 const URLS_PER_SITEMAP = 50000;
+const PAGE_SIZE = 10;
 
 module.exports = {
   index: async function() {
@@ -30,25 +31,37 @@ module.exports = {
     const urls = [
       `${host}/sitemaps/main/0.xml`,
     ];
-    // blocks
-    for (let part = 0; part * URLS_PER_SITEMAP < blocks; part++) {
+    // blocks list
+    for (let part = 0; part * URLS_PER_SITEMAP < getNumOfPages(blocks); part++) {
       urls.push(`${host}/sitemaps/blocks/${part}.xml`);
     }
-    // transactions
+    // block
+    for (let part = 0; part * URLS_PER_SITEMAP < blocks; part++) {
+      urls.push(`${host}/sitemaps/block/${part}.xml`);
+    }
+    // transaction
     for (let part = 0; part * URLS_PER_SITEMAP < transactions; part++) {
-      urls.push(`${host}/sitemaps/transactions/${part}.xml`);
+      urls.push(`${host}/sitemaps/transaction/${part}.xml`);
     }
-    // addresses
+    // address
     for (let part = 0; part * URLS_PER_SITEMAP < addresses; part++) {
-      urls.push(`${host}/sitemaps/addresses/${part}.xml`);
+      urls.push(`${host}/sitemaps/address/${part}.xml`);
     }
-    // assets
-    for (let part = 0; part * URLS_PER_SITEMAP < assets; part++) {
+    // asset list
+    for (let part = 0; part * URLS_PER_SITEMAP < getNumOfPages(assets); part++) {
       urls.push(`${host}/sitemaps/assets/${part}.xml`);
     }
-    // contracts
-    for (let part = 0; part * URLS_PER_SITEMAP < contracts; part++) {
+    // asset
+    for (let part = 0; part * URLS_PER_SITEMAP < assets; part++) {
+      urls.push(`${host}/sitemaps/asset/${part}.xml`);
+    }
+    // contract list
+    for (let part = 0; part * URLS_PER_SITEMAP < getNumOfPages(contracts); part++) {
       urls.push(`${host}/sitemaps/contracts/${part}.xml`);
+    }
+    // contract
+    for (let part = 0; part * URLS_PER_SITEMAP < contracts; part++) {
+      urls.push(`${host}/sitemaps/contract/${part}.xml`);
     }
     return sm.buildSitemapIndex({
       urls,
@@ -70,6 +83,15 @@ module.exports = {
     ]);
   },
   blocks: async function() {
+    const itemsCount = await blocksDAL.count();
+    const urls = [];
+    const numOfPages = getNumOfPages(itemsCount);
+    for (let page = 1; page <= numOfPages; page++) {
+      urls.push({ url: `/blocks?p=${page}&s=${PAGE_SIZE}`, changefreq: 'hourly', priority: 0.9 });
+    }
+    return await createSitemap(urls);
+  },
+  block: async function() {
     const blocksCount = await blocksDAL.count();
     const urls = [];
     for (let blockNumber = 1; blockNumber <= blocksCount; blockNumber++) {
@@ -77,7 +99,7 @@ module.exports = {
     }
     return await createSitemap(urls);
   },
-  transactions: async function() {
+  transaction: async function() {
     const txs = await transactionsDAL.findAll({
       attributes: ['hash']
     });
@@ -85,7 +107,7 @@ module.exports = {
 
     return await createSitemap(urls);
   },
-  addresses: async function() {
+  address: async function() {
     const addresses = await addressAmountsDAL.findAll({
       attributes: [[sequelize.literal('DISTINCT address'), 'address']],
     });
@@ -94,6 +116,15 @@ module.exports = {
     return await createSitemap(urls);
   },
   assets: async function() {
+    const itemsCount = await assetOutstandingsDAL.count();
+    const urls = [];
+    const numOfPages = getNumOfPages(itemsCount);
+    for (let page = 1; page <= numOfPages; page++) {
+      urls.push({ url: `/assets?p=${page}&s=${PAGE_SIZE}`, changefreq: 'monthly', priority: 0.5 });
+    }
+    return await createSitemap(urls);
+  },
+  asset: async function() {
     const assets = await assetOutstandingsDAL.findAll({
       attributes: ['asset']
     });
@@ -102,6 +133,15 @@ module.exports = {
     return await createSitemap(urls);
   },
   contracts: async function() {
+    const itemsCount = await contractsDAL.count();
+    const urls = [];
+    const numOfPages = getNumOfPages(itemsCount);
+    for (let page = 1; page <= numOfPages; page++) {
+      urls.push({ url: `/contracts?p=${page}&s=${PAGE_SIZE}`, changefreq: 'monthly', priority: 0.5 });
+    }
+    return await createSitemap(urls);
+  },
+  contract: async function() {
     const contracts = await contractsDAL.findAll({
       attributes: ['address']
     });
@@ -129,4 +169,8 @@ async function createSitemap(urls) {
 async function getSubdomain() {
   const chain = await getChain();
   return chain.startsWith('test') ? 'testnet.' : '';
+}
+
+function getNumOfPages(itemsCount) {
+  return Math.ceil(itemsCount / PAGE_SIZE);
 }

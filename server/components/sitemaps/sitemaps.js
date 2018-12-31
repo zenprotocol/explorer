@@ -1,3 +1,3 @@
 'use strict';
 
-module.exports = ['main', 'blocks', 'transactions', 'addresses', 'assets', 'contracts'];
+module.exports = ['main', 'blocks', 'block', 'transaction', 'address', 'assets', 'asset', 'contracts', 'contract'];
