@@ -21,9 +21,12 @@ module.exports = async req => {
   // blocks
   promises.push(blocksBLL.count().then(count => (initialState.blockStore.blocksCount = count)));
 
+  const { page: curPage, pageSize } = safePaginationParams(req);
+
   switch (routeName) {
     case 'blocks':
       promises.push(getBlockListStoreData(req).then(data => (initialState.blockStore = data)));
+      initialState.uiStore.blocksTable = { curPage, pageSize };
       break;
     case 'block':
       promises.push(getBlockStoreData(req).then(data => (initialState.blockStore = data)));
@@ -40,6 +43,7 @@ module.exports = async req => {
       promises.push(
         getContractListStoreData(req).then(data => (initialState.contractStore = data))
       );
+      initialState.uiStore.contractsTable = { curPage, pageSize };
       break;
     case 'contract':
       promises.push(getContractStoreData(req).then(data => (initialState.contractStore = data)));
@@ -47,6 +51,7 @@ module.exports = async req => {
       break;
     case 'assets':
       promises.push(getAssetListStoreData(req).then(data => (initialState.assetStore = data)));
+      initialState.uiStore.assetsTable = { curPage, pageSize };
       break;
     case 'asset':
       promises.push(getAssetStoreData(req).then(data => (initialState.assetStore = data)));
