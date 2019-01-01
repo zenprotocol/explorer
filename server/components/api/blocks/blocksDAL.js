@@ -29,6 +29,7 @@ blocksDAL.findAllWithCoinbase = function({ limit = 10, offset = 0 } = {}) {
   JOIN "Outputs"
       ON "Outputs"."TransactionId" = "CoinbaseTx"."id"
           AND "Outputs"."index" = 0
+  ORDER BY "BlocksLimited"."blockNumber" DESC
   `;
   return sequelize
     .query(sql, {
