@@ -69,27 +69,9 @@ function FooterLinks() {
           <li className="nav-item">
             <ExternalLink
               className="nav-link text-nowrap"
-              url="https://www.zenprotocol.com/deck/zen_protocol_deck_en.pdf"
+              url="https://www.zenprotocol.com/en/faq"
             >
-              Pitch Deck
-            </ExternalLink>
-          </li>
-          <li className="nav-item">
-            <ExternalLink
-              className="nav-link text-nowrap"
-              target="_top"
-              url="https://www.zenprotocol.com/files/zen_protocol_white_paper.pdf"
-            >
-              White Paper
-            </ExternalLink>
-          </li>
-          <li className="nav-item">
-            <ExternalLink
-              className="nav-link text-nowrap"
-              target="_top"
-              url="https://www.zenprotocol.com/files/technical_paper.pdf"
-            >
-              Technical Paper
+              Learn more
             </ExternalLink>
           </li>
         </ul>
@@ -104,30 +86,9 @@ function FooterLinks() {
           <li className="nav-item">
             <ExternalLink
               className="nav-link text-nowrap"
-              url="https://docs.zenprotocol.com/preparation/installers"
+              url="https://wallet.zp.io/"
             >
-              Download Wallet
-            </ExternalLink>
-          </li>
-          <li className="nav-item">
-            <ExternalLink
-              className="nav-link text-nowrap"
-              url="https://github.com/zenprotocol/ZFS-SDK"
-            >
-              Developers SDK
-            </ExternalLink>
-          </li>
-          <li className="nav-item">
-            <ExternalLink className="nav-link text-nowrap" url="https://docs.zenprotocol.com/api">
-              Developers API
-            </ExternalLink>
-          </li>
-          <li className="nav-item">
-            <ExternalLink
-              className="nav-link text-nowrap"
-              url="https://docs.zenprotocol.com/zen_js"
-            >
-              Zen.JS
+              Wallet
             </ExternalLink>
           </li>
           <li className="nav-item">
@@ -139,11 +100,6 @@ function FooterLinks() {
       </div>
       <div className="">
         <ul className="nav flex-column">
-          <li className="nav-item">
-            <ExternalLink className="nav-link text-nowrap" url="http://blog.zenprotocol.com/">
-              Blog
-            </ExternalLink>
-          </li>
           <li className="nav-item">
             <ExternalLink className="nav-link text-nowrap" url="https://forum.zenprotocol.com/">
               Forum
@@ -167,12 +123,9 @@ function FooterLinks() {
             </ExternalLink>
           </li>
           <li className="nav-item">
-            <ExternalLink
-              className="nav-link text-nowrap"
-              url="https://www.zenprotocol.com/legal/zen_protocol_token_sale_agreement.pdf"
-            >
+            <Link className="nav-link text-nowrap" to="/terms">
               Terms of Service
-            </ExternalLink>
+            </Link>
           </li>
         </ul>
       </div>
