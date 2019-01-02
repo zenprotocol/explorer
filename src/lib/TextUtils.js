@@ -20,6 +20,9 @@ export default {
 
     return `${day} ${month} ${year} ${hours}:${minutes} ${timezoneDisplay}`;
   },
+  getTimezone() {
+    return timezoneDisplay;
+  },
   getISODateFromNow(daysToAdd = 0) {
     return new Date(Date.now() + daysToAdd * 86400000).toISOString().split('T')[0];
   },
@@ -72,8 +75,8 @@ export function getTimezoneDisplay(timezoneOffset) {
   const minutesDisplay = timezoneOffsetMinutes ? `:${timezoneOffsetMinutes}` : '';
 
   return timezoneOffset === 0
-    ? '(GMT)'
+    ? '(UTC)'
     : timezoneOffset > 0
-      ? `(GMT-${timezoneOffsetHours}${minutesDisplay})`
-      : `(GMT+${Math.abs(timezoneOffsetHours)}${minutesDisplay})`;
+      ? `(UTC-${timezoneOffsetHours}${minutesDisplay})`
+      : `(UTC+${Math.abs(timezoneOffsetHours)}${minutesDisplay})`;
 }

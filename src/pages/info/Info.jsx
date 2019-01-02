@@ -8,6 +8,7 @@ import Loading from '../../components/Loading';
 import Button from '../../components/buttons/Button';
 import { ChartLoader } from '../../components/charts';
 import Page from '../../components/Page';
+import PageTitle from '../../components/PageTitle';
 import './Info.scss';
 
 const FETCH_TIMEOUT = 30000;
@@ -96,6 +97,7 @@ class InfoPage extends Component {
         <Helmet>
           <title>{TextUtils.getHtmlTitle('Block Explorer - Statistics')}</title>
         </Helmet>
+        <PageTitle title="Statistics" />
         <section className="container">
           <div className="row">
             <ContentBox

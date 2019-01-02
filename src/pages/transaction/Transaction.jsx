@@ -76,10 +76,6 @@ class TransactionPage extends Component {
       return <NotFoundDisplay />;
     }
 
-    const blockDateStr = transaction.Block.timestamp
-      ? TextUtils.getDateStringFromTimestamp(transaction.Block.timestamp)
-      : '';
-
     return (
       <Page className="Transaction">
         <Helmet>
@@ -88,7 +84,6 @@ class TransactionPage extends Component {
         <section>
           <div className="row">
             <div className="col-sm">
-              <div className="font-size-md mb-1 mb-lg-2">{blockDateStr}</div>
               <h1 className="d-block d-sm-inline-block text-white mb-3 mb-lg-5">Transaction</h1>
             </div>
           </div>
