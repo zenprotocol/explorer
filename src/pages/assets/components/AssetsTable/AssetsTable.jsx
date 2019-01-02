@@ -5,7 +5,7 @@ import config from '../../../../lib/Config';
 import AssetUtils from '../../../../lib/AssetUtils';
 import TextUtils from '../../../../lib/TextUtils';
 import HashLink from '../../../../components/HashLink';
-import ItemsTable from '../../../../components/ItemsTable';
+import { ItemsTableWithUrlPagination } from '../../../../components/ItemsTable';
 import PageTitle from '../../../../components/PageTitle';
 
 class AssetsTable extends Component {
@@ -51,17 +51,25 @@ class AssetsTable extends Component {
     ];
   }
 
+  get tableDataSetter() {
+    const { uiStore } = this.props.rootStore;
+    return uiStore.setAssetsTableData.bind(uiStore);
+  }
+
   render() {
     const { assetStore, uiStore } = this.props.rootStore;
     return (
-      <ItemsTable
+      <ItemsTableWithUrlPagination
+        location={this.props.location} 
+        history={this.props.history}
         columns={this.getTableColumns()}
         loading={assetStore.loading.assets}
         itemsCount={assetStore.assetsCount}
         items={assetStore.assets}
         pageSize={uiStore.state.assetsTable.pageSize}
         curPage={uiStore.state.assetsTable.curPage}
-        tableDataSetter={uiStore.setAssetsTableData.bind(uiStore)}
+        tableDataSetter={this.tableDataSetter}
+        dataTable={uiStore.state.assetsTable}
         topContent={<PageTitle title="Assets" margin={false} />}
       />
     );
@@ -70,6 +78,8 @@ class AssetsTable extends Component {
 
 AssetsTable.propTypes = {
   rootStore: PropTypes.object,
+  location: PropTypes.object.isRequired,
+  history: PropTypes.object.isRequired,
 };
 
 export default inject('rootStore')(observer(AssetsTable));

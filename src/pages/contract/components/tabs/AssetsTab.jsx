@@ -6,7 +6,7 @@ import TextUtils from '../../../../lib/TextUtils';
 import AssetUtils from '../../../../lib/AssetUtils';
 import WithSetIdOnUiStore from '../../../../components/hoc/WithSetIdOnUiStore';
 import { TabPanel } from '../../../../components/tabs';
-import ItemsTable from '../../../../components/ItemsTable';
+import { ItemsTable } from '../../../../components/ItemsTable';
 import HashLink from '../../../../components/HashLink';
 
 const AssetsTab = observer(props => {

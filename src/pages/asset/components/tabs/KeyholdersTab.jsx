@@ -4,10 +4,10 @@ import config from '../../../../lib/Config';
 import WithSetIdOnUiStore from '../../../../components/hoc/WithSetIdOnUiStore';
 import AssetUtils from '../../../../lib/AssetUtils';
 import { TabPanel } from '../../../../components/tabs';
-import ItemsTable from '../../../../components/ItemsTable';
+import { ItemsTable } from '../../../../components/ItemsTable';
 import HashLink from '../../../../components/HashLink';
 
-const KeyholdersTab = observer((props) => {
+const KeyholdersTab = observer(props => {
   const assetStore = props.rootStore.assetStore;
   const uiStore = props.rootStore.uiStore;
   const totalIssued = Number(assetStore.asset.issued || 0);
@@ -17,7 +17,7 @@ const KeyholdersTab = observer((props) => {
         columns={[
           {
             Header: 'RANK',
-            Cell: data => data.index + 1 + (data.page * data.pageSize),
+            Cell: data => data.index + 1 + data.page * data.pageSize,
           },
           {
             Header: 'ADDRESS',
@@ -28,13 +28,14 @@ const KeyholdersTab = observer((props) => {
           {
             Header: 'QUANTITY',
             accessor: 'balance',
-            Cell: data => AssetUtils.getAmountString(uiStore.state.assetKeyholdersTable.asset, data.value),
+            Cell: data =>
+              AssetUtils.getAmountString(uiStore.state.assetKeyholdersTable.asset, data.value),
           },
           {
             Header: '%',
             accessor: 'balance',
-            Cell: ({value}) => {
-              return (totalIssued ? Number(value) / totalIssued * 100 : 0) + '%';
+            Cell: ({ value }) => {
+              return (totalIssued ? (Number(value) / totalIssued) * 100 : 0) + '%';
             },
           },
         ]}
@@ -51,4 +52,6 @@ const KeyholdersTab = observer((props) => {
     </TabPanel>
   );
 });
-export default inject('rootStore')(observer(WithSetIdOnUiStore(KeyholdersTab, 'setAssetKeyholdersTableData', 'asset')));
+export default inject('rootStore')(
+  observer(WithSetIdOnUiStore(KeyholdersTab, 'setAssetKeyholdersTableData', 'asset'))
+);

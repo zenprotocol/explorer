@@ -19,7 +19,7 @@ class ContractsPage extends Component {
           <title>{TextUtils.getHtmlTitle('Contracts', '', true)}</title>
         </Helmet>
         <section>
-          <ContractsTable />
+          <ContractsTable location={this.props.location} history={this.props.history} />
         </section>
       </Page>
     );
@@ -28,6 +28,8 @@ class ContractsPage extends Component {
 
 ContractsPage.propTypes = {
   rootStore: PropTypes.object,
+  location: PropTypes.object.isRequired,
+  history: PropTypes.object.isRequired,
 };
 
 export default inject('rootStore')(observer(ContractsPage));

@@ -3,71 +3,72 @@ import localStore from '../lib/localStore';
 import Service from '../lib/Service';
 import config from '../lib/Config';
 
-export default function UIStore(rootStore) {
+export default function UIStore(rootStore, initialState = {}) {
   const blockStore = rootStore.blockStore;
   const addressStore = rootStore.addressStore;
   const contractStore = rootStore.contractStore;
   const assetStore = rootStore.assetStore;
 
+  const defaultValues = defaultValuesFactory(initialState);
   const state = observable({
     syncing: false,
 
     blocksTable: {
-      pageSize: config.ui.table.defaultPageSize,
-      curPage: 0,
+      pageSize: defaultValues.get('blocksTable.pageSize'),
+      curPage: defaultValues.get('blocksTable.curPage'),
     },
 
     blockTxTable: {
-      hashOrBlockNumber: '0',
-      pageSize: config.ui.table.defaultPageSize,
-      curPage: 0,
+      hashOrBlockNumber: defaultValues.get('blockTxTable.hashOrBlockNumber', '0'),
+      pageSize: defaultValues.get('blockTxTable.pageSize'),
+      curPage: defaultValues.get('blockTxTable.curPage'),
     },
 
     addressTxAssetsTable: {
-      address: '',
-      pageSize: config.ui.table.defaultPageSize,
-      curPage: 0,
+      address: defaultValues.get('addressTxAssetsTable.address'),
+      pageSize: defaultValues.get('addressTxAssetsTable.pageSize'),
+      curPage: defaultValues.get('addressTxAssetsTable.curPage'),
     },
 
     addressTxsTable: {
-      address: '',
-      pageSize: config.ui.table.defaultPageSize,
-      curPage: 0,
+      address: defaultValues.get('addressTxsTable.address'),
+      pageSize: defaultValues.get('addressTxsTable.pageSize'),
+      curPage: defaultValues.get('addressTxsTable.curPage'),
     },
 
     contractsTable: {
-      pageSize: config.ui.table.defaultPageSize,
-      curPage: 0,
-      sorted: [],
+      pageSize: defaultValues.get('contractsTable.pageSize'),
+      curPage: defaultValues.get('contractsTable.curPage'),
+      sorted: defaultValues.get('contractsTable.sorted'),
     },
 
     contractAssetsTable: {
-      address: '',
-      pageSize: config.ui.table.defaultPageSize,
-      curPage: 0,
+      address: defaultValues.get('contractAssetsTable.address'),
+      pageSize: defaultValues.get('contractAssetsTable.pageSize'),
+      curPage: defaultValues.get('contractAssetsTable.curPage'),
     },
 
     contractCommandsTable: {
-      address: '',
-      pageSize: config.ui.table.defaultPageSize,
-      curPage: 0,
+      address: defaultValues.get('contractCommandsTable.address'),
+      pageSize: defaultValues.get('contractCommandsTable.pageSize'),
+      curPage: defaultValues.get('contractCommandsTable.curPage'),
     },
 
     assetsTable: {
-      pageSize: config.ui.table.defaultPageSize,
-      curPage: 0,
+      pageSize: defaultValues.get('assetsTable.pageSize'),
+      curPage: defaultValues.get('assetsTable.curPage'),
     },
 
     assetTxsTable: {
-      asset: '',
-      pageSize: config.ui.table.defaultPageSize,
-      curPage: 0,
+      asset: defaultValues.get('assetTxsTable.asset'),
+      pageSize: defaultValues.get('assetTxsTable.pageSize'),
+      curPage: defaultValues.get('assetTxsTable.curPage'),
     },
 
     assetKeyholdersTable: {
-      asset: '',
-      pageSize: config.ui.table.defaultPageSize,
-      curPage: 0,
+      asset: defaultValues.get('assetKeyholdersTable.asset'),
+      pageSize: defaultValues.get('assetKeyholdersTable.pageSize'),
+      curPage: defaultValues.get('assetKeyholdersTable.curPage'),
     },
   });
 
@@ -82,18 +83,32 @@ export default function UIStore(rootStore) {
       .catch(() => {});
   });
 
-  const setBlocksTableData = action(setTableData({objectToSet: state.blocksTable}));
-  const setBlockTxTableData = action(setTableData({nameOfIdentifier: 'hashOrBlockNumber', objectToSet: state.blockTxTable}));
-  const setAddressTxAssetsTableData = action(setTableData({nameOfIdentifier: 'address', objectToSet: state.addressTxAssetsTable}));
-  const setAddressTxsTableData = action(setTableData({nameOfIdentifier: 'address', objectToSet: state.addressTxsTable}));
-  const setContractsTableData = action(setTableData({objectToSet: state.contractsTable}));
-  const setContractAssetsTableData = action(setTableData({nameOfIdentifier: 'address', objectToSet: state.contractAssetsTable}));
-  const setContractCommandsTableData = action(setTableData({nameOfIdentifier: 'address', objectToSet: state.contractCommandsTable}));
-  const setAssetsTableData = action(setTableData({objectToSet: state.assetsTable}));
-  const setAssetTxsTableData = action(setTableData({nameOfIdentifier: 'asset', objectToSet: state.assetTxsTable}));
-  const setAssetKeyholdersTableData = action(setTableData({nameOfIdentifier: 'asset', objectToSet: state.assetKeyholdersTable}));
+  const setBlocksTableData = action(setTableData({ objectToSet: state.blocksTable }));
+  const setBlockTxTableData = action(
+    setTableData({ nameOfIdentifier: 'hashOrBlockNumber', objectToSet: state.blockTxTable })
+  );
+  const setAddressTxAssetsTableData = action(
+    setTableData({ nameOfIdentifier: 'address', objectToSet: state.addressTxAssetsTable })
+  );
+  const setAddressTxsTableData = action(
+    setTableData({ nameOfIdentifier: 'address', objectToSet: state.addressTxsTable })
+  );
+  const setContractsTableData = action(setTableData({ objectToSet: state.contractsTable }));
+  const setContractAssetsTableData = action(
+    setTableData({ nameOfIdentifier: 'address', objectToSet: state.contractAssetsTable })
+  );
+  const setContractCommandsTableData = action(
+    setTableData({ nameOfIdentifier: 'address', objectToSet: state.contractCommandsTable })
+  );
+  const setAssetsTableData = action(setTableData({ objectToSet: state.assetsTable }));
+  const setAssetTxsTableData = action(
+    setTableData({ nameOfIdentifier: 'asset', objectToSet: state.assetTxsTable })
+  );
+  const setAssetKeyholdersTableData = action(
+    setTableData({ nameOfIdentifier: 'asset', objectToSet: state.assetKeyholdersTable })
+  );
 
-  const saveToStorage = action((state) => {
+  const saveToStorage = action(state => {
     localStore.set('ui-store', state);
   });
 
@@ -250,7 +265,7 @@ function hashOrBlockNumberNotEmpty(hashOrBlockNumber) {
 /**
  * Creates a tableDataSetter function with a custom id name
  */
-function setTableData({nameOfIdentifier, objectToSet} = {}) {
+function setTableData({ nameOfIdentifier, objectToSet } = {}) {
   return (params = {}) => {
     const id = nameOfIdentifier ? params[nameOfIdentifier] : null;
     const pageSize = params.pageSize;
@@ -258,8 +273,12 @@ function setTableData({nameOfIdentifier, objectToSet} = {}) {
     const sorted = params.sorted;
 
     if (id && id !== objectToSet[nameOfIdentifier]) {
+      const prevId = objectToSet[nameOfIdentifier];
       objectToSet[nameOfIdentifier] = id;
-      objectToSet.curPage = 0;
+      // When resetting the curPage when this is the first set, it can interfere other objects which try to set the page as well
+      if (prevId) {
+        objectToSet.curPage = 0;
+      }
     }
     if (pageSize) {
       objectToSet.pageSize = pageSize;
@@ -270,5 +289,37 @@ function setTableData({nameOfIdentifier, objectToSet} = {}) {
     if (sorted) {
       objectToSet.sorted = sorted;
     }
+  };
+}
+
+/**
+ * Creates an object with a get function to return a default for a table key
+ * First by initialState, then by general default
+ */
+function defaultValuesFactory(initialState) {
+  const defaults = {
+    pageSize: config.ui.table.defaultPageSize,
+    curPage: 0,
+    sorted: [],
+    id: '',
+  };
+
+  function getDefaultByPath(path) {
+    const key = path[path.length - 1];
+    return typeof defaults[key] !== 'undefined' ? defaults[key] : defaults.id;
+  }
+
+  return {
+    /**
+     * Get a default value from state, supplied default or common default by that order
+     */
+    get(accessor, defaultVal) {
+      const path = accessor.split('.');
+      const stateVal = path.reduce(
+        (obj, key) => (obj && typeof obj[key] !== 'undefined' ? obj[key] : undefined),
+        initialState
+      );
+      return stateVal || defaultVal || getDefaultByPath(path);
+    },
   };
 }

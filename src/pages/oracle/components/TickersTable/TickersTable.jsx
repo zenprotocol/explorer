@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import * as clipboard from 'clipboard-polyfill';
 import service from '../../../../lib/Service';
-import ItemsTable from '../../../../components/ItemsTable';
+import { ItemsTable } from '../../../../components/ItemsTable';
 
 export default class TickersTable extends Component {
   render() {
@@ -148,7 +148,9 @@ class CopyProof extends Component {
               onFocus={this.handleInputFocus}
             />
           ) : (
-            <button className="btn btn-link p-0 border-0 text-light" onClick={this.handleClick}>Copy proof</button>
+            <button className="btn btn-link p-0 border-0 text-light" onClick={this.handleClick}>
+              Copy proof
+            </button>
             // <a onClick={this.handleClick}>Copy proof</a>
           )}
         </div>

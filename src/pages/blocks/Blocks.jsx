@@ -43,7 +43,7 @@ class BlocksPage extends Component {
           <title>{title}</title>
         </Helmet>
         <section>
-          <BlocksTable title="LATEST BLOCKS" />
+          <BlocksTable title="LATEST BLOCKS" location={this.props.location} history={this.props.history} />
         </section>
       </Page>
     );
@@ -52,7 +52,8 @@ class BlocksPage extends Component {
 
 BlocksPage.propTypes = {
   rootStore: PropTypes.object,
-  location: PropTypes.object,
+  location: PropTypes.object.isRequired,
+  history: PropTypes.object.isRequired,
 };
 
 export default inject('rootStore')(BlocksPage);

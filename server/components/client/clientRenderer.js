@@ -67,7 +67,7 @@ module.exports = wrapAsync(async (req, res) => {
         .replace('<title></title>', helmet.title.toString())
         .replace(
           '</head>',
-          extraChunksStyles.join('') + initialStateScript + analyticsScript + '</head>'
+          extraChunksStyles.join('') + initialStateScript + analyticsScript + helmet.link.toString() + '</head>'
         )
         .replace(
           '<div id="root"></div>',

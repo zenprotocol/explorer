@@ -6,7 +6,7 @@ import config from '../../../lib/Config';
 import AssetUtils from '../../../lib/AssetUtils';
 import TextUtils from '../../../lib/TextUtils';
 import HashLink from '../../../components/HashLink';
-import ItemsTable from '../../../components/ItemsTable';
+import { ItemsTable } from '../../../components/ItemsTable';
 import PageTitle from '../../../components/PageTitle';
 import { TransactionAssetLoader } from '../../../components/Transactions';
 
@@ -77,6 +77,11 @@ class AddressTxsTable extends Component {
       },
     ];
   }
+
+  get tableDataSetter() {
+    return this.uiStore.setAddressTxAssetsTableData.bind(this.uiStore);
+  }
+
   render() {
     const address = this.props.address;
     return (
@@ -87,7 +92,7 @@ class AddressTxsTable extends Component {
         items={this.addressStore.addressTransactionAssets}
         pageSize={this.uiStore.state.addressTxAssetsTable.pageSize}
         curPage={this.uiStore.state.addressTxAssetsTable.curPage}
-        tableDataSetter={this.uiStore.setAddressTxAssetsTableData.bind(this.uiStore)}
+        tableDataSetter={this.tableDataSetter}
         topContent={<PageTitle title="Transactions" margin={false} />}
         SubComponent={row => {
           const addressFoundIn = [];
