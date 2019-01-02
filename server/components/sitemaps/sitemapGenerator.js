@@ -31,10 +31,6 @@ module.exports = {
     const urls = [
       `${host}/sitemaps/main/0.xml`,
     ];
-    // blocks list
-    for (let part = 0; part * URLS_PER_SITEMAP < getNumOfPages(blocks); part++) {
-      urls.push(`${host}/sitemaps/blocks/${part}.xml`);
-    }
     // block
     for (let part = 0; part * URLS_PER_SITEMAP < blocks; part++) {
       urls.push(`${host}/sitemaps/block/${part}.xml`);
@@ -47,17 +43,9 @@ module.exports = {
     for (let part = 0; part * URLS_PER_SITEMAP < addresses; part++) {
       urls.push(`${host}/sitemaps/address/${part}.xml`);
     }
-    // asset list
-    for (let part = 0; part * URLS_PER_SITEMAP < getNumOfPages(assets); part++) {
-      urls.push(`${host}/sitemaps/assets/${part}.xml`);
-    }
     // asset
     for (let part = 0; part * URLS_PER_SITEMAP < assets; part++) {
       urls.push(`${host}/sitemaps/asset/${part}.xml`);
-    }
-    // contract list
-    for (let part = 0; part * URLS_PER_SITEMAP < getNumOfPages(contracts); part++) {
-      urls.push(`${host}/sitemaps/contracts/${part}.xml`);
     }
     // contract
     for (let part = 0; part * URLS_PER_SITEMAP < contracts; part++) {
