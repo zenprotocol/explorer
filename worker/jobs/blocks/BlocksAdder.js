@@ -265,16 +265,18 @@ class BlocksAdder {
 
   async addContract({ nodeBlock, transactionHash, dbTransaction }) {
     const nodeTransaction = nodeBlock.transactions[transactionHash];
+    let created = 0;
     if (nodeTransaction.contract) {
       logger.info(
         `Found a contract - blockNumber=${nodeBlock.header.blockNumber}. txHash=${transactionHash}`
       );
       const nodeContract = nodeTransaction.contract;
-      const dbContract = await contractsDAL.findById(nodeContract.contractId, {
+      let dbContract = await contractsDAL.findById(nodeContract.contractId, {
         transaction: dbTransaction,
       });
+      
       if (!dbContract) {
-        await contractsDAL.create(
+        dbContract = await contractsDAL.create(
           {
             id: nodeContract.contractId,
             address: nodeContract.address,
@@ -282,10 +284,12 @@ class BlocksAdder {
           },
           { transaction: dbTransaction }
         );
-        return 1;
+        created = 1;
       }
+      const transaction = await transactionsDAL.findOne({where: {hash: transactionHash}});
+      await contractsDAL.addActivationTransaction(dbContract, transaction);
     }
-    return 0;
+    return created;
   }
 
   getOutputsToInsert({ nodeOutputs, transactionId } = {}) {

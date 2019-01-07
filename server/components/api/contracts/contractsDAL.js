@@ -6,6 +6,7 @@ const deepMerge = require('deepmerge');
 const inputsDAL = require('../inputs/inputsDAL');
 const commandsDAL = require('../commands/commandsDAL');
 const assetOutstandingsDAL = require('../assetOutstandings/assetOutstandingsDAL');
+const transactionsDAL = require('../transactions/transactionsDAL');
 const AddressUtils = require('../../../../src/common/utils/AddressUtils');
 
 const contractsDAL = dal.createDAL('Contract');
@@ -241,6 +242,17 @@ contractsDAL.deleteCommands = function(id) {
       ContractId: id,
     },
   });
+};
+
+contractsDAL.getActivationTransactions = function(contract) {
+  return contract.getActivationTransactions();
+};
+
+contractsDAL.addActivationTransaction = async function(contract, transaction, options) {
+  if(contract && transaction) {
+    return contract.addActivationTransaction(transaction, options);
+  }
+  return null;
 };
 
 module.exports = contractsDAL;
