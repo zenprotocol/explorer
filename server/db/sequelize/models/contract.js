@@ -15,6 +15,12 @@ module.exports = (sequelize, DataTypes) => {
   );
   Contract.associate = function(models) {
     Contract.hasMany(models.Command);
+    Contract.belongsToMany(models.Transaction, {
+      as: 'ActivationTransactions',
+      through: 'ContractActivation',
+      foreignKey: 'ContractId',
+      otherKey: 'TransactionId'
+    });
   };
   return Contract;
 };
