@@ -4,6 +4,7 @@ const test = require('blue-tape');
 const truncate = require('../../../lib/truncate');
 const contractsDAL = require('../../../../server/components/api/contracts/contractsDAL');
 const transactionsDAL = require('../../../../server/components/api/transactions/transactionsDAL');
+const blocksDAL = require('../../../../server/components/api/blocks/blocksDAL');
 const NetworkHelper = require('../../../lib/NetworkHelper');
 const BlocksAdder = require('../BlocksAdder');
 
@@ -43,7 +44,12 @@ test('BlocksAdder.addContract()', async function(t) {
   });
 
   await wrapTest('Given a transaction with a contract (association)', async given => {
-    // add a demo transaction with the hash of the contract tx
+    // add a demo transaction and block with the hash of the contract tx
+    const block = await blocksDAL.create({
+      blockNumber: 1,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    });
     await transactionsDAL.create({
       hash: '33c1ba62d66a65c3f0bb829eb7b31fb5a6f1ea1b880f96617ca173fc184f02b3',
       index: 0,
@@ -52,6 +58,7 @@ test('BlocksAdder.addContract()', async function(t) {
       outputCount: 0,
       createdAt: new Date(),
       updatedAt: new Date(),
+      BlockId: block.id,
     });
     await blocksAdder.addContract({
       nodeBlock: demoBlock,
