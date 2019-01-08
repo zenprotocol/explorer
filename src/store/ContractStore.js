@@ -145,10 +145,11 @@ decorate(ContractStore, {
 });
 
 export class Contract {
-  constructor({ id = '', address = '', code = '', expiryBlock = null } = {}) {
+  constructor({ id = '', address = '', code = '', expiryBlock = null, lastActivationTransaction = null } = {}) {
     this.id = id;
     this.address = address;
     this.code = code;
     this.expiryBlock = expiryBlock;
+    this.lastActivationTransaction = lastActivationTransaction;
   }
 }

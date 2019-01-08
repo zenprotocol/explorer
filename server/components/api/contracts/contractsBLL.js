@@ -17,6 +17,12 @@ module.exports = {
 
     return await contractsDAL.findByAddress(address);
   },
+  findActivationTransactions: async function({ contract } = {}) {
+    return await contractsDAL.getActivationTransactions(contract);
+  },
+  findLastActivationTransaction: async function({ contract } = {}) {
+    return await contractsDAL.getLastActivationTransaction(contract);
+  },
   assets: async function({ address, page = 0, pageSize = 10 } = {}) {
     if (!address) {
       return [];

@@ -6,21 +6,38 @@ const deepMerge = require('deepmerge');
 const inputsDAL = require('../inputs/inputsDAL');
 const commandsDAL = require('../commands/commandsDAL');
 const assetOutstandingsDAL = require('../assetOutstandings/assetOutstandingsDAL');
-const transactionsDAL = require('../transactions/transactionsDAL');
 const AddressUtils = require('../../../../src/common/utils/AddressUtils');
 
 const contractsDAL = dal.createDAL('Contract');
 const sequelize = contractsDAL.db.sequelize;
 const Op = sequelize.Op;
 
-// When sorted by expiryBlock, add a 2nd sort by createdAt
-const expiryBlockOrderMap = {
-  asc: 'NULLS FIRST, "createdAt" ASC',
-  desc: 'NULLS LAST, "createdAt" DESC',
+const nullsOrderMap = {
+  asc: 'NULLS FIRST',
+  desc: 'NULLS LAST',
+};
+// Control what happens when sorting by these parameters
+const orderMap = {
+  expiryBlock: {
+    asc: `${nullsOrderMap.asc}, "createdAt" ASC`,
+    desc: `${nullsOrderMap.desc}, "createdAt" DESC`,
+  },
+  lastActivationBlockNumber: nullsOrderMap,
 };
 
-contractsDAL.findAllWithAssetsCountTxCountAndCountOrderByNewest = function({ limit = 10, offset = 0, order = [] } = {}) {
-  const orderBy = order.map(item => `"${item[0]}" ${item[1]} ${item[0] === 'expiryBlock' ? expiryBlockOrderMap[item[1].toLowerCase()] : ''}`).join(', ');
+contractsDAL.findAllWithAssetsCountTxCountAndCountOrderByNewest = function({
+  limit = 10,
+  offset = 0,
+  order = [],
+} = {}) {
+  const orderBy = order
+    .map(
+      item =>
+        `"${item[0]}" ${item[1]} ${
+          Object.keys(orderMap).includes(item[0]) ? orderMap[item[0]][item[1].toLowerCase()] : ''
+        }`
+    )
+    .join(', ');
   const sql = tags.oneLine`
   WITH "ContractsFinal" AS 
   (SELECT "Contracts".*, COUNT("Assets".asset) AS "assetsCount"
@@ -37,7 +54,8 @@ contractsDAL.findAllWithAssetsCountTxCountAndCountOrderByNewest = function({ lim
     "ContractsFinal"."address",
     "ContractsFinal"."expiryBlock",
     "ContractsFinal"."assetsCount",
-    COALESCE("Txs"."total", 0) AS "transactionsCount"
+    COALESCE("Txs"."total", 0) AS "transactionsCount",
+    "LastActivationTransactions"."blockNumber" AS "lastActivationBlockNumber"
   FROM "ContractsFinal"
   LEFT JOIN
   (SELECT 
@@ -56,6 +74,16 @@ contractsDAL.findAllWithAssetsCountTxCountAndCountOrderByNewest = function({ lim
       ON "Outputs"."TransactionId" = "Inputs"."TransactionId" and "Outputs"."address" = "Inputs"."address"
     GROUP BY COALESCE("Outputs"."address", "Inputs"."address")) AS "Txs"
   ON "Txs"."address" = "ContractsFinal"."address"
+  LEFT JOIN (
+    SELECT MAX("Blocks"."blockNumber") as "blockNumber", "ContractActivations"."ContractId"
+    FROM "Blocks"
+    JOIN "Transactions" ON "Transactions"."BlockId" = "Blocks"."id"
+    JOIN "ContractActivations" ON "ContractActivations"."TransactionId" = "Transactions"."id"
+    WHERE "ContractActivations"."ContractId" IN (SELECT id FROM "ContractsFinal")
+    GROUP BY "ContractActivations"."ContractId"
+    ORDER BY "ContractActivations"."ContractId", MAX("Blocks"."blockNumber") DESC
+  ) AS "LastActivationTransactions"
+  ON "LastActivationTransactions"."ContractId" = "ContractsFinal"."id"
   ORDER BY ${orderBy}
   LIMIT :limit OFFSET :offset
   `;
@@ -67,7 +95,7 @@ contractsDAL.findAllWithAssetsCountTxCountAndCountOrderByNewest = function({ lim
         offset,
       },
       type: sequelize.QueryTypes.SELECT,
-    })
+    }),
   ]).then(this.getItemsAndCountResult);
 };
 
@@ -245,11 +273,33 @@ contractsDAL.deleteCommands = function(id) {
 };
 
 contractsDAL.getActivationTransactions = function(contract) {
-  return contract.getActivationTransactions();
+  return contract.getActivationTransactions({
+    order: [[sequelize.col('Block.blockNumber'), 'DESC']],
+    include: [
+      {
+        model: this.db.Block,
+        required: true,
+      },
+    ],
+  });
+};
+contractsDAL.getLastActivationTransaction = function(contract) {
+  return contract
+    .getActivationTransactions({
+      order: [[sequelize.col('Block.blockNumber'), 'DESC']],
+      limit: 1,
+      include: [
+        {
+          model: this.db.Block,
+          required: true,
+        },
+      ],
+    })
+    .then(results => (results.length ? results[0] : null));
 };
 
 contractsDAL.addActivationTransaction = async function(contract, transaction, options) {
-  if(contract && transaction) {
+  if (contract && transaction) {
     return contract.addActivationTransaction(transaction, options);
   }
   return null;

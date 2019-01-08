@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { observer, inject } from 'mobx-react';
+import { Link } from 'react-router-dom';
 import config from '../../../../lib/Config';
 import TextUtils from '../../../../lib/TextUtils';
 import HashLink from '../../../../components/HashLink';
@@ -41,6 +42,13 @@ class ContractsTable extends Component {
         hideOnMobile: true,
         Cell: ({ value }) => TextUtils.formatNumber(value),
       },
+      {
+        Header: 'Activation',
+        accessor: 'lastActivationBlockNumber',
+        sortable: true,
+        hideOnMobile: true,
+        Cell: ({ value }) => <Link to={`/blocks/${value}`}>{value}</Link>,
+      },
     ];
   }
 
@@ -48,7 +56,7 @@ class ContractsTable extends Component {
     const { contractStore, uiStore } = this.props.rootStore;
     return (
       <ItemsTableWithUrlPagination
-        location={this.props.location} 
+        location={this.props.location}
         history={this.props.history}
         columns={this.getTableColumns()}
         loading={contractStore.loading.contracts}

@@ -2,6 +2,7 @@ const blocksBLL = require('../api/blocks/blocksBLL');
 const transactionsBLL = require('../api/transactions/transactionsBLL');
 const addressesBLL = require('../api/addresses/addressesBLL');
 const contractsBLL = require('../api/contracts/contractsBLL');
+const contractsDAL = require('../api/contracts/contractsDAL');
 const assetsBLL = require('../api/assets/assetsBLL');
 const infosBLL = require('../api/infos/infosBLL');
 
@@ -109,8 +110,15 @@ async function getContractListStoreData(req) {
 
 async function getContractStoreData(req) {
   const contract = await contractsBLL.findByAddress({ address: req.params.address });
+  if(!contract) {
+    return {
+      contract: { statue: 404 },
+    };
+  }
+
+  const lastActivationTransaction = await contractsBLL.findLastActivationTransaction({ contract });
   return {
-    contract: contract || { statue: 404 },
+    contract: Object.assign({}, contractsDAL.toJSON(contract), { lastActivationTransaction })
   };
 }
 

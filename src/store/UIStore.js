@@ -2,6 +2,7 @@ import { observable, action, autorun, toJS, runInAction } from 'mobx';
 import localStore from '../lib/localStore';
 import Service from '../lib/Service';
 import config from '../lib/Config';
+import ObjectUtils from '../lib/ObjectUtils';
 
 export default function UIStore(rootStore, initialState = {}) {
   const blockStore = rootStore.blockStore;
@@ -304,7 +305,8 @@ function defaultValuesFactory(initialState) {
     id: '',
   };
 
-  function getDefaultByPath(path) {
+  function getDefaultByAccessor(accessor) {
+    const path = accessor.split('.');
     const key = path[path.length - 1];
     return typeof defaults[key] !== 'undefined' ? defaults[key] : defaults.id;
   }
@@ -314,12 +316,8 @@ function defaultValuesFactory(initialState) {
      * Get a default value from state, supplied default or common default by that order
      */
     get(accessor, defaultVal) {
-      const path = accessor.split('.');
-      const stateVal = path.reduce(
-        (obj, key) => (obj && typeof obj[key] !== 'undefined' ? obj[key] : undefined),
-        initialState
-      );
-      return stateVal || defaultVal || getDefaultByPath(path);
+      const stateVal = ObjectUtils.getSafeProperty(initialState, accessor);
+      return stateVal || defaultVal || getDefaultByAccessor(accessor);
     },
   };
 }

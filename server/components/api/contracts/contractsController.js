@@ -4,6 +4,7 @@ const httpStatus = require('http-status');
 const jsonResponse = require('../../../lib/jsonResponse');
 const HttpError = require('../../../lib/HttpError');
 const contractsBLL = require('./contractsBLL');
+const contractsDAL = require('./contractsDAL');
 
 module.exports = {
   index: async function(req, res) {
@@ -19,7 +20,15 @@ module.exports = {
 
     const contract = await contractsBLL.findByAddress({ address });
     if (contract) {
-      res.status(httpStatus.OK).json(jsonResponse.create(httpStatus.OK, contract));
+      const lastActivationTransaction = await contractsBLL.findLastActivationTransaction({ contract });
+      res
+        .status(httpStatus.OK)
+        .json(
+          jsonResponse.create(
+            httpStatus.OK,
+            Object.assign({}, contractsDAL.toJSON(contract), { lastActivationTransaction })
+          )
+        );
     } else {
       throw new HttpError(httpStatus.NOT_FOUND);
     }
