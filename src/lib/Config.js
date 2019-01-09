@@ -10,7 +10,7 @@ export default {
   ui: {
     table: {
       pageSizes: [5, 10, 20, 50, 100],
-      defaultPageSize: 10,
+      defaultPageSize: 5,
       minCellWidth: 130,
       minCellWidthDate: 200,
     },
