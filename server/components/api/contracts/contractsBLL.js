@@ -4,11 +4,14 @@ const contractsDAL = require('./contractsDAL');
 const createQueryObject = require('../../../lib/createQueryObject');
 
 module.exports = {
-  findAll: async function({ page = 0, pageSize = 10, sorted } = {}) {
+  findAll: async function({ page = 0, pageSize = 10, sorted, blockNumber } = {}) {
     const sortBy =
       sorted && sorted != '[]' ? JSON.parse(sorted) : [{ id: 'expiryBlock', desc: true }];
     const query = createQueryObject({ page, pageSize, sorted: sortBy });
-    return await contractsDAL.findAllWithAssetsCountTxCountAndCountOrderByNewest(query);
+    return await contractsDAL.findAllWithAssetsCountTxCountAndCountOrderByNewest({
+      ...query,
+      blockNumber,
+    });
   },
   findByAddress: async function({ address } = {}) {
     if (!address) {

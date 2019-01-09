@@ -25,12 +25,11 @@ const orderMap = {
   lastActivationBlockNumber: nullsOrderMap,
 };
 
-contractsDAL.findAllWithAssetsCountTxCountAndCountOrderByNewest = function({
-  limit = 10,
-  offset = 0,
-  order = [],
-} = {}) {
-  const orderBy = order
+/**
+ * Parses a sequelize order array into plain sql and maps attributes if needed
+ */
+function getSqlOrderBy(order = []) {
+  return order
     .map(
       item =>
         `"${item[0]}" ${item[1]} ${
@@ -38,6 +37,29 @@ contractsDAL.findAllWithAssetsCountTxCountAndCountOrderByNewest = function({
         }`
     )
     .join(', ');
+}
+
+contractsDAL.findAllWithAssetsCountTxCountAndCountOrderByNewest = function({
+  limit = 10,
+  offset = 0,
+  order = [],
+  blockNumber,
+} = {}) {
+  const hasBlockNumber = blockNumber && !isNaN(Number(blockNumber));
+  const orderBy = getSqlOrderBy(order);
+
+  const filterByBlockSql = `
+  INNER JOIN (
+    SELECT "ContractActivations"."ContractId"
+    FROM "Blocks"
+    JOIN "Transactions" ON "Transactions"."BlockId" = "Blocks"."id"
+    JOIN "ContractActivations" ON "ContractActivations"."TransactionId" = "Transactions"."id"
+    WHERE "Blocks"."blockNumber" = :blockNumber
+    GROUP BY "ContractActivations"."ContractId"
+  ) AS "ActivationBlockContracts"
+  ON "ActivationBlockContracts"."ContractId" = "ContractsFinal"."id"
+  `;
+
   const sql = tags.oneLine`
   WITH "ContractsFinal" AS 
   (SELECT "Contracts".*, COUNT("Assets".asset) AS "assetsCount"
@@ -79,20 +101,43 @@ contractsDAL.findAllWithAssetsCountTxCountAndCountOrderByNewest = function({
     FROM "Blocks"
     JOIN "Transactions" ON "Transactions"."BlockId" = "Blocks"."id"
     JOIN "ContractActivations" ON "ContractActivations"."TransactionId" = "Transactions"."id"
-    WHERE "ContractActivations"."ContractId" IN (SELECT id FROM "ContractsFinal")
     GROUP BY "ContractActivations"."ContractId"
     ORDER BY "ContractActivations"."ContractId", MAX("Blocks"."blockNumber") DESC
   ) AS "LastActivationTransactions"
   ON "LastActivationTransactions"."ContractId" = "ContractsFinal"."id"
+  ${hasBlockNumber ? filterByBlockSql : ''}
   ORDER BY ${orderBy}
   LIMIT :limit OFFSET :offset
   `;
+
+  let countOptions = {};
+  if (hasBlockNumber) {
+    countOptions = {
+      include: [
+        {
+          model: this.db.Transaction,
+          as: 'ActivationTransactions',
+          required: true,
+          include: [
+            {
+              model: this.db.Block,
+              required: true,
+              where: {
+                blockNumber,
+              },
+            },
+          ],
+        },
+      ],
+    };
+  }
   return Promise.all([
-    this.count(),
+    this.count(countOptions),
     sequelize.query(sql, {
       replacements: {
         limit,
         offset,
+        blockNumber,
       },
       type: sequelize.QueryTypes.SELECT,
     }),

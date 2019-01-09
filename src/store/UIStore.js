@@ -25,6 +25,13 @@ export default function UIStore(rootStore, initialState = {}) {
       curPage: defaultValues.get('blockTxTable.curPage'),
     },
 
+    blockContractsTable: {
+      blockNumber: defaultValues.get('blockContractsTable.blockNumber', 0),
+      pageSize: defaultValues.get('blockContractsTable.pageSize'),
+      curPage: defaultValues.get('blockContractsTable.curPage'),
+      sorted: defaultValues.get('blockContractsTable.sorted'),
+    },
+
     addressTxAssetsTable: {
       address: defaultValues.get('addressTxAssetsTable.address'),
       pageSize: defaultValues.get('addressTxAssetsTable.pageSize'),
@@ -87,6 +94,9 @@ export default function UIStore(rootStore, initialState = {}) {
   const setBlocksTableData = action(setTableData({ objectToSet: state.blocksTable }));
   const setBlockTxTableData = action(
     setTableData({ nameOfIdentifier: 'hashOrBlockNumber', objectToSet: state.blockTxTable })
+  );
+  const setBlockContractsTableData = action(
+    setTableData({ nameOfIdentifier: 'blockNumber', objectToSet: state.blockContractsTable })
   );
   const setAddressTxAssetsTableData = action(
     setTableData({ nameOfIdentifier: 'address', objectToSet: state.addressTxAssetsTable })
@@ -152,6 +162,19 @@ export default function UIStore(rootStore, initialState = {}) {
         blockStore.fetchBlockTransactionAssets(state.blockTxTable.hashOrBlockNumber, {
           page: state.blockTxTable.curPage,
           pageSize: state.blockTxTable.pageSize,
+        });
+      }
+    });
+
+    autorun(function fetchBlockContractsOnChange() {
+      if (
+        !isNaN(Number(state.blockContractsTable.blockNumber)) &&
+        Number(state.blockContractsTable.blockNumber) > 0
+      ) {
+        blockStore.fetchBlockContracts(state.blockContractsTable.blockNumber, {
+          page: state.blockContractsTable.curPage,
+          pageSize: state.blockContractsTable.pageSize,
+          sorted: JSON.stringify(state.blockContractsTable.sorted),
         });
       }
     });
@@ -245,6 +268,7 @@ export default function UIStore(rootStore, initialState = {}) {
     setAssetTxsTableData,
     setAssetsTableData,
     setBlockTxTableData,
+    setBlockContractsTableData,
     setBlocksTableData,
     setContractAssetsTableData,
     setContractCommandsTableData,

@@ -8,6 +8,7 @@ import RouterUtils from '../../lib/RouterUtils';
 import TextUtils from '../../lib/TextUtils';
 import BlockUtils from '../../lib/BlockUtils';
 import BlockTxsTable from './BlockTxsTable';
+import BlockContractsTable from './BlockContractsTable';
 import Loading from '../../components/Loading';
 import HashLink from '../../components/HashLink';
 import Page from '../../components/Page';
@@ -32,28 +33,35 @@ class BlockPage extends Component {
   }
 
   componentDidMount() {
-    this.blockStore.fetchBlock(this.hashOrBlockNumber).then(block => {
-      this.switchBlock(block.blockNumber);
-    });
-    this.setBlockInUiTable(this.hashOrBlockNumber);
+    this.fetchBlock();
+    this.setBlockInUiBlockTxsTable(this.hashOrBlockNumber);
   }
 
   componentDidUpdate(prevProps) {
     const prevHashOrBlockNumber = RouterUtils.getRouteParams(prevProps).id;
     if (this.hashOrBlockNumber !== prevHashOrBlockNumber) {
-      this.blockStore.fetchBlock(this.hashOrBlockNumber).then(block => {
-        this.switchBlock(block.blockNumber);
-      });
-      this.setBlockInUiTable(this.hashOrBlockNumber);
+      this.fetchBlock();
+      this.setBlockInUiBlockTxsTable(this.hashOrBlockNumber);
     }
+  }
+
+  fetchBlock() {
+    this.blockStore.fetchBlock(this.hashOrBlockNumber).then(block => {
+      this.switchBlock(block.blockNumber);
+      this.setBlockInUiBlockContractsTable(block.blockNumber);
+    });
   }
 
   get hashOrBlockNumber() {
     return RouterUtils.getRouteParams(this.props).id;
   }
 
-  setBlockInUiTable(hashOrBlockNumber) {
+  setBlockInUiBlockTxsTable(hashOrBlockNumber) {
     this.uiStore.setBlockTxTableData({ hashOrBlockNumber });
+  }
+
+  setBlockInUiBlockContractsTable(blockNumber) {
+    this.uiStore.setBlockContractsTableData({ blockNumber });
   }
 
   switchBlock(blockNumber) {
@@ -65,9 +73,10 @@ class BlockPage extends Component {
     const blockNumberStr = block.blockNumber ? `#${block.blockNumber}` : this.hashOrBlockNumber;
     const is404 = block.status === 404;
     const renderContent = !is404 && block.blockNumber;
+    const hasContracts = this.blockStore.blockContractsCount > 0;
 
     if (this.blockStore.loading.block) return <Loading />;
-
+    
     return (
       <Page className="Block">
         <Helmet>
@@ -87,6 +96,7 @@ class BlockPage extends Component {
         </section>
 
         <section>{renderContent && <BlockTxsTable />}</section>
+        <section>{renderContent && hasContracts && <BlockContractsTable />}</section>
       </Page>
     );
   }

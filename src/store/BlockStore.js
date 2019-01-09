@@ -12,6 +12,8 @@ export default class BlockStore {
     this.block = initialState.block || {};
     this.blockTransactionAssets = initialState.blockTransactionAssets || [];
     this.blockTransactionAssetsCount = initialState.blockTransactionAssetsCount || 0;
+    this.blockContracts = initialState.blockContracts || [];
+    this.blockContractsCount = initialState.blockContractsCount || 0;
     this.medianTime = initialState.medianTime || null;
 
     this.loading = {
@@ -19,6 +21,7 @@ export default class BlockStore {
       latestBlock: false,
       block: false,
       blockTransactionAssets: false,
+      blockContracts: false,
     };
 
     // Automatic loading
@@ -130,6 +133,24 @@ export default class BlockStore {
       });
   }
 
+  fetchBlockContracts(blockNumber, params = {}) {
+    this.loading.blockContracts = true;
+    return Service.contracts
+      .find({blockNumber, ...params})
+      .then(response => {
+        runInAction(() => {
+          this.blockContracts = response.data.items;
+          this.blockContractsCount = Number(response.data.count);
+        });
+      })
+      .catch(() => {})
+      .then(() => {
+        runInAction(() => {
+          this.loading.blockContracts = false;
+        });
+      });
+  }
+
   resetBlockTransactionAssets() {
     this.blockTransactionAssets = [];
     this.blockTransactionAssetsCount = 0;
@@ -175,6 +196,8 @@ decorate(BlockStore, {
   block: observable,
   blockTransactionAssets: observable,
   blockTransactionAssetsCount: observable,
+  blockContracts: observable,
+  blockContractsCount: observable,
   loading: observable,
   medianTime: observable,
   medianTimeString: computed,
