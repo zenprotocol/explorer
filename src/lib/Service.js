@@ -15,6 +15,7 @@ const Endpoints = {
   assets: '/api/assets',
   oracle: '/api/oracle',
   contractTemplates: '/api/contractTemplates',
+  votes: '/api/votes',
 };
 
 let globalMute = false;
@@ -292,4 +293,12 @@ export default {
       });
     },
   },
+  votes: {
+    findCurrentOrNext() {
+      return cancelableHttpRequest({
+        url: `${Endpoints.votes}`,
+        method: 'get',
+      });
+    }
+  }
 };
