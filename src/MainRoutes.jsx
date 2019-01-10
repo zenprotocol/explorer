@@ -79,6 +79,11 @@ const CreateContractTemplate = Loadable({
   loading: AsyncComponentLoading,
   delay,
 });
+const Vote = Loadable({
+  loader: () => import(/* webpackChunkName: "vote" */ './pages/vote'),
+  loading: AsyncComponentLoading,
+  delay,
+});
 const NotFound = Loadable({
   loader: () => import(/* webpackChunkName: "notFound" */ './pages/notFound'),
   loading: AsyncComponentLoading,
@@ -103,6 +108,7 @@ export default function MainRoutes() {
       <Route path="/oracle" component={Oracle} />
       <Route path="/assets" exact={true} component={Assets} />
       <Route path="/assets/:asset" component={Asset} />
+      <Route path="/vote" component={Vote} />
       <Route component={NotFound} />
     </Switch>
   );
