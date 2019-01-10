@@ -23,14 +23,14 @@
     "setup:db:test": "cross-env NODE_ENV=test npx sequelize db:create && cross-env NODE_ENV=test npx sequelize db:migrate",
     "setup:db:development": "npx sequelize db:create && npx sequelize db:migrate",
     "pretest": "cross-env NODE_ENV=test npx sequelize db:migrate",
-    "test": "npm-run-all -s test:server test:worker client:lib:test",
+    "test": "npm-run-all -s test:server test:worker test:client:lib",
     "test:server": "cross-env NODE_ENV=test tape 'server/**/*.test.js' | tap-bail | tap-spec",
     "test:worker": "cross-env NODE_ENV=test tape 'worker/**/*.test.js' | tap-bail | tap-spec",
+    "test:client:lib": "babel-tape-runner src/lib/**/**/*.test.js | tap-bail | tap-spec",
     "test:coverage": "cross-env NODE_ENV=test nyc tape server/**/*.test.js",
     "client:start": "cross-env PORT=3001 react-scripts start",
     "client:build": "react-scripts build",
     "client:test": "react-scripts test",
-    "client:lib:test": "babel-tape-runner src/lib/**/**/*.test.js | tap-bail | tap-spec",
     "client:eject": "react-scripts eject"
   },
   "repository": {

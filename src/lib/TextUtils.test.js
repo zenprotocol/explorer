@@ -51,31 +51,31 @@ test('TextUtils.formatNumber()', function(t) {
 
 test('TextUtils.getTimezoneDisplay()', function(t) {
   wrapTest('Given offset = 0', given => {
-    let expected = '(GMT)';
+    let expected = '(UTC)';
     let actual = getTimezoneDisplay(0);
-    t.equals(actual, expected, `${given}: should return GMT without time`);
+    t.equals(actual, expected, `${given}: should return UTC without time`);
   }, t);
 
   wrapTest('Given positive round offset', given => {
-    let expected = '(GMT-2)';
+    let expected = '(UTC-2)';
     let actual = getTimezoneDisplay(120);
     t.equals(actual, expected, `${given}: should return a negative timezone`);
   }, t);
 
   wrapTest('Given positive offset with minutes', given => {
-    let expected = '(GMT-2:30)';
+    let expected = '(UTC-2:30)';
     let actual = getTimezoneDisplay(150);
     t.equals(actual, expected, `${given}: should return a negative timezone with the minutes leftover`);
   }, t);
 
   wrapTest('Given negative round offset', given => {
-    let expected = '(GMT+2)';
+    let expected = '(UTC+2)';
     let actual = getTimezoneDisplay(-120);
     t.equals(actual, expected, `${given}: should return a positive timezone`);
   }, t);
 
   wrapTest('Given negative offset with minutes', given => {
-    let expected = '(GMT+5:45)';
+    let expected = '(UTC+5:45)';
     let actual = getTimezoneDisplay(-345);
     t.equals(actual, expected, `${given}: should return a positive timezone with the minutes leftover`);
   }, t);
