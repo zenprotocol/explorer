@@ -1,76 +1,61 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { Helmet } from 'react-helmet';
 import { Link } from 'react-router-dom';
 import TextUtils from '../../lib/TextUtils';
+import Service from '../../lib/Service';
 import Page from '../../components/Page';
 import PageTitle from '../../components/PageTitle';
 import HashLink from '../../components/HashLink';
 import './Vote.scss';
 
-export default function Vote(props) {
-  const voteInProgress = true;
-  return (
-    <Page className="Vote">
-      <Helmet>
-        <title>{TextUtils.getHtmlTitle('Vote')}</title>
-      </Helmet>
-      <section>
-        <PageTitle title="VOTE on the authorized protocol " />
-        <div className="row">
-          <div className="col-lg-6">
-            <div>
-              <TopTable voteInProgress={voteInProgress} />
+export default class Vote extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      vote: null,
+    };
+  }
+  componentDidMount() {
+    Service.votes.findCurrentOrNext().then(result => {
+      this.setState({ vote: result.data });
+    });
+  }
+  render() {
+    const voteInProgress = true;
+    const { vote } = this.state;
+    if (!vote) {
+      return null;
+    }
+
+    return (
+      <Page className="Vote">
+        <Helmet>
+          <title>{TextUtils.getHtmlTitle('Vote')}</title>
+        </Helmet>
+        <section>
+          <PageTitle title={vote.title} />
+          <div className="row">
+            <div className="col-lg-6">
+              <div>
+                <TopTable vote={vote} voteInProgress={voteInProgress} />
+              </div>
+              <div className="votes-container">
+                {voteInProgress ? <Scores votes={vote.votes} /> : <VoteNoteStartedMsg />}
+              </div>
             </div>
-            <div className="votes-container">
-              {voteInProgress ? <Scores votes={
-                [
-                  {
-                    address: 'zen1q03jc77dtd2x2gk90f40p9ezv5pf3e2wm5hy8me2xuxzmjneachrq6g05w5',
-                    score: 1000
-                  },
-                  {
-                    address: 'zen1qjllcrp3u24derxfx9w5s7h5h0c2ggwqfs3p3x6t75xe8fqulh95skq746g',
-                    score: 900
-                  },
-                  {
-                    address: 'zen1q05xwuujk79l30qdgydp95d0dpqaqqe6scpx3q2xz5d9e2c4xj0nqntug7z',
-                    score: 900
-                  },
-                  {
-                    address: 'zen1qqe3ytnf6572c3tvmnudejavf0rjelcj7uvcwncevav3gt4a44pvsldr876',
-                    score: 400
-                  },
-                  {
-                    address: 'zen1qa9ttmrt43l9h5h7fdllk3lx5j090yc7lm42226nt63f4jd2rksnqa4s0gv',
-                    score: 200
-                  },
-                ]
-              } /> : <VoteNoteStartedMsg />}
-              
-            </div>
+            <div className="col-lg-6 description">{vote.description}</div>
           </div>
-          <div className="col-lg-6 description">
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer eget porta nisl.
-            Integer at blandit erat, tempor tincidunt turpis. Phasellus luctus posuere arcu, id
-            dictum dui mattis sagittis. Nullam nec bibendum risus. Nunc vitae commodo tellus, non
-            rutrum leo. Aliquam aliquet lacus nec iaculis dignissim. Cras molestie ornare vehicula.
-            Praesent turpis Nullam nec bibendum risus. Nunc vitae commodo tellus, non rutrum leo.
-            Aliquam aliquet lacus nec iaculis dignissim. Cras molestie ornare vehicula. Praesent
-            turpis Nullam nec bibendum risus. Nunc vitae commodo tellus, non rutrum leo. Aliquam
-            aliquet lacus nec iaculis dignissim. Cras molestie ornare vehicula. Praesent turpis
-            Nullam nec bibendum risus. Nunc vitae commodo tellus, non rutrum leo. Aliquam aliquet
-            lacus nec iaculis dignissim.
-          </div>
-        </div>
-      </section>
-    </Page>
-  );
+        </section>
+      </Page>
+    );
+  }
 }
 
-function TopTable({ store, voteInProgress }) {
+function TopTable({ vote, voteInProgress }) {
   const currentBlock = 9000;
-  const startBlock = 9500;
-  const endBlock = 10000;
+  const { startBlock, endBlock } = vote;
   return (
     <table className="table table-zen">
       <thead>
@@ -103,6 +88,10 @@ function TopTable({ store, voteInProgress }) {
     </table>
   );
 }
+TopTable.propTypes = {
+  vote: PropTypes.object,
+  voteInProgress: PropTypes.bool,
+};
 
 function VoteNoteStartedMsg() {
   return <div className="VoteNoteStartedMsg text-center">VOTE AFTER SNAPSHOT</div>;
@@ -114,7 +103,9 @@ function Scores({ votes }) {
       <thead>
         <tr>
           <th scope="col">Received Address</th>
-          <th scope="col" className="text-right"># Votes</th>
+          <th scope="col" className="text-right">
+            # Votes
+          </th>
         </tr>
       </thead>
       <tbody>
@@ -130,3 +121,6 @@ function Scores({ votes }) {
     </table>
   );
 }
+Scores.propTypes = {
+  votes: PropTypes.array,
+};
