@@ -154,6 +154,11 @@ class Navbar extends Component {
                     Stats
                   </NavLink>
                 </li>
+                <li className="nav-item">
+                  <NavLink className="nav-link" to="/vote">
+                    Vote
+                  </NavLink>
+                </li>
                 {/*
                   
                   <li className="nav-item">
