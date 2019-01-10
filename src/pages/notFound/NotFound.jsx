@@ -2,6 +2,7 @@ import React from 'react';
 import { Helmet } from 'react-helmet';
 import TextUtils from '../../lib/TextUtils';
 import Page from '../../components/Page';
+import PageTitle from '../../components/PageTitle';
 
 export default function NotFound(props) {
   return (
@@ -9,9 +10,9 @@ export default function NotFound(props) {
       <Helmet>
         <title>{TextUtils.getHtmlTitle('Page Not Found')}</title>
       </Helmet>
-      <section className="text-center">
-        <h1 className="display-1">404</h1>
-        <h3>The page you are looking for was not found</h3>
+      <section>
+        <PageTitle title="404 Not Found" />
+        <h3 className="text-center">The page you are looking for was not found</h3>
       </section>
     </Page>
   );
