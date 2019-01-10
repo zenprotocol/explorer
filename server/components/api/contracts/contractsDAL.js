@@ -12,14 +12,54 @@ const contractsDAL = dal.createDAL('Contract');
 const sequelize = contractsDAL.db.sequelize;
 const Op = sequelize.Op;
 
-// When sorted by expiryBlock, add a 2nd sort by createdAt
-const expiryBlockOrderMap = {
-  asc: 'NULLS FIRST, "createdAt" ASC',
-  desc: 'NULLS LAST, "createdAt" DESC',
+const nullsOrderMap = {
+  asc: 'NULLS FIRST',
+  desc: 'NULLS LAST',
+};
+// Control what happens when sorting by these parameters
+const orderMap = {
+  expiryBlock: {
+    asc: `${nullsOrderMap.asc}, "createdAt" ASC`,
+    desc: `${nullsOrderMap.desc}, "createdAt" DESC`,
+  },
+  lastActivationBlockNumber: nullsOrderMap,
 };
 
-contractsDAL.findAllWithAssetsCountTxCountAndCountOrderByNewest = function({ limit = 10, offset = 0, order = [] } = {}) {
-  const orderBy = order.map(item => `"${item[0]}" ${item[1]} ${item[0] === 'expiryBlock' ? expiryBlockOrderMap[item[1].toLowerCase()] : ''}`).join(', ');
+/**
+ * Parses a sequelize order array into plain sql and maps attributes if needed
+ */
+function getSqlOrderBy(order = []) {
+  return order
+    .map(
+      item =>
+        `"${item[0]}" ${item[1]} ${
+          Object.keys(orderMap).includes(item[0]) ? orderMap[item[0]][item[1].toLowerCase()] : ''
+        }`
+    )
+    .join(', ');
+}
+
+contractsDAL.findAllWithAssetsCountTxCountAndCountOrderByNewest = function({
+  limit = 10,
+  offset = 0,
+  order = [],
+  blockNumber,
+} = {}) {
+  const hasBlockNumber = blockNumber && !isNaN(Number(blockNumber));
+  const orderBy = getSqlOrderBy(order);
+
+  const filterByBlockSql = `
+  INNER JOIN (
+    SELECT "ContractActivations"."ContractId"
+    FROM "Blocks"
+    JOIN "Transactions" ON "Transactions"."BlockId" = "Blocks"."id"
+    JOIN "ContractActivations" ON "ContractActivations"."TransactionId" = "Transactions"."id"
+    WHERE "Blocks"."blockNumber" = :blockNumber
+    GROUP BY "ContractActivations"."ContractId"
+  ) AS "ActivationBlockContracts"
+  ON "ActivationBlockContracts"."ContractId" = "ContractsFinal"."id"
+  `;
+
   const sql = tags.oneLine`
   WITH "ContractsFinal" AS 
   (SELECT "Contracts".*, COUNT("Assets".asset) AS "assetsCount"
@@ -36,7 +76,8 @@ contractsDAL.findAllWithAssetsCountTxCountAndCountOrderByNewest = function({ lim
     "ContractsFinal"."address",
     "ContractsFinal"."expiryBlock",
     "ContractsFinal"."assetsCount",
-    COALESCE("Txs"."total", 0) AS "transactionsCount"
+    COALESCE("Txs"."total", 0) AS "transactionsCount",
+    "LastActivationTransactions"."blockNumber" AS "lastActivationBlockNumber"
   FROM "ContractsFinal"
   LEFT JOIN
   (SELECT 
@@ -55,18 +96,51 @@ contractsDAL.findAllWithAssetsCountTxCountAndCountOrderByNewest = function({ lim
       ON "Outputs"."TransactionId" = "Inputs"."TransactionId" and "Outputs"."address" = "Inputs"."address"
     GROUP BY COALESCE("Outputs"."address", "Inputs"."address")) AS "Txs"
   ON "Txs"."address" = "ContractsFinal"."address"
+  LEFT JOIN (
+    SELECT MAX("Blocks"."blockNumber") as "blockNumber", "ContractActivations"."ContractId"
+    FROM "Blocks"
+    JOIN "Transactions" ON "Transactions"."BlockId" = "Blocks"."id"
+    JOIN "ContractActivations" ON "ContractActivations"."TransactionId" = "Transactions"."id"
+    GROUP BY "ContractActivations"."ContractId"
+    ORDER BY "ContractActivations"."ContractId", MAX("Blocks"."blockNumber") DESC
+  ) AS "LastActivationTransactions"
+  ON "LastActivationTransactions"."ContractId" = "ContractsFinal"."id"
+  ${hasBlockNumber ? filterByBlockSql : ''}
   ORDER BY ${orderBy}
   LIMIT :limit OFFSET :offset
   `;
+
+  let countOptions = {};
+  if (hasBlockNumber) {
+    countOptions = {
+      include: [
+        {
+          model: this.db.Transaction,
+          as: 'ActivationTransactions',
+          required: true,
+          include: [
+            {
+              model: this.db.Block,
+              required: true,
+              where: {
+                blockNumber,
+              },
+            },
+          ],
+        },
+      ],
+    };
+  }
   return Promise.all([
-    this.count(),
+    this.count(countOptions),
     sequelize.query(sql, {
       replacements: {
         limit,
         offset,
+        blockNumber,
       },
       type: sequelize.QueryTypes.SELECT,
-    })
+    }),
   ]).then(this.getItemsAndCountResult);
 };
 
@@ -241,6 +315,39 @@ contractsDAL.deleteCommands = function(id) {
       ContractId: id,
     },
   });
+};
+
+contractsDAL.getActivationTransactions = function(contract) {
+  return contract.getActivationTransactions({
+    order: [[sequelize.col('Block.blockNumber'), 'DESC']],
+    include: [
+      {
+        model: this.db.Block,
+        required: true,
+      },
+    ],
+  });
+};
+contractsDAL.getLastActivationTransaction = function(contract) {
+  return contract
+    .getActivationTransactions({
+      order: [[sequelize.col('Block.blockNumber'), 'DESC']],
+      limit: 1,
+      include: [
+        {
+          model: this.db.Block,
+          required: true,
+        },
+      ],
+    })
+    .then(results => (results.length ? results[0] : null));
+};
+
+contractsDAL.addActivationTransaction = async function(contract, transaction, options) {
+  if (contract && transaction) {
+    return contract.addActivationTransaction(transaction, options);
+  }
+  return null;
 };
 
 module.exports = contractsDAL;

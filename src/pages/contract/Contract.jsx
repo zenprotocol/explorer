@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { observer, inject } from 'mobx-react';
-import { Route, Switch, Redirect } from 'react-router-dom';
+import { Route, Switch, Redirect, Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
 import RouterUtils from '../../lib/RouterUtils';
 import TextUtils from '../../lib/TextUtils';
@@ -14,6 +14,7 @@ import Page from '../../components/Page';
 import { Tabs, TabHead, TabBody, Tab } from '../../components/tabs';
 import { AssetsTab, CodeTab, CommandsTab, TransactionsTab } from './components/tabs';
 import './Contract.scss';
+import ObjectUtils from '../../lib/ObjectUtils';
 
 class ContractPage extends Component {
   get contractStore() {
@@ -78,6 +79,10 @@ class ContractPage extends Component {
     if (!contract.id) {
       return null;
     }
+    const lastActivationBlockNumber = ObjectUtils.getSafeProperty(
+      contract,
+      'lastActivationTransaction.Block.blockNumber'
+    );
     return (
       <div className="row">
         <div className="col-lg-6">
@@ -106,6 +111,16 @@ class ContractPage extends Component {
                 <td>TRANSACTIONS</td>
                 <td>{TextUtils.formatNumber(address.totalTxs)}</td>
               </tr>
+              {lastActivationBlockNumber && (
+                <tr>
+                  <td>LAST ACTIVATION BLOCK</td>
+                  <td>
+                    <Link to={`/blocks/${lastActivationBlockNumber}`}>
+                      {lastActivationBlockNumber}
+                    </Link>
+                  </td>
+                </tr>
+              )}
             </tbody>
           </table>
         </div>

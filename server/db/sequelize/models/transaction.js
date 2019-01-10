@@ -16,6 +16,7 @@ module.exports = (sequelize, DataTypes) => {
     Transaction.hasMany(models.Input);
     Transaction.belongsTo(models.Block);
     Transaction.hasMany(models.Command);
+    Transaction.belongsToMany(models.Contract, {through: 'ContractActivation', foreignKey: 'TransactionId'});
   };
   return Transaction;
 };

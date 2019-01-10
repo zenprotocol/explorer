@@ -2,13 +2,13 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { observer, inject } from 'mobx-react';
 import { Link } from 'react-router-dom';
-import config from '../../../../lib/Config';
-import TextUtils from '../../../../lib/TextUtils';
-import HashLink from '../../../../components/HashLink';
-import { ItemsTableWithUrlPagination } from '../../../../components/ItemsTable';
-import PageTitle from '../../../../components/PageTitle';
+import config from '../../../lib/Config';
+import TextUtils from '../../../lib/TextUtils';
+import HashLink from '../../../components/HashLink';
+import { ItemsTable } from '../../../components/ItemsTable';
+import PageTitle from '../../../components/PageTitle';
 
-class ContractsTable extends Component {
+class BlockContractsTable extends Component {
   getTableColumns() {
     return [
       {
@@ -51,21 +51,17 @@ class ContractsTable extends Component {
       },
     ];
   }
-
   render() {
-    const { contractStore, uiStore } = this.props.rootStore;
+    const { blockStore, uiStore } = this.props.rootStore;
     return (
-      <ItemsTableWithUrlPagination
-        location={this.props.location}
-        history={this.props.history}
+      <ItemsTable
         columns={this.getTableColumns()}
-        loading={contractStore.loading.contracts}
-        itemsCount={contractStore.contractsCount}
-        items={contractStore.contracts}
-        pageSize={uiStore.state.contractsTable.pageSize}
-        curPage={uiStore.state.contractsTable.curPage}
-        tableDataSetter={uiStore.setContractsTableData.bind(uiStore)}
-        dataTable={uiStore.state.contractsTable}
+        loading={blockStore.loading.blockContracts}
+        itemsCount={blockStore.blockContractsCount}
+        items={blockStore.blockContracts}
+        pageSize={uiStore.state.blockContractsTable.pageSize}
+        curPage={uiStore.state.blockContractsTable.curPage}
+        tableDataSetter={uiStore.setBlockContractsTableData.bind(uiStore)}
         topContent={<PageTitle title="Contracts" margin={false} />}
         defaultSorted={[{ id: 'expiryBlock', desc: true }]}
         defaultSortDesc={true}
@@ -74,10 +70,8 @@ class ContractsTable extends Component {
   }
 }
 
-ContractsTable.propTypes = {
+BlockContractsTable.propTypes = {
   rootStore: PropTypes.object,
-  location: PropTypes.object.isRequired,
-  history: PropTypes.object.isRequired,
 };
 
-export default inject('rootStore')(observer(ContractsTable));
+export default inject('rootStore')(observer(BlockContractsTable));
