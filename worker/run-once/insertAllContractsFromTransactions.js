@@ -12,21 +12,25 @@ const blocksAdder = new BlocksAdder();
 const run = async () => {
   const latestBlockNumberInNode = await networkHelper.getLatestBlockNumberFromNode();
   let contractsCount = 0;
-  for (let i = 1; i <= latestBlockNumberInNode; i += 1) {
+  for (let i = getStartBlock(); i <= latestBlockNumberInNode; i += 1) {
     // get block
     const nodeBlock = await networkHelper.getBlockFromNode(i);
     const transactionHashes = Object.keys(nodeBlock.transactions);
     logger.info(`search in block ${i}, in ${transactionHashes.length} txs`);
-    for (let transactionIndex = 0; transactionIndex < transactionHashes.length; transactionIndex++) {
+    for (
+      let transactionIndex = 0;
+      transactionIndex < transactionHashes.length;
+      transactionIndex++
+    ) {
       const transactionHash = transactionHashes[transactionIndex];
-      contractsCount += await blocksAdder.addContract({nodeBlock, transactionHash});
+      contractsCount += await blocksAdder.addContract({ nodeBlock, transactionHash });
     }
   }
   return contractsCount;
 };
 
 run()
-  .then((contractsCount) => {
+  .then(contractsCount => {
     logger.info(`Finished adding contracts. Added ${contractsCount} contracts.`);
   })
   .catch(err => {
@@ -35,3 +39,17 @@ run()
   .then(() => {
     contractsDAL.db.sequelize.close();
   });
+
+function getStartBlock() {
+  let startBlock = 1;
+  if (process.argv.includes('-b')) {
+    const flagIndex = process.argv.indexOf('-b');
+    if (process.argv.length > flagIndex + 1) {
+      const block = process.argv[flagIndex + 1];
+      if (block && !block.startsWith('-') && !isNaN(Number(block))) {
+        startBlock = Number(block);
+      }
+    }
+  }
+  return startBlock;
+}
