@@ -274,7 +274,7 @@ class BlocksAdder {
       let dbContract = await contractsDAL.findById(nodeContract.contractId, {
         transaction: dbTransaction,
       });
-      
+
       if (!dbContract) {
         dbContract = await contractsDAL.create(
           {
@@ -286,8 +286,11 @@ class BlocksAdder {
         );
         created = 1;
       }
-      const transaction = await transactionsDAL.findOne({where: {hash: transactionHash}});
-      await contractsDAL.addActivationTransaction(dbContract, transaction);
+      const transaction = await transactionsDAL.findOne({
+        where: { hash: transactionHash },
+        transaction: dbTransaction,
+      });
+      await contractsDAL.addActivationTransaction(dbContract, transaction, { transaction: dbTransaction });
     }
     return created;
   }
