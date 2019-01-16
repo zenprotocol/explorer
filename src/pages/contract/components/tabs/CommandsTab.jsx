@@ -19,6 +19,7 @@ const CommandsTab = observer(props => {
             Header: 'Command',
             accessor: 'command',
             className: 'text-uppercase',
+            Cell: ({ value }) => <HashLink hash={value} />,
           },
           {
             Header: 'Timestamp',
