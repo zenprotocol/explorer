@@ -9,6 +9,8 @@ module.exports = {
       description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
       startBlock: 9500,
       endBlock: 10000,
+      phase: 2,
+      prevPhasePercent: 3,
       votes: [
         {
           address: 'zen1q03jc77dtd2x2gk90f40p9ezv5pf3e2wm5hy8me2xuxzmjneachrq6g05w5',
