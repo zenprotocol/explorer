@@ -29,23 +29,31 @@ export default class Vote extends React.Component {
       return null;
     }
 
+    const { title, votes, description, phase } = vote;
+    const isNominationPhase = phase === 1;
+    const itemsTitle = isNominationPhase ? 'Proposal' : 'Ballot';
+    const votesTitle = isNominationPhase ? '% of vote voted' : '# of votes';
     return (
       <Page className="Vote">
         <Helmet>
           <title>{TextUtils.getHtmlTitle('Vote')}</title>
         </Helmet>
         <section>
-          <PageTitle title={vote.title} />
+          <PageTitle title={title} />
           <div className="row">
             <div className="col-lg-6">
               <div>
                 <TopTable vote={vote} voteInProgress={voteInProgress} />
               </div>
               <div className="votes-container">
-                {voteInProgress ? <Scores votes={vote.votes} /> : <VoteNoteStartedMsg />}
+                {voteInProgress ? (
+                  <Scores votes={votes} itemsTitle={itemsTitle} votesTitle={votesTitle} />
+                ) : (
+                  <VoteNoteStartedMsg />
+                )}
               </div>
             </div>
-            <div className="col-lg-6 description">{vote.description}</div>
+            <div className="col-lg-6 description">{description}</div>
           </div>
         </section>
       </Page>
@@ -97,14 +105,14 @@ function VoteNoteStartedMsg() {
   return <div className="VoteNoteStartedMsg text-center">VOTE AFTER SNAPSHOT</div>;
 }
 
-function Scores({ votes }) {
+function Scores({ votes, itemsTitle, votesTitle }) {
   return (
     <table className="table table-zen">
       <thead>
         <tr>
-          <th scope="col">Received Address</th>
+          <th scope="col">{itemsTitle}</th>
           <th scope="col" className="text-right">
-            # Votes
+            {votesTitle}
           </th>
         </tr>
       </thead>
@@ -123,4 +131,6 @@ function Scores({ votes }) {
 }
 Scores.propTypes = {
   votes: PropTypes.array,
+  itemsTitle: PropTypes.string,
+  votesTitle: PropTypes.string,
 };
