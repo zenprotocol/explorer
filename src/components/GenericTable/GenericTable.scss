@@ -29,8 +29,8 @@
     background-color: $table-head-bg;
   }
   .rt-thead .rt-th {
-    font-size: $font-size-md;
-    font-weight: $font-weight-bold;
+    font-size: $font-size-sm;
+    font-weight: $font-weight-normal;
     text-transform: uppercase;
     color: $table-head-color;
     text-align: left;
@@ -133,9 +133,9 @@
   }
 
   @media (min-width: map-get($grid-breakpoints, "lg")) {
-    .rt-thead .rt-th {
-      white-space: nowrap;
-    }
+    // .rt-thead .rt-th {
+    //   white-space: nowrap;
+    // }
     .rt-thead .rt-th,
     .rt-td {
       padding-left: $content-padding-x-lg;

@@ -209,7 +209,7 @@ class TransactionAsset extends Component {
       },
       {
         Header: '',
-        maxWidth: 30,
+        width: 30,
         Cell: data =>
           data.index === 0 ? (
             <div className="arrow">
