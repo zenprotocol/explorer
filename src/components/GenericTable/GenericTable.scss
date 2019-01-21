@@ -36,6 +36,7 @@
     text-align: left;
     padding: $table-header-padding-y $content-padding-x;
     border-right-color: transparent;
+    white-space: normal;
 
     &.-cursor-pointer::after,
     &.-sort-asc::after,
@@ -126,6 +127,9 @@
   }
 
   @media (min-width: map-get($grid-breakpoints, "lg")) {
+    .rt-thead .rt-th {
+      white-space: nowrap;
+    }
     .rt-thead .rt-th,
     .rt-td {
       padding-left: $content-padding-x-lg;
