@@ -38,6 +38,10 @@
     border-right-color: transparent;
     white-space: normal;
 
+    &:last-child {
+      text-align: right;
+    }
+
     &.-sort-asc,
     &.-sort-desc {
       box-shadow: none;
@@ -70,6 +74,10 @@
     font-weight: $font-weight-normal;
     padding: $table-padding-y $content-padding-x;
     overflow: visible;
+
+    &:last-child {
+      text-align: right;
+    }
   }
   
   .pagination-bottom {
