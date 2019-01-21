@@ -16,6 +16,7 @@ export default {
     },
     sizes: {
       breakpointMd: 768,
+      breakpointLg: 992,
     },
   },
   loadable: {

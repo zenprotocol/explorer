@@ -62,12 +62,22 @@ class ItemsTable extends Component {
       ),
     };
 
-    const columns = this.props.columns.map(column => {
-      const hideOnMobileObj = column.hideOnMobile
-        ? { show: this.state.windowWidth >= config.ui.sizes.breakpointMd }
-        : {};
-      return Object.assign({}, column, hideOnMobileObj);
-    });
+    const isLg = this.state.windowWidth >= config.ui.sizes.breakpointLg;
+
+    const addShow = column =>
+      Object.assign(
+        {},
+        column,
+        column.hideOnMobile ? { show: this.state.windowWidth >= config.ui.sizes.breakpointMd } : {}
+      );
+
+    const setWidth = column => Object.assign(
+      {},
+      column,
+      { minWidth: !isLg && column.minWidthMobile ? column.minWidthMobile : column.minWidth || 100 }
+    );
+    
+    const columns = this.props.columns.map(column => setWidth(addShow(column)));
 
     if (this.props.SubComponent) {
       columns.push(expander);
