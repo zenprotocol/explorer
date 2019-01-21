@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { observer, inject } from 'mobx-react';
-import config from '../../../../lib/Config';
+import Config from '../../../../lib/Config';
 import AssetUtils from '../../../../lib/AssetUtils';
 import TextUtils from '../../../../lib/TextUtils';
 import HashLink from '../../../../components/HashLink';
@@ -14,7 +14,7 @@ class AssetsTable extends Component {
       {
         Header: 'Asset Identifier',
         accessor: 'asset',
-        minWidth: config.ui.table.minCellWidth,
+        minWidth: Config.ui.table.minCellWidth,
         Cell: ({ value }) => (
           <HashLink
             hash={AssetUtils.getAssetNameFromCode(value)}
@@ -26,6 +26,7 @@ class AssetsTable extends Component {
       {
         Header: 'TOKENS OUTSTANDING',
         accessor: 'outstanding',
+        minWidth: 140,
         Cell: data => AssetUtils.getAmountString(data.original.asset, data.value),
       },
       {
@@ -41,6 +42,7 @@ class AssetsTable extends Component {
       {
         Header: 'UNIQUE ADDRESSES',
         accessor: 'keyholders',
+        minWidth: 130,
         Cell: data => TextUtils.formatNumber(data.value),
       },
       {
