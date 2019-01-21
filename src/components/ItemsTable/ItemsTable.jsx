@@ -62,7 +62,7 @@ class ItemsTable extends Component {
       ),
     };
 
-    const isLg = this.state.windowWidth >= config.ui.sizes.breakpointLg;
+    const defaultMinWidth = this.state.windowWidth >= config.ui.sizes.breakpointLg ? 100 : 120;
 
     const addShow = column =>
       Object.assign(
@@ -74,9 +74,9 @@ class ItemsTable extends Component {
     const setWidth = column => Object.assign(
       {},
       column,
-      { minWidth: !isLg && column.minWidthMobile ? column.minWidthMobile : column.minWidth || 100 }
+      { minWidth: column.minWidth || defaultMinWidth }
     );
-    
+
     const columns = this.props.columns.map(column => setWidth(addShow(column)));
 
     if (this.props.SubComponent) {
