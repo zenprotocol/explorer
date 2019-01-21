@@ -27,6 +27,7 @@ class AssetsTable extends Component {
         Header: 'TOKENS OUTSTANDING',
         accessor: 'outstanding',
         minWidth: 140,
+        minWidthMobile: 110,
         Cell: data => AssetUtils.getAmountString(data.original.asset, data.value),
       },
       {
@@ -43,6 +44,7 @@ class AssetsTable extends Component {
         Header: 'UNIQUE ADDRESSES',
         accessor: 'keyholders',
         minWidth: 130,
+        minWidthMobile: 100,
         Cell: data => TextUtils.formatNumber(data.value),
       },
       {

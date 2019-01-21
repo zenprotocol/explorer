@@ -31,6 +31,7 @@ const AssetsTab = observer(props => {
             Header: 'TOKENS OUTSTANDING',
             accessor: 'outstanding',
             minWidth: 140,
+            minWidthMobile: 110,
             Cell: data => AssetUtils.getAmountString(data.original.asset, data.value),
           },
           {
@@ -47,6 +48,7 @@ const AssetsTab = observer(props => {
             Header: 'UNIQUE ADDRESSES',
             accessor: 'keyholders',
             minWidth: 130,
+            minWidthMobile: 100,
             Cell: data => TextUtils.formatNumber(data.value),
           },
         ]}
