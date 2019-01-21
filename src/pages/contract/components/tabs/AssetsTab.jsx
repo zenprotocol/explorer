@@ -30,6 +30,7 @@ const AssetsTab = observer(props => {
           {
             Header: 'TOKENS OUTSTANDING',
             accessor: 'outstanding',
+            minWidth: 140,
             Cell: data => AssetUtils.getAmountString(data.original.asset, data.value),
           },
           {
@@ -38,13 +39,14 @@ const AssetsTab = observer(props => {
             Cell: data => AssetUtils.getAmountString(data.original.asset, data.value),
           },
           {
-            Header: 'TOKENS DESTROYED',
+            Header: 'DESTROYED',
             accessor: 'destroyed',
             Cell: data => AssetUtils.getAmountString(data.original.asset, data.value),
           },
           {
-            Header: 'UNIQUE KEYHOLDERS',
+            Header: 'UNIQUE ADDRESSES',
             accessor: 'keyholders',
+            minWidth: 130,
             Cell: data => TextUtils.formatNumber(data.value),
           },
         ]}
