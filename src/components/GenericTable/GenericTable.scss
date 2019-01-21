@@ -41,8 +41,10 @@
     &:last-child {
       text-align: right;
       padding-left: 0;
+      padding-right: 2 * $content-padding-x;
     }
 
+    &.-cursor-pointer,
     &.-sort-asc,
     &.-sort-desc {
       box-shadow: none;
@@ -78,6 +80,8 @@
 
     &:last-child {
       text-align: right;
+      padding-left: 0;
+      padding-right: 2 * $content-padding-x;
     }
   }
   
@@ -143,11 +147,24 @@
   @media (min-width: map-get($grid-breakpoints, "lg")) {
     .rt-thead .rt-th {
       white-space: nowrap;
+
+      &:last-child {
+        text-align: left;
+        padding-left: $content-padding-x-lg;
+        padding-right: $content-padding-x-lg;
+      }
     }
     .rt-thead .rt-th,
     .rt-td {
       padding-left: $content-padding-x-lg;
       padding-right: $content-padding-x-lg;
+    }
+    .rt-td {
+      &:last-child {
+        text-align: left;
+        padding-left: $content-padding-x-lg;
+        padding-right: $content-padding-x-lg;
+      }
     }
   }
 }
