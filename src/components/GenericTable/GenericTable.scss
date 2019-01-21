@@ -38,6 +38,11 @@
     border-right-color: transparent;
     white-space: normal;
 
+    &.-sort-asc,
+    &.-sort-desc {
+      box-shadow: none;
+    }
+
     &.-cursor-pointer::after,
     &.-sort-asc::after,
     &.-sort-desc::after {
