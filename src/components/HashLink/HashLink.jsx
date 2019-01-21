@@ -56,7 +56,7 @@ export default class HashLink extends Component {
         title={showCopy ? valueToCopy : ''}
       >
         {anchorHash}
-        {showCopy ? anchorCopy : null}
+        {showCopy && valueToCopy ? anchorCopy : null}
       </div>
     );
   }
