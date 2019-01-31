@@ -1,9 +1,12 @@
 @mixin mixin-zen-scrollbar() {
+  $size: 0.85rem;
   scrollbar-color: $gray-700 $gray-900;
-  scrollbar-width: 1rem;
+  scrollbar-width: $size;
+  scrollbar-height: $size;
   
   &::-webkit-scrollbar {
-    width: 1rem;
+    width: $size;
+    height: $size;
   }
   
   &::-webkit-scrollbar-track {
