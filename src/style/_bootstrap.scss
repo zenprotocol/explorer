@@ -91,6 +91,7 @@ $display4-weight : 400;
 // @import '../../node_modules/bootstrap/scss/print';
 
 .table-zen {
+  @include mixin-zen-scrollbar();
   thead th {
     color: $table-head-color;
     font-size: $font-size-md;
