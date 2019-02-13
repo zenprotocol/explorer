@@ -46,6 +46,13 @@ test('TextUtils.formatNumber()', function(t) {
     t.equals(actual, expected, `${given}: should return the string as it is`);
   }, t);
 
+  wrapTest('Given a very long fractional part', given => {
+    let number = '10.123456789123456789';
+    let expected = '10.12345678';
+    let actual = TextUtils.formatNumber(number);
+    t.equals(actual, expected, `${given}: should trim the end of the fractional number`);
+  }, t);
+
   t.end();
 });
 

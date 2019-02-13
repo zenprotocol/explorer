@@ -32,7 +32,7 @@ export default {
 
     let parts = String(number).split('.');
     let whole = parts[0];
-    let fraction = parts.length > 1 ? '.' + parts[1] : '';
+    let fraction = parts.length > 1 ? '.' + parts[1].substring(0, 8) : '';
     return whole.toString().replace(/\B(?=(\d{3})+(?!\d))/g, delimiter) + fraction;
   },
   truncateHash(hash) {
