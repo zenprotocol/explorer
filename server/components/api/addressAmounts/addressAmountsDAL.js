@@ -7,7 +7,7 @@ const addressAmountsDAL = dal.createDAL('AddressAmount');
 const Op = addressAmountsDAL.db.sequelize.Op;
 
 addressAmountsDAL.refreshView = function() {
-  return sequelize.query('REFRESH MATERIALIZED VIEW "AddressAmounts";');
+  return sequelize.query('REFRESH MATERIALIZED VIEW CONCURRENTLY "AddressAmounts";');
 };
 
 addressAmountsDAL.keyholders = function({ asset, limit, offset = 0 } = {}) {
