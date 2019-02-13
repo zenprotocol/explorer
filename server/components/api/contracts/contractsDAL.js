@@ -3,7 +3,6 @@
 const tags = require('common-tags');
 const dal = require('../../../lib/dal');
 const deepMerge = require('deepmerge');
-const inputsDAL = require('../inputs/inputsDAL');
 const commandsDAL = require('../commands/commandsDAL');
 const assetOutstandingsDAL = require('../assetOutstandings/assetOutstandingsDAL');
 const AddressUtils = require('../../../../src/common/utils/AddressUtils');
@@ -194,15 +193,12 @@ contractsDAL.findAllExpired = function() {
 
 contractsDAL.findAllOutstandingAssets = function(id, { limit = 10, offset = 0 } = {}) {
   return Promise.all([
-    inputsDAL.count({
-      col: 'asset',
+    assetOutstandingsDAL.count({
       where: {
         asset: {
           [Op.like]: `${id}%`,
         },
-        isMint: true,
       },
-      distinct: true,
     }),
     assetOutstandingsDAL.findAll({
       where: {
