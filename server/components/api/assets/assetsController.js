@@ -1,12 +1,8 @@
 'use strict';
 
 const httpStatus = require('http-status');
-const assetsDAL = require('./assetsDAL');
-const assetOutstandingsDAL = require('../assetOutstandings/assetOutstandingsDAL');
-const contractsDAL = require('../contracts/contractsDAL');
 const jsonResponse = require('../../../lib/jsonResponse');
 const HttpError = require('../../../lib/HttpError');
-const createQueryObject = require('../../../lib/createQueryObject');
 const assetsBLL = require('./assetsBLL');
 
 module.exports = {

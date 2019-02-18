@@ -19,7 +19,7 @@ addressAmountsDAL.keyholders = function({ asset, limit, offset = 0 } = {}) {
       },
     },
   };
-  return Promise.all([this.count({ where }), this.findAll({ where, limit, offset })]).then(
+  return Promise.all([this.count({ where }), this.findAll({ where, order: [['balance', 'DESC']], limit, offset })]).then(
     this.getItemsAndCountResult
   );
 };
