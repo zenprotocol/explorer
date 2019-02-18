@@ -7,7 +7,7 @@ const createQueryObject = require('../../../lib/createQueryObject');
 
 module.exports = {
   findAll: async function({ page = 0, pageSize = 10 } = {}) {
-    const query = createQueryObject({ page, pageSize });
+    const query = createQueryObject({ page, pageSize, sorted: [{ id: 'keyholders', desc: true }] });
     return await Promise.all([
       assetOutstandingsDAL.count(),
       assetOutstandingsDAL.findAll(query),
