@@ -6,6 +6,8 @@ module.exports = (sequelize, DataTypes) => {
       address: DataTypes.STRING,
       asset: DataTypes.STRING,
       balance: DataTypes.BIGINT,
+      received: DataTypes.BIGINT,
+      sent: DataTypes.BIGINT,
     },
     {
       timestamps: false,
