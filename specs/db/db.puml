@@ -1,0 +1,105 @@
+@startuml "database structure"
+!include /specs/db/helpers.puml
+
+scale 1.3
+title Explorer - current
+
+Table(Block, "Block") {
+  primary_key(id)
+  version
+  hash
+  parent
+  blockNumber
+  commitments
+  timestamp
+  difficulty
+  nonce1
+  nonce2
+  transactionCount
+}
+
+Table(Transaction, "Transaction") {
+  primary_key(id)
+  foreign_key(BlockId)
+  index field_comment(tx index in block)
+  version
+  hash
+  inputCount
+  outputCount
+}
+
+
+Table(Input, "Input") {
+  primary_key(id)
+  foreign_key(TransactionId)
+  foreign_key(OutputId)
+  index field_comment(input index in tx)
+  outpointTXHash
+  outpointIndex
+  amount field_comment(output amount cached / mint)
+}
+
+Table(Output, "Output") {
+  primary_key(id)
+  foreign_key(TransactionId)
+  lockType
+  contractLockVersion
+  address field_comment(as appears in wallet)
+  addressBC field_comment(as appears in chain)
+  asset
+  amount
+  index field_comment(output index in tx)
+}
+
+Table(Contract, "Contract") {
+  primary_key(id)
+  address
+  code
+  expiryBlock field_comment(null when expired)
+}
+
+Table(Command, "Command") {
+  primary_key(id)
+  foreign_key(TransactionId)
+  foreign_key(ContractId)
+  command
+  messageBody
+  indexInTransaction
+}
+
+Table(AddressAmounts, "AddressAmounts (MV)") {
+  asset
+  address
+  balance
+  received field_comment(outputs sum)
+  sent field_comment(inputs sum)
+}
+
+Table(AssetOutstandings, "AssetOutstandings (MV)") {
+  asset
+  issued
+  destroyed
+  outstanding field_comment(issued - destroyed)
+  keyholders
+  transactionsCount
+}
+
+Table(ZpTransactions, "ZpTransactions (MV)") {
+  asset
+  outputSum
+  inputSum
+  totalSum
+  transactionId
+  hash field_comment(tx hash)
+  timestamp field_comment(block timestamp)
+  blockNumber
+}
+
+' relations
+Block "1" <--> "*" Transaction
+Transaction "1" <--> "*" Output
+Transaction "1" <--> "*" Input
+Input "1" <--> "1" Output
+Contract "1" <--> "*" Command
+Transaction "1" <--> "1" Contract : Via ContractActivations
+@enduml

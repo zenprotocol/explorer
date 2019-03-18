@@ -1,0 +1,12 @@
+@startuml
+' uncomment the line below if you're using computer with a retina display
+' skinparam dpi 300
+!define Table(name,desc) class name as "<b>desc</b>" << (T,#FFAAAA) >>
+!define primary_key(x) <b>x</b> <i>pk</i>
+!define foreign_key(x) <b><color:coral>x</color></b> <i>fk</i>
+!define unique(x) <color:green>x</color>
+!define not_null(x) <u>x</u>
+!define field_comment(x) - <i><color:gray>x</color></i>
+hide methods
+hide stereotypes
+@enduml
