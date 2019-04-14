@@ -146,4 +146,51 @@ addressesDAL.getZpBalance = async function(address) {
   });
 };
 
+/**
+ * Get all addresses' balances up until blockNumber
+ *
+ * @param {number} blockNumber the block number 
+ */
+addressesDAL.snapshotBalancesByBlock = async function(blockNumber) {
+  const sql = tags.oneLine`
+  SELECT
+    bothsums.address AS address,
+    (output_sum - input_sum) AS amount
+  FROM
+    (SELECT
+      COALESCE(osums.address, isums.address) AS address,
+      COALESCE(osums.output_sum, 0) AS output_sum,
+      COALESCE(isums.input_sum, 0) AS input_sum
+    FROM
+      (SELECT
+        o.address,
+        SUM(o.amount) AS output_sum
+      FROM "Outputs" o
+      INNER JOIN "Transactions" t ON o."TransactionId" = t.id
+      INNER JOIN "Blocks" b ON t."BlockId" = b.id AND b."blockNumber" <= :blockNumber
+      WHERE o.address IS NOT NULL AND o.asset = '00'
+      GROUP BY address) AS osums
+      FULL OUTER JOIN
+      (SELECT
+        io.address,
+        SUM(io.amount) AS input_sum
+      FROM
+        "Outputs" io
+        INNER JOIN "Inputs" i ON i."OutputId" = io.id
+        INNER JOIN "Transactions" t ON i."TransactionId" = t.id
+        INNER JOIN "Blocks" b ON t."BlockId" = b.id AND b."blockNumber" <= :blockNumber
+      WHERE io.address IS NOT NULL AND io.asset = '00'
+      GROUP BY io.address) AS isums
+      ON osums.address = isums.address) AS bothsums;
+  `;
+
+  return sequelize
+    .query(sql, {
+      replacements: {
+        blockNumber,
+      },
+      type: sequelize.QueryTypes.SELECT,
+    });
+};
+
 module.exports = addressesDAL;

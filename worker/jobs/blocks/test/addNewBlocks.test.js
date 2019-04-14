@@ -29,20 +29,21 @@ test('BlocksAdder.addNewBlocks()', async function(t) {
     const blocksAdder = new BlocksAdder(networkHelper, new BlockchainParser());
 
     try {
-      const numOfBlocksAdded = await blocksAdder.addNewBlocks({
+      const { count, latest } = await blocksAdder.addNewBlocks({
         data: { limitBlocks: 1, skipTransactions: true },
       });
 
-      t.assert(numOfBlocksAdded > 0, `${given}: Should have added new blocks`);
+      t.assert(count > 0, `${given}: Should have added new blocks`);
+      t.equal(latest, 1, `${given}: Should return the latest block added`);
 
       const latestBlockAfterAdd = await blocksDAL.findLatest();
       t.assert(latestBlockAfterAdd !== null, `${given}: There should be new blocks in the db`);
-      t.equals(
-        latestBlockAfterAdd.blockNumber,
-        1,
-        `${given}: The latest block number should be 1`
+      t.equals(latestBlockAfterAdd.blockNumber, 1, `${given}: The latest block number should be 1`);
+      t.equal(
+        latestBlockAfterAdd.reward,
+        '5000000000',
+        `${given}: The added block should contain reward`
       );
-      t.equal(latestBlockAfterAdd.reward, '5000000000', `${given}: The added block should contain reward`);
     } catch (error) {
       t.fail(`${given}: Should not throw an error`);
     }
@@ -67,11 +68,12 @@ test('BlocksAdder.addNewBlocks()', async function(t) {
     });
 
     try {
-      const numOfBlocksAdded = await blocksAdder.addNewBlocks({
+      const { count, latest } = await blocksAdder.addNewBlocks({
         data: { limitBlocks: 1, skipTransactions: true },
       });
 
-      t.assert(numOfBlocksAdded > 0, `${given}: Should have added new blocks`);
+      t.assert(count > 0, `${given}: Should have added new blocks`);
+      t.equal(latest, 2, `${given}: Should return the latest block added`);
 
       const latestBlockAfterAdd = await blocksDAL.findLatest();
       t.equals(latestBlockAfterAdd.blockNumber, 2, `${given}: The latest block number should be 2`);
@@ -102,11 +104,11 @@ test('BlocksAdder.addNewBlocks()', async function(t) {
     const blocksAdder = new BlocksAdder(networkHelper, new BlockchainParser());
 
     try {
-      const numOfBlocksAdded = await blocksAdder.addNewBlocks({
+      const { count } = await blocksAdder.addNewBlocks({
         data: { limitBlocks: 2, limitTransactions: 2 },
       });
 
-      t.assert(numOfBlocksAdded > 0, `${given}: Should have added new blocks`);
+      t.assert(count > 0, `${given}: Should have added new blocks`);
 
       const latestBlockAfterAdd = await blocksDAL.findLatest();
       t.assert(latestBlockAfterAdd !== null, `${given}: There should be new blocks in the db`);
@@ -242,27 +244,30 @@ test('BlocksAdder.addNewBlocks()', async function(t) {
       t.fail(`${given}: should not throw an error`);
     }
   });
-  await wrapTest('Given a node block with parent not equal to last block hash in db', async given => {
-    const TEST_BLOCK_NUMBER = 4;
-    const networkHelper = new NetworkHelper();
-    mock.mockNetworkHelper(networkHelper, { latestBlockNumber: TEST_BLOCK_NUMBER });
-    const blocksAdder = new BlocksAdder(networkHelper, new BlockchainParser());
+  await wrapTest(
+    'Given a node block with parent not equal to last block hash in db',
+    async given => {
+      const TEST_BLOCK_NUMBER = 4;
+      const networkHelper = new NetworkHelper();
+      mock.mockNetworkHelper(networkHelper, { latestBlockNumber: TEST_BLOCK_NUMBER });
+      const blocksAdder = new BlocksAdder(networkHelper, new BlockchainParser());
 
-    try {
-      await createDemoBlocksFromTo(
-        1,
-        TEST_BLOCK_NUMBER - 1,
-        '12345' // last hash would be wrong! - reorg
-      );
-      await blocksAdder.addNewBlocks({
-        data: { limitBlocks: 1 },
-      });
+      try {
+        await createDemoBlocksFromTo(
+          1,
+          TEST_BLOCK_NUMBER - 1,
+          '12345' // last hash would be wrong! - reorg
+        );
+        await blocksAdder.addNewBlocks({
+          data: { limitBlocks: 1 },
+        });
 
-      t.fail(`${given}: Should throw an error`);
-    } catch (error) {
-      t.equal(error.message, 'Reorg', `${given}: Should throw a Reorg error`);
+        t.fail(`${given}: Should throw an error`);
+      } catch (error) {
+        t.equal(error.message, 'Reorg', `${given}: Should throw a Reorg error`);
+      }
     }
-  });
+  );
 });
 
 if (Config.get('RUN_REAL_DATA_TESTS')) {
@@ -272,8 +277,8 @@ if (Config.get('RUN_REAL_DATA_TESTS')) {
     const blocksAdder = new BlocksAdder(networkHelper, new BlockchainParser());
 
     try {
-      const numOfBlocksAdded = await blocksAdder.addNewBlocks({ data: { limitBlocks: 200 } });
-      t.assert(numOfBlocksAdded > 0, 'Should have added new blocks');
+      const { count } = await blocksAdder.addNewBlocks({ data: { limitBlocks: 200 } });
+      t.assert(count > 0, 'Should have added new blocks');
 
       const latestBlockAfterAdd = await blocksDAL.findLatest();
       t.assert(latestBlockAfterAdd !== null, 'There should be new blocks in the db');

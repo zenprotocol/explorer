@@ -1,4 +1,5 @@
 {
+  "votingContractId": "contract_id_here",
   "queues": {
     "cleanInterval": 60,
     "cleanAfter": 10,
@@ -24,6 +25,12 @@
     },
     "views-refresh": {
       "name": "Refresh materialized views"
+    },
+    "votes": {
+      "name": "Votes"
+    },
+    "snapshots": {
+      "name": "Vote Snapshots"
     }
   }
 }

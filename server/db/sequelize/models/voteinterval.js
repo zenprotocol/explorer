@@ -6,12 +6,12 @@ module.exports = (sequelize, DataTypes) => {
       interval: DataTypes.INTEGER,
       beginHeight: DataTypes.INTEGER,
       endHeight: DataTypes.INTEGER,
+      hasSnapshot: DataTypes.BOOLEAN,
     },
     {
       timestamps: false,
     }
   );
-  VoteInterval.removeAttribute('id');
   VoteInterval.associate = function(models) {
     // associations can be defined here
   };

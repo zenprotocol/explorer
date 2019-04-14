@@ -67,7 +67,11 @@ class BlocksAdder {
       await this.setSyncingStatus({ syncing: false });
       const hrEnd = process.hrtime(startTime);
       logger.info(`AddNewBlocks Finished. Time elapsed = ${hrEnd[0]}s ${hrEnd[1] / 1000000}ms`);
-      return blocks.length;
+      // return the number of blocks added and the latest block number
+      return {
+        count: blocks.length,
+        latest: blocks.reduce((max, cur) => max < cur.blockNumber ? cur.blockNumber : max , 0),
+      };
     } catch (error) {
       logger.error(`An Error has occurred when adding blocks: ${error.message}`);
       if (dbTransaction) {
