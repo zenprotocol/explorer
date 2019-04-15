@@ -1,5 +1,6 @@
 'use strict';
 
+const R = require('ramda');
 const logger = require('../../lib/logger')('commands');
 const blocksDAL = require('../../../server/components/api/blocks/blocksDAL');
 const contractsDAL = require('../../../server/components/api/contracts/contractsDAL');
@@ -9,6 +10,10 @@ const getJobData = require('../../lib/getJobData');
 const QueueError = require('../../lib/QueueError');
 
 const DEFAULT_NUM_OF_COMMANDS_TO_TAKE = 100;
+
+function filterOutZeroConfirmations(nodeCommands) {
+  return R.filter(command => command.confirmations > 0, nodeCommands);
+}
 
 class CommandsAdder {
   constructor(networkHelper) {
@@ -49,6 +54,11 @@ class CommandsAdder {
     return latestBlockNumberInDB === latestBlockNumberInNode;
   }
 
+  /**
+   * Process a list of contracts
+   *
+   * @param {Array} contracts
+   */
   async processContracts(contracts, numOfCommandsToTake = DEFAULT_NUM_OF_COMMANDS_TO_TAKE) {
     const promises = [];
     contracts.forEach(contract =>
@@ -58,43 +68,49 @@ class CommandsAdder {
     const finalResults = [];
     for (let i = 0; i < results.length; i++) {
       const contractResults = results[i];
-      if (
-        contractResults.length &&
-        (await this.shouldInsertCommands(contractResults[0].ContractId, contractResults))
-      ) {
-        await contractsDAL.deleteCommands(contractResults[0].ContractId);
+      if (contractResults.length) {
         finalResults.push(contractResults);
       }
     }
 
-    const finalItemsToInsert = finalResults.reduce((all, cur) => all.concat(cur), []);
+    const finalItemsToInsert = finalResults.reduce((all, cur) => all.concat(cur), []); // concat all arrays together
     await commandsDAL.bulkCreate(finalItemsToInsert);
 
     return finalItemsToInsert.length;
   }
 
-  async shouldInsertCommands(contractId, commandsToInsert) {
-    const dbCommandsCount = await contractsDAL.countCommands(contractId);
-    return dbCommandsCount !== commandsToInsert.length;
-  }
-
+  /**
+   * Get the commands from the node
+   * filter out the commands with no confirmations
+   * skip the amount of commands already in db
+   * assuming that the results from the node are ordered by block, older first!
+   *
+   * @param {string} contractId
+   * @param {number} numOfCommandsToTake num of commands to take from the node each round
+   * @returns an array of commands to insert
+   */
   async getCommandsToInsert(contractId, numOfCommandsToTake) {
     if (numOfCommandsToTake === 0) {
       throw new Error('numOfCommandsToTake must be bigger than zero!');
     }
+    const commandsAlreadyInDb = await contractsDAL.countCommands(contractId);
     let commandsTakenCount = 0;
     const commandsToInsert = [];
     let hasMoreCommands = true;
     while (hasMoreCommands) {
       const commands = await this.networkHelper.getContractCommandsFromNode({
         contractId,
-        skip: commandsTakenCount,
+        skip: commandsAlreadyInDb + commandsTakenCount,
         take: numOfCommandsToTake,
       });
-      const mappedCommands = await this.mapNodeCommandsWithRelations(contractId, commands);
-      commandsToInsert.push.apply(commandsToInsert, mappedCommands); // push into same array
-      commandsTakenCount += commands.length;
-      if (commands.length < numOfCommandsToTake) {
+      const commandsWithConfirmations = filterOutZeroConfirmations(commands);
+      const mappedCommands = await this.mapNodeCommandsWithRelations(
+        contractId,
+        commandsWithConfirmations
+      );
+      commandsToInsert.push.apply(commandsToInsert, mappedCommands); // flat mappedCommands and push into commandsToInsert
+      commandsTakenCount += commandsWithConfirmations.length;
+      if (commandsWithConfirmations.length < numOfCommandsToTake) {
         hasMoreCommands = false;
       }
     }
@@ -102,6 +118,14 @@ class CommandsAdder {
     return commandsToInsert;
   }
 
+  /**
+   * Map the commands from the node to an object for the database
+   * Include the transaction id
+   *
+   * @param {string} contractId
+   * @param {Array} commands
+   * @returns {Array} an array of objects
+   */
   async mapNodeCommandsWithRelations(contractId, commands) {
     // indexInTransaction can not currently be calculated as the results from address db are ordered by command name
     const mappedCommands = [];

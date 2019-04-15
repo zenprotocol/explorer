@@ -1,5 +1,6 @@
 'use strict';
 
+const R = require('ramda');
 const test = require('blue-tape');
 const td = require('testdouble');
 const NetworkHelper = require('../../lib/NetworkHelper');
@@ -9,14 +10,17 @@ const CONTRACT_ID_1 = '00000000f24db32aa1881956646d3ccbb647df71455de10cf98b63581
 const CONTRACT_ID_2 = '00000000f24db32aa1881956646d3ccbb647df71455de10cf98b635810e8870906a56b64';
 const CUSTOM_TAKE = 10;
 const LATEST_BLOCK_NUMBER = 40000; // check if the db is synced
+const numOfCommandsWithConfirmations = R.filter(command => command.confirmations > 0, commandsData)
+  .length;
 
 let commandsAdder;
 let blocksDAL;
 let contractsDAL;
 let transactionsDAL;
 let commandsDAL;
+let fakeNetworkHelper;
 
-function before() {
+function before({ numOfCommandsInDb = 0 } = {}) {
   blocksDAL = td.replace('../../../server/components/api/blocks/blocksDAL', {
     findLatest: td.func('findLatest'),
   });
@@ -24,7 +28,6 @@ function before() {
     findAllActive: td.func('findAllActive'),
     countCommands: td.func('countCommands'),
     getLastCommandOfTx: td.func('getLastCommandOfTx'),
-    deleteCommands: td.func('delete'),
   });
   transactionsDAL = td.replace('../../../server/components/api/transactions/transactionsDAL', {
     findOne: td.func('findOne'),
@@ -60,11 +63,41 @@ function before() {
         })
       ).thenResolve(dataToReturn.slice(skip, skip + CUSTOM_TAKE));
     }
+
+    if (numOfCommandsInDb) {
+      // stub the first take
+      td.when(
+        FakeNetworkHelper.prototype.getContractCommandsFromNode({
+          contractId,
+          skip: numOfCommandsInDb,
+          take: CUSTOM_TAKE,
+        })
+      ).thenResolve(dataToReturn.slice(numOfCommandsInDb, numOfCommandsInDb + CUSTOM_TAKE));
+
+      for (
+        let skip = CUSTOM_TAKE;
+        skip + numOfCommandsInDb < dataToReturn.length;
+        skip += CUSTOM_TAKE
+      ) {
+        td.when(
+          FakeNetworkHelper.prototype.getContractCommandsFromNode({
+            contractId,
+            skip: numOfCommandsInDb + skip,
+            take: CUSTOM_TAKE,
+          })
+        ).thenResolve(
+          dataToReturn.slice(skip + numOfCommandsInDb, skip + numOfCommandsInDb + CUSTOM_TAKE)
+        );
+      }
+    }
   });
-  td.when(FakeNetworkHelper.prototype.getLatestBlockNumberFromNode()).thenResolve(LATEST_BLOCK_NUMBER);
+  td.when(FakeNetworkHelper.prototype.getLatestBlockNumberFromNode()).thenResolve(
+    LATEST_BLOCK_NUMBER
+  );
 
   const CommandsAdder = require('./CommandsAdder');
-  commandsAdder = new CommandsAdder(new FakeNetworkHelper());
+  fakeNetworkHelper = new FakeNetworkHelper();
+  commandsAdder = new CommandsAdder(fakeNetworkHelper);
 }
 function after() {
   td.reset();
@@ -79,9 +112,8 @@ test('CommandsAdder.doJob()', async function(t) {
   } = {}) {
     td.when(contractsDAL.findAllActive()).thenResolve(activeContracts);
     td.when(contractsDAL.countCommands(td.matchers.isA(String))).thenResolve(commandsCount);
-    td.when(contractsDAL.deleteCommands(td.matchers.isA(String))).thenResolve(commandsCount);
     td.when(transactionsDAL.findOne(td.matchers.isA(Object))).thenResolve({ id: transactionId });
-    td.when(blocksDAL.findLatest()).thenResolve({blockNumber: latestBlockNumber});
+    td.when(blocksDAL.findLatest()).thenResolve({ blockNumber: latestBlockNumber });
   }
   await (async function doJob_shouldReturnANumber() {
     before();
@@ -109,11 +141,7 @@ test('CommandsAdder.doJob()', async function(t) {
     before();
     stub({ activeContracts: [{ id: CONTRACT_ID_1 }], latestBlockNumber: LATEST_BLOCK_NUMBER - 1 });
     const result = await commandsAdder.doJob({ data: { take: CUSTOM_TAKE } });
-    t.equal(
-      result,
-      0,
-      'Given a not synced db: should not insert anything'
-    );
+    t.equal(result, 0, 'Given a not synced db: should not insert anything');
     after();
   })();
 
@@ -123,8 +151,8 @@ test('CommandsAdder.doJob()', async function(t) {
     const result = await commandsAdder.doJob({ data: { take: CUSTOM_TAKE } });
     t.equal(
       result,
-      commandsData.length,
-      'Given a synced db, no commands data and 1 contract: should insert all commandsData'
+      numOfCommandsWithConfirmations,
+      'Given a synced db, no commands data and 1 contract: should insert all commands which have confirmations'
     );
     after();
   })();
@@ -137,31 +165,25 @@ test('CommandsAdder.doJob()', async function(t) {
     const result = await commandsAdder.doJob({ data: { take: CUSTOM_TAKE } });
     t.equal(
       result,
-      commandsData.length * 2,
-      'Given no data in db and 2 contracts: should insert all commandsData twice'
+      numOfCommandsWithConfirmations * 2,
+      'Given no data in db and 2 contracts: should insert all commands which have confirmations twice'
     );
     after();
   })();
 
   await (async function doJob_oneContract_lessInDb() {
-    before();
-    stub({ activeContracts: [{ id: CONTRACT_ID_1 }], commandsCount: commandsData.length - 1 });
+    const numOfCommandsInDb = numOfCommandsWithConfirmations - 1;
+    before({ numOfCommandsInDb });
+    stub({ activeContracts: [{ id: CONTRACT_ID_1 }], commandsCount: numOfCommandsInDb });
     const result = await commandsAdder.doJob({ data: { take: CUSTOM_TAKE } });
-    t.equal(result, commandsData.length, 'Given less data in db: should insert all commandsData');
-    after();
-  })();
-
-  await (async function doJob_oneContract_moreInDb() {
-    before();
-    stub({ activeContracts: [{ id: CONTRACT_ID_1 }], commandsCount: commandsData.length + 1 });
-    const result = await commandsAdder.doJob({ data: { take: CUSTOM_TAKE } });
-    t.equal(result, commandsData.length, 'Given more data in db: should insert all commandsData');
+    t.equal(result, 1, 'Given less data in db: should insert only the new commands');
     after();
   })();
 
   await (async function doJob_oneContract_someInDb() {
-    before();
-    stub({ activeContracts: [{ id: CONTRACT_ID_1 }], commandsCount: commandsData.length });
+    const numOfCommandsInDb = numOfCommandsWithConfirmations;
+    before({ numOfCommandsInDb });
+    stub({ activeContracts: [{ id: CONTRACT_ID_1 }], commandsCount: numOfCommandsInDb });
     const result = await commandsAdder.doJob({ data: { take: CUSTOM_TAKE } });
     t.equal(result, 0, 'Given same data in db: should not insert anything');
     after();
@@ -178,7 +200,6 @@ test('CommandsAdder.getCommandsToInsert()', async function(t) {
   } = {}) {
     td.when(transactionsDAL.findOne(td.matchers.isA(Object))).thenResolve({ id: transactionId });
     td.when(contractsDAL.countCommands(td.matchers.isA(String))).thenResolve(commandsCount);
-    td.when(contractsDAL.deleteCommands(td.matchers.isA(String))).thenResolve(commandsCount);
     td.when(contractsDAL.getLastCommandOfTx(contract, txHashParam)).thenResolve(command);
   }
   await (async function getCommandsToInsert_shouldReturnAnArray() {
@@ -195,8 +216,8 @@ test('CommandsAdder.getCommandsToInsert()', async function(t) {
     const result = await commandsAdder.getCommandsToInsert(CONTRACT_ID_1, commandsData.length);
     t.equals(
       result.length,
-      commandsData.length,
-      'Given no commands in db: should get an array with all commands'
+      numOfCommandsWithConfirmations,
+      'Given no commands in db: should get an array with all commands that have confirmations'
     );
     after();
   })();
@@ -207,7 +228,7 @@ test('CommandsAdder.getCommandsToInsert()', async function(t) {
     const result = await commandsAdder.getCommandsToInsert(CONTRACT_ID_1, CUSTOM_TAKE);
     t.equals(
       result.length,
-      commandsData.length,
+      numOfCommandsWithConfirmations,
       'Given no commands in db and lower take than all: should get an array with all commands'
     );
     after();
@@ -219,8 +240,8 @@ test('CommandsAdder.getCommandsToInsert()', async function(t) {
     const result = await commandsAdder.getCommandsToInsert(CONTRACT_ID_1, CUSTOM_TAKE);
     t.equals(
       result.length,
-      commandsData.length,
-      'Given 10 commands in db: should get an array with all commands'
+      numOfCommandsWithConfirmations - 10,
+      'Given 10 commands in db: should get an array with rest of commands excluding those with no confirmations'
     );
     after();
   })();
@@ -300,85 +321,6 @@ test('CommandsAdder.mapNodeCommandsWithRelations()', async function(t) {
       contractId,
       'Given a commands array: should contain the contract id'
     );
-    after();
-  })();
-});
-
-test('CommandsAdder.shouldInsertCommands()', async function(t) {
-  function stub({ commandsCount = 0, contract = CONTRACT_ID_1 } = {}) {
-    td.when(contractsDAL.countCommands(contract)).thenResolve(commandsCount);
-    td.when(contractsDAL.deleteCommands(contract)).thenResolve(commandsCount);
-  }
-  await (async function shouldInsertCommands_nothingInDb() {
-    before();
-    stub();
-    const shouldInsert = await commandsAdder.shouldInsertCommands(CONTRACT_ID_1, []);
-    t.equals(
-      shouldInsert,
-      false,
-      'Given no commands in db and empty commands array: should return false'
-    );
-    after();
-  })();
-  await (async function shouldInsertCommands_sameAmountInDb() {
-    before();
-    stub({ commandsCount: 2 });
-    const shouldInsert = await commandsAdder.shouldInsertCommands(CONTRACT_ID_1, [
-      {
-        command: '',
-        messageBody: '',
-        TransactionId: 1,
-        indexInTransaction: 0,
-        ContractId: '',
-      },
-      {
-        command: '',
-        messageBody: '',
-        TransactionId: 1,
-        indexInTransaction: 0,
-        ContractId: '',
-      },
-    ]);
-    t.equals(shouldInsert, false, 'Given same amount of commands in db: should return false');
-    after();
-  })();
-  await (async function shouldInsertCommands_lessAmountInDb() {
-    before();
-    const commandsInDb = 1;
-    stub({ commandsCount: commandsInDb });
-    const shouldInsert = await commandsAdder.shouldInsertCommands(CONTRACT_ID_1, [
-      {
-        command: '',
-        messageBody: '',
-        TransactionId: 1,
-        indexInTransaction: 0,
-        ContractId: '',
-      },
-      {
-        command: '',
-        messageBody: '',
-        TransactionId: 1,
-        indexInTransaction: 0,
-        ContractId: '',
-      },
-    ]);
-    t.equals(shouldInsert, true, 'Given less amount of commands in db: should return true');
-    after();
-  })();
-  await (async function shouldInsertCommands_biggerAmountInDb() {
-    before();
-    const commandsInDb = 2;
-    stub({ commandsCount: commandsInDb });
-    const shouldInsert = await commandsAdder.shouldInsertCommands(CONTRACT_ID_1, [
-      {
-        command: '',
-        messageBody: '',
-        TransactionId: 1,
-        indexInTransaction: 0,
-        ContractId: '',
-      },
-    ]);
-    t.equals(shouldInsert, true, 'Given bigger amount of commands in db: should return true');
     after();
   })();
 });
