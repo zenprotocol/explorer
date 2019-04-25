@@ -1,27 +1,38 @@
 'use strict';
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    return queryInterface.createTable('Commands', {
+    return queryInterface.createTable('Outputs', {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.BIGINT,
       },
-      command: {
-        type: Sequelize.STRING,
-      },
-      messageBody: {
-        type: Sequelize.STRING,
-      },
       TransactionId: {
         type: Sequelize.BIGINT,
       },
-      indexInTransaction: {
+      lockType: {
+        type: Sequelize.STRING,
+      },
+      contractLockVersion: {
         type: Sequelize.INTEGER,
       },
-      ContractId: {
+      address: {
         type: Sequelize.STRING,
+      },
+      lockValue: {
+        type: Sequelize.STRING,
+      },
+      asset: {
+        type: Sequelize.STRING,
+      },
+      amount: {
+        allowNull: false,
+        type: Sequelize.BIGINT,
+      },
+      index: {
+        allowNull: false,
+        type: Sequelize.INTEGER,
       },
       createdAt: {
         allowNull: false,
@@ -34,6 +45,6 @@ module.exports = {
     });
   },
   down: (queryInterface, Sequelize) => {
-    return queryInterface.dropTable('Commands');
+    return queryInterface.dropTable('Outputs');
   },
 };

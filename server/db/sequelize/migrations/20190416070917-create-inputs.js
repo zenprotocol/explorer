@@ -1,41 +1,37 @@
 'use strict';
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    return queryInterface.createTable('Blocks', {
+    return queryInterface.createTable('Inputs', {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
+        type: Sequelize.BIGINT,
+      },
+      TransactionId: {
+        type: Sequelize.BIGINT,
+      },
+      OutputId: {
+        type: Sequelize.BIGINT,
+      },
+      index: {
+        allowNull: false,
         type: Sequelize.INTEGER,
       },
-      version: {
+      outpointTXHash: {
+        type: Sequelize.STRING,
+      },
+      outpointIndex: {
         type: Sequelize.INTEGER,
       },
-      hash: {
+      isMint: {
+        allowNull: false,
+        type: Sequelize.BOOLEAN,
+      },
+      asset: {
         type: Sequelize.STRING,
       },
-      parent: {
-        type: Sequelize.STRING,
-      },
-      blockNumber: {
-        type: Sequelize.INTEGER,
-      },
-      commitments: {
-        type: Sequelize.STRING,
-      },
-      timestamp: {
-        type: Sequelize.BIGINT,
-      },
-      difficulty: {
-        type: Sequelize.BIGINT,
-      },
-      nonce1: {
-        type: Sequelize.BIGINT,
-      },
-      nonce2: {
-        type: Sequelize.BIGINT,
-      },
-      transactionCount: {
+      amount: {
         type: Sequelize.BIGINT,
       },
       createdAt: {
@@ -49,6 +45,6 @@ module.exports = {
     });
   },
   down: (queryInterface, Sequelize) => {
-    return queryInterface.dropTable('Blocks');
+    return queryInterface.dropTable('Inputs');
   },
 };

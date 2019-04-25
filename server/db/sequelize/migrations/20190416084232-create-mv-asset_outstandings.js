@@ -2,8 +2,9 @@
 
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    return queryInterface.sequelize.query(
-      `
+    return queryInterface.sequelize
+      .query(
+        `
         CREATE MATERIALIZED VIEW "AssetOutstandings"
         AS
         -- ZP
@@ -12,7 +13,8 @@ module.exports = {
           "Issued"."amount" AS issued,
           "Destroyed"."amount" AS destroyed,
           "Issued"."amount" - "Destroyed"."amount" AS outstanding,
-          "Keyholders"."total" AS "keyholders"
+          "Keyholders"."total" AS "keyholders",
+          "Transactions"."total" AS "transactionsCount"
         FROM
           -- issued
           (SELECT ((20000000 + (COUNT(*) - 1) * 50) * 100000000) as amount
@@ -23,7 +25,7 @@ module.exports = {
           WHERE ("Outputs"."asset" = '00' AND "Outputs"."lockType" = 'Destroy')) AS "Destroyed",
           -- keyholders
           (SELECT
-            COUNT(bothsums.address) AS total
+            COALESCE(COUNT(*), 0) AS total
           FROM
             (SELECT
               COALESCE(osums.address, isums.address) AS address,
@@ -55,7 +57,21 @@ module.exports = {
               GROUP BY io.address, io.asset) AS isums
               ON osums.address = isums.address AND osums.asset = isums.asset) AS bothsums
           WHERE output_sum <> input_sum
-          GROUP BY bothsums.asset) AS "Keyholders"
+          GROUP BY bothsums.asset) AS "Keyholders",
+          -- Transactions
+          (SELECT 
+            COALESCE(COUNT(*), 0) AS "total"
+          FROM
+            (SELECT "TransactionId"
+                FROM "Outputs" 
+                WHERE "Outputs"."asset"  = '00'
+                GROUP BY "TransactionId") AS "Outputs"
+              FULL OUTER JOIN (SELECT "Inputs"."TransactionId"
+                FROM "Inputs" JOIN "Outputs" 
+                ON "Inputs"."OutputId" = "Outputs"."id" 
+                AND "Outputs"."asset"  = '00'
+                GROUP BY "Inputs"."TransactionId") AS "Inputs"
+              ON "Outputs"."TransactionId" = "Inputs"."TransactionId") AS "Transactions"
 
         UNION
         -- contract assets
@@ -64,7 +80,8 @@ module.exports = {
           COALESCE("Issued"."sum", 0) AS "issued",
           COALESCE("Destroyed"."sum", 0) AS "destroyed",
           COALESCE("Issued"."sum", 0) -  COALESCE("Destroyed"."sum", 0) AS "outstanding",
-          COALESCE("Keyholders"."total", 0) AS "keyholders"
+          COALESCE("Keyholders"."total", 0) AS "keyholders",
+          COALESCE("Transactions"."total", 0) AS "transactionsCount"
         FROM
           -- Issued
           (SELECT asset, SUM("amount") AS sum
@@ -117,10 +134,35 @@ module.exports = {
           GROUP BY bothsums.asset
                   ) AS "Keyholders"
           ON "Issued"."asset" = "Keyholders"."asset"
+          LEFT JOIN
+          -- Transactions
+          (SELECT 
+          COUNT(*) AS "total",
+          COALESCE("Outputs"."asset", "Inputs"."asset") AS "asset"
+          FROM
+            (SELECT "TransactionId", "asset"
+                FROM "Outputs" 
+                WHERE "Outputs"."asset"  != '00'
+                GROUP BY "TransactionId", "asset") AS "Outputs"
+              FULL OUTER JOIN (SELECT "Inputs"."TransactionId", "Outputs"."asset"
+                FROM "Inputs" JOIN "Outputs" 
+                ON "Inputs"."OutputId" = "Outputs"."id" 
+                AND "Outputs"."asset"  != '00'
+                GROUP BY "Inputs"."TransactionId", "Outputs"."asset") AS "Inputs"
+              ON "Outputs"."TransactionId" = "Inputs"."TransactionId" AND "Outputs"."asset" = "Inputs"."asset"
+          GROUP BY COALESCE("Outputs"."asset", "Inputs"."asset")) AS "Transactions"
+          ON "Issued"."asset" = "Transactions"."asset"
           
         ORDER BY keyholders DESC;
-        `
-    );
+      `
+      )
+      .then(() =>
+        queryInterface.addIndex('AssetOutstandings', {
+          fields: ['asset'],
+          unique: true,
+          name: 'AssetOutstandings_asset_index',
+        })
+      );
   },
   down: (queryInterface, Sequelize) => {
     return queryInterface.sequelize.query('DROP MATERIALIZED VIEW "AssetOutstandings";');

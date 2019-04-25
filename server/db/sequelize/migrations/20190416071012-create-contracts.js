@@ -1,9 +1,8 @@
 'use strict';
-const TABLE_NAME = 'Contracts';
 
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    return queryInterface.createTable(TABLE_NAME, {
+    return queryInterface.createTable('Contracts', {
       id: {
         allowNull: false,
         primaryKey: true,
@@ -30,7 +29,7 @@ module.exports = {
       },
     });
   },
-  down: (queryInterface) => {
-    return queryInterface.dropTable(TABLE_NAME);
+  down: queryInterface => {
+    return queryInterface.dropTable('Contracts');
   },
 };
