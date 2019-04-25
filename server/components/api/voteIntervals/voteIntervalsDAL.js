@@ -4,7 +4,7 @@ const dal = require('../../../lib/dal');
 const db = require('../../../db/sequelize/models');
 
 const voteIntervalsDAL = dal.createDAL('VoteInterval');
-const Op = db.sequelize.Op;
+const Op = db.Sequelize.Op;
 
 /**
  * Get all vote intervals that do not have a snapshot yet

@@ -11,6 +11,7 @@ const isHash = require('../../../lib/isHash');
 const getFieldsForSelectQuery = require('../../../lib/getFieldsForSelectQuery');
 
 const sequelize = transactionsDAL.db.sequelize;
+const Op = transactionsDAL.db.Sequelize.Op;
 
 transactionsDAL.findByHash = async function(hash) {
   return transactionsDAL.findOne({
@@ -28,7 +29,7 @@ transactionsDAL.findByHash = async function(hash) {
 transactionsDAL.search = function(search, limit = 10) {
   const where = {
     hash: {
-      [sequelize.Op.like]: `%${search}%`,
+      [Op.like]: `%${search}%`,
     },
   };
   return Promise.all([
@@ -458,7 +459,7 @@ transactionsDAL.findTransactionAssetInputsOutputs = function(id, asset) {
   const outputsPromise = outputsDAL.findAll({
     attributes: ['address', 'lockType', 'amount'],
     where: {
-      [sequelize.Op.and]: {
+      [Op.and]: {
         TransactionId: id,
         asset,
       },
@@ -507,7 +508,7 @@ transactionsDAL.findAllTransactionAssetsInputsOutputs = function(id) {
   const outputsPromise = outputsDAL.findAll({
     attributes: ['asset', 'address', 'lockType', 'amount'],
     where: {
-      [sequelize.Op.and]: {
+      [Op.and]: {
         TransactionId: id,
       },
     },
@@ -543,8 +544,8 @@ transactionsDAL.addOutput = transactionsDAL.addOutput.bind(transactionsDAL);
 
 function getFirstTransactionIdWhereOption(firstTransactionId, ascending) {
   const operator = ascending
-    ? transactionsDAL.db.Sequelize.Op.gte
-    : transactionsDAL.db.Sequelize.Op.lte;
+    ? Op.gte
+    : Op.lte;
   return firstTransactionId && Number(firstTransactionId) > 0
     ? {
         id: {

@@ -4,7 +4,7 @@ const dal = require('../../../lib/dal');
 const sequelize = require('../../../db/sequelize/models').sequelize;
 
 const addressAmountsDAL = dal.createDAL('AddressAmount');
-const Op = addressAmountsDAL.db.sequelize.Op;
+const Op = addressAmountsDAL.db.Sequelize.Op;
 
 addressAmountsDAL.refreshView = function() {
   return sequelize.query('REFRESH MATERIALIZED VIEW CONCURRENTLY "AddressAmounts";');

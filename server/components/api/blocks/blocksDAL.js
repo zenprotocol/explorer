@@ -81,7 +81,7 @@ blocksDAL.findByHash = function(hash) {
 };
 
 blocksDAL.search = function(search, limit = 10) {
-  const Op = this.db.sequelize.Op;
+  const Op = this.db.Sequelize.Op;
   const whereByHash = {
     hash: {
       [Op.like]: `%${search}%`,

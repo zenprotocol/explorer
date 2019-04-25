@@ -26,6 +26,7 @@ function before() {
   });
   const db = td.replace('../../../server/db/sequelize/models/index.js', {
     sequelize: td.object(['transaction']),
+    Sequelize: td.object(),
   });
   td.when(db.sequelize.transaction()).thenResolve({ commit() {} });
 

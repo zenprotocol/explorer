@@ -135,6 +135,7 @@ async function wrapTest(given, test) {
 
   td.replace('../../../../server/db/sequelize/models/index.js', {
     sequelize: td.object(),
+    Sequelize: td.object(),
   });
 
   td.when(blocksDAL.findLatest()).thenResolve({ blockNumber: LATEST_DB_BLOCK });

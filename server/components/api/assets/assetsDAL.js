@@ -5,7 +5,7 @@ const addressAmountsDAL = require('../addressAmounts/addressAmountsDAL');
 const assetOutstandingsDAL = require('../assetOutstandings/assetOutstandingsDAL');
 
 const assetsDAL = dal.createDAL('');
-const Op = assetsDAL.db.sequelize.Op;
+const Op = assetsDAL.db.Sequelize.Op;
 
 assetsDAL.findOutstanding = function(asset) {
   return assetOutstandingsDAL.findOne({

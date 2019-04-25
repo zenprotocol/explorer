@@ -9,7 +9,7 @@ const AddressUtils = require('../../../../src/common/utils/AddressUtils');
 const addressesDAL = {};
 
 const sequelize = db.sequelize;
-const Op = sequelize.Op;
+const Op = db.Sequelize.Op;
 
 addressesDAL.findOne = function(address) {
   return outputsDAL

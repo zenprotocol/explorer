@@ -8,7 +8,7 @@ const addressAmountsDAL = require('../addressAmounts/addressAmountsDAL');
 const sqlQueries = require('../../../lib/sqlQueries');
 const db = transactionsDAL.db;
 const sequelize = db.sequelize;
-const Op = sequelize.Op;
+const Op = db.Sequelize.Op;
 
 const statsDAL = {};
 const maximumChartInterval = '1 year';
@@ -21,7 +21,7 @@ statsDAL.totalZp = async function() {
 statsDAL.totalIssued = async function(asset) {
   return inputsDAL.sum('amount', {
     where: {
-      [db.sequelize.Op.and]: {
+      [db.Sequelize.Op.and]: {
         asset,
         isMint: true,
       },

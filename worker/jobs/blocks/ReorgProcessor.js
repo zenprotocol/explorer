@@ -3,9 +3,10 @@
 const EventEmitter = require('events');
 const logger = require('../../lib/logger')('reorg');
 const blocksDAL = require('../../../server/components/api/blocks/blocksDAL');
-const Op = require('../../../server/db/sequelize/models').sequelize.Op;
+const db = require('../../../server/db/sequelize/models');
 const getJobData = require('../../lib/getJobData');
 const QueueError = require('../../lib/QueueError');
+const Op = db.Sequelize.Op;
 
 const MAX_ALLOWED_BLOCKS_TO_DELETE = 500;
 

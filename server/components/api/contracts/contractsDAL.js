@@ -9,7 +9,7 @@ const AddressUtils = require('../../../../src/common/utils/AddressUtils');
 
 const contractsDAL = dal.createDAL('Contract');
 const sequelize = contractsDAL.db.sequelize;
-const Op = sequelize.Op;
+const Op = contractsDAL.db.Sequelize.Op;
 
 const nullsOrderMap = {
   asc: 'NULLS FIRST',
