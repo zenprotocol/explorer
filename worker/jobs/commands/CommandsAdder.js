@@ -140,7 +140,7 @@ class CommandsAdder {
       } else {
         mappedCommands.push({
           command: command.command,
-          messageBody: command.messageBody,
+          messageBody: JSON.stringify(command.messageBody),
           TransactionId: tx.id,
           indexInTransaction: 0, // can not calculate for now!
           ContractId: contractId,
