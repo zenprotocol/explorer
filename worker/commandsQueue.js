@@ -12,6 +12,11 @@ const commandsQueue = new Queue(
   Config.get('queues:commands:name'),
   Config.any(['REDISCLOUD_URL', 'redis'])
 );
+// notify the votes queue whenever new commands were added
+const votesQueue = new Queue(
+  Config.get('queues:votes:name'),
+  Config.any(['REDISCLOUD_URL', 'redis'])
+);
 
 const taskTimeLimiter = new TaskTimeLimiter(Config.get('queues:slackTimeLimit') * 1000);
 
@@ -25,6 +30,9 @@ commandsQueue.on('active', function(job, jobPromise) {
 
 commandsQueue.on('completed', function(job, result) {
   logger.info(`A job has been completed. ID=${job.id} result=${result}`);
+  if(result > 0) {
+    votesQueue.add({});
+  }
 });
 
 commandsQueue.on('failed', function(job, error) {
@@ -45,10 +53,7 @@ Promise.all([
   commandsQueue.clean(0, 'failed'),
 ]).then(() => {
   // schedule ---
-  commandsQueue.add(
-    {},
-    { repeat: { cron: '* * * * *' } }
-  );
+  commandsQueue.add({}, { repeat: { cron: '* * * * *' } });
   // now
   commandsQueue.add({});
 });

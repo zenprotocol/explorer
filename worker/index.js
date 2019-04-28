@@ -12,3 +12,4 @@ require('./contractsQueue');
 require('./commandsQueue');
 require('./viewsRefreshQueue');
 require('./snapshotsQueue');
+require('./votesQueue');

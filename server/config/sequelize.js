@@ -11,19 +11,16 @@ const testJson = JSON.parse(fs.readFileSync(path.join(__dirname, 'test.json')));
 
 module.exports = {
   development: merge(developmentJson.db, {
-    operatorsAliases: Sequelize.Op,
     seederStorage: 'sequelize',
     logging: Config.get('db:logging') !== 'false' ? console.log : false,
   }),
   test: merge(testJson.db, {
-    operatorsAliases: Sequelize.Op,
     logging: false,
   }),
   production: {
     use_env_variable: 'DATABASE_URL',
     dialect: Config.get('db:dialect'),
     dialectOptions: Config.get('db:dialectOptions'),
-    operatorsAliases: Sequelize.Op,
     logging: false,
     seederStorage: 'sequelize',
   },
