@@ -13,7 +13,11 @@ const createNamedLogger = function(name) {
   const addedTransports = [];
 
   if(Config.get('NODE_ENV') !== 'production') {
-    const logsDir = path.join(__dirname, `../../logs/${name}/`);
+    const parentDir = path.join(__dirname, '../../logs/');
+    if (!fs.existsSync(parentDir)) {
+      fs.mkdirSync(parentDir);
+    }
+    const logsDir = path.join(parentDir, `${name}/`);
     if (!fs.existsSync(logsDir)) {
       fs.mkdirSync(logsDir);
     }

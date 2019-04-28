@@ -14,12 +14,12 @@ Client side was bootstrapped with [create-react-app](https://github.com/facebook
 ## Get Started Guide
 1. Make sure docker is running
 2. Open a terminal in the root folder of the project.
-3. **AS AN ADMINISTRATOR** - `npm run setup` - to create your env file and needed directories and to install dependencies.
+3. `npm run setup` - to create your env file and needed directories and to install dependencies.
 4. `npm run docker:up` - this will:
    - Download all the needed images
    - Create all the containers. 
    - Start the web server.
-5. **In another terminal** -
+5. Setup the database -
    1. `docker-compose exec web sh` - to run a shell inside of the web container. 
    2. `npm run setup:db`
    3. `exit` - to exit the container
