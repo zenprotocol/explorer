@@ -1,30 +1,37 @@
 'use strict';
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    const voteIntervalsPromise = queryInterface.createTable('VoteIntervals', {
-      id: {
-        allowNull: false,
-        autoIncrement: true,
-        primaryKey: true,
-        type: Sequelize.INTEGER,
-      },
-      interval: {
-        allowNull: false,
-        type: Sequelize.INTEGER,
-      },
-      beginHeight: {
-        allowNull: false,
-        type: Sequelize.INTEGER,
-      },
-      endHeight: {
-        type: Sequelize.INTEGER,
-      },
-      hasSnapshot: {
-        type: Sequelize.BOOLEAN,
-        allowNull: false,
-        defaultValue: false,
-      },
-    });
+    const voteIntervalsPromise = queryInterface
+      .createTable('VoteIntervals', {
+        id: {
+          allowNull: false,
+          autoIncrement: true,
+          primaryKey: true,
+          type: Sequelize.INTEGER,
+        },
+        interval: {
+          allowNull: false,
+          type: Sequelize.INTEGER,
+        },
+        beginHeight: {
+          allowNull: false,
+          type: Sequelize.INTEGER,
+        },
+        endHeight: {
+          type: Sequelize.INTEGER,
+        },
+        hasSnapshot: {
+          type: Sequelize.BOOLEAN,
+          allowNull: false,
+          defaultValue: false,
+        },
+      })
+      .then(() =>
+        queryInterface.addConstraint('VoteIntervals', ['interval'], {
+          type: 'UNIQUE',
+          name: 'VoteIntervals_interval_unique_constraint',
+        })
+      );
     const snapshotsPromise = queryInterface.createTable('Snapshots', {
       height: {
         allowNull: false,
