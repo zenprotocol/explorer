@@ -41,7 +41,7 @@ class VotesAdder {
   }
 
   processCommands(commands) {
-    // not all commands are added, a command can contain more than 1 vote
+    // a command can contain more than 1 vote or none
     return commands.reduce((all, command) => {
       all.push.apply(all, this.getVotesFromCommand(command));
       return all;
@@ -74,6 +74,13 @@ class VotesAdder {
           }
         }
       }
+    }
+
+    // command does not contain any valid vote - insert an empty vote so this command is handled
+    if(votesToAdd.length === 0) {
+      votesToAdd.push({
+        CommandId: Number(command.id),
+      });
     }
 
     return votesToAdd;

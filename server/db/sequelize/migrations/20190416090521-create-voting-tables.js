@@ -52,14 +52,12 @@ module.exports = {
           type: Sequelize.BIGINT,
         },
         interval: {
-          allowNull: false,
           type: Sequelize.INTEGER,
         },
         commitId: {
           type: Sequelize.STRING,
         },
         address: {
-          allowNull: false,
           type: Sequelize.STRING,
         },
         createdAt: {

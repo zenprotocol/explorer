@@ -421,7 +421,13 @@ test('VotesAdder.getVotesFromCommand()', async function(t) {
     before();
     stub();
     const result = await votesAdder.getVotesFromCommand(invalidCommand);
-    t.equals(result.length, 0, `${given}: Should return an empty array`);
+    t.equals(result.length, 1, `${given}: Should return an array with 1 element`);
+    t.equals(
+      result[0].CommandId,
+      Number(invalidCommand.id),
+      `${given}: The element should have the command id`
+    );
+    t.equals(result[0].interval, undefined, `${given}: Interval should be undefined`);
     after();
   });
 });
@@ -453,7 +459,7 @@ test('VotesAdder.doJob()', async function(t) {
     stub();
     const result = await votesAdder.doJob({});
     // there are 6 good commands in the stub, each have 2 addresses
-    t.equals(result, 12, `${given}: Should add all valid commands`);
+    t.equals(result, 14, `${given}: Should add all valid commands`);
     try {
       td.verify(votesDAL.bulkCreate(td.matchers.anything(), td.matchers.anything()));
       t.pass(`${given}: should call votesDAL.bulkCreate`);

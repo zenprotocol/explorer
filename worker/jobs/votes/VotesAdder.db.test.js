@@ -25,7 +25,7 @@ test('VotesAdder.doJob() (DB)', async function(t) {
     const votesAdder = new VotesAdder({blockchainParser: new BlockchainParser(), contractId: CONTRACT_ID});
 
     // add a demo contract
-    const contract = await contractsDAL.create({
+    await contractsDAL.create({
       id: CONTRACT_ID,
       address: 'whatever',
       code: '',
@@ -38,7 +38,7 @@ test('VotesAdder.doJob() (DB)', async function(t) {
       ContractId: command.ContractId,
     })));
     const result = await votesAdder.doJob();
-    t.equal(result, 12, `${given}: should add all votes`);
+    t.equal(result, 14, `${given}: should add all votes`);
   });
 });
 
