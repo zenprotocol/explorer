@@ -1,5 +1,8 @@
 'use strict';
 
+const zen = require('@zen/zenjs');
+const sha3 = require('js-sha3');
+const BigInteger = require('bigi');
 const logger = require('../../lib/logger')('votes');
 const votesDAL = require('../../../server/components/api/votes/votesDAL');
 const QueueError = require('../../lib/QueueError');
@@ -77,7 +80,7 @@ class VotesAdder {
     }
 
     // command does not contain any valid vote - insert an empty vote so this command is handled
-    if(votesToAdd.length === 0) {
+    if (votesToAdd.length === 0) {
       votesToAdd.push({
         CommandId: Number(command.id),
       });
@@ -108,11 +111,18 @@ class VotesAdder {
   }
 
   verify({ publicKey, signature, interval, commitId } = {}) {
-    // PublicKey.fromString("FROM KEY OF THIRD ELEMENT OF DICTIONARY").verify(Buffer.from(sha
-    //   .update(sha(Data.serialize(new Data.UInt32(BigInteger.valueOf(FIRST ELEMENT OF LIST)))))
-    //   .update(sha(Data.serialize(new Data.String("SECOND ELEMENT OF LIST"))))
-    //   .hex(), 'hex'), Signature.fromString('VALUE OF DICTIONARY IN GIVEN KEY')))
-    return true;
+    const { Data, PublicKey, Signature } = zen;
+    const sha = sha3.sha3_256;
+    return PublicKey.fromString(publicKey).verify(
+      Buffer.from(
+        sha
+          .update(sha(Data.serialize(new Data.UInt32(BigInteger.valueOf(interval)))))
+          .update(sha(Data.serialize(new Data.String(commitId))))
+          .hex(),
+        'hex'
+      ),
+      Signature.fromString(signature)
+    );
   }
 }
 

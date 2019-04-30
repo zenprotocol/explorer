@@ -1,6 +1,7 @@
 'use strict';
 
 const test = require('blue-tape');
+const td = require('testdouble');
 const truncate = require('../../lib/truncate');
 const contractsDAL = require('../../../server/components/api/contracts/contractsDAL');
 const commandsDAL = require('../../../server/components/api/commands/commandsDAL');
@@ -17,12 +18,15 @@ test.onFinish(() => {
 test('VotesAdder.doJob() (DB)', async function(t) {
   await wrapTest('Given no commands', async given => {
     const votesAdder = new VotesAdder({blockchainParser: new BlockchainParser(), contractId: CONTRACT_ID});
+    before(votesAdder);
     const result = await votesAdder.doJob();
     t.equal(result, 0, `${given}: should not add any votes`);
+    after();
   });
 
   await wrapTest('Given commands', async given => {
     const votesAdder = new VotesAdder({blockchainParser: new BlockchainParser(), contractId: CONTRACT_ID});
+    before(votesAdder);
 
     // add a demo contract
     await contractsDAL.create({
@@ -39,10 +43,19 @@ test('VotesAdder.doJob() (DB)', async function(t) {
     })));
     const result = await votesAdder.doJob();
     t.equal(result, 14, `${given}: should add all votes`);
+    after();
   });
 });
 
 async function wrapTest(given, test) {
   await truncate();
   await test(given);
+}
+
+function before(votesAdder) {
+  td.replace(votesAdder, 'verify');
+  td.when(votesAdder.verify(td.matchers.anything())).thenReturn(true);
+}
+function after() {
+  td.reset();
 }
