@@ -11,7 +11,7 @@ module.exports = (sequelize, DataTypes) => {
     {}
   );
   RepoVote.associate = function(models) {
-    RepoVote.belongsTo(models.Transaction);
+    RepoVote.belongsTo(models.Command);
   };
   return RepoVote;
 };
