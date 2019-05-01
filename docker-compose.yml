@@ -8,7 +8,7 @@ services:
       - /home/app/explorer/node_modules
     ports: 
       - 3000:3000
-      - 5858:5858
+      - 9229:9229
     depends_on:
       - db
       - redis

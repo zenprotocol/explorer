@@ -8,7 +8,7 @@
     "dev": "npm-run-all -s docker:up client:start",
     "dev:all": "npm-run-all -s docker:up:all client:start",
     "server:start": "node server/index.js",
-    "server:dev": "nodemon --inspect=0.0.0.0:5858 -w ./server --legacy-watch server/index.js",
+    "server:dev": "nodemon --inspect=0.0.0.0:9229 -w ./server --nolazy server/index.js",
     "heroku-postbuild": "npm run heroku:client:build",
     "heroku-release": "npm run heroku:db:migrate && npm run heroku:db:seed",
     "heroku:db:migrate": "npx sequelize db:migrate",
