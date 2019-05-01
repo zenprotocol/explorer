@@ -23,6 +23,10 @@ class BlockchainParser {
     return zen.Address.getPublicKeyHashAddress(this.chain, pkHash);
   }
 
+  getAddressFromPublicKey(publicKey) {
+    return zen.PublicKey.fromString(publicKey).toAddress(this.chain);
+  }
+
   getLockValuesFromOutput(output) {
     let lockType = null;
     let lockValue = null; // contains hash/id/pkHash

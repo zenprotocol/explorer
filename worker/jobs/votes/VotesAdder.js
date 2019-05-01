@@ -66,7 +66,7 @@ class VotesAdder {
         if (this.validateDictElement(element)) {
           const publicKey = element[0];
           const signature = element[1].signature;
-          const address = this.blockchainParser.getPublicKeyHashAddress(publicKey);
+          const address = this.blockchainParser.getAddressFromPublicKey(publicKey);
           if (this.verify({ interval, commitId, publicKey, signature })) {
             votesToAdd.push({
               CommandId: Number(command.id),
@@ -75,8 +75,14 @@ class VotesAdder {
               address,
             });
           }
+          else {
+            logger.info(`Signature did not pass verification: commandId:${command.id} interval:${interval} commitId:${commitId} publicKey:${publicKey}`);
+          }
         }
       }
+    }
+    else {
+      logger.info(`MessageBody is not valid for command with id ${command.id}`);
     }
 
     // command does not contain any valid vote - insert an empty vote so this command is handled
