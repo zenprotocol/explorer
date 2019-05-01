@@ -2,6 +2,7 @@
 
 const dal = require('../../../lib/dal');
 const db = require('../../../db/sequelize/models');
+const infosBLL = require('../infos/infosBLL');
 
 const voteIntervalsDAL = dal.createDAL('VoteInterval');
 const Op = db.Sequelize.Op;
@@ -20,6 +21,60 @@ voteIntervalsDAL.findAllWithoutSnapshot = async function(height) {
       },
     },
   });
+};
+
+/**
+ * Find a vote interval by the interval number or get the current one
+ * current one is by importance: current, next or lastly previous interval
+ *
+ * @param {number} interval
+ */
+voteIntervalsDAL.findByIntervalOrCurrent = async function(interval) {
+  if (interval) {
+    return this.findOne({
+      where: {
+        interval,
+      },
+    });
+  } else {
+    // find either the current or the next interval
+    const infoBlocks = await infosBLL.findByName({ name: 'blocks' });
+    const currentBlock = Number(infoBlocks.value);
+
+    const prevPromise = this.findOne({
+      where: {
+        [Op.and]: {
+          endHeight: {
+            [Op.lt]: currentBlock,
+          },
+        },
+      },
+      order: [['endHeight', 'DESC']],
+    });
+    const currentPromise = this.findOne({
+      where: {
+        [Op.and]: {
+          beginHeight: {
+            [Op.lte]: currentBlock,
+          },
+          endHeight: {
+            [Op.gte]: currentBlock,
+          },
+        },
+      },
+      order: [['beginHeight', 'ASC']],
+    });
+    const nextPromise = this.findOne({
+      where: {
+        beginHeight: {
+          [Op.gt]: currentBlock,
+        },
+      },
+      order: [['beginHeight', 'ASC']],
+    });
+    const [prev, current, next] = await Promise.all([prevPromise, currentPromise, nextPromise]);
+    return current ? current : next ? next : prev;
+  }
 };
 
 /**
