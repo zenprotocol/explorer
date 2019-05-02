@@ -1,0 +1,40 @@
+@import 'src/style/variables';
+
+.InfoBox {
+  &.col {
+    padding: 11px 10px;
+    margin-left: -1px;
+    margin-bottom: -1px;
+  }
+  .content-box .icon {
+    width: 64px;
+    height: 64px;
+    margin-right: 20px;
+    font-size: 2rem;
+  }
+  
+  .content-box .title {
+    text-transform: uppercase;
+    margin-bottom: 5px;
+    white-space: nowrap;
+  }
+
+  .content-box .content-wrapper {
+    margin-right: 30px;
+  }
+  .content-box .btn {
+    width: 168px;
+  }
+  .content-box .body {
+    flex-grow: 1;
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 20px;
+  }
+  @media (min-width: 992px) {
+    .content-box .body {
+      justify-content: flex-start;
+      margin-top: 0;
+    }
+  }
+}

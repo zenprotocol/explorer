@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { observer, inject } from 'mobx-react';
-import classNames from 'classnames';
 import { Helmet } from 'react-helmet';
 import TextUtils from '../../lib/TextUtils.js';
 import Loading from '../../components/Loading';
@@ -9,37 +8,10 @@ import Button from '../../components/buttons/Button';
 import { ChartLoader } from '../../components/charts';
 import Page from '../../components/Page';
 import PageTitle from '../../components/PageTitle';
+import InfoBox from '../../components/InfoBox';
 import './Info.scss';
 
 const FETCH_TIMEOUT = 30000;
-
-function ContentBox(props) {
-  return (
-    <div className="col border border-dark">
-      <div
-        className={classNames('content-box d-flex align-items-center flex-wrap', props.className)}
-      >
-        <div className="content-wrapper d-flex align-items-center">
-          <div className="icon text-secondary d-flex align-items-center justify-content-center">
-            <i className={props.iconClass} />
-          </div>
-          <div className="content">
-            <div className="title text-secondary">{props.title}</div>
-            <div className="value display-2 text-white text-monospace">{props.content}</div>
-          </div>
-        </div>
-        {props.children ? <div className="body">{props.children}</div> : null}
-      </div>
-    </div>
-  );
-}
-ContentBox.propTypes = {
-  title: PropTypes.string,
-  content: PropTypes.string,
-  className: PropTypes.string,
-  iconClass: PropTypes.string,
-  children: PropTypes.any,
-};
 
 class InfoPage extends Component {
   constructor(props) {
@@ -100,19 +72,19 @@ class InfoPage extends Component {
         <PageTitle title="Statistics" />
         <section className="container">
           <div className="row">
-            <ContentBox
+            <InfoBox
               className="chain"
               title="Chain"
               content={`${TextUtils.capitalize(addNetToChainName(chain))}`}
               iconClass="fal fa-link fa-fw"
             />
-            <ContentBox
+            <InfoBox
               className="blocks"
               title="Blocks"
               content={TextUtils.formatNumber(blocks)}
               iconClass="fal fa-cubes fa-fw"
             />
-            <ContentBox
+            <InfoBox
               className="transactions"
               title="Transactions"
               content={TextUtils.formatNumber(transactions)}
@@ -120,13 +92,13 @@ class InfoPage extends Component {
             />
           </div>
           <div className="row">
-            <ContentBox
+            <InfoBox
               className="difficulty"
               title="Mining difficulty"
               content={TextUtils.formatNumber(Math.floor(difficulty))}
               iconClass="fal fa-dumbbell fa-fw"
             />
-            <ContentBox
+            <InfoBox
               className="hashrate"
               title="Network Hashrate"
               content={`${TextUtils.formatNumber((hashRate / 1000000000000).toFixed(2))} TH/s`}
@@ -134,7 +106,7 @@ class InfoPage extends Component {
             />
           </div>
           <div className="row bg-black-accent">
-            <ContentBox
+            <InfoBox
               className="wallet"
               title="zen wallet"
               content={walletVersion}
@@ -143,8 +115,8 @@ class InfoPage extends Component {
               <Button href="https://docs.zenprotocol.com/preparation/installers">
                 Download wallet
               </Button>
-            </ContentBox>
-            <ContentBox
+            </InfoBox>
+            <InfoBox
               className="node"
               title="Zen node"
               content={nodeVersion}
@@ -153,7 +125,7 @@ class InfoPage extends Component {
               <Button href="https://docs.zenprotocol.com/headless" type="dark-2">
                 Download node
               </Button>
-            </ContentBox>
+            </InfoBox>
           </div>
         </section>
         <section className="charts">
