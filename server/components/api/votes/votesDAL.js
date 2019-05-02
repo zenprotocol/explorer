@@ -55,17 +55,21 @@ votesDAL.findAllByInterval = async function({ interval, limit, offset = 0 } = {}
   });
 };
 votesDAL.countByInterval = async function({ interval } = {}) {
-  const options = {
-    where: {
-      [Op.and]: {
-        interval,
-        address: {
-          [Op.ne]: null,
-        },
-      },
+  const sql = tags.oneLine`
+  SELECT count("RepoVote".*) AS count
+  FROM "RepoVotes" AS "RepoVote"
+  INNER JOIN "VoteIntervals" ON "RepoVote"."interval" = "VoteIntervals"."interval"
+  INNER JOIN "Snapshots" ON "RepoVote"."address" = "Snapshots"."address" AND "VoteIntervals"."beginHeight" = "Snapshots"."height"
+  WHERE ("RepoVote"."interval" = :interval
+          AND "RepoVote"."address" IS NOT NULL) 
+  `;
+
+  return sequelize.query(sql, {
+    replacements: {
+      interval,
     },
-  };
-  return this.count(options);
+    type: sequelize.QueryTypes.SELECT,
+  }).then(this.queryResultToCount);
 };
 
 /**

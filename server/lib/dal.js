@@ -82,8 +82,8 @@ const createDAL = modelName => {
       return new Promise((resolve, reject) => {
         this.db[this.model]
           .findByPk(id)
-          .then((model) => {
-            return model.update(values, deepMerge({individualHooks: true }, options));
+          .then(model => {
+            return model.update(values, deepMerge({ individualHooks: true }, options));
           })
           .then(resolve)
           .catch(error => {
@@ -94,7 +94,7 @@ const createDAL = modelName => {
     async bulkUpdate(values = {}, options = {}) {
       return new Promise((resolve, reject) => {
         this.db[this.model]
-          .update(values, deepMerge({individualHooks: true }, options))
+          .update(values, deepMerge({ individualHooks: true }, options))
           .then(resolve)
           .catch(error => {
             reject(wrapORMErrors(error));
@@ -129,6 +129,15 @@ const createDAL = modelName => {
         count: Number(count),
         items,
       };
+    },
+    /**
+     * Convert a query result to a count
+     *
+     * @param {Array} result
+     * @returns the count as a number
+     */
+    queryResultToCount(result) {
+      return result.length ? result[0].count : 0;
     },
   };
 };
