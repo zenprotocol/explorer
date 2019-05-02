@@ -31,8 +31,8 @@ class NetworkHelper {
   }
 
   async getZenNodeLatestTag() {
-    const tags = await Service.zen.getZenNodeTags();
-    return tags.length ? tags[0].name : 'v0.9';
+    const release = await Service.zen.getZenNodeLatestRelease();
+    return release ? release.tag_name : 'v0.9';
   }
 
   async getZenWalletLatestTag() {

@@ -82,9 +82,9 @@ module.exports = {
     },
   },
   zen: {
-    async getZenNodeTags() {
+    async getZenNodeLatestRelease() {
       return sendHttpRequest({
-        url: 'https://api.github.com/repos/zenprotocol/zenprotocol/tags',
+        url: 'https://api.github.com/repos/zenprotocol/zenprotocol/releases/latest',
         method: 'get',
       }).then(response => {
         return response.data;
