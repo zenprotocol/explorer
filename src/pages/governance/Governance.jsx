@@ -12,6 +12,8 @@ import CommitLink from './components/CommitLink';
 import { Tabs, TabHead, TabBody, Tab } from '../../components/tabs';
 import VotesTab from './components/tabs/Votes';
 import RouterUtils from '../../lib/RouterUtils';
+import ItemNotFound from '../../components/ItemNotFound';
+import Loading from '../../components/Loading';
 import './Governance.scss';
 
 class GovernancePage extends React.Component {
@@ -21,24 +23,24 @@ class GovernancePage extends React.Component {
   get intervalRouteParam() {
     return RouterUtils.getRouteParams(this.props).interval;
   }
+  get tallyLoaded() {
+    return this.repoVoteStore.tally.interval !== undefined;
+  }
+  get voteStatus() {
+    // return 1;
+    return getVoteStatus(this.repoVoteStore.tally);
+  }
   componentDidMount() {
     // do not load again if data already loaded
     if (!this.repoVoteStore.tally.interval) {
-      this.repoVoteStore.loadTally({interval: this.intervalRouteParam});
+      this.repoVoteStore.loadTally({ interval: this.intervalRouteParam });
     }
   }
   render() {
     const tally = this.repoVoteStore.tally;
 
-    if (!tally.interval) {
-      return null;
-    }
-
     const redirectToCurrentInterval = this.getRedirectForIntervalZero(tally);
     if (redirectToCurrentInterval) return redirectToCurrentInterval;
-
-    const voteInProgress = false;
-    const status = getVoteStatus(tally);
 
     return (
       <Page className="Vote">
@@ -47,30 +49,32 @@ class GovernancePage extends React.Component {
         </Helmet>
         <section>
           <PageTitle title="VOTE ON THE AUTHORIZED PROTOCOL" />
-          {status === voteStatus.before ? (
-            <BeforeVoteInfo {...tally} />
-          ) : (
-            <div className="row">
-              <div className="col-lg-6">
-                <div>
-                  <SummaryTable vote={tally} voteInProgress={voteInProgress} />
-                </div>
-              </div>
-              <div className="col-lg-6">
-                <div>
-                  <TallyTable {...tally} />
-                </div>
-              </div>
-            </div>
-          )}
+          {tally.status === 404 && <ItemNotFound item="interval" />}
+          {this.renderTopData()}
         </section>
-        {status !== voteStatus.before && (
-          <section>
-            <VotingTabs {...this.props} />
-          </section>
-        )}
+        {this.renderTabs()}
       </Page>
     );
+  }
+
+  renderTopData() {
+    const tally = this.repoVoteStore.tally;
+    if (this.repoVoteStore.loading.interval) return <Loading />;
+    if (!this.tallyLoaded) return null;
+    return this.voteStatus === voteStatus.before ? (
+      <BeforeVoteInfo {...tally} />
+    ) : (
+      <VoteInfo {...tally} />
+    );
+  }
+
+  renderTabs() {
+    if (!this.tallyLoaded) return null;
+    return this.voteStatus !== voteStatus.before ? (
+      <section>
+        <VotingTabs {...this.props} />
+      </section>
+    ) : null;
   }
 
   /**
@@ -122,8 +126,24 @@ BeforeVoteInfo.propTypes = {
   endHeight: PropTypes.number,
 };
 
-function SummaryTable({ vote }) {
-  const { currentBlock, beginHeight, endHeight } = vote;
+function VoteInfo(tally) {
+  return (
+    <div className="row">
+      <div className="col-lg-6">
+        <div>
+          <SummaryTable {...tally} />
+        </div>
+      </div>
+      <div className="col-lg-6">
+        <div>
+          <TallyTable {...tally} />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function SummaryTable({ currentBlock, beginHeight, endHeight }) {
   return (
     <table className="table table-zen">
       <thead>
@@ -157,8 +177,9 @@ function SummaryTable({ vote }) {
   );
 }
 SummaryTable.propTypes = {
-  vote: PropTypes.object,
-  voteInProgress: PropTypes.bool,
+  currentBlock: PropTypes.number,
+  beginHeight: PropTypes.number,
+  endHeight: PropTypes.number,
 };
 
 function TallyTable({ tally }) {
