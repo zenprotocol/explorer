@@ -9,6 +9,7 @@ export default function UIStore(rootStore, initialState = {}) {
   const addressStore = rootStore.addressStore;
   const contractStore = rootStore.contractStore;
   const assetStore = rootStore.assetStore;
+  const repoVoteStore = rootStore.repoVoteStore;
 
   const defaultValues = defaultValuesFactory(initialState);
   const state = observable({
@@ -78,6 +79,12 @@ export default function UIStore(rootStore, initialState = {}) {
       pageSize: defaultValues.get('assetKeyholdersTable.pageSize'),
       curPage: defaultValues.get('assetKeyholdersTable.curPage'),
     },
+
+    repoVotesTable: {
+      interval: defaultValues.get('repoVotesTable.interval'),
+      pageSize: defaultValues.get('repoVotesTable.pageSize'),
+      curPage: defaultValues.get('repoVotesTable.curPage'),
+    },
   });
 
   const fetchSyncing = action(() => {
@@ -117,6 +124,9 @@ export default function UIStore(rootStore, initialState = {}) {
   );
   const setAssetKeyholdersTableData = action(
     setTableData({ nameOfIdentifier: 'asset', objectToSet: state.assetKeyholdersTable })
+  );
+  const setRepoVotesTableData = action(
+    setTableData({ nameOfIdentifier: 'interval', objectToSet: state.repoVotesTable })
   );
 
   const saveToStorage = action(state => {
@@ -259,6 +269,21 @@ export default function UIStore(rootStore, initialState = {}) {
         });
       }
     });
+
+    autorun(function fetchRepoVotesOnChange() {
+      if (state.repoVotesTable.interval !== '') {
+        repoVoteStore.loadVotes(
+          Object.assign(
+            {},
+            {
+              page: state.repoVotesTable.curPage,
+              pageSize: state.repoVotesTable.pageSize,
+            },
+            state.repoVotesTable.interval && { interval: state.repoVotesTable.interval }
+          )
+        );
+      }
+    });
   })();
 
   return Object.freeze({
@@ -273,6 +298,7 @@ export default function UIStore(rootStore, initialState = {}) {
     setContractAssetsTableData,
     setContractCommandsTableData,
     setContractsTableData,
+    setRepoVotesTableData,
     fetchSyncing,
     state,
   });

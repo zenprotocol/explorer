@@ -1,0 +1,14 @@
+@import 'src/style/variables';
+
+.Vote {
+  .votes-container {
+    margin-top: $section-gap;
+  }
+
+  .vote-after-snapshot {
+    padding: 40px 0;
+    color: $red;
+    font-weight: $font-weight-bold;
+    font-size: $h3-font-size;
+  }
+}

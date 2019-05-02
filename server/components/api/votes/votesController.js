@@ -8,7 +8,13 @@ const votesBLL = require('./votesBLL');
 module.exports = {
   index: async function(req, res) {
     const { interval, page, pageSize } = req.query;
-    const vote = await votesBLL.findAllVotesByInterval({ interval, page, pageSize });
+    const formattedInterval = formatInterval(interval);
+
+    const vote = await votesBLL.findAllVotesByInterval({
+      interval: formattedInterval,
+      page,
+      pageSize,
+    });
     if (vote) {
       res.status(httpStatus.OK).json(jsonResponse.create(httpStatus.OK, vote));
     } else {
@@ -17,7 +23,9 @@ module.exports = {
   },
   show: async function(req, res) {
     const { interval } = req.query;
-    const result = await votesBLL.findIntervalAndTally({ interval });
+    const formattedInterval = formatInterval(interval);
+
+    const result = await votesBLL.findIntervalAndTally({ interval: formattedInterval });
     if (result) {
       res.status(httpStatus.OK).json(jsonResponse.create(httpStatus.OK, result));
     } else {
@@ -25,3 +33,7 @@ module.exports = {
     }
   },
 };
+
+function formatInterval(interval) {
+  return isNaN(Number(interval)) || Number(interval) === 0 ? null : Number(interval);
+}
