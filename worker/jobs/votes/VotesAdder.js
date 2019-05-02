@@ -16,6 +16,7 @@ class VotesAdder {
 
   async doJob() {
     try {
+      this.checkContractId();
       let dbTransaction = null;
       let result = 0;
 
@@ -40,6 +41,12 @@ class VotesAdder {
     } catch (error) {
       logger.error(`An Error has occurred when adding votes: ${error.message}`);
       throw new QueueError(error);
+    }
+  }
+
+  checkContractId() {
+    if(!this.contractId) {
+      throw new Error('Contract Id is empty');
     }
   }
 

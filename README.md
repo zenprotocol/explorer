@@ -15,6 +15,7 @@ Client side was bootstrapped with [create-react-app](https://github.com/facebook
 1. Make sure docker is running
 2. Open a terminal in the root folder of the project.
 3. `npm run setup` - to create your env file and needed directories and to install dependencies.
+3. Open .env file and fill missing data
 4. `npm run docker:up` - this will:
    - Download all the needed images
    - Create all the containers. 

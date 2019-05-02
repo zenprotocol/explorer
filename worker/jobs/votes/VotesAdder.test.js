@@ -9,7 +9,7 @@ const CONTRACT_ID = 'test-contract-id';
 let votesAdder;
 let votesDAL;
 
-function before() {
+function before({ contractId = CONTRACT_ID } = {}) {
   votesDAL = td.replace('../../../server/components/api/votes/votesDAL.js', {
     findAllUnprocessedCommands: td.func('findAllUnprocessedCommands'),
     bulkCreate: td.func('bulkCreate'),
@@ -25,7 +25,7 @@ function before() {
   const BlockchainParser = require('../../../server/lib/BlockchainParser');
   votesAdder = new VotesAdder({
     blockchainParser: new BlockchainParser(),
-    contractId: CONTRACT_ID,
+    contractId,
   }); // chain = main
   td.replace(votesAdder, 'verify');
 }
@@ -439,6 +439,18 @@ test('VotesAdder.doJob()', async function(t) {
   }
 
   await wrapTest('Default', async given => {
+    before({ contractId: '' });
+    stub();
+    try {
+      await votesAdder.doJob({});
+      t.fail(`${given}: Should throw an error`);
+    } catch (e) {
+      t.pass(`${given}: Should throw an error`);
+    }
+    after();
+  });
+
+  await wrapTest('No contract id', async given => {
     before();
     stub();
     const result = await votesAdder.doJob({});

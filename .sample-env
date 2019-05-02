@@ -1,1 +1,3 @@
 db__password=123456
+db__logging=false
+GOVERNANCE_CONTRACT_ID=
