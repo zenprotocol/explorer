@@ -82,7 +82,7 @@ class GovernancePage extends React.Component {
    */
   getRedirectForIntervalZero(tally) {
     const routeInterval = this.intervalRouteParam;
-    if (routeInterval === '0') {
+    if (routeInterval === '0' && this.tallyLoaded) {
       return <Redirect to={`/governance/${tally.interval}`} />;
     }
     return null;
