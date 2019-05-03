@@ -5,6 +5,7 @@ const contractsBLL = require('../api/contracts/contractsBLL');
 const contractsDAL = require('../api/contracts/contractsDAL');
 const assetsBLL = require('../api/assets/assetsBLL');
 const infosBLL = require('../api/infos/infosBLL');
+const votesBLL = require('../api/votes/votesBLL');
 
 module.exports = async req => {
   const { routeName } = req;
@@ -16,6 +17,7 @@ module.exports = async req => {
     infoStore: {},
     searchStore: {},
     transactionStore: {},
+    repoVoteStore: {},
     uiStore: {},
   };
   const promises = [];
@@ -23,7 +25,6 @@ module.exports = async req => {
   promises.push(blocksBLL.count().then(count => (initialState.blockStore.blocksCount = count)));
 
   const { page: curPage, pageSize } = safePaginationParams(req);
-
   switch (routeName) {
     case 'blocks':
       promises.push(getBlockListStoreData(req).then(data => (initialState.blockStore = data)));
@@ -59,6 +60,9 @@ module.exports = async req => {
       break;
     case 'info':
       promises.push(getInfoStoreData(req).then(data => (initialState.infoStore = data)));
+      break;
+    case 'governance':
+      promises.push(getRepoVoteStoreData(req).then(data => (initialState.repoVoteStore = data)));
       break;
   }
 
@@ -110,7 +114,7 @@ async function getContractListStoreData(req) {
 
 async function getContractStoreData(req) {
   const contract = await contractsBLL.findByAddress({ address: req.params.address });
-  if(!contract) {
+  if (!contract) {
     return {
       contract: { statue: 404 },
     };
@@ -118,7 +122,7 @@ async function getContractStoreData(req) {
 
   const lastActivationTransaction = await contractsBLL.findLastActivationTransaction({ contract });
   return {
-    contract: Object.assign({}, contractsDAL.toJSON(contract), { lastActivationTransaction })
+    contract: Object.assign({}, contractsDAL.toJSON(contract), { lastActivationTransaction }),
   };
 }
 
@@ -143,6 +147,13 @@ async function getInfoStoreData() {
   const infos = await infosBLL.findAll();
   return {
     infos,
+  };
+}
+
+async function getRepoVoteStoreData(req) {
+  const tally = await votesBLL.findIntervalAndTally(req.query);
+  return {
+    tally,
   };
 }
 

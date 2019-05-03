@@ -17,6 +17,7 @@ router.get('/contracts/:address/:tab?', insertRouteName('contract'), clientRende
 router.get('/assets', insertRouteName('assets'), clientRenderer);
 router.get('/assets/:asset/:tab?', insertRouteName('asset'), clientRenderer);
 router.get('/blockchain/info', insertRouteName('info'), clientRenderer);
+router.get('/governance/:interval/:tab?', insertRouteName('governance'), clientRenderer);
 router.get('*', clientRenderer);
 
 function insertRouteName(name) {

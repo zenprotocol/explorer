@@ -27,7 +27,6 @@ class GovernancePage extends React.Component {
     return this.repoVoteStore.tally.interval !== undefined;
   }
   get voteStatus() {
-    // return 1;
     return getVoteStatus(this.repoVoteStore.tally);
   }
   componentDidMount() {
