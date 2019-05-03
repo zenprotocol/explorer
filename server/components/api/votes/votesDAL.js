@@ -37,7 +37,10 @@ votesDAL.findAllByInterval = async function({ interval, limit, offset = 0 } = {}
   INNER JOIN "Commands" ON "RepoVote"."CommandId" = "Commands"."id"
   INNER JOIN "Transactions" ON "Commands"."TransactionId" = "Transactions"."id"
   INNER JOIN "Blocks" ON "Transactions"."BlockId" = "Blocks"."id"
-  INNER JOIN "VoteIntervals" ON "RepoVote"."interval" = "VoteIntervals"."interval"
+  INNER JOIN "VoteIntervals" 
+    ON "RepoVote"."interval" = "VoteIntervals"."interval"
+    AND "Blocks"."blockNumber" >= "VoteIntervals"."beginHeight"
+    AND "Blocks"."blockNumber" < "VoteIntervals"."endHeight"
   INNER JOIN "Snapshots" ON "RepoVote"."address" = "Snapshots"."address" AND "VoteIntervals"."beginHeight" = "Snapshots"."height"
   WHERE ("RepoVote"."interval" = :interval
           AND "RepoVote"."address" IS NOT NULL) 
@@ -58,7 +61,13 @@ votesDAL.countByInterval = async function({ interval } = {}) {
   const sql = tags.oneLine`
   SELECT count("RepoVote".*) AS count
   FROM "RepoVotes" AS "RepoVote"
-  INNER JOIN "VoteIntervals" ON "RepoVote"."interval" = "VoteIntervals"."interval"
+  INNER JOIN "Commands" ON "RepoVote"."CommandId" = "Commands"."id"
+  INNER JOIN "Transactions" ON "Commands"."TransactionId" = "Transactions"."id"
+  INNER JOIN "Blocks" ON "Transactions"."BlockId" = "Blocks"."id"
+  INNER JOIN "VoteIntervals" 
+    ON "RepoVote"."interval" = "VoteIntervals"."interval"
+    AND "Blocks"."blockNumber" >= "VoteIntervals"."beginHeight"
+    AND "Blocks"."blockNumber" < "VoteIntervals"."endHeight"
   INNER JOIN "Snapshots" ON "RepoVote"."address" = "Snapshots"."address" AND "VoteIntervals"."beginHeight" = "Snapshots"."height"
   WHERE ("RepoVote"."interval" = :interval
           AND "RepoVote"."address" IS NOT NULL) 
@@ -94,6 +103,10 @@ votesDAL.getVoteResults = async function(interval) {
       INNER JOIN "Commands" ON "Commands".id = "RepoVotes"."CommandId"
       INNER JOIN "Transactions" ON "Transactions".id = "Commands"."TransactionId"
       INNER JOIN "Blocks" ON "Blocks".id = "Transactions"."BlockId"
+      INNER JOIN "VoteIntervals" 
+        ON "RepoVotes"."interval" = "VoteIntervals"."interval"
+        AND "Blocks"."blockNumber" >= "VoteIntervals"."beginHeight"
+        AND "Blocks"."blockNumber" < "VoteIntervals"."endHeight"
       WHERE "RepoVotes".interval = :interval
       GROUP BY "RepoVotes"."address") AS "FilterByBlock"
   ON "RepoVotes"."address" = "FilterByBlock"."address" AND "Blocks"."blockNumber" = "FilterByBlock"."maxBlock"
