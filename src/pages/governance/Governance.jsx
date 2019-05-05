@@ -47,7 +47,7 @@ class GovernancePage extends React.Component {
           <title>{TextUtils.getHtmlTitle('Governance')}</title>
         </Helmet>
         <section>
-          <PageTitle title="VOTE ON THE AUTHORIZED PROTOCOL" />
+          <PageTitle title="Community Votes" />
           {tally.status === 404 && <ItemNotFound item="interval" />}
           {this.renderTopData()}
         </section>
@@ -93,20 +93,17 @@ function BeforeVoteInfo({ currentBlock, beginHeight, endHeight }) {
     <div className="container">
       <div className="row">
         <InfoBox
-          className="current-block"
-          title="Current Block"
-          content={TextUtils.formatNumber(currentBlock)}
-          iconClass="fal fa-cubes fa-fw"
-        />
-        <InfoBox
-          className="begin-height"
           title="Snapshot Block"
           content={TextUtils.formatNumber(beginHeight)}
+          iconClass="fal fa-cube fa-fw"
+        />
+        <InfoBox
+          title="Blocks left until snapshot"
+          content={TextUtils.formatNumber(beginHeight - currentBlock)}
           iconClass="fal fa-cubes fa-fw"
         />
         <InfoBox
-          className="end-height"
-          title="Tally Block"
+          title="Tallying Block"
           content={TextUtils.formatNumber(endHeight)}
           iconClass="fal fa-money-check fa-fw"
         />
