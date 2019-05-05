@@ -5,10 +5,12 @@ export default class RepoVoteStore {
   constructor(rootStore, initialState = {}) {
     this.rootStore = rootStore;
     this.tally = initialState.tally || {};
+    this.next = initialState.next || {};
     this.votes = initialState.votes || [];
     this.votesCount = initialState.votesCount || 0;
     this.loading = {
       interval: false,
+      next: false,
       votes: false,
     };
   }
@@ -17,7 +19,7 @@ export default class RepoVoteStore {
     this.loading.interval = true;
 
     return Service.votes
-      .findCurrentOrNext(params)
+      .findCurrent(params)
       .then(({ data }) => {
         runInAction(() => {
           this.tally = data;
@@ -34,6 +36,31 @@ export default class RepoVoteStore {
       .then(() => {
         runInAction(() => {
           this.loading.interval = false;
+        });
+      });
+  }
+
+  loadNext(params = {}) {
+    this.loading.next = true;
+
+    return Service.votes
+      .findNext(params)
+      .then(({ data }) => {
+        runInAction(() => {
+          this.next = data;
+        });
+      })
+      .catch(error => {
+        runInAction(() => {
+          this.next = {};
+          if (error.status === 404) {
+            this.next.status = 404;
+          }
+        });
+      })
+      .then(() => {
+        runInAction(() => {
+          this.loading.next = false;
         });
       });
   }

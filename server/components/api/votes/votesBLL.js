@@ -2,15 +2,11 @@
 
 const votesDAL = require('./votesDAL');
 const voteIntervalsDAL = require('../voteIntervals/voteIntervalsDAL');
-const infosBLL = require('../infos/infosBLL');
 const createQueryObject = require('../../../lib/createQueryObject');
 
 module.exports = {
   findIntervalAndTally: async function({ interval } = {}) {
-    const [currentBlock, currentInterval] = await Promise.all([
-      infosBLL.findByName({ name: 'blocks' }),
-      voteIntervalsDAL.findByIntervalOrCurrent(interval),
-    ]);
+    const currentInterval = await getCurrentInterval(interval);
 
     if (!currentInterval) {
       return null;
@@ -20,14 +16,16 @@ module.exports = {
 
     return {
       interval: currentInterval.interval,
-      currentBlock: Number(currentBlock.value),
       beginHeight: currentInterval ? currentInterval.beginHeight : null,
       endHeight: currentInterval ? currentInterval.endHeight : null,
       tally: voteResult,
     };
   },
+  findNextInterval: async function() {
+    return voteIntervalsDAL.findNext();
+  },
   findAllVotesByInterval: async function({ interval, page = 0, pageSize = 10, sorted } = {}) {
-    const currentInterval = await voteIntervalsDAL.findByIntervalOrCurrent(interval);
+    const currentInterval = await getCurrentInterval(interval);
     if (!currentInterval) {
       return null;
     }
@@ -47,3 +45,9 @@ module.exports = {
     ]).then(votesDAL.getItemsAndCountResult);
   },
 };
+
+async function getCurrentInterval(interval) {
+  return interval
+    ? voteIntervalsDAL.findByInterval(interval)
+    : voteIntervalsDAL.findCurrentOrPrev();
+}

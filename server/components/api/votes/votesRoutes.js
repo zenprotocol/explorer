@@ -5,6 +5,7 @@ const wrapAsync = require('../../../lib/wrapAsyncForExpressErrors');
 router.route('/')
   .get(wrapAsync(controller.index));
 
-router.route('/tally').get(wrapAsync(controller.show));
+router.route('/tally').get(wrapAsync(controller.currentOrPrevInterval));
+router.route('/next').get(wrapAsync(controller.nextInterval));
 
 module.exports = router;

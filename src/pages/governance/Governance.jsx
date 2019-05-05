@@ -20,11 +20,17 @@ class GovernancePage extends React.Component {
   get repoVoteStore() {
     return this.props.rootStore.repoVoteStore;
   }
+  get currentBlock() {
+    return this.props.rootStore.blockStore.blocksCount;
+  }
   get intervalRouteParam() {
     return RouterUtils.getRouteParams(this.props).interval;
   }
   get tallyLoaded() {
     return this.repoVoteStore.tally.interval !== undefined;
+  }
+  get nextLoaded() {
+    return this.repoVoteStore.next.interval !== undefined;
   }
   get voteStatus() {
     return getVoteStatus(this.repoVoteStore.tally);
@@ -33,6 +39,9 @@ class GovernancePage extends React.Component {
     // do not load again if data already loaded
     if (!this.repoVoteStore.tally.interval) {
       this.repoVoteStore.loadTally({ interval: this.intervalRouteParam });
+    }
+    if(!this.repoVoteStore.next.interval) {
+      this.repoVoteStore.loadNext();
     }
   }
   render() {
@@ -61,9 +70,9 @@ class GovernancePage extends React.Component {
     if (this.repoVoteStore.loading.interval) return <Loading />;
     if (!this.tallyLoaded) return null;
     return this.voteStatus === voteStatus.before ? (
-      <BeforeVoteInfo {...tally} />
+      <BeforeVoteInfo {...tally} currentBlock={this.currentBlock} />
     ) : (
-      <VoteInfo {...tally} />
+      <VoteInfo {...tally} currentBlock={this.currentBlock}  />
     );
   }
 

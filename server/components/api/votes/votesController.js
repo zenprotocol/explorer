@@ -21,11 +21,19 @@ module.exports = {
       throw new HttpError(httpStatus.NOT_FOUND);
     }
   },
-  show: async function(req, res) {
+  currentOrPrevInterval: async function(req, res) {
     const { interval } = req.query;
     const formattedInterval = formatInterval(interval);
 
     const result = await votesBLL.findIntervalAndTally({ interval: formattedInterval });
+    if (result) {
+      res.status(httpStatus.OK).json(jsonResponse.create(httpStatus.OK, result));
+    } else {
+      throw new HttpError(httpStatus.NOT_FOUND);
+    }
+  },
+  nextInterval: async function(req, res) {
+    const result = await votesBLL.findNextInterval();
     if (result) {
       res.status(httpStatus.OK).json(jsonResponse.create(httpStatus.OK, result));
     } else {

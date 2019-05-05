@@ -294,9 +294,16 @@ export default {
     },
   },
   votes: {
-    findCurrentOrNext(params) {
+    findCurrent(params) {
       return cancelableHttpRequest({
         url: `${Endpoints.votes}/tally`,
+        method: 'get',
+        params,
+      });
+    },
+    findNext(params) {
+      return cancelableHttpRequest({
+        url: `${Endpoints.votes}/next`,
         method: 'get',
         params,
       });
