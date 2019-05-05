@@ -42,6 +42,7 @@ const VotesTab = observer(props => {
           {
             Header: 'VOTES',
             accessor: 'zpAmount',
+            minWidth: config.ui.table.minCellWidth,
             Cell: data => `${TextUtils.formatNumber(data.value)} ZP`,
           },
         ]}
