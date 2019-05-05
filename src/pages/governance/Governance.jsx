@@ -24,7 +24,8 @@ class GovernancePage extends React.Component {
     return this.props.rootStore.blockStore.blocksCount;
   }
   get intervalRouteParam() {
-    return RouterUtils.getRouteParams(this.props).interval;
+    const interval = RouterUtils.getRouteParams(this.props).interval;
+    return !isNaN(interval) ? interval : '0';
   }
   get tallyLoaded() {
     return this.repoVoteStore.tally.interval !== undefined;
