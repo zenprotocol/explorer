@@ -25,25 +25,40 @@ votesDAL.findAllUnprocessedCommands = async function(contractId) {
     type: sequelize.QueryTypes.SELECT,
   });
 };
-
+/**
+ * Find all votes for an interval, grouped by command
+ */
 votesDAL.findAllByInterval = async function({ interval, limit, offset = 0 } = {}) {
   const sql = tags.oneLine`
-  SELECT "RepoVote".*,
+  SELECT "CommandVotes"."commitId",
+    "CommandVotes"."zpAmount",
+    "CommandVotes"."CommandId",
     "Blocks"."blockNumber",
     "Blocks"."timestamp",
-    "Transactions"."hash" AS "txHash",
-    ("Snapshots"."amount" / 100000000) AS "zpAmount"
-  FROM "RepoVotes" AS "RepoVote"
-  INNER JOIN "Commands" ON "RepoVote"."CommandId" = "Commands"."id"
+    "Transactions"."hash" AS "txHash"
+  FROM "Commands"
   INNER JOIN "Transactions" ON "Commands"."TransactionId" = "Transactions"."id"
   INNER JOIN "Blocks" ON "Transactions"."BlockId" = "Blocks"."id"
-  INNER JOIN "VoteIntervals" 
-    ON "RepoVote"."interval" = "VoteIntervals"."interval"
-    AND "Blocks"."blockNumber" >= "VoteIntervals"."beginHeight"
-    AND "Blocks"."blockNumber" < "VoteIntervals"."endHeight"
-  INNER JOIN "Snapshots" ON "RepoVote"."address" = "Snapshots"."address" AND "VoteIntervals"."beginHeight" = "Snapshots"."height"
-  WHERE ("RepoVote"."interval" = :interval
-          AND "RepoVote"."address" IS NOT NULL) 
+  INNER JOIN (
+    SELECT "RepoVote"."CommandId",
+      "RepoVote"."commitId",
+      (sum("Snapshots"."amount") / 100000000) AS "zpAmount"
+    FROM "RepoVotes" AS "RepoVote"
+    INNER JOIN "Commands" ON "RepoVote"."CommandId" = "Commands"."id"
+    INNER JOIN "Transactions" ON "Commands"."TransactionId" = "Transactions"."id"
+    INNER JOIN "Blocks" ON "Transactions"."BlockId" = "Blocks"."id"
+    INNER JOIN "VoteIntervals" 
+      ON "RepoVote"."interval" = "VoteIntervals"."interval"
+      AND "Blocks"."blockNumber" >= "VoteIntervals"."beginHeight"
+      AND "Blocks"."blockNumber" < "VoteIntervals"."endHeight"
+    INNER JOIN "Snapshots" 
+      ON "RepoVote"."address" = "Snapshots"."address" 
+      AND "VoteIntervals"."beginHeight" = "Snapshots"."height"
+    WHERE ("RepoVote"."interval" = :interval
+            AND "RepoVote"."address" IS NOT NULL) 
+    GROUP BY "RepoVote"."CommandId", "RepoVote"."commitId"
+  ) AS "CommandVotes"
+  ON "Commands"."id" = "CommandVotes"."CommandId"
   ORDER BY "Blocks"."blockNumber" DESC
   LIMIT :limit OFFSET :offset; 
   `;
@@ -57,20 +72,34 @@ votesDAL.findAllByInterval = async function({ interval, limit, offset = 0 } = {}
     type: sequelize.QueryTypes.SELECT,
   });
 };
+
+/**
+ * Count all votes for an interval, grouped by command
+ */
 votesDAL.countByInterval = async function({ interval } = {}) {
   const sql = tags.oneLine`
-  SELECT count("RepoVote".*) AS count
-  FROM "RepoVotes" AS "RepoVote"
-  INNER JOIN "Commands" ON "RepoVote"."CommandId" = "Commands"."id"
-  INNER JOIN "Transactions" ON "Commands"."TransactionId" = "Transactions"."id"
-  INNER JOIN "Blocks" ON "Transactions"."BlockId" = "Blocks"."id"
-  INNER JOIN "VoteIntervals" 
-    ON "RepoVote"."interval" = "VoteIntervals"."interval"
-    AND "Blocks"."blockNumber" >= "VoteIntervals"."beginHeight"
-    AND "Blocks"."blockNumber" < "VoteIntervals"."endHeight"
-  INNER JOIN "Snapshots" ON "RepoVote"."address" = "Snapshots"."address" AND "VoteIntervals"."beginHeight" = "Snapshots"."height"
-  WHERE ("RepoVote"."interval" = :interval
-          AND "RepoVote"."address" IS NOT NULL) 
+  SELECT count(*)
+  FROM "Commands"
+  INNER JOIN (
+    SELECT "RepoVote"."CommandId",
+      "RepoVote"."commitId",
+      (sum("Snapshots"."amount") / 100000000) AS "zpAmount"
+    FROM "RepoVotes" AS "RepoVote"
+    INNER JOIN "Commands" ON "RepoVote"."CommandId" = "Commands"."id"
+    INNER JOIN "Transactions" ON "Commands"."TransactionId" = "Transactions"."id"
+    INNER JOIN "Blocks" ON "Transactions"."BlockId" = "Blocks"."id"
+    INNER JOIN "VoteIntervals" 
+      ON "RepoVote"."interval" = "VoteIntervals"."interval"
+      AND "Blocks"."blockNumber" >= "VoteIntervals"."beginHeight"
+      AND "Blocks"."blockNumber" < "VoteIntervals"."endHeight"
+    INNER JOIN "Snapshots" 
+      ON "RepoVote"."address" = "Snapshots"."address" 
+      AND "VoteIntervals"."beginHeight" = "Snapshots"."height"
+    WHERE ("RepoVote"."interval" = :interval
+            AND "RepoVote"."address" IS NOT NULL) 
+    GROUP BY "RepoVote"."CommandId", "RepoVote"."commitId"
+  ) AS "CommandVotes"
+  ON "Commands"."id" = "CommandVotes"."CommandId"
   `;
 
   return sequelize.query(sql, {
