@@ -129,7 +129,7 @@ function VoteInfo(tally) {
   return (
     <div className="row">
       <div className="col-lg-6">
-        <div>
+        <div className="table-bg-wrapper">
           <SummaryTable {...tally} />
         </div>
       </div>
@@ -183,29 +183,37 @@ SummaryTable.propTypes = {
 
 function TallyTable({ tally }) {
   return (
-    <table className="table table-zen">
-      <thead>
-        <tr>
-          <th colSpan="2">TALLY</th>
-        </tr>
-        <tr>
-          <th scope="col">COMMIT ID</th>
-          <th scope="col" className="text-right">
-            VOTES
-          </th>
-        </tr>
-      </thead>
-      <tbody>
-        {tally.map(vote => (
-          <tr key={vote.commitId}>
-            <td>
-              <CommitLink commitId={vote.commitId} />
-            </td>
-            <td className="text-right">{TextUtils.formatNumber(vote.zpAmount)} ZP</td>
-          </tr>
-        ))}
-      </tbody>
-    </table>
+    <div className="TallyTable">
+      <div className="header-table">
+        <table className="table table-zen">
+          <thead>
+            <tr>
+              <th colSpan="2">TALLY</th>
+            </tr>
+            <tr>
+              <th scope="col">COMMIT ID</th>
+              <th scope="col" className="text-right">
+                VOTES
+              </th>
+            </tr>
+          </thead>
+        </table>
+      </div>
+      <div className="body-table">
+        <table className="table table-zen">
+          <tbody>
+            {tally.map(vote => (
+              <tr key={vote.commitId}>
+                <td>
+                  <CommitLink commitId={vote.commitId} />
+                </td>
+                <td className="text-right">{TextUtils.formatNumber(vote.zpAmount)} ZP</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
   );
 }
 TallyTable.propTypes = {
