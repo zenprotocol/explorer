@@ -26,7 +26,7 @@
     "test": "npm-run-all -s test:server test:worker test:client:lib",
     "test:server": "cross-env NODE_ENV=test tape 'server/**/*.test.js' | tap-bail | tap-spec",
     "test:worker": "cross-env NODE_ENV=test tape 'worker/**/*.test.js' | tap-bail | tap-spec",
-    "test:client:lib": "babel-tape-runner src/lib/**/**/*.test.js | tap-bail | tap-spec",
+    "test:client:lib": "babel-tape-runner src/**/*.lib.test.js | tap-bail | tap-spec",
     "test:coverage": "cross-env NODE_ENV=test nyc tape server/**/*.test.js",
     "client:start": "cross-env PORT=3001 BROWSER=none react-scripts start",
     "client:build": "react-scripts build",
