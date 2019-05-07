@@ -37,9 +37,6 @@ class GovernancePage extends React.Component {
   get relevantLoaded() {
     return this.repoVoteStore.relevantInterval.interval !== undefined;
   }
-  get nextLoaded() {
-    return this.repoVoteStore.nextInterval.interval !== undefined;
-  }
   get noIntervalsFound() {
     return this.repoVoteStore.relevantInterval.status === 404;
   }
@@ -66,11 +63,8 @@ class GovernancePage extends React.Component {
 
   componentDidMount() {
     this.loadRelevantInterval();
-    
+
     // load once only
-    if (!this.repoVoteStore.nextInterval.interval) {
-      this.repoVoteStore.loadNextInterval();
-    }
     if (!this.repoVoteStore.recentIntervals.length) {
       this.repoVoteStore.loadRecentIntervals();
     }
@@ -130,9 +124,8 @@ class GovernancePage extends React.Component {
 
   renderTopData() {
     const relevantInterval = this.repoVoteStore.relevantInterval;
-    if (this.repoVoteStore.loading.interval || this.repoVoteStore.loading.nextInterval)
-      return <Loading />;
-    if (!this.relevantLoaded || !this.nextLoaded) return null;
+    if (this.repoVoteStore.loading.interval) return <Loading />;
+    if (!this.relevantLoaded) return null;
 
     return (
       <div>
