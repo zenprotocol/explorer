@@ -85,6 +85,12 @@ export default function UIStore(rootStore, initialState = {}) {
       pageSize: defaultValues.get('repoVotesTable.pageSize'),
       curPage: defaultValues.get('repoVotesTable.curPage'),
     },
+
+    repoVoteResultsTable: {
+      interval: defaultValues.get('repoVoteResultsTable.interval'),
+      pageSize: defaultValues.get('repoVoteResultsTable.pageSize'),
+      curPage: defaultValues.get('repoVoteResultsTable.curPage'),
+    },
   });
 
   const fetchSyncing = action(() => {
@@ -127,6 +133,9 @@ export default function UIStore(rootStore, initialState = {}) {
   );
   const setRepoVotesTableData = action(
     setTableData({ nameOfIdentifier: 'interval', objectToSet: state.repoVotesTable })
+  );
+  const setRepoVoteResultsTableData = action(
+    setTableData({ nameOfIdentifier: 'interval', objectToSet: state.repoVoteResultsTable })
   );
 
   const saveToStorage = action(state => {
@@ -284,6 +293,21 @@ export default function UIStore(rootStore, initialState = {}) {
         );
       }
     });
+
+    autorun(function fetchRepoVotesOnChange() {
+      if (state.repoVoteResultsTable.interval !== '') {
+        repoVoteStore.loadResults(
+          Object.assign(
+            {},
+            {
+              page: state.repoVoteResultsTable.curPage,
+              pageSize: state.repoVoteResultsTable.pageSize,
+            },
+            state.repoVoteResultsTable.interval && { interval: state.repoVoteResultsTable.interval }
+          )
+        );
+      }
+    });
   })();
 
   return Object.freeze({
@@ -299,6 +323,7 @@ export default function UIStore(rootStore, initialState = {}) {
     setContractCommandsTableData,
     setContractsTableData,
     setRepoVotesTableData,
+    setRepoVoteResultsTableData,
     fetchSyncing,
     state,
   });

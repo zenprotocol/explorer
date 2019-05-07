@@ -2,7 +2,6 @@
 
 const dal = require('../../../lib/dal');
 const db = require('../../../db/sequelize/models');
-const blocksDAL = require('../blocks/blocksDAL');
 
 const voteIntervalsDAL = dal.createDAL('VoteInterval');
 const Op = db.Sequelize.Op;
@@ -31,39 +30,34 @@ voteIntervalsDAL.findByInterval = async function(interval) {
   });
 };
 
-voteIntervalsDAL.findCurrentOrPrev = async function() {
-  const currentBlock = await getCurrentBlockNumber();
-
-  const prevPromise = this.findOne({
-    where: {
-      [Op.and]: {
-        endHeight: {
-          [Op.lt]: currentBlock,
-        },
-      },
-    },
-    order: [['endHeight', 'DESC']],
-  });
-  const currentPromise = this.findOne({
+voteIntervalsDAL.findCurrent = async function(currentBlock) {
+  return this.findOne({
     where: {
       [Op.and]: {
         beginHeight: {
           [Op.lte]: currentBlock,
         },
         endHeight: {
-          [Op.gte]: currentBlock,
+          [Op.gt]: currentBlock,
         },
       },
     },
     order: [['beginHeight', 'ASC']],
   });
-  const [current, prev] = await Promise.all([currentPromise, prevPromise]);
-  return current ? current : prev;
 };
 
-voteIntervalsDAL.findNext = async function() {
-  const currentBlock = await await getCurrentBlockNumber();
+voteIntervalsDAL.findPrev = async function(currentBlock) {
+  return this.findOne({
+    where: {
+      endHeight: {
+        [Op.lte]: currentBlock,
+      },
+    },
+    order: [['endHeight', 'DESC']],
+  });
+};
 
+voteIntervalsDAL.findNext = async function(currentBlock) {
   return this.findOne({
     where: {
       beginHeight: {
@@ -75,16 +69,38 @@ voteIntervalsDAL.findNext = async function() {
 };
 
 /**
+ * Find a few recent intervals
+ *
+ * @param {number} currentBlock
+ */
+voteIntervalsDAL.findAllRecent = async function(currentBlock, limit = 5) {
+  const [prevs, current, next] = await Promise.all([
+    this.findAll({
+      where: {
+        endHeight: {
+          [Op.lte]: currentBlock,
+        },
+      },
+      order: [['endHeight', 'DESC']],
+      limit,
+    }),
+    this.findCurrent(currentBlock),
+    this.findNext(currentBlock),
+  ]);
+
+  const intervals = [];
+  next && intervals.push(next);
+  current && intervals.push(current);
+  intervals.push.apply(intervals, prevs);
+  return intervals;
+};
+
+/**
  * Sets hasSnapshot to true
  * @param {number} id
  */
 voteIntervalsDAL.setHasSnapshot = async function(id) {
   return this.update(id, { hasSnapshot: true });
 };
-
-async function getCurrentBlockNumber() {
-  const latestBlock = await blocksDAL.findLatest();
-  return latestBlock.blockNumber;
-}
 
 module.exports = voteIntervalsDAL;

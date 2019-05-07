@@ -110,15 +110,8 @@ votesDAL.countByInterval = async function({ interval } = {}) {
   }).then(this.queryResultToCount);
 };
 
-/**
- * Get the repo vote results for an interval
- * per address, get the vote that was done in the most recent block and most recent tx in it
- *
- * @param {number} interval
- */
-votesDAL.getVoteResults = async function(interval) {
-  const sql = tags.oneLine`
-  SELECT "RepoVotes"."commitId", (sum("Snapshots"."amount") / 100000000) AS "zpAmount"
+const voteResultsBaseSql = `
+SELECT "RepoVotes"."commitId", (sum("Snapshots"."amount") / 100000000) AS "zpAmount"
   FROM "RepoVotes"
   INNER JOIN "VoteIntervals" ON "RepoVotes"."interval" = "VoteIntervals"."interval"
   INNER JOIN "Snapshots" ON "VoteIntervals"."beginHeight" = "Snapshots"."height" AND "RepoVotes"."address" = "Snapshots"."address"
@@ -127,7 +120,7 @@ votesDAL.getVoteResults = async function(interval) {
   INNER JOIN "Blocks" ON "Blocks".id = "Transactions"."BlockId"
   INNER JOIN (
   SELECT "RepoVotes"."address",
-           max("Blocks"."blockNumber") AS "maxBlock"
+            min("Blocks"."blockNumber") AS "minBlock"
       FROM "RepoVotes"
       INNER JOIN "Commands" ON "Commands".id = "RepoVotes"."CommandId"
       INNER JOIN "Transactions" ON "Transactions".id = "Commands"."TransactionId"
@@ -138,20 +131,47 @@ votesDAL.getVoteResults = async function(interval) {
         AND "Blocks"."blockNumber" < "VoteIntervals"."endHeight"
       WHERE "RepoVotes".interval = :interval
       GROUP BY "RepoVotes"."address") AS "FilterByBlock"
-  ON "RepoVotes"."address" = "FilterByBlock"."address" AND "Blocks"."blockNumber" = "FilterByBlock"."maxBlock"
+  ON "RepoVotes"."address" = "FilterByBlock"."address" AND "Blocks"."blockNumber" = "FilterByBlock"."minBlock"
   INNER JOIN (
   SELECT "RepoVotes"."address",
-           "Blocks"."blockNumber",
-           max("Transactions"."index") AS "maxTxIndex"
+            "Blocks"."blockNumber",
+            min("Transactions"."index") AS "minTxIndex"
       FROM "RepoVotes"
       INNER JOIN "Commands" ON "Commands".id = "RepoVotes"."CommandId"
       INNER JOIN "Transactions" ON "Transactions".id = "Commands"."TransactionId"
       INNER JOIN "Blocks" ON "Blocks".id = "Transactions"."BlockId"
       WHERE "RepoVotes".interval = :interval
       GROUP BY "RepoVotes"."address", "Blocks"."blockNumber") AS "FilterByTxIndex"
-  ON "RepoVotes"."address" = "FilterByTxIndex"."address" AND "Transactions"."index" = "FilterByTxIndex"."maxTxIndex"
-    AND "FilterByBlock"."address" = "FilterByTxIndex"."address" AND "FilterByBlock"."maxBlock" = "FilterByTxIndex"."blockNumber"
+  ON "RepoVotes"."address" = "FilterByTxIndex"."address" AND "Transactions"."index" = "FilterByTxIndex"."minTxIndex"
+    AND "FilterByBlock"."address" = "FilterByTxIndex"."address" AND "FilterByBlock"."minBlock" = "FilterByTxIndex"."blockNumber"
   GROUP BY "RepoVotes"."commitId"
+`;
+/**
+ * Get the repo vote results for an interval
+ * per address, get the vote that was done in the earliest block and earliest tx in it
+ *
+ * @param {number} interval
+ */
+votesDAL.findAllVoteResults = async function({ interval, limit, offset = 0 } = {}) {
+  const sql = tags.oneLine`
+  ${voteResultsBaseSql}
+  ORDER BY "zpAmount" DESC
+  LIMIT :limit OFFSET :offset; 
+  `;
+
+  return sequelize.query(sql, {
+    replacements: {
+      interval,
+      limit,
+      offset,
+    },
+    type: sequelize.QueryTypes.SELECT,
+  });
+};
+
+votesDAL.countAllVoteResults = async function({ interval } = {}) {
+  const sql = tags.oneLine`
+  SELECT count(*) FROM (${voteResultsBaseSql}) AS "Results"
   `;
 
   return sequelize.query(sql, {
@@ -159,7 +179,22 @@ votesDAL.getVoteResults = async function(interval) {
       interval,
     },
     type: sequelize.QueryTypes.SELECT,
-  });
+  }).then(this.queryResultToCount);
+};
+
+votesDAL.findWinner = async function({ interval } = {}) {
+  const sql = tags.oneLine`
+  ${voteResultsBaseSql}
+  ORDER BY "zpAmount" DESC
+  LIMIT 1; 
+  `;
+
+  return sequelize.query(sql, {
+    replacements: {
+      interval,
+    },
+    type: sequelize.QueryTypes.SELECT,
+  }).then(results => results.length ? results[0] : null);
 };
 
 module.exports = votesDAL;

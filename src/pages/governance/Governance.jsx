@@ -2,21 +2,28 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { observer, inject } from 'mobx-react';
 import { Helmet } from 'react-helmet';
-import { Link, Route, Switch, Redirect } from 'react-router-dom';
+import { Route, Switch, Redirect } from 'react-router-dom';
 import TextUtils from '../../lib/TextUtils';
 import Page from '../../components/Page';
 import PageTitle from '../../components/PageTitle';
 import { getVoteStatus, voteStatus } from './voteStatus';
 import InfoBox from '../../components/InfoBox';
-import CommitLink from './components/CommitLink';
 import { Tabs, TabHead, TabBody, Tab } from '../../components/tabs';
 import VotesTab from './components/tabs/Votes';
+import ResultsTab from './components/tabs/Results';
 import RouterUtils from '../../lib/RouterUtils';
 import ItemNotFound from '../../components/ItemNotFound';
 import Loading from '../../components/Loading';
+import CommitLink from './components/CommitLink';
+import Dropdown from '../../components/Dropdown';
 import './Governance.scss';
 
 class GovernancePage extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.handleIntervalChange = this.handleIntervalChange.bind(this);
+  }
   get repoVoteStore() {
     return this.props.rootStore.repoVoteStore;
   }
@@ -27,78 +34,201 @@ class GovernancePage extends React.Component {
     const interval = RouterUtils.getRouteParams(this.props).interval;
     return !isNaN(interval) ? interval : '0';
   }
-  get tallyLoaded() {
-    return this.repoVoteStore.tally.interval !== undefined;
+  get relevantLoaded() {
+    return this.repoVoteStore.relevantInterval.interval !== undefined;
   }
   get nextLoaded() {
-    return this.repoVoteStore.next.interval !== undefined;
+    return this.repoVoteStore.nextInterval.interval !== undefined;
+  }
+  get noIntervalsFound() {
+    return this.repoVoteStore.relevantInterval.status === 404;
   }
   get voteStatus() {
-    return getVoteStatus(this.repoVoteStore.tally);
+    return getVoteStatus({
+      currentBlock: this.currentBlock,
+      beginHeight: this.repoVoteStore.relevantInterval.beginHeight,
+      endHeight: this.repoVoteStore.relevantInterval.endHeight,
+    });
   }
-  componentDidMount() {
-    // do not load again if data already loaded
-    if (!this.repoVoteStore.tally.interval) {
-      this.repoVoteStore.loadTally({ interval: this.intervalRouteParam });
-    }
-    if(!this.repoVoteStore.next.interval) {
-      this.repoVoteStore.loadNext();
-    }
-  }
-  render() {
-    const tally = this.repoVoteStore.tally;
 
-    const redirectToCurrentInterval = this.getRedirectForIntervalZero(tally);
-    if (redirectToCurrentInterval) return redirectToCurrentInterval;
+  /**
+   * redirect to the requested interval
+   * is called when selecting an interval in the dropdown
+   */
+  handleIntervalChange(data) {
+    const toInterval = data.value;
+    if (toInterval !== this.intervalRouteParam) {
+      this.props.history.push({
+        pathname: getPageUrl(toInterval),
+      });
+    }
+  }
+
+  componentDidMount() {
+    this.loadRelevantInterval();
+    
+    // load once only
+    if (!this.repoVoteStore.nextInterval.interval) {
+      this.repoVoteStore.loadNextInterval();
+    }
+    if (!this.repoVoteStore.recentIntervals.length) {
+      this.repoVoteStore.loadRecentIntervals();
+    }
+  }
+
+  componentDidUpdate(prevProps) {
+    const curInterval = RouterUtils.getRouteParams(this.props).interval;
+    const prevInterval = RouterUtils.getRouteParams(prevProps).interval;
+    if (curInterval !== prevInterval) {
+      this.loadRelevantInterval();
+    }
+  }
+
+  loadRelevantInterval() {
+    if (
+      !this.repoVoteStore.relevantInterval.interval ||
+      String(this.repoVoteStore.relevantInterval.interval) !== this.intervalRouteParam
+    ) {
+      this.repoVoteStore.loadRelevantInterval({ interval: this.intervalRouteParam });
+    }
+  }
+
+  render() {
+    const redirectToRelevantInterval = this.getRedirectForIntervalZero();
+    if (redirectToRelevantInterval) return redirectToRelevantInterval;
 
     return (
-      <Page className="Vote">
+      <Page className="Governance">
         <Helmet>
           <title>{TextUtils.getHtmlTitle('Governance')}</title>
         </Helmet>
-        <section>
-          <PageTitle title="Community Votes" />
-          {tally.status === 404 && <ItemNotFound item="interval" />}
-          {this.renderTopData()}
-        </section>
+
+        <div className="row">
+          <div className="col-md-8">
+            <PageTitle title="Community Votes" />
+          </div>
+          <div className="col-md-4">
+            <IntervalsDropDown
+              relevantInterval={this.repoVoteStore.relevantInterval}
+              intervals={this.repoVoteStore.recentIntervals}
+              onIntervalChange={this.handleIntervalChange}
+            />
+          </div>
+        </div>
+
+        {this.noIntervalsFound && (
+          <section>
+            <ItemNotFound item="interval" />
+          </section>
+        )}
+
+        {this.renderTopData()}
         {this.renderTabs()}
       </Page>
     );
   }
 
   renderTopData() {
-    const tally = this.repoVoteStore.tally;
-    if (this.repoVoteStore.loading.interval) return <Loading />;
-    if (!this.tallyLoaded) return null;
-    return this.voteStatus === voteStatus.before ? (
-      <BeforeVoteInfo {...tally} currentBlock={this.currentBlock} />
-    ) : (
-      <VoteInfo {...tally} currentBlock={this.currentBlock}  />
+    const relevantInterval = this.repoVoteStore.relevantInterval;
+    if (this.repoVoteStore.loading.interval || this.repoVoteStore.loading.nextInterval)
+      return <Loading />;
+    if (!this.relevantLoaded || !this.nextLoaded) return null;
+
+    return (
+      <div>
+        <section>
+          {this.voteStatus === voteStatus.before && (
+            <BeforeVoteInfo {...relevantInterval} currentBlock={this.currentBlock} />
+          )}
+          {this.voteStatus === voteStatus.during && (
+            <DuringVoteInfo {...relevantInterval} currentBlock={this.currentBlock} />
+          )}
+          {this.voteStatus === voteStatus.after && (
+            <AfterVoteInfo
+              {...relevantInterval}
+              currentBlock={this.currentBlock}
+              commitId={this.repoVoteStore.winnerCommitId}
+            />
+          )}
+        </section>
+      </div>
     );
   }
 
   renderTabs() {
-    if (!this.tallyLoaded) return null;
+    if (!this.relevantLoaded) return null;
     return this.voteStatus !== voteStatus.before ? (
       <section>
-        <VotingTabs {...this.props} />
+        <VotingTabs {...this.props} isIntermediate={this.voteStatus === voteStatus.during} />
       </section>
     ) : null;
   }
 
   /**
-   * redirect to current interval if exists and interval is 0
+   * redirect to current interval if already loaded and interval is 0
    */
-  getRedirectForIntervalZero(tally) {
+  getRedirectForIntervalZero() {
     const routeInterval = this.intervalRouteParam;
-    if (routeInterval === '0' && this.tallyLoaded) {
-      return <Redirect to={`/governance/${tally.interval}`} />;
+    if (routeInterval === '0' && this.relevantLoaded) {
+      const interval = this.repoVoteStore.relevantInterval.interval;
+      return <Redirect to={getPageUrl(interval)} />;
     }
     return null;
   }
 }
 
-function BeforeVoteInfo({ currentBlock, beginHeight, endHeight }) {
+function BeforeVoteInfo({ currentBlock, beginHeight }) {
+  return (
+    <div className="container">
+      <div className="row">
+        <InfoBox
+          title="Current Block"
+          content={TextUtils.formatNumber(currentBlock)}
+          iconClass="fal fa-cube fa-fw"
+        />
+        <InfoBox
+          title="Snapshot Block"
+          content={TextUtils.formatNumber(beginHeight)}
+          iconClass="fal fa-cubes fa-fw"
+        />
+      </div>
+      <div className="row">
+        <div className="col border border-dark text-center before-snapshot-message">
+          VOTE BEGINS IN {beginHeight - currentBlock} BLOCKS
+        </div>
+      </div>
+    </div>
+  );
+}
+BeforeVoteInfo.propTypes = {
+  currentBlock: PropTypes.number,
+  beginHeight: PropTypes.number,
+};
+
+function DuringVoteInfo({ currentBlock, endHeight }) {
+  return (
+    <div className="container">
+      <div className="row">
+        <InfoBox
+          title="Current Block"
+          content={TextUtils.formatNumber(currentBlock)}
+          iconClass="fal fa-cube fa-fw"
+        />
+        <InfoBox
+          title="Tally Block"
+          content={TextUtils.formatNumber(endHeight)}
+          iconClass="fal fa-money-check fa-fw"
+        />
+      </div>
+    </div>
+  );
+}
+DuringVoteInfo.propTypes = {
+  currentBlock: PropTypes.number,
+  endHeight: PropTypes.number,
+};
+
+function AfterVoteInfo({ commitId, beginHeight, endHeight }) {
   return (
     <div className="container">
       <div className="row">
@@ -108,142 +238,75 @@ function BeforeVoteInfo({ currentBlock, beginHeight, endHeight }) {
           iconClass="fal fa-cube fa-fw"
         />
         <InfoBox
-          title="Blocks left until snapshot"
-          content={TextUtils.formatNumber(beginHeight - currentBlock)}
-          iconClass="fal fa-cubes fa-fw"
-        />
-        <InfoBox
-          title="Tallying Block"
+          title="Tally Block"
           content={TextUtils.formatNumber(endHeight)}
           iconClass="fal fa-money-check fa-fw"
         />
       </div>
-      <div className="row">
-        <div className="col border border-dark text-center vote-after-snapshot">
-          VOTE AFTER SNAPSHOT
+      {commitId && (
+        <div className="row">
+          <div className="col border border-dark text-center after-tally-message">
+            WINNER: <CommitLink commitId={commitId} />
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 }
-BeforeVoteInfo.propTypes = {
-  currentBlock: PropTypes.number,
+AfterVoteInfo.propTypes = {
   beginHeight: PropTypes.number,
   endHeight: PropTypes.number,
+  commitId: PropTypes.string,
 };
 
-function VoteInfo(tally) {
-  return (
-    <div className="row">
-      <div className="col-lg-6">
-        <div className="table-bg-wrapper">
-          <SummaryTable {...tally} />
-        </div>
-      </div>
-      <div className="col-lg-6">
-        <div>
-          <TallyTable {...tally} />
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function SummaryTable({ currentBlock, beginHeight, endHeight }) {
-  return (
-    <table className="table table-zen">
-      <thead>
-        <tr>
-          <th scope="col" colSpan="2">
-            SUMMARY
-          </th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>CURRENT BLOCK</td>
-          <td className="text-right">
-            <Link to={`/blocks/${currentBlock}`}>{currentBlock}</Link>
-          </td>
-        </tr>
-        <tr>
-          <td>NEXT SNAPSHOT BLOCK</td>
-          <td className="text-right">
-            <Link to={`/blocks/${beginHeight}`}>{beginHeight}</Link>
-          </td>
-        </tr>
-        <tr>
-          <td>TALLY BLOCK</td>
-          <td className="text-right">
-            <Link to={`/blocks/${endHeight}`}>{endHeight}</Link>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-  );
-}
-SummaryTable.propTypes = {
-  currentBlock: PropTypes.number,
-  beginHeight: PropTypes.number,
-  endHeight: PropTypes.number,
-};
-
-function TallyTable({ tally }) {
-  return (
-    <div className="TallyTable">
-      <div className="header-table">
-        <table className="table table-zen">
-          <thead>
-            <tr>
-              <th colSpan="2">TALLY</th>
-            </tr>
-            <tr>
-              <th scope="col">COMMIT ID</th>
-              <th scope="col" className="text-right">
-                VOTES
-              </th>
-            </tr>
-          </thead>
-        </table>
-      </div>
-      <div className="body-table">
-        <table className="table table-zen">
-          <tbody>
-            {tally.map(vote => (
-              <tr key={vote.commitId}>
-                <td>
-                  <CommitLink commitId={vote.commitId} />
-                </td>
-                <td className="text-right">{TextUtils.formatNumber(vote.zpAmount)} ZP</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-    </div>
-  );
-}
-TallyTable.propTypes = {
-  tally: PropTypes.array,
-};
-
-function VotingTabs({ match }) {
+function VotingTabs({ match, isIntermediate }) {
   const currentPath = match.path;
   return (
     <Tabs>
       <TabHead>
+        <Tab id="tally">{isIntermediate && 'INTERMEDIATE '}RESULTS</Tab>
         <Tab id="votes">VOTES</Tab>
-        <Tab id="code">CONTRACT CODE</Tab>
       </TabHead>
       <TabBody>
         <Switch>
+          <Route path={`${currentPath}/tally`} component={ResultsTab} />
           <Route path={`${currentPath}/votes`} component={VotesTab} />
-          <Route path={`${currentPath}/code`} component={VotesTab} />
-          <Redirect from={`${currentPath}`} to={`${currentPath}/votes`} />
+          <Redirect from={`${currentPath}`} to={`${currentPath}/tally`} />
         </Switch>
       </TabBody>
     </Tabs>
   );
+}
+VotingTabs.propTypes = {
+  match: PropTypes.any,
+  isIntermediate: PropTypes.bool,
+};
+
+function IntervalsDropDown({ relevantInterval, intervals, onIntervalChange }) {
+  if (!(relevantInterval || {}).interval) return null;
+
+  const options = intervals.map(item => ({
+    value: String(item.interval),
+    label: `${TextUtils.getOrdinal(item.interval)} Semester - ${item.beginHeight}-${
+      item.endHeight
+    }`,
+  }));
+  return (
+    <Dropdown
+      options={options}
+      value={String(relevantInterval.interval)}
+      onChange={onIntervalChange}
+    />
+  );
+}
+IntervalsDropDown.propTypes = {
+  relevantInterval: PropTypes.object,
+  intervals: PropTypes.array.isRequired,
+  onIntervalChange: PropTypes.func,
+};
+
+function getPageUrl(interval) {
+  return `/governance/${interval}`;
 }
 
 export default inject('rootStore')(observer(GovernancePage));

@@ -1,23 +1,14 @@
+
 export const voteStatus = {
-  none: 1,
-  before: 2,
-  during: 3,
-  after: 4,
+  before: 1,
+  during: 2,
+  after: 3,
 };
 
-/**
- * Assume the server already take cares of sorting the intervals,
- * meaning currentInterval can contain only the current or previous interval
- * and nextInterval can contain only the next one
- */
-export function getVoteStatus({ currentBlock, currentInterval = {}, nextInterval = {} } = {}) {
-  // current exists
-  if (currentInterval.beginHeight) {
-    return currentBlock >= currentInterval.endHeight ? voteStatus.after : voteStatus.during;
-  }
-  // no current, next exists
-  else if (nextInterval.beginHeight) {
-    return voteStatus.before;
-  }
-  return voteStatus.none;
+export function getVoteStatus({ currentBlock, beginHeight, endHeight } = {}) {
+  return currentBlock < beginHeight
+    ? voteStatus.before
+    : currentBlock >= beginHeight && currentBlock < endHeight
+    ? voteStatus.during
+    : voteStatus.after;
 }

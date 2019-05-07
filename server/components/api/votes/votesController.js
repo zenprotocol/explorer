@@ -21,7 +21,7 @@ module.exports = {
       throw new HttpError(httpStatus.NOT_FOUND);
     }
   },
-  currentOrPrevInterval: async function(req, res) {
+  relevantInterval: async function(req, res) {
     const { interval } = req.query;
     const formattedInterval = formatInterval(interval);
 
@@ -39,6 +39,21 @@ module.exports = {
     } else {
       throw new HttpError(httpStatus.NOT_FOUND);
     }
+  },
+  results: async function(req, res) {
+    const { interval, page, pageSize } = req.query;
+    const formattedInterval = formatInterval(interval);
+
+    const result = await votesBLL.findAllVoteResults({ interval: formattedInterval, page, pageSize });
+    if (result) {
+      res.status(httpStatus.OK).json(jsonResponse.create(httpStatus.OK, result));
+    } else {
+      throw new HttpError(httpStatus.NOT_FOUND);
+    }
+  },
+  recentIntervals: async function(req, res) {
+    const result = await votesBLL.findRecentIntervals()
+    res.status(httpStatus.OK).json(jsonResponse.create(httpStatus.OK, result));
   },
 };
 

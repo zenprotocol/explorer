@@ -296,7 +296,7 @@ export default {
   votes: {
     findCurrent(params) {
       return cancelableHttpRequest({
-        url: `${Endpoints.votes}/tally`,
+        url: `${Endpoints.votes}/relevant`,
         method: 'get',
         params,
       });
@@ -314,6 +314,20 @@ export default {
         method: 'get',
         params,
       });
-    }
-  }
+    },
+    findAllResults(params) {
+      return cancelableHttpRequest({
+        url: `${Endpoints.votes}/results`,
+        method: 'get',
+        params,
+      });
+    },
+    findRecentIntervals(params) {
+      return cancelableHttpRequest({
+        url: `${Endpoints.votes}/intervals`,
+        method: 'get',
+        params,
+      });
+    },
+  },
 };
