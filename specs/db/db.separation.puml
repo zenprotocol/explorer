@@ -1,5 +1,5 @@
 @startuml "database structure new"
-!include /specs/db/helpers.puml
+!include ./helpers.puml
 
 scale 1.3
 title Explorer - more separation
