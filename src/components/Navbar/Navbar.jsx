@@ -103,7 +103,7 @@ class Navbar extends Component {
     const { isCollapsing, collapsed } = this.state;
     return (
       <div className={classnames(this.props.className, 'Navbar')}>
-        <nav className="navbar fixed-top navbar-dark navbar-expand-lg py-0 px-0">
+        <nav className="navbar navbar-dark navbar-expand-lg py-0 px-0">
           <div className="container">
             <Logo />
             <button
