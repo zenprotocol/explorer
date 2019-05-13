@@ -48,90 +48,96 @@ const SyncNotification = inject('rootStore')(
   })
 );
 
-function FooterLinks() {
-  return (
-    <div className="FooterLinks">
-      <div className="">
-        <ul className="nav flex-column">
-          <li className="nav-item">
-            <Link className="nav-link text-nowrap" to="/broadcastTx">
-              Broadcast Raw Tx
-            </Link>
-          </li>
-          <li className="nav-item">
-            <Link className="nav-link text-nowrap" to="/oracle">
-              Oracle
-            </Link>
-          </li>
-          {/* <li className="nav-item">
-            <Link className="nav-link text-nowrap" to="/templates/contract">Contract templates</Link>
-          </li> */}
-          <li className="nav-item">
-            <ExternalLink
-              className="nav-link text-nowrap"
-              url="https://www.zenprotocol.com/en/faq"
-            >
-              Learn more
-            </ExternalLink>
-          </li>
-        </ul>
+const FooterLinks = inject('rootStore')(
+  observer(props => {
+    const { infoStore } = props.rootStore;
+    return (
+      <div className="FooterLinks">
+        <div className="">
+          <ul className="nav flex-column">
+            <li className="nav-item">
+              <Link className="nav-link text-nowrap" to="/broadcastTx">
+                Broadcast Raw Tx
+              </Link>
+            </li>
+            <li className="nav-item">
+              <Link className="nav-link text-nowrap" to="/oracle">
+                Oracle
+              </Link>
+            </li>
+            {/* <li className="nav-item">
+              <Link className="nav-link text-nowrap" to="/templates/contract">Contract templates</Link>
+            </li> */}
+            <li className="nav-item">
+              <ExternalLink
+                className="nav-link text-nowrap"
+                url="https://www.zenprotocol.com/en/faq"
+              >
+                Learn more
+              </ExternalLink>
+            </li>
+          </ul>
+        </div>
+        <div className="">
+          <ul className="nav flex-column">
+            <li className="nav-item">
+              <ExternalLink className="nav-link text-nowrap" url="https://docs.zenprotocol.com/">
+                Documentation
+              </ExternalLink>
+            </li>
+            <li className="nav-item">
+              <ExternalLink className="nav-link text-nowrap" url="https://wallet.zp.io/">
+                Wallet
+              </ExternalLink>
+            </li>
+            <li className="nav-item">
+              {infoStore.isTestnet ? (
+                <ExternalLink className="nav-link text-nowrap" url="https://zp.io">
+                  Mainnet
+                </ExternalLink>
+              ) : (
+                <ExternalLink className="nav-link text-nowrap" url="https://testnet.zp.io">
+                  Testnet
+                </ExternalLink>
+              )}
+            </li>
+          </ul>
+        </div>
+        <div className="">
+          <ul className="nav flex-column">
+            <li className="nav-item">
+              <ExternalLink className="nav-link text-nowrap" url="https://forum.zenprotocol.com/">
+                Forum
+              </ExternalLink>
+            </li>
+            <li className="nav-item">
+              <ExternalLink
+                className="nav-link text-nowrap"
+                url={`mailto:${Config.constants.zenInfoMail}`}
+                target="_top"
+              >
+                Contact Us
+              </ExternalLink>
+            </li>
+            <li className="nav-item">
+              <ExternalLink
+                className="nav-link text-nowrap"
+                url="https://www.zenprotocol.com/privacy?locale=en"
+              >
+                Privacy Policy
+              </ExternalLink>
+            </li>
+            <li className="nav-item">
+              <Link className="nav-link text-nowrap" to="/terms">
+                Terms of Service
+              </Link>
+            </li>
+          </ul>
+        </div>
       </div>
-      <div className="">
-        <ul className="nav flex-column">
-          <li className="nav-item">
-            <ExternalLink className="nav-link text-nowrap" url="https://docs.zenprotocol.com/">
-              Documentation
-            </ExternalLink>
-          </li>
-          <li className="nav-item">
-            <ExternalLink
-              className="nav-link text-nowrap"
-              url="https://wallet.zp.io/"
-            >
-              Wallet
-            </ExternalLink>
-          </li>
-          <li className="nav-item">
-            <ExternalLink className="nav-link text-nowrap" url="https://testnet.zp.io">
-              Testnet
-            </ExternalLink>
-          </li>
-        </ul>
-      </div>
-      <div className="">
-        <ul className="nav flex-column">
-          <li className="nav-item">
-            <ExternalLink className="nav-link text-nowrap" url="https://forum.zenprotocol.com/">
-              Forum
-            </ExternalLink>
-          </li>
-          <li className="nav-item">
-            <ExternalLink
-              className="nav-link text-nowrap"
-              url={`mailto:${Config.constants.zenInfoMail}`}
-              target="_top"
-            >
-              Contact Us
-            </ExternalLink>
-          </li>
-          <li className="nav-item">
-            <ExternalLink
-              className="nav-link text-nowrap"
-              url="https://www.zenprotocol.com/privacy?locale=en"
-            >
-              Privacy Policy
-            </ExternalLink>
-          </li>
-          <li className="nav-item">
-            <Link className="nav-link text-nowrap" to="/terms">
-              Terms of Service
-            </Link>
-          </li>
-        </ul>
-      </div>
-    </div>
-  );
-}
+    );
+  })
+);
 
 function FooterContact() {
   return (
