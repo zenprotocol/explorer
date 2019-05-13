@@ -74,6 +74,7 @@ package "Blockchain" {
   Transaction "1" <--> "*" Input
   Input "1" <--> "1" Output
   Contract "1" <--> "*" Command
+  Transaction "1" <--> "*" Command
   Transaction "1" <--> "1" Contract : Via ContractActivations
 }
 
