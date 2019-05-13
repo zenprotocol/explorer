@@ -53,8 +53,8 @@ class App extends Component {
   render() {
     return (
       <div className="App">
-        <TestnetBar />
-        <div className="navbar-container">
+        <div className="navbar-container fixed-top">
+          <TestnetBar />
           <Navbar />
         </div>
         <div className="App-separator mb-3 mb-lg-7" />

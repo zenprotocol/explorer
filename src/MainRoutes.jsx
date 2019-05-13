@@ -1,5 +1,5 @@
 import React from 'react';
-import { Route, Switch } from 'react-router-dom';
+import { Route, Switch, Redirect } from 'react-router-dom';
 import Loadable from 'react-loadable';
 import AsyncComponentLoading from './components/AsyncComponentLoading';
 import config from './lib/Config';
@@ -79,6 +79,11 @@ const CreateContractTemplate = Loadable({
   loading: AsyncComponentLoading,
   delay,
 });
+const Governance = Loadable({
+  loader: () => import(/* webpackChunkName: "governance" */ './pages/governance'),
+  loading: AsyncComponentLoading,
+  delay,
+});
 const NotFound = Loadable({
   loader: () => import(/* webpackChunkName: "notFound" */ './pages/notFound'),
   loading: AsyncComponentLoading,
@@ -103,6 +108,8 @@ export default function MainRoutes() {
       <Route path="/oracle" component={Oracle} />
       <Route path="/assets" exact={true} component={Assets} />
       <Route path="/assets/:asset" component={Asset} />
+      <Route path="/governance/:interval" component={Governance} />
+      <Redirect from="/governance" to="/governance/0" />
       <Route component={NotFound} />
     </Switch>
   );

@@ -7,7 +7,7 @@ module.exports = {
     es6: true,
     node: true,
   },
-  extends: ['eslint:recommended', 'plugin:react/recommended'],
+  extends: ['eslint:recommended', 'plugin:react/recommended', 'prettier'],
   plugins: ['security'],
   parserOptions: {
     sourceType: 'module',
@@ -17,7 +17,7 @@ module.exports = {
     },
   },
   rules: {
-    indent: [2, 2, { SwitchCase: 1 }],
+    indent: ['error', 2, { SwitchCase: 1, flatTernaryExpressions: true }],
     'linebreak-style': ['off', 'windows'],
     quotes: ['error', 'single'],
     semi: ['error', 'always'],

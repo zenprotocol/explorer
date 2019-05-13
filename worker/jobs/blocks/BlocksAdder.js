@@ -9,6 +9,7 @@ const contractsDAL = require('../../../server/components/api/contracts/contracts
 const logger = require('../../lib/logger')('blocks');
 const getJobData = require('../../lib/getJobData');
 const QueueError = require('../../lib/QueueError');
+const db = require('../../../server/db/sequelize/models');
 
 class BlocksAdder {
   constructor(networkHelper, blockchainParser) {
@@ -40,7 +41,7 @@ class BlocksAdder {
         const infos = await this.updateInfos();
         this.blockchainParser.setChain(infos.chain);
 
-        dbTransaction = await blocksDAL.db.sequelize.transaction();
+        dbTransaction = await db.sequelize.transaction();
 
         for (
           let blockNumber = latestBlockNumberInDB + 1;
@@ -67,7 +68,11 @@ class BlocksAdder {
       await this.setSyncingStatus({ syncing: false });
       const hrEnd = process.hrtime(startTime);
       logger.info(`AddNewBlocks Finished. Time elapsed = ${hrEnd[0]}s ${hrEnd[1] / 1000000}ms`);
-      return blocks.length;
+      // return the number of blocks added and the latest block number
+      return {
+        count: blocks.length,
+        latest: blocks.reduce((max, cur) => max < cur.blockNumber ? cur.blockNumber : max , 0),
+      };
     } catch (error) {
       logger.error(`An Error has occurred when adding blocks: ${error.message}`);
       if (dbTransaction) {
@@ -361,11 +366,11 @@ class BlocksAdder {
       },
       include: [
         {
-          model: inputsDAL.db.Transaction,
+          model: db.Transaction,
           attributes: [],
           where: {
             BlockId: {
-              [inputsDAL.db.sequelize.Op.in]: blockIds,
+              [db.Sequelize.Op.in]: blockIds,
             },
           },
         },
@@ -388,7 +393,7 @@ class BlocksAdder {
       },
       include: [
         {
-          model: outputsDAL.db.Transaction,
+          model: db.Transaction,
           attributes: [],
           where: {
             hash: input.outpointTXHash,

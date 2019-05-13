@@ -8,9 +8,9 @@ function createEnvFile() {
 }
 
 function createDirectories() {
-  const dirs = ['data', 'data/redis', 'logs']
+  const dirs = ['data', 'data/redis'];
 
-  dirs.forEach((dir) => {
+  dirs.forEach(dir => {
     if (!fs.existsSync(dir)) {
       fs.mkdirSync(dir);
     }

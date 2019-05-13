@@ -1,13 +1,4 @@
 @import 'src/style/variables';
-body {
-  padding-top: 56px;
-}
-@media (min-width: map-get($grid-breakpoints, "lg")) {
-  body {
-    padding-top: 78px;
-  }
-}
-
 .Navbar {
   font-size: $font-size-lg;
 

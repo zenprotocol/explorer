@@ -104,6 +104,12 @@ $display4-weight : 400;
     text-align: left;
   }
 
+  thead tr:not(:first-child) th {
+    font-size: $font-size-base;
+    padding-top: $table-padding-y;
+    padding-bottom: $table-padding-y;
+  }
+
   tbody td {
     border-top: none;
     border-bottom: 1px solid $border-color;

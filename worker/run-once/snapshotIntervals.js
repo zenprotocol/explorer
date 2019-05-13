@@ -1,0 +1,23 @@
+/**
+ * Take snapshots for all intervals that does not have a snapshot yet
+ */
+const SnapshotsTaker = require('../jobs/snapshots/SnapshotsTaker');
+const logger = require('../lib/logger')('snapshots');
+const db = require('../../server/db/sequelize/models');
+const snapshotsTaker = new SnapshotsTaker();
+
+const run = async () => {
+  logger.info('Start taking snapshots');
+  return await snapshotsTaker.doJob();
+};
+
+run()
+  .then((result) => {
+    logger.info(`Finished taking snapshots for ${result.length} intervals.`);
+  })
+  .catch(err => {
+    logger.error(`An Error has occurred: ${err.message}`);
+  })
+  .then(() => {
+    db.sequelize.close();
+  });

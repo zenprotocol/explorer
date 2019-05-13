@@ -1,11 +1,11 @@
 'use strict';
 
 const test = require('blue-tape');
-const truncate = require('../../../lib/truncate');
+const truncate = require('../../../../test/lib/truncate');
 const blocksDAL = require('../../../../server/components/api/blocks/blocksDAL');
 const NetworkHelper = require('../../../lib/NetworkHelper');
 const ReorgProcessor = require('../ReorgProcessor');
-const createDemoBlocksFromTo = require('../../../lib/createDemoBlocksFromTo');
+const createDemoBlocksFromTo = require('../../../../test/lib/createDemoBlocksFromTo');
 
 test.onFinish(() => {
   blocksDAL.db.sequelize.close();

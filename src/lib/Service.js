@@ -15,6 +15,7 @@ const Endpoints = {
   assets: '/api/assets',
   oracle: '/api/oracle',
   contractTemplates: '/api/contractTemplates',
+  votes: '/api/votes',
 };
 
 let globalMute = false;
@@ -289,6 +290,43 @@ export default {
         method: 'post',
         data,
         responseType: 'blob',
+      });
+    },
+  },
+  votes: {
+    findCurrent(params) {
+      return cancelableHttpRequest({
+        url: `${Endpoints.votes}/relevant`,
+        method: 'get',
+        params,
+      });
+    },
+    findNext(params) {
+      return cancelableHttpRequest({
+        url: `${Endpoints.votes}/next`,
+        method: 'get',
+        params,
+      });
+    },
+    findAllVotes(params) {
+      return cancelableHttpRequest({
+        url: `${Endpoints.votes}`,
+        method: 'get',
+        params,
+      });
+    },
+    findAllResults(params) {
+      return cancelableHttpRequest({
+        url: `${Endpoints.votes}/results`,
+        method: 'get',
+        params,
+      });
+    },
+    findRecentIntervals(params) {
+      return cancelableHttpRequest({
+        url: `${Endpoints.votes}/intervals`,
+        method: 'get',
+        params,
       });
     },
   },

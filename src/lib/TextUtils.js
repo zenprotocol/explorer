@@ -1,7 +1,7 @@
 import Config from '../lib/Config';
 
 const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-const timezoneDisplay = getTimezoneDisplay((new Date()).getTimezoneOffset());
+const timezoneDisplay = getTimezoneDisplay(new Date().getTimezoneOffset());
 
 export default {
   getDateStringFromTimestamp(timestamp) {
@@ -62,7 +62,19 @@ export default {
     const itemDisplay = item ? ` ${item}` : '';
     const separator = showSeparator ? ' - ' : ' ';
     return `Zen Protocol${separator}${page}${itemDisplay}`;
-  }
+  },
+  /**
+   * Get an ordinal string (1st, 2nd, ...) from a number
+   * @param {number|string} number
+   */
+  getOrdinal(number) {
+    if (isNaN(number)) return '';
+
+    const n = Number(number);
+    const s = ['th', 'st', 'nd', 'rd'];
+    const v = n % 100;
+    return n + (s[(v - 20) % 10] || s[v] || s[0]);
+  },
 };
 
 function addPrecedingZero(number) {
@@ -77,6 +89,6 @@ export function getTimezoneDisplay(timezoneOffset) {
   return timezoneOffset === 0
     ? '(UTC)'
     : timezoneOffset > 0
-      ? `(UTC-${timezoneOffsetHours}${minutesDisplay})`
-      : `(UTC+${Math.abs(timezoneOffsetHours)}${minutesDisplay})`;
+    ? `(UTC-${timezoneOffsetHours}${minutesDisplay})`
+    : `(UTC+${Math.abs(timezoneOffsetHours)}${minutesDisplay})`;
 }

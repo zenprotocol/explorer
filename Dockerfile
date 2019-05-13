@@ -1,26 +1,15 @@
 FROM node:8.12.0-alpine
 
-# do not run as root
-RUN addgroup -g 1001 app \
-    && adduser -u 1001 -G app -s /bin/sh -D app
-
 RUN apk update && apk upgrade && apk --no-cache add curl && apk add python g++ make && rm -rf /var/cache/apk/* && npm i -g npm
 
 ENV HOME=/home/app
 ENV APP_ROOT=$HOME/explorer
 
 COPY package*.json .npmrc $APP_ROOT/
-RUN chown -R app:app $HOME/
 
-USER app
 WORKDIR $APP_ROOT
 RUN npm i
 
-USER root
-COPY ./server $APP_ROOT/server
-RUN chown -R app:app $APP_ROOT/server
-USER app
-
 EXPOSE 3000
-EXPOSE 5858
+EXPOSE 9229
 CMD ["npm", "start"]

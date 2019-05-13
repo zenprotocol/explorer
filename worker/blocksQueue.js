@@ -19,6 +19,10 @@ const reorgsQueue = new Queue(
   Config.get('queues:reorgs:name'),
   Config.any(['REDISCLOUD_URL', 'redis'])
 );
+const snapshotsQueue = new Queue(
+  Config.get('queues:snapshots:name'),
+  Config.any(['REDISCLOUD_URL', 'redis'])
+);
 
 const taskTimeLimiter = new TaskTimeLimiter(Config.get('queues:slackTimeLimit') * 1000);
 
@@ -32,9 +36,11 @@ addBlocksQueue.on('active', function(job, jobPromise) {
 });
 
 addBlocksQueue.on('completed', function(job, result) {
-  loggerBlocks.info(`A job has been completed. ID=${job.id} result=${result}`);
-  if (result > 0) {
+  loggerBlocks.info(`A job has been completed. ID=${job.id} count=${result.count} latest block added=${result.latest}`);
+  if (result.count > 0) {
     addBlocksQueue.add({ limitBlocks: NUM_OF_BLOCKS_IN_CHUNK });
+    // notify snapshots that blocks were added
+    snapshotsQueue.add();
   }
 });
 

@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { Link } from 'react-router-dom';
+import ExternalLink from '../ExternalLink';
 import * as clipboard from 'clipboard-polyfill';
 import TextUtils from '../../lib/TextUtils';
 import './HashLink.scss';
@@ -21,11 +22,17 @@ export default class HashLink extends Component {
   }
 
   render() {
-    const { url, hash, copy, truncate, value } = this.props;
+    const { url, hash, copy, truncate, value, external } = this.props;
     const truncatedHash = truncate ? truncateHash(hash) : hash;
-    const anchorHash = url ? <Link to={url}>{truncatedHash}</Link> : truncatedHash;
+    const anchorHash = !url ? (
+      truncatedHash
+    ) : external ? (
+      <ExternalLink url={url}>{truncatedHash}</ExternalLink>
+    ) : (
+      <Link to={url}>{truncatedHash}</Link>
+    );
     const valueToCopy = value ? value : hash;
-    
+
     const anchorCopy = (
       <div
         ref={this.copyDiv}
@@ -62,8 +69,8 @@ export default class HashLink extends Component {
   }
 
   getTooltipPosition() {
-    if(this.copyDiv.current) {
-      if(Math.abs(window.innerWidth - this.copyDiv.current.getBoundingClientRect().left) < 150) {
+    if (this.copyDiv.current) {
+      if (Math.abs(window.innerWidth - this.copyDiv.current.getBoundingClientRect().left) < 150) {
         return 'up-right';
       }
     }
@@ -91,6 +98,7 @@ HashLink.propTypes = {
   value: PropTypes.string,
   copy: PropTypes.bool,
   truncate: PropTypes.bool,
+  external: PropTypes.bool,
 };
 HashLink.defaultProps = {
   copy: true,

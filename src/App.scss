@@ -1,5 +1,20 @@
 @import url('https://fonts.googleapis.com/css?family=Roboto+Mono|Roboto:400,500');
-@import 'style/colors';
+@import 'style/variables';
+
+body {
+  padding-top: 56px;
+  &.testnet {
+    padding-top: 96px;
+  }
+}
+@media (min-width: map-get($grid-breakpoints, "lg")) {
+  body {
+    padding-top: 78px;
+    &.testnet {
+      padding-top: 118px;
+    }
+  }
+}
 
 .App {
   min-height: 100vh;

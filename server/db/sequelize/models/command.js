@@ -14,6 +14,7 @@ module.exports = (sequelize, DataTypes) => {
   Command.associate = function(models) {
     Command.belongsTo(models.Transaction);
     Command.belongsTo(models.Contract);
+    Command.hasMany(models.RepoVote);
   };
   return Command;
 };
