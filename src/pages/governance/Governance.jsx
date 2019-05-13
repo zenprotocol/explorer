@@ -187,7 +187,7 @@ function BeforeVoteInfo({ currentBlock, beginHeight }) {
       </div>
       <div className="row">
         <div className="col border border-dark text-center before-snapshot-message">
-          VOTE BEGINS IN {beginHeight - currentBlock} BLOCKS
+          VOTE BEGINS IN {TextUtils.formatNumber(beginHeight - currentBlock)} BLOCKS
         </div>
       </div>
     </div>
