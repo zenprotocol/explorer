@@ -2,7 +2,7 @@
 
 const test = require('blue-tape');
 const td = require('testdouble');
-const truncate = require('../../lib/truncate');
+const truncate = require('../../../test/lib/truncate');
 const contractsDAL = require('../../../server/components/api/contracts/contractsDAL');
 const commandsDAL = require('../../../server/components/api/commands/commandsDAL');
 const BlockchainParser = require('../../../server/lib/BlockchainParser');

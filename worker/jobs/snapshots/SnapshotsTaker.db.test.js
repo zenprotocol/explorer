@@ -1,7 +1,7 @@
 'use strict';
 
 const test = require('blue-tape');
-const truncate = require('../../lib/truncate');
+const truncate = require('../../../test/lib/truncate');
 const blocksDAL = require('../../../server/components/api/blocks/blocksDAL');
 const voteIntervalsDAL = require('../../../server/components/api/voteIntervals/voteIntervalsDAL');
 const snapshotsDAL = require('../../../server/components/api/snapshots/snapshotsDAL');

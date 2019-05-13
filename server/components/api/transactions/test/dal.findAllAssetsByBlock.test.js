@@ -2,7 +2,7 @@
 
 const test = require('blue-tape');
 const faker = require('faker');
-const truncate = require('../../../../../worker/lib/truncate');
+const truncate = require('../../../../../test/lib/truncate');
 const transactionsDAL = require('../transactionsDAL');
 const blocksDAL = require('../../blocks/blocksDAL');
 const inputsDAL = require('../../inputs/inputsDAL');

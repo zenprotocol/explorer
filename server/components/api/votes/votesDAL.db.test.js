@@ -1,7 +1,7 @@
 'use strict';
 
 const test = require('blue-tape');
-const truncate = require('../../../../worker/lib/truncate');
+const truncate = require('../../../../test/lib/truncate');
 const transactionsDAL = require('../transactions/transactionsDAL');
 const blocksDAL = require('../blocks/blocksDAL');
 const outputsDAL = require('../outputs/outputsDAL');
@@ -10,7 +10,7 @@ const commandsDAL = require('../commands/commandsDAL');
 const voteIntervalsDAL = require('../voteIntervals/voteIntervalsDAL');
 const votesDAL = require('../votes/votesDAL');
 const SnapshotsTaker = require('../../../../worker/jobs/snapshots/SnapshotsTaker');
-const createDemoBlocksFromTo = require('../../../../worker/lib/createDemoBlocksFromTo');
+const createDemoBlocksFromTo = require('../../../../test/lib/createDemoBlocksFromTo');
 const faker = require('faker');
 
 const CONTRACT_ID = '00000000e3113f8bf9cf8b764d945d6f99c642bdb069d137bdd5f7e44f1e75947f58a044';

@@ -1,7 +1,7 @@
 'use strict';
 
 const test = require('blue-tape');
-const truncate = require('../../../lib/truncate');
+const truncate = require('../../../../test/lib/truncate');
 const contractsDAL = require('../../../../server/components/api/contracts/contractsDAL');
 const transactionsDAL = require('../../../../server/components/api/transactions/transactionsDAL');
 const blocksDAL = require('../../../../server/components/api/blocks/blocksDAL');

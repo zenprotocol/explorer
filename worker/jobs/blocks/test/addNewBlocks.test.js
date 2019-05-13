@@ -2,7 +2,7 @@
 
 const test = require('blue-tape');
 const Service = require('../../../../server/lib/Service');
-const truncate = require('../../../lib/truncate');
+const truncate = require('../../../../test/lib/truncate');
 const blocksDAL = require('../../../../server/components/api/blocks/blocksDAL');
 const transactionsDAL = require('../../../../server/components/api/transactions/transactionsDAL');
 const inputsDAL = require('../../../../server/components/api/inputs/inputsDAL');
@@ -11,7 +11,7 @@ const BlockchainParser = require('../../../../server/lib/BlockchainParser');
 const mock = require('./mock');
 const BlocksAdder = require('../BlocksAdder');
 const Config = require('../../../../server/config/Config');
-const createDemoBlocksFromTo = require('../../../lib/createDemoBlocksFromTo');
+const createDemoBlocksFromTo = require('../../../../test/lib/createDemoBlocksFromTo');
 
 test.onFinish(() => {
   blocksDAL.db.sequelize.close();
