@@ -4,8 +4,11 @@ const votesDAL = require('./votesDAL');
 const blocksDAL = require('../blocks/blocksDAL');
 const voteIntervalsDAL = require('../voteIntervals/voteIntervalsDAL');
 const createQueryObject = require('../../../lib/createQueryObject');
+const config = require('../../../config/Config');
 
-const AFTER_TALLY_BLOCKS = 10000; // number of blocks to show tally results
+const configAfterTallyBlocks = config.get('governance:afterTallyBlocks');
+// number of blocks to show tally results
+const AFTER_TALLY_BLOCKS = configAfterTallyBlocks ? Number(configAfterTallyBlocks) : 1000;
 
 module.exports = {
   findIntervalAndTally: async function({ interval } = {}) {
@@ -71,7 +74,7 @@ module.exports = {
   findRecentIntervals: async function() {
     const currentBlock = await getCurrentBlockNumber();
     return voteIntervalsDAL.findAllRecent(currentBlock);
-  }
+  },
 };
 
 /**

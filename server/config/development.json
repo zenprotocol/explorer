@@ -23,5 +23,8 @@
   },
   "zp": {
     "node": "http://zen-node:5050"
+  },
+  "governance": {
+    "afterTallyBlocks": 10
   }
 }

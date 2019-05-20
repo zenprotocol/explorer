@@ -32,5 +32,8 @@
     "snapshots": {
       "name": "Vote Snapshots"
     }
+  },
+  "governance": {
+    "afterTallyBlocks": 1000
   }
 }
