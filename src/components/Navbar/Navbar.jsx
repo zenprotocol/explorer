@@ -131,10 +131,15 @@ class Navbar extends Component {
             >
               <ul className="navbar-nav mr-auto">
                 <li className="nav-item">
+                  <NavLink className="nav-link" to="/blockchain/info" isActive={isNavLinkActive(['', 'blockchain'])}>
+                    Stats
+                  </NavLink>
+                </li>
+                <li className="nav-item">
                   <NavLink
                     className="nav-link"
                     to="/blocks"
-                    isActive={isNavLinkActive(['', 'blocks', 'tx', 'address'])}
+                    isActive={isNavLinkActive(['blocks', 'tx', 'address'])}
                   >
                     Blocks
                   </NavLink>
@@ -150,21 +155,10 @@ class Navbar extends Component {
                   </NavLink>
                 </li>
                 <li className="nav-item">
-                  <NavLink className="nav-link" to="/blockchain/info">
-                    Stats
-                  </NavLink>
-                </li>
-                <li className="nav-item">
                   <NavLink className="nav-link" to="/governance">
                     Governance
                   </NavLink>
                 </li>
-                {/*
-                  
-                  <li className="nav-item">
-                    <NavLink className="nav-link" to="/tx">Transactions</NavLink>
-                  </li>
-                */}
               </ul>
               <SearchBar />
             </div>

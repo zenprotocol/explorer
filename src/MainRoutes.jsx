@@ -4,6 +4,7 @@ import Loadable from 'react-loadable';
 import AsyncComponentLoading from './components/AsyncComponentLoading';
 import config from './lib/Config';
 import Blocks from './pages/blocks'; // we want blocks pre loaded
+import Info from './pages/info'; // this is the default page - pre load as well
 
 const {delay} = config.loadable;
 
@@ -34,11 +35,6 @@ const Contracts = Loadable({
 });
 const Search = Loadable({
   loader: () => import(/* webpackChunkName: "search" */ './pages/search'),
-  loading: AsyncComponentLoading,
-  delay,
-});
-const Info = Loadable({
-  loader: () => import(/* webpackChunkName: "info" */ './pages/info'),
   loading: AsyncComponentLoading,
   delay,
 });
@@ -93,7 +89,8 @@ const NotFound = Loadable({
 export default function MainRoutes() {
   return (
     <Switch>
-      <Route exact path="/(|blocks)" component={Blocks} />
+      <Route path="/(|blockchain/info)" component={Info} />
+      <Route exact path="/blocks" component={Blocks} />
       <Route path="/blocks/:id" component={Block} />
       <Route path="/tx/:hash" component={Transaction} />
       <Route path="/address/:address" component={Address} />
@@ -102,7 +99,6 @@ export default function MainRoutes() {
       <Route path="/templates/contract" exact component={ContractTemplates} />
       <Route path="/templates/contract/:slug" component={CreateContractTemplate} />
       <Route path="/search/:search" component={Search} />
-      <Route path="/blockchain/info" component={Info} />
       <Route path="/charts/:name" component={Chart} />
       <Route path="/broadcastTx/:hex?" component={BroadcastTx} />
       <Route path="/oracle" component={Oracle} />
