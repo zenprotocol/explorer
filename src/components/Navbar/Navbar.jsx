@@ -4,6 +4,7 @@ import { NavLink, withRouter } from 'react-router-dom';
 import classnames from 'classnames';
 import Logo from '../Logo';
 import SearchBar from '../SearchBar';
+import DropDown from './components/DropDown';
 import './Navbar.scss';
 
 const ANIMATION_TIME = 350;
@@ -131,28 +132,30 @@ class Navbar extends Component {
             >
               <ul className="navbar-nav mr-auto">
                 <li className="nav-item">
-                  <NavLink className="nav-link" to="/blockchain/info" isActive={isNavLinkActive(['', 'blockchain'])}>
+                  <NavLink
+                    className="nav-link"
+                    to="/blockchain/info"
+                    isActive={isNavLinkActive(['', 'blockchain'])}
+                  >
                     Stats
                   </NavLink>
                 </li>
                 <li className="nav-item">
-                  <NavLink
-                    className="nav-link"
-                    to="/blocks"
-                    isActive={isNavLinkActive(['blocks', 'tx', 'address'])}
-                  >
-                    Blocks
-                  </NavLink>
-                </li>
-                <li className="nav-item">
-                  <NavLink className="nav-link" to="/contracts">
-                    Contracts
-                  </NavLink>
-                </li>
-                <li className="nav-item">
-                  <NavLink className="nav-link" to="/assets">
-                    Assets
-                  </NavLink>
+                  <DropDown label="View By" className="view-by">
+                    <NavLink
+                      className="nav-link"
+                      to="/blocks"
+                      isActive={isNavLinkActive(['blocks', 'tx', 'address'])}
+                    >
+                      Blocks
+                    </NavLink>
+                    <NavLink className="nav-link" to="/contracts">
+                      Contracts
+                    </NavLink>
+                    <NavLink className="nav-link" to="/assets">
+                      Assets
+                    </NavLink>
+                  </DropDown>
                 </li>
                 <li className="nav-item">
                   <NavLink className="nav-link" to="/governance">
