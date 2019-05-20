@@ -78,6 +78,9 @@ in the docker web container, run `npx sequelize` to see all cli options.
   - **DATABASE_URL**
   - **REDISCLOUD_URL**
   - **zp__node** - The remote node url
+  - **GOOGLE_TRACKING_ID**
+  - **GOVERNANCE_CONTRACT_ID** - The contract ID of the repo voting
+  - **governance__afterTallyBlocks** - How many blocks after tally to show the vote results 
 
 ## DB Copy/Backup, copy db from staging to production
 ### Heroku
@@ -104,6 +107,7 @@ The project contain both the client and the server:
 - **public** - client public source files
 - **server** - server code
 - **worker** - server worker jobs & scheduler
+- **test** - general code for tests
 
 ## Examining the db in the container
 1. `docker-compose exec db sh`
