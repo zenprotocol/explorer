@@ -21,7 +21,7 @@ if [ "$#" != "1" ]; then
     exit 0
 fi
 
-npm version $1
+npm version $1 -m "Release %s"
 tag=$(git tag --points-at HEAD)
 git push origin "$tag"
 git push
