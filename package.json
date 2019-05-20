@@ -102,6 +102,7 @@
     "sequelize-cli": "^5.4.0",
     "sitemap": "^2.1.0",
     "slack-node": "^0.1.8",
+    "sywac": "^1.2.1",
     "url-loader": "^1.1.2",
     "winston": "^3.1.0"
   },
