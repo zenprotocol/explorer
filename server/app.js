@@ -25,9 +25,25 @@ app.use(
     { stream: logger.stream }
   )
 );
+
+// cors
+var whitelist = ['http://wallet.zp.io/', 'http://staging.wallet.zp.io/'];
+var corsOptions = {
+  origin: function(origin, callback) {
+    if (whitelist.indexOf(origin) !== -1) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+};
+
 if (process.env.NODE_ENV === 'development') {
   app.use(cors());
+} else {
+  app.use(cors(corsOptions));
 }
+
 app.use(bodyParser.json({ limit: config.get('http:request:limit') }));
 app.use(bodyParser.urlencoded({ extended: false, limit: config.get('http:request:limit') }));
 app.use(helmet());
