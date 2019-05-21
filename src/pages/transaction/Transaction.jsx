@@ -123,7 +123,14 @@ class TransactionPage extends Component {
                   </tr>
                   {transaction.isCoinbaseTx && (
                     <tr>
-                      <td colSpan="2">Coinbase</td>
+                      <td>Coinbase</td>
+                      <td>
+                        Maturity:{' '}
+                        {getCoinbaseMaturity(
+                          this.blockStore.blocksCount,
+                          transaction.Block.blockNumber
+                        )}
+                      </td>
                     </tr>
                   )}
                 </tbody>
@@ -143,6 +150,11 @@ TransactionPage.propTypes = {
   match: PropTypes.object,
   rootStore: PropTypes.object,
 };
+
+function getCoinbaseMaturity(latestBlock, txBlock) {
+  const difference = Math.min(latestBlock - txBlock, 100);
+  return 100 - difference;
+}
 
 const NotFoundDisplay = () => {
   return (
