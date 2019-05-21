@@ -60,7 +60,7 @@ module.exports = {
     const transaction = await transactionsDAL.findByHash(hash);
     if (transaction) {
       const customTX = transactionsDAL.toJSON(transaction);
-      customTX.isCoinbase = isCoinbaseTX(transaction);
+      customTX.isCoinbaseTx = isCoinbaseTX(transaction);
       const insOuts = await transactionsDAL.findAllTransactionAssetsInputsOutputs(transaction.id);
       customTX.Inputs = insOuts.Inputs;
       customTX.Outputs = insOuts.Outputs;
