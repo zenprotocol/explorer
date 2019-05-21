@@ -1,0 +1,41 @@
+@import 'src/style/variables';
+
+.Navbar-DropDown {
+  position: relative;
+
+  .dropdown-toggle {
+    white-space: nowrap;
+    cursor: pointer;
+    user-select: none;
+    background-color: transparent;
+    border: none;
+    display: none;
+
+    .dropdown-arrow {
+      display: inline-block;
+      margin-left: 10px;
+    }
+  }
+  .dropdown-container {
+    background-color: $gray-800;
+    transition: all 100ms ease;
+    position: relative;
+    display: block;
+  }
+
+  @media (min-width: map-get($grid-breakpoints, "lg")) {
+    .dropdown-toggle {
+      display: block;
+    }
+    .dropdown-container {
+      position: absolute;
+      height: 0;
+      overflow: hidden;
+      opacity: 0;
+
+      &.is-open {
+        opacity: 1;
+      }
+    }
+  }
+}

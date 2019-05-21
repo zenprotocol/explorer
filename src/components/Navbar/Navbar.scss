@@ -20,11 +20,21 @@
     }
   }
 
+  .Navbar-DropDown.view-by {
+    .dropdown-container {
+      &.is-open {
+        height: 117px;
+      }
+    }
+  }
+
   @media (min-width: map-get($grid-breakpoints, "lg")) {
     .navbar-brand {
       margin-right: 2rem;
     }
     .navbar-expand-lg .navbar-nav .nav-link {
+      user-select: none;
+      outline: 0;
       $border-size: 2px;
       padding: 1.6rem 0;
       margin-right: 2rem;
@@ -34,6 +44,24 @@
       &.active {
         border-bottom-color: $blue-soft;
         font-weight: $font-weight-bold;
+      }
+    }
+    .Navbar-DropDown {
+      .dropdown-container .nav-link {
+        $border-size: 2px;
+        padding: 0.5rem 1rem;
+        margin-right: 0;
+        border-top: none;
+        border-bottom: none;
+        border-left: $border-size solid transparent;
+        
+        &:hover {
+          background-color: $gray-600;
+        }
+        &.active {
+          border-left-color: $blue-soft;
+          font-weight: $font-weight-bold;
+        }
       }
     }
   }
