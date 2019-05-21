@@ -9,6 +9,11 @@
     cursor: pointer;
     user-select: none;
     display: none;
+
+    .dropdown-arrow {
+      display: inline-block;
+      margin-left: 10px;
+    }
   }
   .dropdown-container {
     background-color: $gray-800;

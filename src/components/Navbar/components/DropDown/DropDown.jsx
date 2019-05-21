@@ -11,37 +11,19 @@ export default class NavbarDropdown extends Component {
       isOpen: false,
     };
 
-    // refs for the "click outside" event
-    this.containerRef = React.createRef();
-    this.togglerRef = React.createRef();
-
-    this.toggle = this.toggle.bind(this);
-    this.handleClickOutside = this.handleClickOutside.bind(this);
+    this.open = this.open.bind(this);
+    this.close = this.close.bind(this);
   }
 
-  toggle() {
-    this.setState(state => ({ isOpen: !state.isOpen }));
+  open() {
+    this.setState({ isOpen: true });
   }
   close() {
     this.setState({ isOpen: false });
   }
 
-  componentDidMount() {
-    document.addEventListener('mousedown', this.handleClickOutside, false);
-  }
-
-  componentWillUnmount() {
-    document.removeEventListener('mousedown', this.handleClickOutside, false);
-  }
-
-  handleClickOutside(e) {
-    if (this.containerRef.current.contains(e.target) || this.togglerRef.current.contains(e.target))
-      return;
-
-    this.close();
-  }
-
   render() {
+    const { isOpen } = this.state;
     const { label, className, children } = this.props;
     return (
       <div className={classNames('Navbar-DropDown', className)}>
@@ -50,14 +32,18 @@ export default class NavbarDropdown extends Component {
           role="button"
           aria-haspopup="true"
           aria-expanded="false"
-          onClick={this.toggle}
-          ref={this.togglerRef}
+          onMouseEnter={this.open}
+          onMouseLeave={this.close}
         >
           {label}
+          <span className="dropdown-arrow">
+            <i className={`fas fa-caret-${isOpen ? 'up' : 'down'}`} />
+          </span>
         </a>
         <div
-          className={classNames('dropdown-container', { 'is-open': this.state.isOpen })}
-          ref={this.containerRef}
+          onMouseEnter={this.open}
+          onMouseLeave={this.close}
+          className={classNames('dropdown-container', { 'is-open': isOpen })}
         >
           {children}
         </div>
