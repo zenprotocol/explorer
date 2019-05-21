@@ -38,6 +38,11 @@
     border-right-color: transparent;
     white-space: normal;
 
+    // column title
+    > div {
+      display: inline-block;
+    }
+
     &.-cursor-pointer,
     &.-sort-asc,
     &.-sort-desc {
@@ -48,19 +53,18 @@
     &.-sort-asc::after,
     &.-sort-desc::after {
       font-family: "Font Awesome 5 Pro";
-      position: absolute;
-      right: 0;
-      top: 50%;
-      transform: translateY(-50%);
+      font-weight: 900;
+      display: inline-block;
+      margin-left: 12px;
     }
     &.-cursor-pointer::after {
       content: '\F0DC';
     }
     &.-sort-asc::after {
-      content: '\F0DE';
+      content: '\F0D8';
     }
     &.-sort-desc::after {
-      content: '\F0DD';
+      content: '\F0D7';
     }
   }
   
