@@ -5,9 +5,11 @@ import { Helmet } from 'react-helmet';
 import { Link } from 'react-router-dom';
 import TextUtils from '../../lib/TextUtils';
 import RouterUtils from '../../lib/RouterUtils';
-import { Transaction } from '../../components/Transactions';
+import TransactionAssets from './components/Assets';
 import Loading from '../../components/Loading';
 import Page from '../../components/Page';
+import PageTitle from '../../components/PageTitle';
+import HashLink from '../../components/HashLink';
 import './Transaction.scss';
 
 class TransactionPage extends Component {
@@ -31,7 +33,7 @@ class TransactionPage extends Component {
   }
 
   componentDidMount() {
-    const {hash} = RouterUtils.getRouteParams(this.props);
+    const { hash } = RouterUtils.getRouteParams(this.props);
     this.setState({ hash: Number(hash) });
     this.transactionStore.fetchTransaction(hash).then(transaction => {
       if (!transaction) {
@@ -82,11 +84,10 @@ class TransactionPage extends Component {
           <title>{TextUtils.getHtmlTitle('Transaction', transaction.hash)}</title>
         </Helmet>
         <section>
-          <div className="row">
-            <div className="col-sm">
-              <h1 className="d-block d-sm-inline-block text-white mb-3 mb-lg-5">Transaction</h1>
-            </div>
-          </div>
+          <PageTitle
+            title="TRANSACTION"
+            subtitle={<HashLink hash={transaction.hash} truncate={false} />}
+          />
           <div className="row">
             <div className="col">
               <table className="table table-zen">
@@ -107,18 +108,38 @@ class TransactionPage extends Component {
                     </td>
                   </tr>
                   <tr>
+                    <td>Timestamp</td>
+                    <td>
+                      <span className="timezone">
+                        {TextUtils.getDateStringFromTimestamp(transaction.Block.timestamp)}
+                      </span>
+                    </td>
+                  </tr>
+                  <tr>
                     <td>Confirmations</td>
                     <td className="no-text-transform">
                       {this.blockStore.confirmations(transaction.Block.blockNumber)}
                     </td>
                   </tr>
+                  {transaction.isCoinbaseTx && (
+                    <tr>
+                      <td>Coinbase</td>
+                      <td>
+                        Maturity:{' '}
+                        {getCoinbaseMaturity(
+                          this.blockStore.blocksCount,
+                          transaction.Block.blockNumber
+                        )}
+                      </td>
+                    </tr>
+                  )}
                 </tbody>
               </table>
             </div>
           </div>
         </section>
         <section>
-          <Transaction transaction={transaction} disableTXLinks={true} />
+          <TransactionAssets transaction={transaction} disableTXLinks={true} />
         </section>
       </Page>
     );
@@ -129,6 +150,11 @@ TransactionPage.propTypes = {
   match: PropTypes.object,
   rootStore: PropTypes.object,
 };
+
+function getCoinbaseMaturity(latestBlock, txBlock) {
+  const difference = Math.min(latestBlock - txBlock, 100);
+  return 100 - difference;
+}
 
 const NotFoundDisplay = () => {
   return (
