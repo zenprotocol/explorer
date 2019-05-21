@@ -27,7 +27,7 @@ app.use(
 );
 
 // cors
-var whitelist = ['http://wallet.zp.io/', 'http://staging.wallet.zp.io/'];
+var whitelist = ['https://wallet.zp.io', 'https://staging-wallet.zp.io'];
 var corsOptions = {
   origin: function(origin, callback) {
     if (whitelist.indexOf(origin) !== -1) {
