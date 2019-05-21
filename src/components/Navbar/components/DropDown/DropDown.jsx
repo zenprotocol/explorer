@@ -27,11 +27,8 @@ export default class NavbarDropdown extends Component {
     const { label, className, children } = this.props;
     return (
       <div className={classNames('Navbar-DropDown', className)}>
-        <a
+        <button
           className="nav-link dropdown-toggle"
-          role="button"
-          aria-haspopup="true"
-          aria-expanded="false"
           onMouseEnter={this.open}
           onMouseLeave={this.close}
         >
@@ -39,7 +36,7 @@ export default class NavbarDropdown extends Component {
           <span className="dropdown-arrow">
             <i className={`fas fa-caret-${isOpen ? 'up' : 'down'}`} />
           </span>
-        </a>
+        </button>
         <div
           onMouseEnter={this.open}
           onMouseLeave={this.close}
