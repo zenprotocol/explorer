@@ -43,6 +43,7 @@ export default class NavbarDropdown extends Component {
         <div
           onMouseEnter={this.open}
           onMouseLeave={this.close}
+          onClick={this.close}
           className={classNames('dropdown-container', { 'is-open': isOpen })}
         >
           {children}

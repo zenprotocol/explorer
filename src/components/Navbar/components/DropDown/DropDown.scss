@@ -2,7 +2,6 @@
 
 .Navbar-DropDown {
   position: relative;
-  
 
   .dropdown-toggle {
     white-space: nowrap;
@@ -30,6 +29,11 @@
       position: absolute;
       height: 0;
       overflow: hidden;
+      opacity: 0;
+
+      &.is-open {
+        opacity: 1;
+      }
     }
   }
 }
