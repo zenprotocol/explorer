@@ -16,17 +16,20 @@ export default function UIStore(rootStore, initialState = {}) {
     syncing: false,
 
     blocksTable: {
+      force: 1,
       pageSize: defaultValues.get('blocksTable.pageSize'),
       curPage: defaultValues.get('blocksTable.curPage'),
     },
 
     blockTxTable: {
+      force: 1,
       hashOrBlockNumber: defaultValues.get('blockTxTable.hashOrBlockNumber', '0'),
       pageSize: defaultValues.get('blockTxTable.pageSize'),
       curPage: defaultValues.get('blockTxTable.curPage'),
     },
 
     blockContractsTable: {
+      force: 1,
       blockNumber: defaultValues.get('blockContractsTable.blockNumber', 0),
       pageSize: defaultValues.get('blockContractsTable.pageSize'),
       curPage: defaultValues.get('blockContractsTable.curPage'),
@@ -34,59 +37,69 @@ export default function UIStore(rootStore, initialState = {}) {
     },
 
     addressTxAssetsTable: {
+      force: 1,
       address: defaultValues.get('addressTxAssetsTable.address'),
       pageSize: defaultValues.get('addressTxAssetsTable.pageSize'),
       curPage: defaultValues.get('addressTxAssetsTable.curPage'),
     },
 
     addressTxsTable: {
+      force: 1,
       address: defaultValues.get('addressTxsTable.address'),
       pageSize: defaultValues.get('addressTxsTable.pageSize'),
       curPage: defaultValues.get('addressTxsTable.curPage'),
     },
 
     contractsTable: {
+      force: 1,
       pageSize: defaultValues.get('contractsTable.pageSize'),
       curPage: defaultValues.get('contractsTable.curPage'),
       sorted: defaultValues.get('contractsTable.sorted'),
     },
 
     contractAssetsTable: {
+      force: 1,
       address: defaultValues.get('contractAssetsTable.address'),
       pageSize: defaultValues.get('contractAssetsTable.pageSize'),
       curPage: defaultValues.get('contractAssetsTable.curPage'),
     },
 
     contractCommandsTable: {
+      force: 1,
       address: defaultValues.get('contractCommandsTable.address'),
       pageSize: defaultValues.get('contractCommandsTable.pageSize'),
       curPage: defaultValues.get('contractCommandsTable.curPage'),
     },
 
     assetsTable: {
+      force: 1,
       pageSize: defaultValues.get('assetsTable.pageSize'),
       curPage: defaultValues.get('assetsTable.curPage'),
     },
 
     assetTxsTable: {
+      force: 1,
       asset: defaultValues.get('assetTxsTable.asset'),
       pageSize: defaultValues.get('assetTxsTable.pageSize'),
       curPage: defaultValues.get('assetTxsTable.curPage'),
     },
 
     assetKeyholdersTable: {
+      force: 1,
       asset: defaultValues.get('assetKeyholdersTable.asset'),
       pageSize: defaultValues.get('assetKeyholdersTable.pageSize'),
       curPage: defaultValues.get('assetKeyholdersTable.curPage'),
     },
 
     repoVotesTable: {
+      force: 1,
       interval: defaultValues.get('repoVotesTable.interval'),
       pageSize: defaultValues.get('repoVotesTable.pageSize'),
       curPage: defaultValues.get('repoVotesTable.curPage'),
     },
 
     repoVoteResultsTable: {
+      force: 1,
       interval: defaultValues.get('repoVoteResultsTable.interval'),
       pageSize: defaultValues.get('repoVoteResultsTable.pageSize'),
       curPage: defaultValues.get('repoVoteResultsTable.curPage'),
@@ -280,7 +293,7 @@ export default function UIStore(rootStore, initialState = {}) {
     });
 
     autorun(function fetchRepoVotesOnChange() {
-      if (state.repoVotesTable.interval !== '') {
+      if (state.repoVotesTable.interval !== '' && state.repoVotesTable.force > 0) {
         repoVoteStore.loadVotes(
           Object.assign(
             {},
@@ -294,8 +307,8 @@ export default function UIStore(rootStore, initialState = {}) {
       }
     });
 
-    autorun(function fetchRepoVotesOnChange() {
-      if (state.repoVoteResultsTable.interval !== '') {
+    autorun(function fetchRepoVoteResultsOnChange() {
+      if (state.repoVoteResultsTable.interval !== '' && state.repoVoteResultsTable.force > 0) {
         repoVoteStore.loadResults(
           Object.assign(
             {},
@@ -347,6 +360,7 @@ function setTableData({ nameOfIdentifier, objectToSet } = {}) {
     const pageSize = params.pageSize;
     const curPage = params.curPage;
     const sorted = params.sorted;
+    const force = params.force; // a boolean to force an update
 
     if (id && id !== objectToSet[nameOfIdentifier]) {
       const prevId = objectToSet[nameOfIdentifier];
@@ -364,6 +378,9 @@ function setTableData({ nameOfIdentifier, objectToSet } = {}) {
     }
     if (sorted) {
       objectToSet.sorted = sorted;
+    }
+    if(force) {
+      objectToSet.force = objectToSet.force + 1;
     }
   };
 }
