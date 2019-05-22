@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import Config from '../../lib/Config';
 import Logo from '../Logo';
 import ExternalLink from '../ExternalLink';
+import SyncNotification from '../SyncNotification';
 import './Footer.scss';
 
 export default function Footer() {
@@ -28,25 +29,6 @@ export default function Footer() {
     </footer>
   );
 }
-
-const SyncNotification = inject('rootStore')(
-  observer(props => {
-    const { uiStore } = props.rootStore;
-    return (
-      <div className="SyncNotification">
-        {uiStore.state.syncing ? (
-          <span className="syncing">
-            <i className="icon far fa-spinner-third zen-spin" /> Syncing...
-          </span>
-        ) : (
-          <span className="synced">
-            <i className="icon fas fa-circle" /> Synced.
-          </span>
-        )}
-      </div>
-    );
-  })
-);
 
 const FooterLinks = inject('rootStore')(
   observer(props => {

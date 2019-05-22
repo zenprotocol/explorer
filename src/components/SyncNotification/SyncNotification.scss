@@ -1,0 +1,15 @@
+@import 'src/style/variables';
+
+.SyncNotification {
+  display: inline-block;
+  position: relative;
+  top: 2px;
+
+  .icon {
+    color: #03B358;
+  }
+
+  .error .icon {
+    color: $red;
+  }
+}

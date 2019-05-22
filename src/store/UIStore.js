@@ -13,7 +13,7 @@ export default function UIStore(rootStore, initialState = {}) {
 
   const defaultValues = defaultValuesFactory(initialState);
   const state = observable({
-    syncing: false,
+    syncing: 'synced',
 
     blocksTable: {
       force: 1,
@@ -111,7 +111,7 @@ export default function UIStore(rootStore, initialState = {}) {
       .findByName('syncing')
       .then(response => {
         runInAction(() => {
-          state.syncing = response.success && response.data.value === 'true';
+          state.syncing = response.success && response.data.value;
         });
       })
       .catch(() => {});

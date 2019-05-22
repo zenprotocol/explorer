@@ -21,7 +21,6 @@ class BlocksAdder {
     const startTime = process.hrtime();
     let dbTransaction = null;
     try {
-      await this.setSyncingStatus({ syncing: true });
       let latestBlockNumberInDB = await this.getLatestBlockNumberInDB();
       const latestBlockNumberInNode = await this.networkHelper.getLatestBlockNumberFromNode();
       const latestBlockNumberToAdd = getJobData(job, 'limitBlocks')
@@ -38,6 +37,7 @@ class BlocksAdder {
       const blocks = [];
 
       if (latestBlockNumberToAdd > latestBlockNumberInDB) {
+        await this.setSyncingStatus({ syncing: 'syncing' });
         const infos = await this.updateInfos();
         this.blockchainParser.setChain(infos.chain);
 
@@ -65,7 +65,7 @@ class BlocksAdder {
         logger.info('Commit the database transaction');
         await dbTransaction.commit();
       }
-      await this.setSyncingStatus({ syncing: false });
+      await this.setSyncingStatus({ syncing: 'synced' });
       const hrEnd = process.hrtime(startTime);
       logger.info(`AddNewBlocks Finished. Time elapsed = ${hrEnd[0]}s ${hrEnd[1] / 1000000}ms`);
       // return the number of blocks added and the latest block number
@@ -79,6 +79,7 @@ class BlocksAdder {
         logger.info('Rollback the database transaction');
         await dbTransaction.rollback();
       }
+      await this.setSyncingStatus({ syncing: 'error' });
       throw new QueueError(error);
     }
   }
@@ -119,12 +120,11 @@ class BlocksAdder {
     return infos;
   }
 
-  async setSyncingStatus({ syncing = false } = {}) {
+  async setSyncingStatus({ syncing = 'synced' } = {}) {
     const name = 'syncing';
     const info = await infosDAL.findByName(name);
     if (info) {
       await infosDAL.update(info.id, {
-        name,
         value: syncing,
       });
     } else {
