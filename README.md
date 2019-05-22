@@ -81,6 +81,7 @@ in the docker web container, run `npx sequelize` to see all cli options.
   - **GOOGLE_TRACKING_ID**
   - **GOVERNANCE_CONTRACT_ID** - The contract ID of the repo voting
   - **governance__afterTallyBlocks** - How many blocks after tally to show the vote results 
+  - **REACT_APP_PROD_ENV** - staging/production
 
 ## DB Copy/Backup, copy db from staging to production
 ### Heroku
