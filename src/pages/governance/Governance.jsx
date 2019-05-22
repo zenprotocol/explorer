@@ -62,7 +62,9 @@ class GovernancePage extends React.Component {
   }
 
   componentDidMount() {
-    this.loadRelevantInterval();
+    if (!this.repoVoteStore.relevantInterval.interval) {
+      this.loadRelevantInterval();
+    }
 
     // load once only
     if (!this.repoVoteStore.recentIntervals.length) {
@@ -73,18 +75,14 @@ class GovernancePage extends React.Component {
   componentDidUpdate(prevProps) {
     const curInterval = RouterUtils.getRouteParams(this.props).interval;
     const prevInterval = RouterUtils.getRouteParams(prevProps).interval;
-    if (curInterval !== prevInterval) {
+    const storeInterval = String(this.repoVoteStore.relevantInterval.interval);
+    if (curInterval !== prevInterval && storeInterval !== curInterval) {
       this.loadRelevantInterval();
     }
   }
 
   loadRelevantInterval() {
-    if (
-      !this.repoVoteStore.relevantInterval.interval ||
-      String(this.repoVoteStore.relevantInterval.interval) !== this.intervalRouteParam
-    ) {
-      this.repoVoteStore.loadRelevantInterval({ interval: this.intervalRouteParam });
-    }
+    this.repoVoteStore.loadRelevantInterval({ interval: this.intervalRouteParam });
   }
 
   render() {
