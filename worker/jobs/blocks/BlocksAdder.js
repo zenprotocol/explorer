@@ -65,7 +65,10 @@ class BlocksAdder {
         logger.info('Commit the database transaction');
         await dbTransaction.commit();
       }
-      await this.setSyncingStatus({ syncing: 'synced' });
+      else {
+        await this.setSyncingStatus({ syncing: 'synced' });
+      }
+      
       const hrEnd = process.hrtime(startTime);
       logger.info(`AddNewBlocks Finished. Time elapsed = ${hrEnd[0]}s ${hrEnd[1] / 1000000}ms`);
       // return the number of blocks added and the latest block number
