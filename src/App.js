@@ -1,19 +1,18 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { inject } from 'mobx-react';
-import Service from './lib/Service';
 import MainRoutes from './MainRoutes.jsx';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import TestnetBar from './components/TestnetBar';
-
+import bindEventHandlers from './lib/bindEventHandlers';
 import './App.scss';
 
 class App extends Component {
   constructor(props) {
     super(props);
 
-    this.fetchSyncingTimeout = this.fetchSyncingTimeout.bind(this);
+    bindEventHandlers(['pollSyncing', 'pollBlocksCount'], this);
   }
 
   get infoStore() {
@@ -28,25 +27,24 @@ class App extends Component {
 
   componentDidMount() {
     this.infoStore.loadInfos();
-    this.fetchBlocksCount();
-    this.fetchSyncingTimeout();
+    this.pollBlocksCount();
+    this.pollSyncing();
   }
 
   componentWillUnmount() {
+    clearInterval(this.blocksTimer);
     clearInterval(this.syncingTimer);
   }
 
-  fetchBlocksCount() {
-    Service.blocks.count().then(response => {
-      if (Number(response.data) !== this.blockStore.blocksCount) {
-        this.blockStore.setBlocksCount(Number(response.data));
-      }
+  pollBlocksCount() {
+    this.blockStore.fetchBlocksCount().then(() => {
+      this.blocksTimer = setTimeout(this.pollBlocksCount, 30000);
     });
   }
 
-  fetchSyncingTimeout() {
+  pollSyncing() {
     this.uiStore.fetchSyncing().then(() => {
-      this.syncingTimer = setTimeout(this.fetchSyncingTimeout, 60000);
+      this.syncingTimer = setTimeout(this.pollSyncing, 60000);
     });
   }
 

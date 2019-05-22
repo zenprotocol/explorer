@@ -30,8 +30,15 @@ export default class BlockStore {
     });
   }
 
-  setBlocksCount(count) {
-    this.blocksCount = count;
+  fetchBlocksCount() {
+    return Service.blocks
+      .count()
+      .then(response => {
+        runInAction(() => {
+          this.blocksCount = Number(response.data);
+        });
+      })
+      .catch(() => {});
   }
 
   fetchBlocks(params = { pageSize: 10, page: 0 }) {
@@ -176,7 +183,7 @@ export default class BlockStore {
   }
 
   get numberOfTransactions() {
-    return this.block.Transactions ? this.block.Transactions.length : 0;
+    return (this.block || {}).Transactions ? this.block.Transactions.length : 0;
   }
 
   confirmations(blockNumber) {
@@ -202,7 +209,7 @@ decorate(BlockStore, {
   medianTime: observable,
   medianTimeString: computed,
   numberOfTransactions: computed,
-  setBlocksCount: action,
+  fetchBlocksCount: action,
   fetchBlocks: action,
   fetchBlock: action,
   fetchBlockTransactionAssets: action,
