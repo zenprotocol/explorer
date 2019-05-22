@@ -10,7 +10,7 @@ const run = async () => {
   const argv = await cli
     .number('-b, --begin', { desc: 'The start block', required: true })
     .number('-l, --length', { desc: 'The interval length in blocks', required: true })
-    .number('-g, --gap', { desc: 'The gap between intervals in blocks', required: true })
+    .number('-g, --gap', { desc: 'The gap between snapshots in blocks', required: true })
     .number('-a, --amount', { desc: 'The amount of intervals to insert', required: true })
     .number('-i, --interval', { desc: 'The first interval number', defaultValue: 1 })
     .help('-h, --help')
