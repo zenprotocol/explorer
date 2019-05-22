@@ -7,7 +7,7 @@ import TextUtils from '../../lib/TextUtils';
 function LatestBlockInfo() {
   const { blockStore } = this.props.rootStore;
   const { blockNumber, timestamp } = blockStore.latestBlock;
-  if (blockStore.loading.latestBlock || !Object.keys(blockStore.latestBlock).length) {
+  if (!Object.keys(blockStore.latestBlock).length) {
     return null;
   }
 
