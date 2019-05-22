@@ -135,11 +135,7 @@ class GovernancePage extends React.Component {
             <DuringVoteInfo {...relevantInterval} currentBlock={this.currentBlock} />
           )}
           {this.voteStatus === voteStatus.after && (
-            <AfterVoteInfo
-              {...relevantInterval}
-              currentBlock={this.currentBlock}
-              commitId={this.repoVoteStore.winnerCommitId}
-            />
+            <AfterVoteInfo {...relevantInterval} commitId={this.repoVoteStore.winnerCommitId} />
           )}
         </section>
       </div>
@@ -219,7 +215,7 @@ DuringVoteInfo.propTypes = {
   endHeight: PropTypes.number,
 };
 
-function AfterVoteInfo({ commitId, beginHeight, endHeight }) {
+function AfterVoteInfo({ commitId, interval, beginHeight, endHeight }) {
   return (
     <div className="container">
       <div className="row">
@@ -237,7 +233,9 @@ function AfterVoteInfo({ commitId, beginHeight, endHeight }) {
       {commitId && (
         <div className="row">
           <div className="col border border-dark text-center after-tally-message">
-            WINNER: <CommitLink commitId={commitId} />
+            {TextUtils.getOrdinal(interval).toUpperCase()} SEMESTER WINNER COMMIT ID:
+            <br />
+            <CommitLink commitId={commitId} />
           </div>
         </div>
       )}
@@ -245,6 +243,7 @@ function AfterVoteInfo({ commitId, beginHeight, endHeight }) {
   );
 }
 AfterVoteInfo.propTypes = {
+  interval: PropTypes.number,
   beginHeight: PropTypes.number,
   endHeight: PropTypes.number,
   commitId: PropTypes.string,
