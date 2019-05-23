@@ -1,4 +1,4 @@
-FROM node:8.12.0-alpine
+FROM node:10.15.3-alpine
 
 RUN apk update && apk upgrade && apk --no-cache add curl && apk add python g++ make && rm -rf /var/cache/apk/* && npm i -g npm
 
