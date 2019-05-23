@@ -32,7 +32,6 @@ class TransactionAsset extends Component {
       });
     }
   }
-  
 
   toggleShowMore() {
     this.setState(state => ({
@@ -78,7 +77,11 @@ class TransactionAsset extends Component {
 
   getRowsData(props = {}) {
     const { transactionAsset, asset, address, addressFoundIn, total } = props;
-    const outputs = this.filterOutputsByAddress(this.getOutputs(transactionAsset), address, addressFoundIn);
+    const outputs = this.filterOutputsByAddress(
+      this.getOutputs(transactionAsset),
+      address,
+      addressFoundIn
+    );
     const inputs = this.getInputs(transactionAsset);
     const rowsData = [];
     const maxLength = Math.max(1, outputs.length, inputs.length);
@@ -155,8 +158,6 @@ class TransactionAsset extends Component {
     };
   }
 
-  
-
   getTableColumns({ showAsset } = {}) {
     const { asset } = this.props;
     return [
@@ -172,15 +173,13 @@ class TransactionAsset extends Component {
                     <ButtonShowMore showMore={original.showMore} onClick={this.toggleShowMore} />
                   );
                 } else {
-                  return (
-                    value && (
-                      <HashLink
-                        hash={AssetUtils.getAssetNameFromCode(value)}
-                        value={value}
-                        url={`/assets/${value}`}
-                      />
-                    )
-                  );
+                  return value ? (
+                    <HashLink
+                      hash={AssetUtils.getAssetNameFromCode(value)}
+                      value={value}
+                      url={`/assets/${value}`}
+                    />
+                  ) : null;
                 }
               },
             },
@@ -193,11 +192,9 @@ class TransactionAsset extends Component {
         Cell: ({ value, original }) => {
           if (typeof original.showMore !== 'undefined') {
             // make sure the button does not appear in the asset column already
-            return (
-              !showAsset && (
-                <ButtonShowMore showMore={original.showMore} onClick={this.toggleShowMore} />
-              )
-            );
+            return !showAsset ? (
+              <ButtonShowMore showMore={original.showMore} onClick={this.toggleShowMore} />
+            ) : null;
           } else {
             return original.isInputHash ? (
               <AddressLink address={value} active={original.isInputActive} hash={value} />
