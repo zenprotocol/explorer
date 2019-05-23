@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { autorun } from 'mobx';
 import { observer, inject } from 'mobx-react';
 import { Link } from 'react-router-dom';
 import TextUtils from '../../../lib/TextUtils';
@@ -75,11 +76,33 @@ class BlocksTable extends Component {
     return uiStore.setBlocksTableData.bind(uiStore);
   }
 
+  forceBlocksReload() {
+    this.props.rootStore.uiStore.setBlocksTableData({ force: true });
+  }
+
+  componentDidMount() {
+    this.reloadOnBlocksCountChange();
+  }
+  componentWillUnmount() {
+    this.stopReload();
+  }
+  reloadOnBlocksCountChange() {
+    // should run on first time, hence the autorun
+    this.forceDisposer = autorun(() => {
+      if (this.props.rootStore.blockStore.blocksCount) {
+        this.forceBlocksReload();
+      }
+    });
+  }
+  stopReload() {
+    this.forceDisposer();
+  }
+
   render() {
     const { blockStore, uiStore } = this.props.rootStore;
     return (
       <ItemsTableWithUrlPagination
-        location={this.props.location} 
+        location={this.props.location}
         history={this.props.history}
         columns={this.getTableColumns()}
         loading={blockStore.loading.blocks}

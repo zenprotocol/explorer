@@ -177,7 +177,7 @@ export default function UIStore(rootStore, initialState = {}) {
     firstRun = false;
 
     autorun(function fetchBlocksOnChange() {
-      if (state.blocksTable.curPage * state.blocksTable.pageSize < blockStore.blocksCount) {
+      if (state.blocksTable.force > 1) {
         blockStore.fetchBlocks({
           page: state.blocksTable.curPage,
           pageSize: state.blocksTable.pageSize,
@@ -379,7 +379,7 @@ function setTableData({ nameOfIdentifier, objectToSet } = {}) {
     if (sorted) {
       objectToSet.sorted = sorted;
     }
-    if(force) {
+    if (force) {
       objectToSet.force = objectToSet.force + 1;
     }
   };
