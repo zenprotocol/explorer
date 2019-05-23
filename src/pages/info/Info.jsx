@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { reaction } from 'mobx';
 import { observer, inject } from 'mobx-react';
 import { Helmet } from 'react-helmet';
 import TextUtils from '../../lib/TextUtils.js';
@@ -11,8 +12,6 @@ import PageTitle from '../../components/PageTitle';
 import InfoBox from '../../components/InfoBox';
 import './Info.scss';
 
-const FETCH_TIMEOUT = 30000;
-
 class InfoPage extends Component {
   constructor(props) {
     super(props);
@@ -20,28 +19,33 @@ class InfoPage extends Component {
     this.state = {
       isFirstLoad: true,
     };
-
-    this.fetchInfos = this.fetchInfos.bind(this);
   }
 
   get infoStore() {
     return this.props.rootStore.infoStore;
   }
 
-  componentDidMount() {
-    // infos should be loaded already from App
-    this.fetchTimer = setTimeout(this.fetchInfos, FETCH_TIMEOUT);
-  }
-
-  componentWillUnmount() {
-    clearTimeout(this.fetchTimer);
-  }
-
   fetchInfos() {
     this.setState({ isFirstLoad: false });
-    this.infoStore.loadInfos().then(() => {
-      this.fetchTimer = setTimeout(this.fetchInfos, FETCH_TIMEOUT);
-    });
+    this.infoStore.loadInfos();
+  }
+
+  componentDidMount() {
+    this.reloadOnBlocksCountChange();
+  }
+  componentWillUnmount() {
+    this.stopReload();
+  }
+  reloadOnBlocksCountChange() {
+    this.forceDisposer = reaction(
+      () => this.props.rootStore.blockStore.blocksCount,
+      () => {
+        this.fetchInfos();
+      }
+    );
+  }
+  stopReload() {
+    this.forceDisposer();
   }
 
   render() {
@@ -49,20 +53,12 @@ class InfoPage extends Component {
       return <Loading />;
     }
 
-    const {infos} = this.infoStore;
+    const { infos } = this.infoStore;
     if (Object.keys(infos).length === 0) {
       return null;
     }
 
-    const {
-      chain,
-      blocks,
-      transactions,
-      difficulty,
-      hashRate,
-      nodeVersion,
-      walletVersion,
-    } = infos;
+    const { chain, blocks, transactions, difficulty, hashRate, nodeVersion, walletVersion } = infos;
 
     return (
       <Page className="Info">
