@@ -127,6 +127,9 @@
     "tape": "^4.10.1",
     "testdouble": "^3.11.0"
   },
+  "engines": {
+    "node": "10.x"
+  },
   "nyc": {
     "include": [
       "server/**"
