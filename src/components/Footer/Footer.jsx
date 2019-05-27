@@ -37,21 +37,17 @@ const FooterLinks = inject('rootStore')(
       <div className="FooterLinks">
         <div className="">
           <ul className="nav flex-column">
-            {process.env.REACT_APP_PROD_ENV !== 'production' && (
-              <li className="nav-item">
-                <Link className="nav-link text-nowrap" to="/broadcastTx">
-                  Broadcast Raw Tx
-                </Link>
-              </li>
-            )}
-            {process.env.REACT_APP_PROD_ENV !== 'production' && (
-              <li className="nav-item">
-                <Link className="nav-link text-nowrap" to="/oracle">
-                  Oracle
-                </Link>
-              </li>
-            )}
             {/* <li className="nav-item">
+              <Link className="nav-link text-nowrap" to="/broadcastTx">
+                Broadcast Raw Tx
+              </Link>
+            </li>
+            <li className="nav-item">
+              <Link className="nav-link text-nowrap" to="/oracle">
+                Oracle
+              </Link>
+            </li>
+            <li className="nav-item">
               <Link className="nav-link text-nowrap" to="/templates/contract">Contract templates</Link>
             </li> */}
             <li className="nav-item">
