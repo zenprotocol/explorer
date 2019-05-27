@@ -44,11 +44,13 @@ const FooterLinks = inject('rootStore')(
                 </Link>
               </li>
             )}
-            <li className="nav-item">
-              <Link className="nav-link text-nowrap" to="/oracle">
-                Oracle
-              </Link>
-            </li>
+            {process.env.REACT_APP_PROD_ENV !== 'production' && (
+              <li className="nav-item">
+                <Link className="nav-link text-nowrap" to="/oracle">
+                  Oracle
+                </Link>
+              </li>
+            )}
             {/* <li className="nav-item">
               <Link className="nav-link text-nowrap" to="/templates/contract">Contract templates</Link>
             </li> */}
