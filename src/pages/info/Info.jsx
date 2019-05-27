@@ -58,7 +58,8 @@ class InfoPage extends Component {
       return null;
     }
 
-    const { chain, blocks, transactions, difficulty, hashRate, nodeVersion, walletVersion } = infos;
+    const { chain, blocks, transactions, difficulty, nodeVersion, walletVersion } = infos;
+    const formattedHashRate = formatHashRate(infos);
 
     return (
       <Page className="Info">
@@ -97,7 +98,7 @@ class InfoPage extends Component {
             <InfoBox
               className="hashrate"
               title="Network Hashrate"
-              content={`${TextUtils.formatNumber((hashRate / 1000000000000).toFixed(2))} TH/s`}
+              content={`${TextUtils.formatNumber(formattedHashRate.value)} ${formattedHashRate.unit}`}
               iconClass="fal fa-tachometer-alt-fastest fa-fw"
             />
           </div>
@@ -170,12 +171,19 @@ InfoPage.propTypes = {
   rootStore: PropTypes.object,
 };
 
-const addNetToChainName = chain => {
+function addNetToChainName(chain) {
   if (!chain || typeof chain !== 'string') {
     return chain;
   }
   const append = 'net';
   return chain.endsWith(append) ? chain : chain + append;
-};
+}
+
+function formatHashRate({ chain, hashRate } = {}) {
+  const hashRateInUnit = chain === 'test' ? hashRate / 1000000000 : hashRate / 1000000000000;
+  const unit = chain === 'test' ? 'GH/s' : 'TH/s';
+  const value = hashRateInUnit < 0.01 ? hashRateInUnit.toFixed(8) : hashRateInUnit.toFixed(2);
+  return { unit, value };
+}
 
 export default inject('rootStore')(observer(InfoPage));
