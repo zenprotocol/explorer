@@ -16,7 +16,8 @@ Client side was bootstrapped with [create-react-app](https://github.com/facebook
 2. Open a terminal in the root folder of the project.
 3. `npm run setup` - to create your env file and needed directories and to install dependencies.
 3. Open .env file and fill missing data
-4. `npm run docker:up` - this will:
+3. `npm run client:build` - to build the front end
+4. `npm run docker:up:all` - this will:
    - Download all the needed images
    - Create all the containers. 
    - Start the web server.
@@ -27,7 +28,7 @@ Client side was bootstrapped with [create-react-app](https://github.com/facebook
 6. Start caching the db or copy the staging db   
    - **Option 1** - run the worker to cache your db   
       1. `docker-compose exec web sh`
-      2. `node worker/worker.js` - start the worker
+      2. `node worker` - start the worker
       3. let it work
    - **Option 2** - copy the db from staging   
       1. Follow the steps in [Heroku to local](#heroku-to-local)
