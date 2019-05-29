@@ -1,17 +1,14 @@
 'use strict';
 
 const path = require('path');
-const Queue = require('bull');
+const queue = require('./lib/queue');
 const TaskTimeLimiter = require('./lib/TaskTimeLimiter');
 const Config = require('../server/config/Config');
 const logger = require('./lib/logger')('votes');
 const slackLogger = require('../server/lib/slackLogger');
 const getChain = require('../server/lib/getChain');
 
-const votesQueue = new Queue(
-  Config.get('queues:votes:name'),
-  Config.any(['REDISCLOUD_URL', 'redis'])
-);
+const votesQueue = queue(Config.get('queues:votes:name'));
 
 const taskTimeLimiter = new TaskTimeLimiter(Config.get('queues:slackTimeLimit') * 1000);
 

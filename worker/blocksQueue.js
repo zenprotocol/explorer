@@ -1,7 +1,7 @@
 'use strict';
 
 const path = require('path');
-const Queue = require('bull');
+const queue = require('./lib/queue');
 const TaskTimeLimiter = require('./lib/TaskTimeLimiter');
 const Config = require('../server/config/Config');
 const makeLogger = require('./lib/logger');
@@ -11,18 +11,9 @@ const slackLogger = require('../server/lib/slackLogger');
 const getChain = require('../server/lib/getChain');
 const NUM_OF_BLOCKS_IN_CHUNK = Config.get('queues:addBlocks:limitBlocks');
 
-const addBlocksQueue = new Queue(
-  Config.get('queues:addBlocks:name'),
-  Config.any(['REDISCLOUD_URL', 'redis'])
-);
-const reorgsQueue = new Queue(
-  Config.get('queues:reorgs:name'),
-  Config.any(['REDISCLOUD_URL', 'redis'])
-);
-const snapshotsQueue = new Queue(
-  Config.get('queues:snapshots:name'),
-  Config.any(['REDISCLOUD_URL', 'redis'])
-);
+const addBlocksQueue = queue(Config.get('queues:addBlocks:name'));
+const reorgsQueue = queue(Config.get('queues:reorgs:name'));
+const snapshotsQueue = queue(Config.get('queues:snapshots:name'));
 
 const taskTimeLimiter = new TaskTimeLimiter(Config.get('queues:slackTimeLimit') * 1000);
 
