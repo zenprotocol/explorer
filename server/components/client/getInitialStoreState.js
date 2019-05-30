@@ -152,7 +152,7 @@ async function getInfoStoreData() {
 
 async function getRepoVoteStoreData(req) {
   const [relevantInterval, nextInterval, recentIntervals] = await Promise.all([
-    votesBLL.findIntervalAndTally(req.query),
+    votesBLL.findIntervalAndTally(req.params),
     votesBLL.findNextInterval(),
     votesBLL.findRecentIntervals(),
   ]);
