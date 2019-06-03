@@ -30,19 +30,26 @@ test('BlocksAdder.addNewBlocks()', async function(t) {
 
     try {
       const { count, latest } = await blocksAdder.addNewBlocks({
-        data: { limitBlocks: 1, skipTransactions: true },
+        data: { limitBlocks: 2, skipTransactions: true },
       });
 
       t.assert(count > 0, `${given}: Should have added new blocks`);
-      t.equal(latest, 1, `${given}: Should return the latest block added`);
+      t.equal(latest, 2, `${given}: Should return the latest block added`);
 
-      const latestBlockAfterAdd = await blocksDAL.findLatest();
-      t.assert(latestBlockAfterAdd !== null, `${given}: There should be new blocks in the db`);
-      t.equals(latestBlockAfterAdd.blockNumber, 1, `${given}: The latest block number should be 1`);
+      const block1 = await blocksDAL.findByBlockNumber(1);
+      t.assert(block1 !== null, `${given}: Block 1 should be in the db`);
       t.equal(
-        latestBlockAfterAdd.reward,
+        block1.reward,
+        '0',
+        `${given}: Block 1 should have reward = 0`
+      );
+
+      const block2 = await blocksDAL.findByBlockNumber(2);
+      t.assert(block2 !== null, `${given}: Block 2 should be in the db`);
+      t.equal(
+        block2.reward,
         '5000000000',
-        `${given}: The added block should contain reward`
+        `${given}: Block 2 should have a reward`
       );
     } catch (error) {
       t.fail(`${given}: Should not throw an error`);

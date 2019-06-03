@@ -51,7 +51,9 @@ class BlocksAdder {
           const nodeBlock = await Promise.all([
             this.networkHelper.getBlockFromNode(blockNumber),
             this.networkHelper.getBlockRewardFromNode(blockNumber),
-          ]).then(([block, reward]) => Object.assign(block, { reward }));
+          ]).then(([block, reward]) =>
+            Object.assign(block, { reward: blockNumber === 1 ? 0 : reward })
+          );
 
           logger.info(`Got block #${nodeBlock.header.blockNumber} from NODE...`);
           blocks.push(await this.addBlock({ job, nodeBlock, dbTransaction }));
@@ -64,17 +66,16 @@ class BlocksAdder {
 
         logger.info('Commit the database transaction');
         await dbTransaction.commit();
-      }
-      else {
+      } else {
         await this.setSyncingStatus({ syncing: 'synced' });
       }
-      
+
       const hrEnd = process.hrtime(startTime);
       logger.info(`AddNewBlocks Finished. Time elapsed = ${hrEnd[0]}s ${hrEnd[1] / 1000000}ms`);
       // return the number of blocks added and the latest block number
       return {
         count: blocks.length,
-        latest: blocks.reduce((max, cur) => max < cur.blockNumber ? cur.blockNumber : max , 0),
+        latest: blocks.reduce((max, cur) => (max < cur.blockNumber ? cur.blockNumber : max), 0),
       };
     } catch (error) {
       logger.error(`An Error has occurred when adding blocks: ${error.message}`);
@@ -298,7 +299,9 @@ class BlocksAdder {
         where: { hash: transactionHash },
         transaction: dbTransaction,
       });
-      await contractsDAL.addActivationTransaction(dbContract, transaction, { transaction: dbTransaction });
+      await contractsDAL.addActivationTransaction(dbContract, transaction, {
+        transaction: dbTransaction,
+      });
     }
     return created;
   }
