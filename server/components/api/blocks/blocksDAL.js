@@ -9,26 +9,42 @@ const blocksDAL = dal.createDAL('Block');
 const sequelize = blocksDAL.db.sequelize;
 
 blocksDAL.findAllWithCoinbase = function({ limit = 10, offset = 0 } = {}) {
+  /**
+   * Limit the amount of blocks processed for speed optimization
+   * Calculate the coinbase by summing up all the coinbase lock outputs
+   * Special care for genesis block
+   */
   const sql = tags.oneLine`
   WITH "BlocksLimited" AS 
       (SELECT "Blocks".*
       FROM "Blocks"
-      ORDER BY  "Blocks"."blockNumber" DESC LIMIT :limit OFFSET :offset)
+      ORDER BY "Blocks"."blockNumber" DESC LIMIT :limit OFFSET :offset)
+  
   SELECT "BlocksLimited".*,
-          "Outputs"."amount" AS "coinbaseAmount"
+    CASE
+      WHEN "BlocksLimited"."blockNumber" = 1 THEN 0
+      ELSE COALESCE("CoinbaseOutputSum"."amount", 0)
+    END AS "coinbaseAmount"
   FROM "BlocksLimited"
   JOIN 
-      (SELECT id,
-          "BlockId"
-      FROM "Transactions"
-      WHERE "Transactions"."BlockId" IN 
-          (SELECT id
-          FROM "BlocksLimited")
-                  AND "Transactions"."index" = 0 ) AS "CoinbaseTx"
-          ON "CoinbaseTx"."BlockId" = "BlocksLimited".id
-  JOIN "Outputs"
-      ON "Outputs"."TransactionId" = "CoinbaseTx"."id"
-          AND "Outputs"."index" = 0
+    (SELECT id,
+      "BlockId"
+    FROM "Transactions"
+    WHERE "Transactions"."BlockId" IN 
+      (SELECT id
+      FROM "BlocksLimited")
+              AND "Transactions"."index" = 0 ) AS "CoinbaseTx"
+      ON "CoinbaseTx"."BlockId" = "BlocksLimited".id
+  LEFT JOIN (
+    SELECT sum(amount) as amount, "TransactionId"
+    FROM "Outputs"
+    JOIN "Transactions" ON "Outputs"."TransactionId" = "Transactions"."id"
+    WHERE "Outputs"."lockType" = 'Coinbase'
+    AND "Transactions"."BlockId" IN 
+      (SELECT id
+      FROM "BlocksLimited")
+    GROUP BY "TransactionId") AS "CoinbaseOutputSum"
+  ON "CoinbaseOutputSum"."TransactionId" = "CoinbaseTx"."id"
   ORDER BY "BlocksLimited"."blockNumber" DESC
   `;
   return sequelize
