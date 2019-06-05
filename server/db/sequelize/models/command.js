@@ -3,7 +3,7 @@ module.exports = (sequelize, DataTypes) => {
   var Command = sequelize.define(
     'Command',
     {
-      command: DataTypes.STRING,
+      command: DataTypes.TEXT,
       messageBody: DataTypes.TEXT,
       TransactionId: DataTypes.BIGINT,
       indexInTransaction: DataTypes.INTEGER,
