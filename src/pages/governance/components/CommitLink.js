@@ -5,7 +5,7 @@ import HashLink from '../../../components/HashLink';
 export default function CommitLink({ commitId, ...props }) {
   return (
     <HashLink
-      url={`https://github.com/search?q=${commitId}&type=Commits`}
+      url={`https://gitlab.com/zenprotocol/zenprotocol/commit/${commitId}`}
       hash={commitId}
       external
       {...props}
