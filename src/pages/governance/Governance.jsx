@@ -254,14 +254,14 @@ function VotingTabs({ match, isIntermediate }) {
   return (
     <Tabs>
       <TabHead>
-        <Tab id="tally">{isIntermediate && 'INTERMEDIATE '}RESULTS</Tab>
         <Tab id="votes">VOTES</Tab>
+        <Tab id="tally">{isIntermediate && 'INTERMEDIATE '}RESULTS</Tab>
       </TabHead>
       <TabBody>
         <Switch>
-          <Route path={`${currentPath}/tally`} component={ResultsTab} />
           <Route path={`${currentPath}/votes`} component={VotesTab} />
-          <Redirect from={`${currentPath}`} to={`${currentPath}/tally`} />
+          <Route path={`${currentPath}/tally`} component={ResultsTab} />
+          <Redirect from={`${currentPath}`} to={`${currentPath}/votes`} />
         </Switch>
       </TabBody>
     </Tabs>
