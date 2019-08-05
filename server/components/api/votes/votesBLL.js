@@ -82,6 +82,7 @@ module.exports = {
  * 1. if interval is supplied, by that interval
  * 2. on going interval
  * 3. previous interval if currentBlock - prev.endHeight < 10,000
+ * 4. previous interval if next does not exist
  * 4. next block
  */
 async function getCurrentInterval(interval, currentBlock) {
@@ -98,6 +99,8 @@ async function getCurrentInterval(interval, currentBlock) {
   return current
     ? current
     : prev && currentBlock - prev.endHeight < AFTER_TALLY_BLOCKS
+    ? prev
+    : !next && prev
     ? prev
     : next;
 }
