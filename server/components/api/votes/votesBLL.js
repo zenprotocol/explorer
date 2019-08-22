@@ -1,7 +1,7 @@
 'use strict';
 
 const votesDAL = require('./votesDAL');
-const blocksDAL = require('../blocks/blocksDAL');
+const blocksBLL = require('../blocks/blocksBLL');
 const voteIntervalsDAL = require('../voteIntervals/voteIntervalsDAL');
 const createQueryObject = require('../../../lib/createQueryObject');
 const config = require('../../../config/Config');
@@ -12,7 +12,7 @@ const AFTER_TALLY_BLOCKS = configAfterTallyBlocks ? Number(configAfterTallyBlock
 
 module.exports = {
   findIntervalAndTally: async function({ interval } = {}) {
-    const currentBlock = await getCurrentBlockNumber();
+    const currentBlock = await blocksBLL.getCurrentBlockNumber();
     const currentInterval = await getCurrentInterval(interval, currentBlock);
 
     if (!currentInterval) {
@@ -29,11 +29,11 @@ module.exports = {
     };
   },
   findNextInterval: async function() {
-    const currentBlock = await getCurrentBlockNumber();
+    const currentBlock = await blocksBLL.getCurrentBlockNumber();
     return voteIntervalsDAL.findNext(currentBlock);
   },
   findAllVotesByInterval: async function({ interval, page = 0, pageSize = 10, sorted } = {}) {
-    const currentBlock = await getCurrentBlockNumber();
+    const currentBlock = await blocksBLL.getCurrentBlockNumber();
     const currentInterval = await getCurrentInterval(interval, currentBlock);
     if (!currentInterval) {
       return null;
@@ -54,7 +54,7 @@ module.exports = {
     ]).then(votesDAL.getItemsAndCountResult);
   },
   findAllVoteResults: async function({ interval, page = 0, pageSize = 10 } = {}) {
-    const currentBlock = await getCurrentBlockNumber();
+    const currentBlock = await blocksBLL.getCurrentBlockNumber();
     const currentInterval = await getCurrentInterval(interval, currentBlock);
     if (!currentInterval) {
       return null;
@@ -72,7 +72,7 @@ module.exports = {
     ]).then(votesDAL.getItemsAndCountResult);
   },
   findRecentIntervals: async function() {
-    const currentBlock = await getCurrentBlockNumber();
+    const currentBlock = await blocksBLL.getCurrentBlockNumber();
     return voteIntervalsDAL.findAllRecent(currentBlock);
   },
 };
@@ -103,9 +103,4 @@ async function getCurrentInterval(interval, currentBlock) {
     : !next && prev
     ? prev
     : next;
-}
-
-async function getCurrentBlockNumber() {
-  const latestBlock = await blocksDAL.findLatest();
-  return latestBlock.blockNumber;
 }

@@ -3,6 +3,7 @@
 const transactionsDAL = require('../transactions/transactionsDAL');
 const addressesDAL = require('./addressesDAL');
 const outputsDAL = require('../outputs/outputsDAL');
+const blocksBLL = require('../blocks/blocksBLL');
 
 module.exports = {
   findOne: async function({ address } = {}) {
@@ -26,6 +27,12 @@ module.exports = {
   },
   findAllAssets: async function({ address } = {}) {
     return await outputsDAL.findAllAddressAssets(address);
+  },
+  balance: async function({ address, blockNumber: suppliedBlockNumber } = {}) {
+    const blockNumber = suppliedBlockNumber
+      ? suppliedBlockNumber
+      : await blocksBLL.getCurrentBlockNumber();
+    return addressesDAL.snapshotAddressBalancesByBlock(address, blockNumber);
   },
   balanceZp: async function({ address } = {}) {
     const zpAmounts = await addressesDAL.getZpBalance(address);

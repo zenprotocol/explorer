@@ -25,6 +25,10 @@ module.exports = {
   count: async function() {
     return await blocksDAL.count();
   },
+  getCurrentBlockNumber: async function() {
+    const latestBlock = await blocksDAL.findLatest();
+    return latestBlock.blockNumber;
+  },
   getById: async function({ id } = {}) {
     return await blocksDAL.findById(id);
   },

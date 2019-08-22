@@ -193,4 +193,53 @@ addressesDAL.snapshotBalancesByBlock = async function(blockNumber) {
     });
 };
 
+/**
+ * Get all balances (asset/amount) up until blockNumber for an address
+ *
+ * @param {string} address the address
+ * @param {number} blockNumber the block number 
+ */
+addressesDAL.snapshotAddressBalancesByBlock = async function(address, blockNumber) {
+  const sql = tags.oneLine`
+  SELECT
+    bothsums.asset AS asset,
+    (output_sum - input_sum) AS amount
+  FROM
+    (SELECT
+      COALESCE(osums.asset, isums.asset) AS asset,
+      COALESCE(osums.output_sum, 0) AS output_sum,
+      COALESCE(isums.input_sum, 0) AS input_sum
+    FROM
+      (SELECT
+        o.asset,
+        SUM(o.amount) AS output_sum
+      FROM "Outputs" o
+      INNER JOIN "Transactions" t ON o."TransactionId" = t.id
+      INNER JOIN "Blocks" b ON t."BlockId" = b.id AND b."blockNumber" <= :blockNumber
+      WHERE o.address = :address
+      GROUP BY o.asset) AS osums
+      FULL OUTER JOIN
+      (SELECT
+        io.asset,
+        SUM(io.amount) AS input_sum
+      FROM
+        "Outputs" io
+        INNER JOIN "Inputs" i ON i."OutputId" = io.id
+        INNER JOIN "Transactions" t ON i."TransactionId" = t.id
+        INNER JOIN "Blocks" b ON t."BlockId" = b.id AND b."blockNumber" <= :blockNumber
+      WHERE io.address = :address
+      GROUP BY io.asset) AS isums
+      ON osums.asset = isums.asset) AS bothsums;
+  `;
+
+  return sequelize
+    .query(sql, {
+      replacements: {
+        address,
+        blockNumber,
+      },
+      type: sequelize.QueryTypes.SELECT,
+    });
+};
+
 module.exports = addressesDAL;

@@ -24,6 +24,12 @@ module.exports = {
       throw new HttpError(httpStatus.NOT_FOUND);
     }
   },
+  balance: async function(req, res) {
+    const balance = await addressBLL.balance({ address: req.params.address, blockNumber: req.query.blockNumber });
+
+    // if no assets found balance will be an empty array
+    res.status(httpStatus.OK).json(jsonResponse.create(httpStatus.OK, balance));
+  },
   balanceZp: async function(req, res) {
     const balance = await addressBLL.balanceZp({ address: req.params.address });
 
