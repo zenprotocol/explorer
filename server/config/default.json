@@ -29,11 +29,24 @@
     "votes": {
       "name": "Votes"
     },
+    "cgp": {
+      "name": "CGP"
+    },
     "snapshots": {
       "name": "Vote Snapshots"
     }
   },
   "governance": {
     "afterTallyBlocks": 1000
+  },
+  "cgp": {
+    "main": {
+      "afterTallyBlocks": 1000,
+      "intervalLength": 10000
+    },
+    "test": {
+      "afterTallyBlocks": 10,
+      "intervalLength": 100
+    }
   }
 }

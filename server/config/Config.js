@@ -31,6 +31,9 @@ const Config = {
   any: function(keys) {
     return nconf.any(keys);
   },
+  set: function(key, value) {
+    nconf.set(key, value);
+  }
 };
 
 init();
