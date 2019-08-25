@@ -78,7 +78,7 @@ package "Blockchain" {
   Transaction "1" <--> "1" Contract : Via ContractActivations
 }
 
-package "Repo Votes" {
+package "Votes" {
   Table(VoteInterval, "VoteInterval") {
     primary_key(id)
     interval
@@ -99,7 +99,16 @@ package "Repo Votes" {
     commitId
     address
   }
+  Table(CGPVote, "CGPVote") {
+    primary_key(id)
+    foreign_key(CommandId)
+    type field_comment(allocation/payout)
+    ballot
+    address field_comment(the voter)
+  }
+
   RepoVote "1" <--> "*" Command
+  CGPVote "1" <--> "*" Command
 }
 
 package "Materialized Views" {
