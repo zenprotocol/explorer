@@ -236,7 +236,7 @@ async function createDemoData() {
     endHeight: TALLY_BLOCK,
   });
 
-  const snapshotsTaker = new SnapshotsTaker();
+  const snapshotsTaker = new SnapshotsTaker({ chain: 'test' });
   await snapshotsTaker.doJob();
 }
 

@@ -1,13 +1,17 @@
 'use strict';
 
 const test = require('blue-tape');
+const faker = require('faker');
 const truncate = require('../../../test/lib/truncate');
 const blocksDAL = require('../../../server/components/api/blocks/blocksDAL');
+const transactionsDAL = require('../../../server/components/api/transactions/transactionsDAL');
+const outputsDAL = require('../../../server/components/api/outputs/outputsDAL');
 const voteIntervalsDAL = require('../../../server/components/api/voteIntervals/voteIntervalsDAL');
 const snapshotsDAL = require('../../../server/components/api/snapshots/snapshotsDAL');
 const SnapshotTaker = require('./SnapshotsTaker');
 const BlocksAdder = require('../blocks/BlocksAdder');
 const BlockchainParser = require('../../../server/lib/BlockchainParser');
+const createDemoBlocksFromTo = require('../../../test/lib/createDemoBlocksFromTo');
 const block1 = require('./data/block1.json');
 
 const UNIQUE_ADDRESSES_IN_BLOCK_1 = 2203;
@@ -17,14 +21,14 @@ test.onFinish(() => {
 });
 
 test('SnapshotTaker.doJob() (DB)', async function(t) {
-  await wrapTest('Given no intervals', async given => {
-    const snapshotTaker = new SnapshotTaker();
+  await wrapTest('VoteIntervals: Given no intervals', async given => {
+    const snapshotTaker = new SnapshotTaker({ chain: 'test' });
     const result = await snapshotTaker.doJob();
-    t.equal(result.length, 0, `${given}: should not do anything`);
+    t.equal(result.voteIntervals.length, 0, `${given}: should not do anything`);
   });
 
-  await wrapTest('Given an interval', async given => {
-    const snapshotTaker = new SnapshotTaker();
+  await wrapTest('VoteIntervals: Given an interval', async given => {
+    const snapshotTaker = new SnapshotTaker({ chain: 'test' });
     const blocksAdder = new BlocksAdder({}, new BlockchainParser());
 
     // insert an interval
@@ -37,9 +41,9 @@ test('SnapshotTaker.doJob() (DB)', async function(t) {
     await blocksAdder.addBlock({ job: {}, nodeBlock: JSON.parse(JSON.stringify(block1)) });
 
     const result = await snapshotTaker.doJob();
-    t.equal(result.length, 1, `${given}: should add 1 interval`);
+    t.equal(result.voteIntervals.length, 1, `${given}: should add 1 interval`);
     t.equal(
-      result[0].snapshotCount,
+      result.voteIntervals[0].snapshotCount,
       UNIQUE_ADDRESSES_IN_BLOCK_1,
       `${given}: should add ${UNIQUE_ADDRESSES_IN_BLOCK_1} addresses from block 1`
     );
@@ -62,9 +66,187 @@ test('SnapshotTaker.doJob() (DB)', async function(t) {
       `${given}: should insert set hasSnapshot to true on the interval`
     );
   });
+
+  // CGP ---
+  await wrapTest('CGP: No blocks', async given => {
+    const snapshotTaker = new SnapshotTaker({ chain: 'test' });
+    const result = await snapshotTaker.doJob();
+    t.equal(result.cgp.length, 0, `${given}: should not take a snapshot`);
+  });
+
+  await wrapTest('CGP: before 1st snapshot block', async given => {
+    const snapshotTaker = new SnapshotTaker({ chain: 'test' });
+    await createDemoData({
+      currentBlock: 89,
+      addressAmounts: {
+        tzn1q123: 50 * 100000000,
+        tzn1q124: 100 * 100000000,
+      },
+    });
+    const result = await snapshotTaker.doJob();
+    t.equal(result.cgp.length, 0, `${given}: should not take a snapshot`);
+  });
+
+  await wrapTest('CGP: at 1st snapshot block', async given => {
+    const snapshotTaker = new SnapshotTaker({ chain: 'test' });
+    await createDemoData({
+      currentBlock: 90,
+      addressAmounts: {
+        tzn1q123: 50 * 100000000,
+        tzn1q124: 100 * 100000000,
+      },
+    });
+    const result = await snapshotTaker.doJob();
+    t.equal(result.voteIntervals.length, 0, `${given}: should not take a VoteInterval snapshot`);
+    t.equal(result.cgp.length, 1, `${given}: should take a CGP snapshot`);
+    t.equal(result.cgp[0].snapshotCount, 2, `${given}: should have 2 rows in the snapshot`);
+  });
+
+  await wrapTest('CGP: snapshot already exists', async given => {
+    const snapshotTaker = new SnapshotTaker({ chain: 'test' });
+    await createDemoData({
+      currentBlock: 91,
+      addressAmounts: {
+        tzn1q123: 50 * 100000000,
+        tzn1q124: 100 * 100000000,
+      },
+    });
+
+    // run first to have a snapshot already
+    await snapshotTaker.doJob();
+
+    // 2nd run
+    const result = await snapshotTaker.doJob();
+    t.equal(result.cgp.length, 0, `${given}: should not take a 2nd CGP snapshot`);
+  });
+
+  await wrapTest('CGP: some snapshots already exist', async given => {
+    const snapshotTaker = new SnapshotTaker({ chain: 'test' });
+
+    // add a snapshot for the 2nd interval but leave the 1st and 3rd empty
+    await snapshotsDAL.bulkCreate([
+      {height: 190, address: 'tzn1q123', amount: 50 * 100000000},
+      {height: 190, address: 'tzn1q124', amount: 100 * 100000000},
+    ]);
+    
+    await createDemoData({
+      currentBlock: 300,
+      addressAmounts: {
+        tzn1q123: 50 * 100000000,
+        tzn1q124: 100 * 100000000,
+      },
+    });
+
+    const result = await snapshotTaker.doJob();
+    t.equal(result.cgp.length, 2, `${given}: should take only 2 CGP snapshots`);
+    t.equal(
+      await snapshotsDAL.count(),
+      6, // 2 addresses in each interval
+      `${given}: should have 2 rows per interval in the Snapshot table`
+    );
+  });
+
+  await wrapTest('CGP+VoteIntervals: different snapshot block', async given => {
+    const snapshotTaker = new SnapshotTaker({ chain: 'test' });
+    await createDemoData({
+      currentBlock: 90,
+      addressAmounts: {
+        tzn1q123: 50 * 100000000,
+        tzn1q124: 100 * 100000000,
+      },
+      voteIntervals: [
+        {
+          interval: 1,
+          beginHeight: 80,
+          endHeight: 1000,
+        },
+      ],
+    });
+    const result = await snapshotTaker.doJob();
+    t.equal(result.voteIntervals.length, 1, `${given}: should take a VoteInterval snapshot`);
+    t.equal(result.cgp.length, 1, `${given}: should take a CGP snapshot`);
+    t.equal(
+      result.voteIntervals[0].snapshotCount,
+      2,
+      `${given}: should have 2 rows in the VoteIntervals snapshot`
+    );
+    t.equal(result.cgp[0].snapshotCount, 2, `${given}: should have 2 rows in the CGP snapshot`);
+  });
+
+  await wrapTest('CGP+VoteIntervals: same snapshot block', async given => {
+    const snapshotTaker = new SnapshotTaker({ chain: 'test' });
+    await createDemoData({
+      currentBlock: 90,
+      addressAmounts: {
+        tzn1q123: 50 * 100000000,
+        tzn1q124: 100 * 100000000,
+      },
+      voteIntervals: [
+        {
+          interval: 1,
+          beginHeight: 90,
+          endHeight: 1000,
+        },
+      ],
+    });
+
+    await snapshotTaker.doJob();
+
+    t.equal(
+      await snapshotsDAL.count({
+        where: {
+          height: 90,
+        },
+      }),
+      2,
+      `${given}: should have 2 rows in the CGP snapshot`
+    );
+  });
 });
 
 async function wrapTest(given, test) {
   await truncate();
   await test(given);
+}
+
+/**
+ * Creates a range of blocks, some addresses with amount, an interval and take a snapshot
+ */
+async function createDemoData({ currentBlock, addressAmounts = {}, voteIntervals = [] } = {}) {
+  // create a range of blocks
+  await createDemoBlocksFromTo(1, currentBlock);
+  const block1 = await blocksDAL.findByBlockNumber(1);
+  // add amount to some addresses all in block 1
+  for (let i = 0; i < Object.keys(addressAmounts).length; i++) {
+    const address = Object.keys(addressAmounts)[i];
+    const amount = addressAmounts[address];
+    const tx = await transactionsDAL.create({
+      index: i,
+      version: 0,
+      inputCount: 0,
+      outputCount: 1,
+      hash: faker.random.uuid(),
+    });
+    await outputsDAL.create({
+      TransactionId: tx.id,
+      lockType: 'PK',
+      address,
+      asset: '00',
+      amount,
+      index: 0,
+    });
+
+    await blocksDAL.addTransaction(block1, tx);
+  }
+  if (voteIntervals.length) {
+    await Promise.all(
+      voteIntervals.map(voteInterval => {
+        return voteIntervalsDAL.create({
+          interval: voteInterval.interval,
+          beginHeight: voteInterval.beginHeight,
+          endHeight: voteInterval.endHeight,
+        });
+      })
+    );
+  }
 }

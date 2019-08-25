@@ -7,16 +7,35 @@ const voteIntervalsDAL = require('../../../server/components/api/voteIntervals/v
 const snapshotsDAL = require('../../../server/components/api/snapshots/snapshotsDAL');
 const QueueError = require('../../lib/QueueError');
 const db = require('../../../server/db/sequelize/models');
+const config = require('../../../server/config/Config');
 
 /**
- * Responsible for taking snapshots based on the vote intervals and the current block number in db
+ * Responsible for taking snapshots for VoteIntervals and the CGP
  */
 class SnapshotsTaker {
+  constructor({ chain } = {}) {
+    this.chain = chain;
+  }
+
   async doJob() {
     try {
-      let dbTransaction = null;
-      let result = [];
+      let result = { voteIntervals: null, cgp: null };
       const latestBlockNumberInDb = await this.getLatestBlockNumberInDB();
+      result.voteIntervals = await this.snapshotByVoteIntervals(latestBlockNumberInDb);
+      result.cgp = await this.snapshotByCGPIntervals(latestBlockNumberInDb);
+
+      return result;
+    } catch (error) {
+      logger.error(`An Error has occurred when adding a snapshot: ${error.message}`);
+      throw new QueueError(error);
+    }
+  }
+
+  async snapshotByVoteIntervals(latestBlockNumberInDb) {
+    let dbTransaction = null;
+    try {
+      let result = [];
+
       // get all voteIntervals which don't have a snapshot and height <= latest
       const voteIntervals = await voteIntervalsDAL.findAllWithoutSnapshot(latestBlockNumberInDb);
 
@@ -33,11 +52,49 @@ class SnapshotsTaker {
           // mark this interval as has a snapshot
           await voteIntervalsDAL.setHasSnapshot(voteInterval.id);
           result.push({
-            voteInterval,
+            interval: voteInterval.interval,
             snapshotCount: snapshotRows.length,
           });
           logger.info(
-            `Finished taking snapshot for height ${voteInterval.beginHeight}, snapshot has ${
+            `Finished taking VoteIntervals snapshot for height ${
+              voteInterval.beginHeight
+            }, snapshot has ${snapshotRows.length} addresses`
+          );
+        }
+        await dbTransaction.commit();
+      }
+      return result;
+    } catch (error) {
+      if (dbTransaction) {
+        logger.info('Rollback the database transaction');
+        await dbTransaction.rollback();
+      }
+      throw error;
+    }
+  }
+
+  async snapshotByCGPIntervals(latestBlockNumberInDb) {
+    let dbTransaction = null;
+    try {
+      let result = [];
+
+      const missingSnapshotHeights = await this.findMissingCGPSnapshotHeights(
+        latestBlockNumberInDb
+      );
+      // for each of those intervals, create a snapshot
+      if (missingSnapshotHeights.length) {
+        dbTransaction = await db.sequelize.transaction();
+        for (let i = 0; i < missingSnapshotHeights.length; i++) {
+          const missingInterval = missingSnapshotHeights[i];
+          logger.info(`Taking snapshot for height ${missingInterval.height}`);
+          const snapshotRows = await this.getAddressesAmountsForHeight(missingInterval.height);
+          await snapshotsDAL.bulkCreate(snapshotRows, { transaction: dbTransaction });
+          result.push({
+            interval: missingInterval.interval,
+            snapshotCount: snapshotRows.length,
+          });
+          logger.info(
+            `Finished taking snapshot for height ${missingInterval.height}, snapshot has ${
               snapshotRows.length
             } addresses`
           );
@@ -46,8 +103,11 @@ class SnapshotsTaker {
       }
       return result;
     } catch (error) {
-      logger.error(`An Error has occurred when adding a snapshot: ${error.message}`);
-      throw new QueueError(error);
+      if (dbTransaction) {
+        logger.info('Rollback the database transaction');
+        await dbTransaction.rollback();
+      }
+      throw error;
     }
   }
 
@@ -67,6 +127,26 @@ class SnapshotsTaker {
     const addressesAmounts = await addressesDAL.snapshotBalancesByBlock(height);
     // add height to the results so it will be easier to insert
     return addressesAmounts.map(row => Object.assign({}, row, { height }));
+  }
+
+  /**
+   * Get an array with {interval, height} that don't have a snapshot
+   * @param {number} height the maximum height to check
+   */
+  async findMissingCGPSnapshotHeights(height) {
+    const existingSnapshotHeights = await snapshotsDAL.findAllHeights();
+    const intervalLength = config.get(`cgp:${this.chain}:intervalLength`);
+    const numOfIntervals = Math.floor((height + intervalLength * 0.1) / intervalLength);
+    const allNeededSnapshotHeights = new Array(numOfIntervals)
+      .fill(1)
+      .map((item, index) => ({
+        interval: index,
+        height: intervalLength * 0.9 + index * intervalLength,
+      }));
+
+    return allNeededSnapshotHeights.filter(
+      item => existingSnapshotHeights.indexOf(item.height) < 0
+    );
   }
 }
 
