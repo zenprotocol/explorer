@@ -25,7 +25,8 @@ commandsQueue.on('active', function(job, jobPromise) {
 commandsQueue.on('completed', function(job, result) {
   logger.info(`A job has been completed. ID=${job.id} result=${result}`);
   if(result > 0) {
-    votesQueue.add({});
+    votesQueue.add({type: 'cgp'});
+    votesQueue.add({type: 'repo'});
   }
 });
 

@@ -137,7 +137,7 @@ const createDAL = modelName => {
      * @returns the count as a number
      */
     queryResultToCount(result) {
-      return result.length ? result[0].count : 0;
+      return result.length ? Number(result[0].count) : 0;
     },
   };
 };

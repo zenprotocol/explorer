@@ -16,16 +16,16 @@ const taskTimeLimiter = new TaskTimeLimiter(Config.get('queues:slackTimeLimit') 
 votesQueue.process(path.join(__dirname, 'jobs/votes/votes.handler.js'));
 
 // events
-votesQueue.on('active', function(job, jobPromise) {
-  logger.info(`A job has started. ID=${job.id}`);
+votesQueue.on('active', function(job) {
+  logger.info(`A job has started.  TYPE=${job.data.type}`);
 });
 
 votesQueue.on('completed', function(job, result) {
-  logger.info(`A job has been completed. ID=${job.id} result=${result}`);
+  logger.info(`A job has been completed. TYPE=${job.data.type} result=${result}`);
 });
 
 votesQueue.on('failed', function(job, error) {
-  logger.error(`A job has failed. ID=${job.id}, error=${error.message}`);
+  logger.error(`A job has failed. TYPE=${job.data.type}, error=${error.message}`);
   taskTimeLimiter.executeTask(() => {
     getChain().then(chain => {
       slackLogger.error(`A Votes job has failed, error=${error.message} chain=${chain}`);
@@ -42,7 +42,8 @@ Promise.all([
   votesQueue.clean(0, 'failed'),
 ]).then(() => {
   // once only, for future commands, the commands queue will add jobs
-  votesQueue.add({});
+  votesQueue.add({type: 'cgp'});
+  votesQueue.add({type: 'repo'});
 });
 
 setInterval(() => {

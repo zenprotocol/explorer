@@ -13,6 +13,7 @@ const searchRouter = require('./search/searchRoutes');
 const oracleRouter = require('./oracle/oracleRoutes');
 const contractTemplatesRouter = require('./contractTemplates/contractTemplatesRoutes');
 const votesRoutes = require('./votes/votesRoutes');
+const cgpRoutes = require('./cgp/cgpRoutes');
 
 router.use('/blocks', blocksRouter);
 router.use('/inputs', inputsRouter);
@@ -27,5 +28,6 @@ router.use('/search', searchRouter);
 router.use('/oracle', oracleRouter);
 router.use('/contractTemplates', contractTemplatesRouter);
 router.use('/votes', votesRoutes);
+router.use('/cgp', cgpRoutes);
 
 module.exports = router;

@@ -140,7 +140,7 @@ class SnapshotsTaker {
     const allNeededSnapshotHeights = new Array(numOfIntervals)
       .fill(1)
       .map((item, index) => ({
-        interval: index,
+        interval: index + 1,
         height: intervalLength * 0.9 + index * intervalLength,
       }));
 

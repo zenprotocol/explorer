@@ -8,7 +8,6 @@ let blocksDAL;
 let addressesDAL;
 let voteIntervalsDAL;
 let snapshotsDAL;
-let getChain;
 
 function before() {
   blocksDAL = td.replace('../../../server/components/api/blocks/blocksDAL', {
@@ -30,7 +29,6 @@ function before() {
     Sequelize: td.object(),
   });
   td.when(db.sequelize.transaction()).thenResolve({ commit() {} });
-  getChain = td.replace('../../../server/lib/getChain');
 
   const SnapshotsTaker = require('./SnapshotsTaker');
   snapshotsTaker = new SnapshotsTaker({ chain: 'test' });
@@ -44,7 +42,6 @@ test('SnapshotsTaker.doJob()', async function(t) {
     voteIntervals = [],
     addressAmounts = [],
     latestBlockNumber = 1,
-    chain = 'test',
     existingSnapshotHeights = [],
   } = {}) {
     td.when(blocksDAL.findLatest()).thenResolve({ blockNumber: latestBlockNumber });
@@ -54,7 +51,6 @@ test('SnapshotsTaker.doJob()', async function(t) {
     td.when(addressesDAL.snapshotBalancesByBlock(td.matchers.anything())).thenResolve(
       addressAmounts
     );
-    td.when(getChain()).thenResolve(chain);
     td.when(snapshotsDAL.findAllHeights()).thenResolve(existingSnapshotHeights);
   }
 
@@ -95,11 +91,10 @@ test('SnapshotsTaker.doJob()', async function(t) {
     after();
   });
 
-  await wrapTest('CGP: interval 0, before snapshot', async given => {
+  await wrapTest('CGP: interval 1, before snapshot', async given => {
     before();
     stub({
       latestBlockNumber: 40,
-      chain: 'test',
       addressAmounts: [
         {
           address: 'address1',
@@ -116,11 +111,10 @@ test('SnapshotsTaker.doJob()', async function(t) {
     after();
   });
 
-  await wrapTest('CGP: interval 0, at snapshot', async given => {
+  await wrapTest('CGP: interval 1, at snapshot', async given => {
     before();
     stub({
       latestBlockNumber: 90,
-      chain: 'test',
       addressAmounts: [
         {
           address: 'address1',
@@ -134,7 +128,7 @@ test('SnapshotsTaker.doJob()', async function(t) {
     });
     const result = await snapshotsTaker.doJob({});
     t.equals(result.cgp.length, 1, `${given}: Should return an array with 1 element in cgp`);
-    t.equals(result.cgp[0].interval, 0, `${given}: Should return interval 0`);
+    t.equals(result.cgp[0].interval, 1, `${given}: Should return interval 1`);
     t.equals(
       result.cgp[0].snapshotCount,
       2,
@@ -147,7 +141,6 @@ test('SnapshotsTaker.doJob()', async function(t) {
     before();
     stub({
       latestBlockNumber: 92,
-      chain: 'test',
       voteIntervals: [
         {
           interval: 1,
@@ -173,7 +166,7 @@ test('SnapshotsTaker.doJob()', async function(t) {
       1,
       `${given}: Should return an array with 1 element in voteIntervals`
     );
-    t.equals(result.cgp[0].interval, 0, `${given}: Should return interval 0`);
+    t.equals(result.cgp[0].interval, 1, `${given}: Should return interval 1`);
     t.equals(result.voteIntervals[0].interval, 1, `${given}: Should return interval 0`);
     t.equals(
       result.cgp[0].snapshotCount,

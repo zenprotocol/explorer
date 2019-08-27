@@ -22,7 +22,6 @@ class VotesAdder {
 
       // query for all commands with the voting contract id and that the command id is not in RepoVotes
       const commands = await votesDAL.findAllUnprocessedCommands(this.contractId);
-
       if (commands.length) {
         logger.info(`${commands.length} commands to add`);
         dbTransaction = await db.sequelize.transaction();

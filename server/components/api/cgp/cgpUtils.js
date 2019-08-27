@@ -1,24 +1,20 @@
 'use strict';
 
+const {mergeRight} = require('ramda');
 const config = require('../../../config/Config');
-const getChain = require('../../../lib/getChain');
-const blocksBLL = require('../blocks/blocksBLL');
 
 function getIntervalLength(chain) {
   return config.get(`cgp:${chain}:intervalLength`);
 }
 
-async function getCurrentInterval() {
-  const chain = await getChain();
-  const currentBlock = await blocksBLL.getCurrentBlockNumber();
-  return Math.floor((currentBlock - 1) / getIntervalLength(chain));
+function getIntervalByBlockNumber(chain, blockNumber) {
+  return Math.ceil(blockNumber / getIntervalLength(chain));
 }
 
-async function getIntervalBlocks(interval) {
-  const chain = await getChain();
+function getIntervalBlocks(chain, interval) {
   const intervalLength = getIntervalLength(chain);
-  const snapshot = interval * intervalLength + intervalLength * 0.9;
-  const tally = (interval + 1) * intervalLength;
+  const snapshot = (interval - 1) * intervalLength + intervalLength * 0.9;
+  const tally = interval * intervalLength;
 
   return {
     snapshot,
@@ -26,8 +22,32 @@ async function getIntervalBlocks(interval) {
   };
 }
 
+/**
+ * Get interval snapshot and tally blocks by:
+ * 1. if interval is supplied, by that interval
+ * 2. previous interval if currentBlock - prev.endHeight < 10,000
+ * 3. on going interval
+ */
+function getRelevantIntervalBlocks(chain, interval, currentBlock) {
+  let chosenInterval = interval;
+
+  if (!chosenInterval) {
+    const afterTallyBlocks = config.get(`cgp:${chain}:afterTallyBlocks`);
+    const currentInterval = getIntervalByBlockNumber(chain, currentBlock);
+    const intervalLength = getIntervalLength(chain);
+    const shouldGetPrevInterval =
+      currentInterval > 1 &&
+      currentBlock - intervalLength * (currentInterval - 1) <= afterTallyBlocks;
+    chosenInterval =
+      currentInterval === 1 ? 1 : shouldGetPrevInterval ? currentInterval - 1 : currentInterval;
+  }
+
+  return mergeRight({ interval: chosenInterval }, getIntervalBlocks(chain, chosenInterval));
+}
+
 module.exports = {
   getIntervalLength,
-  getCurrentInterval,
+  getIntervalByBlockNumber,
   getIntervalBlocks,
+  getRelevantIntervalBlocks,
 };
