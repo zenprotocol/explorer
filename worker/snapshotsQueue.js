@@ -21,9 +21,9 @@ snapshotsQueue.on('active', function(job, jobPromise) {
 });
 
 snapshotsQueue.on('completed', function(job, result) {
-  logger.info(`A job has been completed. 
-    Processed VoteIntervals: ${result.voteIntervals.length}. 
-    Processed CGP intervals: ${result.cgp.length}.`);
+  logger.info(
+    `A job has been completed. Processed VoteIntervals: ${result.voteIntervals.length}. Processed CGP intervals: ${result.cgp.length}.`
+  );
 });
 
 snapshotsQueue.on('failed', function(job, error) {
