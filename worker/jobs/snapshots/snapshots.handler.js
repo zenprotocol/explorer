@@ -10,10 +10,10 @@ module.exports = async function(job) {
     const chain = await getChain();
     if (chain) {
       // instantiate only if we have a chain
-      snapshotsTaker = new new SnapshotsTaker({ chain })();
+      snapshotsTaker = new SnapshotsTaker({ chain });
     }
   }
-
+  
   if (snapshotsTaker) {
     return await snapshotsTaker.doJob(job);
   }
