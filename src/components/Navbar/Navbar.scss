@@ -20,10 +20,19 @@
     }
   }
 
-  .Navbar-DropDown.view-by {
-    .dropdown-container {
-      &.is-open {
-        height: 117px;
+  .Navbar-DropDown {
+    &.view-by {
+      .dropdown-container {
+        &.is-open {
+          height: 117px;
+        }
+      }
+    }
+    &.voting {
+      .dropdown-container {
+        &.is-open {
+          height: 80px;
+        }
       }
     }
   }

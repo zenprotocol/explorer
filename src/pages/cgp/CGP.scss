@@ -1,0 +1,56 @@
+@import 'src/style/variables';
+
+.CGP {
+  .table-zen {
+    margin-bottom: 0;
+  }
+
+  %message-shared {
+    padding: 40px 0;
+    font-weight: $font-weight-bold;
+    font-size: $h3-font-size;
+  }
+
+  .before-snapshot-message {
+    @extend %message-shared;
+    color: $red;
+  }
+
+  .after-tally-message {
+    @extend %message-shared;
+  }
+
+  .table-bg-wrapper {
+    height: 100%;
+    background-color: $table-bg;
+  }
+
+  .TallyTable {
+    margin-top: 1rem;
+    @media (min-width: map-get($grid-breakpoints, "lg")) {
+      margin-top: 0;
+    }
+
+    .header-table{
+      th.text-right {
+        padding-right: $content-padding-x + 11;
+      }
+      @media (min-width: map-get($grid-breakpoints, "lg")) {
+        th.text-right {
+          padding-right: $content-padding-x-lg;
+        }
+      }
+    }
+    .body-table {
+      overflow: auto;
+      max-height: 220px;
+      @include mixin-zen-scrollbar();
+  
+      @media (min-width: map-get($grid-breakpoints, "lg")) {
+        td.text-right {
+          padding-right: $content-padding-x-lg - 11;
+        }
+      }
+    }
+  }
+}

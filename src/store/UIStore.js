@@ -10,6 +10,7 @@ export default function UIStore(rootStore, initialState = {}) {
   const contractStore = rootStore.contractStore;
   const assetStore = rootStore.assetStore;
   const repoVoteStore = rootStore.repoVoteStore;
+  const cgpStore = rootStore.cgpStore;
 
   const defaultValues = defaultValuesFactory(initialState);
   const state = observable({
@@ -104,6 +105,34 @@ export default function UIStore(rootStore, initialState = {}) {
       pageSize: defaultValues.get('repoVoteResultsTable.pageSize'),
       curPage: defaultValues.get('repoVoteResultsTable.curPage'),
     },
+
+    cgpAllocationVotesTable: {
+      force: 1,
+      interval: defaultValues.get('cgpAllocationVotesTable.interval'),
+      pageSize: defaultValues.get('cgpAllocationVotesTable.pageSize'),
+      curPage: defaultValues.get('cgpAllocationVotesTable.curPage'),
+    },
+
+    cgpPayoutVotesTable: {
+      force: 1,
+      interval: defaultValues.get('cgpPayoutVotesTable.interval'),
+      pageSize: defaultValues.get('cgpPayoutVotesTable.pageSize'),
+      curPage: defaultValues.get('cgpPayoutVotesTable.curPage'),
+    },
+
+    cgpAllocationResultsTable: {
+      force: 1,
+      interval: defaultValues.get('cgpAllocationResultsTable.interval'),
+      pageSize: defaultValues.get('cgpAllocationResultsTable.pageSize'),
+      curPage: defaultValues.get('cgpAllocationResultsTable.curPage'),
+    },
+
+    cgpPayoutResultsTable: {
+      force: 1,
+      interval: defaultValues.get('cgpPayoutResultsTable.interval'),
+      pageSize: defaultValues.get('cgpPayoutResultsTable.pageSize'),
+      curPage: defaultValues.get('cgpPayoutResultsTable.curPage'),
+    },
   });
 
   const fetchSyncing = action(() => {
@@ -150,6 +179,28 @@ export default function UIStore(rootStore, initialState = {}) {
   const setRepoVoteResultsTableData = action(
     setTableData({ nameOfIdentifier: 'interval', objectToSet: state.repoVoteResultsTable })
   );
+  
+  const setCGPAllocationVotesTableData = action(
+    setTableData({ nameOfIdentifier: 'interval', objectToSet: state.cgpAllocationVotesTable })
+  );
+  const setCGPPayoutVotesTableData = action(
+    setTableData({ nameOfIdentifier: 'interval', objectToSet: state.cgpPayoutVotesTable })
+  );
+  const setCGPAllocationResultsTableData = action(
+    setTableData({ nameOfIdentifier: 'interval', objectToSet: state.cgpAllocationResultsTable })
+  );
+  const setCGPPayoutResultsTableData = action(
+    setTableData({ nameOfIdentifier: 'interval', objectToSet: state.cgpPayoutResultsTable })
+  );
+  // add also setters to control both types at the same time
+  const setCGPVotesTablesData = action((params = {}) => {
+    setCGPAllocationVotesTableData(params);
+    setCGPPayoutVotesTableData(params);
+  });
+  const setCGPVoteResultsTablesData = action((params = {}) => {
+    setCGPAllocationResultsTableData(params);
+    setCGPPayoutResultsTableData(params);
+  });
 
   const saveToStorage = action(state => {
     localStore.set('ui-store', state);
@@ -321,6 +372,44 @@ export default function UIStore(rootStore, initialState = {}) {
         );
       }
     });
+
+    /**
+     * A generic helper to load cgp data
+     */
+    function loadCGPData({action, type, stateTable} = {}) {
+      cgpStore[action](
+        type,
+        Object.assign(
+          {},
+          {
+            page: state.repoVotesTable.curPage,
+            pageSize: state.repoVotesTable.pageSize,
+          },
+          stateTable.interval && { interval: stateTable.interval }
+        )
+      );
+    }
+
+    autorun(function fetchCGPAllocationVotesOnChange() {
+      if (state.cgpAllocationVotesTable.interval !== '' && state.cgpAllocationVotesTable.force > 0) {
+        loadCGPData({action: 'loadVotes', stateTable: state.cgpAllocationVotesTable, type: 'allocation'});
+      }
+    });
+    autorun(function fetchCGPPayoutVotesOnChange() {
+      if (state.cgpPayoutVotesTable.interval !== '' && state.cgpPayoutVotesTable.force > 0) {
+        loadCGPData({action: 'loadVotes', stateTable: state.cgpPayoutVotesTable, type: 'payout'});
+      }
+    });
+    autorun(function fetchCGPAllocationResultsOnChange() {
+      if (state.cgpAllocationResultsTable.interval !== '' && state.cgpAllocationResultsTable.force > 0) {
+        loadCGPData({action: 'loadResults', stateTable: state.cgpAllocationResultsTable, type: 'allocation'});
+      }
+    });
+    autorun(function fetchCGPPayoutResultsOnChange() {
+      if (state.cgpPayoutResultsTable.interval !== '' && state.cgpPayoutResultsTable.force > 0) {
+        loadCGPData({action: 'loadResults', stateTable: state.cgpPayoutResultsTable, type: 'payout'});
+      }
+    });
   })();
 
   return Object.freeze({
@@ -337,6 +426,12 @@ export default function UIStore(rootStore, initialState = {}) {
     setContractsTableData,
     setRepoVotesTableData,
     setRepoVoteResultsTableData,
+    setCGPAllocationResultsTableData,
+    setCGPAllocationVotesTableData,
+    setCGPPayoutResultsTableData,
+    setCGPPayoutVotesTableData,
+    setCGPVoteResultsTablesData,
+    setCGPVotesTablesData,
     fetchSyncing,
     state,
   });

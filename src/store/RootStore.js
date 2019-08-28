@@ -6,6 +6,7 @@ import InfoStore from './InfoStore';
 import SearchStore from './SearchStore';
 import TransactionStore from './TransactionStore';
 import RepoVoteStore from './RepoVoteStore';
+import CGPStore from './CGPStore';
 import UIStore from './UIStore';
 
 export default class RootStore {
@@ -18,6 +19,7 @@ export default class RootStore {
     this.searchStore = new SearchStore(this, initialState.searchStore);
     this.transactionStore = new TransactionStore(this, initialState.transactionStore);
     this.repoVoteStore = new RepoVoteStore(this, initialState.repoVoteStore);
+    this.cgpStore = new CGPStore(this, initialState.cgpStore);
     this.uiStore = UIStore(this, initialState.uiStore);
   }
 }

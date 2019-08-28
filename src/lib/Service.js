@@ -16,6 +16,7 @@ const Endpoints = {
   oracle: '/api/oracle',
   contractTemplates: '/api/contractTemplates',
   votes: '/api/votes',
+  cgp: '/api/cgp',
 };
 
 let globalMute = false;
@@ -329,5 +330,35 @@ export default {
         params,
       });
     },
+  },
+  cgp: {
+    findCurrent(params) {
+      return cancelableHttpRequest({
+        url: `${Endpoints.cgp}/relevant`,
+        method: 'get',
+        params,
+      });
+    },
+    findAllVotes(type, params) {
+      return cancelableHttpRequest({
+        url: `${Endpoints.cgp}/votes/${type}`,
+        method: 'get',
+        params,
+      });
+    },
+    findAllResults(type, params) {
+      return cancelableHttpRequest({
+        url: `${Endpoints.cgp}/results/${type}`,
+        method: 'get',
+        params,
+      });
+    },
+    findBallots(type, params) {
+      return cancelableHttpRequest({
+        url: `${Endpoints.cgp}/ballots/${type}`,
+        method: 'get',
+        params,
+      });
+    }
   },
 };

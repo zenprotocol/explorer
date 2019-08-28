@@ -6,6 +6,7 @@ const contractsDAL = require('../api/contracts/contractsDAL');
 const assetsBLL = require('../api/assets/assetsBLL');
 const infosBLL = require('../api/infos/infosBLL');
 const votesBLL = require('../api/votes/votesBLL');
+const cgpBLL = require('../api/cgp/cgpBLL');
 
 module.exports = async req => {
   const { routeName } = req;
@@ -18,6 +19,7 @@ module.exports = async req => {
     searchStore: {},
     transactionStore: {},
     repoVoteStore: {},
+    cgpStore: {},
     uiStore: {},
   };
   const promises = [];
@@ -63,6 +65,9 @@ module.exports = async req => {
       break;
     case 'governance':
       promises.push(getRepoVoteStoreData(req).then(data => (initialState.repoVoteStore = data)));
+      break;
+    case 'cgp':
+      promises.push(getCGPStoreData(req).then(data => (initialState.cgpStore = data)));
       break;
   }
 
@@ -160,6 +165,15 @@ async function getRepoVoteStoreData(req) {
     relevantInterval,
     nextInterval,
     recentIntervals,
+  };
+}
+
+async function getCGPStoreData(req) {
+  const [relevantInterval] = await Promise.all([
+    cgpBLL.findIntervalAndTally(req.params),
+  ]);
+  return {
+    relevantInterval,
   };
 }
 
