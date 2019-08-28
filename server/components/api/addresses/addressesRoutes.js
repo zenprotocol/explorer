@@ -9,8 +9,8 @@ router.route('/:address/asset-types').get(wrapAsync(controller.findAllAssets));
 
 router.route('/:address/assets').get(wrapAsync(transactionsController.assets));
 
-router.route('/:address/balance').get(wrapAsync(controller.balanceZp));
+router.route('/:address/balanceZP').get(wrapAsync(controller.balanceZp));
 
-router.route('/:address/balance-all').get(wrapAsync(controller.balance));
+router.route('/:address/balance').get(wrapAsync(controller.balance));
 
 module.exports = router;
