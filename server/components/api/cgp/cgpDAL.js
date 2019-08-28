@@ -8,6 +8,7 @@ const {
   FIND_ALL_BY_INTERVAL_BASE_SQL,
   FIND_ALL_VOTE_RESULTS_BASE_SQL,
   FIND_ALL_BALLOTS_BASE_SQL,
+  FIND_ALL_ZP_PARTICIPATED_BASE_SQL,
 } = require('./cgpSql');
 
 const sequelize = db.sequelize;
@@ -170,6 +171,22 @@ cgpDAL.countAllBallots = async function({ type, intervalLength }) {
       type: sequelize.QueryTypes.SELECT,
     })
     .then(this.queryResultToCount);
+};
+
+cgpDAL.findZpParticipated = async function({ snapshot, tally, type } = {}) {
+  const sql = tags.oneLine`
+  ${WITH_FILTER_TABLES}
+  ${FIND_ALL_ZP_PARTICIPATED_BASE_SQL}
+  `;
+
+  return sequelize.query(sql, {
+    replacements: {
+      snapshot,
+      tally,
+      type,
+    },
+    type: sequelize.QueryTypes.SELECT,
+  }).then(result => result.length && result[0].amount ? result[0].amount : 0);
 };
 
 module.exports = cgpDAL;

@@ -612,6 +612,43 @@ test('cgpDAL.findAllBallots() (DB)', async function(t) {
   });
 });
 
+test('cgpDAL.findZpParticipated() (DB)', async function(t) {
+  await wrapTest('Given no votes', async given => {
+    await createDemoData();
+    const zp = await cgpDAL.findZpParticipated({ type: 'payout', snapshot: 90, tally: 100 });
+    t.equal(Number(zp), 0, `${given}: should return zero`);
+  });
+
+  await wrapTest('Given valid votes', async given => {
+    await createDemoData();
+    await addVote({ address: 'tzn11', blockNumber: 91, type: 'payout', ballot: '1' });
+    await addVote({ address: 'tzn12', blockNumber: 92, type: 'payout', ballot: '2' });
+    await addVote({ address: 'tzn13', blockNumber: 93, type: 'payout', ballot: '3' });
+    await addVote({ address: 'tzn12', blockNumber: 94, type: 'allocation', ballot: '4' });
+    const zpPayout = await cgpDAL.findZpParticipated({ snapshot: 90, tally: 100, type: 'payout' });
+    const zpAllocation = await cgpDAL.findZpParticipated({ snapshot: 90, tally: 100, type: 'allocation' });
+    t.assert(
+      Number(zpPayout) === 30300000000 && Number(zpAllocation) == 10100000000,
+      `${given}: Should return the sum of kalapas for the type`
+    );
+  });
+
+  await wrapTest('Given double votes', async given => {
+    await createDemoData();
+    await addVote({ address: 'tzn11', blockNumber: 91, type: 'payout', ballot: '1' });
+    await addVote({ address: 'tzn12', blockNumber: 92, type: 'payout', ballot: '2' });
+    await addVote({ address: 'tzn13', blockNumber: 93, type: 'payout', ballot: '3' });
+    await addVote({ address: 'tzn12', blockNumber: 94, type: 'allocation', ballot: '4' });
+    await addVote({ address: 'tzn11', blockNumber: 95, type: 'payout', ballot: '10' });
+    const zpPayout = await cgpDAL.findZpParticipated({ snapshot: 90, tally: 100, type: 'payout' });
+    const zpAllocation = await cgpDAL.findZpParticipated({ snapshot: 90, tally: 100, type: 'allocation' });
+    t.assert(
+      Number(zpPayout) === 30300000000 && Number(zpAllocation) == 10100000000,
+      `${given}: Should return the sum of kalapas for the type without double votes`
+    );
+  });
+});
+
 test.onFinish(() => {
   blocksDAL.db.sequelize.close();
 });

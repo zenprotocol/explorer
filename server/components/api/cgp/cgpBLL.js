@@ -11,14 +11,10 @@ module.exports = {
   findIntervalAndTally: async function({ interval } = {}) {
     const formattedInterval = formatInterval(interval);
     const [currentBlock, chain] = await Promise.all([blocksBLL.getCurrentBlockNumber(), getChain()]);
-    const relevant = cgpUtils.getRelevantIntervalBlocks(
-      chain,
-      formattedInterval,
-      currentBlock
-    );
+    const relevant = cgpUtils.getRelevantIntervalBlocks(chain, formattedInterval, currentBlock);
 
-    const {interval: currentInterval} = cgpUtils.getRelevantIntervalBlocks(chain, null, currentBlock);
-    if(relevant.interval > currentInterval) {
+    const { interval: currentInterval } = cgpUtils.getRelevantIntervalBlocks(chain, null, currentBlock);
+    if (relevant.interval > currentInterval) {
       // does not return future intervals
       return null;
     }
@@ -65,7 +61,7 @@ module.exports = {
       ),
     ]).then(cgpDAL.getItemsAndCountResult);
   },
-  findAllBallots: async function({type, page = 0, pageSize = 10  }) {
+  findAllBallots: async function({ type, page = 0, pageSize = 10 }) {
     if (!isTypeValid(type)) return null;
 
     const chain = await getChain();
@@ -73,10 +69,18 @@ module.exports = {
 
     return await Promise.all([
       cgpDAL.countAllBallots({ type, intervalLength }),
-      cgpDAL.findAllBallots(
-        Object.assign({}, { type, intervalLength }, createQueryObject({ page, pageSize }))
-      ),
+      cgpDAL.findAllBallots(Object.assign({}, { type, intervalLength }, createQueryObject({ page, pageSize }))),
     ]).then(cgpDAL.getItemsAndCountResult);
+  },
+  findZpParticipated: async function({ interval, type }) {
+    if (!isTypeValid(type)) return null;
+
+    const formattedInterval = formatInterval(interval);
+
+    const [currentBlock, chain] = await Promise.all([blocksBLL.getCurrentBlockNumber(), getChain()]);
+    const { snapshot, tally } = cgpUtils.getRelevantIntervalBlocks(chain, formattedInterval, currentBlock);
+
+    return cgpDAL.findZpParticipated({ snapshot, tally, type });
   },
 };
 
