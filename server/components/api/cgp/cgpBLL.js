@@ -5,31 +5,33 @@ const cgpDAL = require('./cgpDAL');
 const blocksBLL = require('../blocks/blocksBLL');
 const createQueryObject = require('../../../lib/createQueryObject');
 const cgpUtils = require('./cgpUtils');
+const formatInterval = require('./modules/formatInterval');
 
 module.exports = {
   findIntervalAndTally: async function({ interval } = {}) {
+    const formattedInterval = formatInterval(interval);
     const [currentBlock, chain] = await Promise.all([blocksBLL.getCurrentBlockNumber(), getChain()]);
-    const { interval: relevantInterval, snapshot, tally } = cgpUtils.getRelevantIntervalBlocks(
+    const relevant = cgpUtils.getRelevantIntervalBlocks(
       chain,
-      interval,
+      formattedInterval,
       currentBlock
     );
 
     const {interval: currentInterval} = cgpUtils.getRelevantIntervalBlocks(chain, null, currentBlock);
-    if(relevantInterval > currentInterval) {
+    if(relevant.interval > currentInterval) {
       // does not return future intervals
       return null;
     }
 
     const [winnerPayout, winnerAllocation] = await Promise.all([
-      cgpDAL.findWinner({ type: 'payout', snapshot, tally }),
-      cgpDAL.findWinner({ type: 'allocation', snapshot, tally }),
+      cgpDAL.findWinner({ type: 'payout', snapshot: relevant.snapshot, tally: relevant.tally }),
+      cgpDAL.findWinner({ type: 'allocation', snapshot: relevant.snapshot, tally: relevant.tally }),
     ]);
 
     return {
-      interval: relevantInterval,
-      snapshot,
-      tally,
+      interval: relevant.interval,
+      snapshot: relevant.snapshot,
+      tally: relevant.tally,
       winnerAllocation,
       winnerPayout,
     };
@@ -37,8 +39,10 @@ module.exports = {
   findAllVotesByInterval: async function({ interval, type, page = 0, pageSize = 10 } = {}) {
     if (!isTypeValid(type)) return null;
 
+    const formattedInterval = formatInterval(interval);
+
     const [currentBlock, chain] = await Promise.all([blocksBLL.getCurrentBlockNumber(), getChain()]);
-    const { snapshot, tally } = cgpUtils.getRelevantIntervalBlocks(chain, interval, currentBlock);
+    const { snapshot, tally } = cgpUtils.getRelevantIntervalBlocks(chain, formattedInterval, currentBlock);
 
     const query = Object.assign({}, { snapshot, tally, type }, createQueryObject({ page, pageSize }));
     return await Promise.all([
@@ -49,8 +53,10 @@ module.exports = {
   findAllVoteResults: async function({ interval, type, page = 0, pageSize = 10 } = {}) {
     if (!isTypeValid(type)) return null;
 
+    const formattedInterval = formatInterval(interval);
+
     const [currentBlock, chain] = await Promise.all([blocksBLL.getCurrentBlockNumber(), getChain()]);
-    const { snapshot, tally } = cgpUtils.getRelevantIntervalBlocks(chain, interval, currentBlock);
+    const { snapshot, tally } = cgpUtils.getRelevantIntervalBlocks(chain, formattedInterval, currentBlock);
 
     return await Promise.all([
       cgpDAL.countAllVoteResults({ snapshot, tally, type }),

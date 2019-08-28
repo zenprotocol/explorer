@@ -8,9 +8,8 @@ const cgpBLL = require('./cgpBLL');
 module.exports = {
   relevantInterval: async function(req, res) {
     const { interval } = req.query;
-    const formattedInterval = formatInterval(interval);
 
-    const result = await cgpBLL.findIntervalAndTally({ interval: formattedInterval });
+    const result = await cgpBLL.findIntervalAndTally({ interval });
     if (result) {
       res.status(httpStatus.OK).json(jsonResponse.create(httpStatus.OK, result));
     } else {
@@ -20,10 +19,9 @@ module.exports = {
   votes: async function(req, res) {
     const { interval, page, pageSize } = req.query;
     const { type } = req.params;
-    const formattedInterval = formatInterval(interval);
 
     const votes = await cgpBLL.findAllVotesByInterval({
-      interval: formattedInterval,
+      interval,
       type,
       page,
       pageSize,
@@ -37,9 +35,8 @@ module.exports = {
   results: async function(req, res) {
     const { interval, page, pageSize } = req.query;
     const { type } = req.params;
-    const formattedInterval = formatInterval(interval);
 
-    const result = await cgpBLL.findAllVoteResults({ interval: formattedInterval, type, page, pageSize });
+    const result = await cgpBLL.findAllVoteResults({ interval, type, page, pageSize });
     if (result) {
       res.status(httpStatus.OK).json(jsonResponse.create(httpStatus.OK, result));
     } else {
@@ -57,7 +54,3 @@ module.exports = {
     }
   },
 };
-
-function formatInterval(interval) {
-  return isNaN(Number(interval)) || Number(interval) === 0 ? null : Number(interval);
-}
