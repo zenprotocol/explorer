@@ -3,29 +3,27 @@ import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import './InfoBox.scss';
 
-function ContentBox(props) {
+function ContentBox({ className, iconClass, title, content, children, ...props }) {
   return (
-    <div className="InfoBox col border border-dark">
-      <div
-        className={classNames('content-box d-flex align-items-center flex-wrap', props.className)}
-      >
+    <div className="InfoBox col border border-dark" {...props}>
+      <div className={classNames('content-box d-flex align-items-center flex-wrap', className)}>
         <div className="content-wrapper d-flex align-items-center">
           <div className="icon text-secondary d-flex align-items-center justify-content-center">
-            <i className={props.iconClass} />
+            <i className={iconClass} />
           </div>
           <div className="content">
-            <div className="title text-secondary">{props.title}</div>
-            <div className="value display-2 text-white text-monospace">{props.content}</div>
+            <div className="title text-secondary">{title}</div>
+            <div className="value display-2 text-white text-monospace">{content}</div>
           </div>
         </div>
-        {props.children ? <div className="body">{props.children}</div> : null}
+        {children ? <div className="body">{children}</div> : null}
       </div>
     </div>
   );
 }
 ContentBox.propTypes = {
   title: PropTypes.string,
-  content: PropTypes.string,
+  content: PropTypes.oneOfType([PropTypes.string, PropTypes.element]),
   className: PropTypes.string,
   iconClass: PropTypes.string,
   children: PropTypes.any,

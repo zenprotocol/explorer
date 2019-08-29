@@ -2,6 +2,7 @@
 
 const bech32 = require('bech32');
 const zen = require('@zen/zenjs');
+const { ContractId } = require('@zen/zenjs/build/src/Consensus/Types/ContractId');
 
 const LOCK_VALUE_KEY_OPTIONS = ['hash', 'pkHash', 'id', 'data'];
 
@@ -27,6 +28,10 @@ class BlockchainParser {
     return zen.PublicKey.fromString(publicKey).toAddress(this.chain);
   }
 
+  getAddressFromContractId(contractId) {
+    return this.getPublicKeyHashAddress(ContractId.fromString(contractId));
+  }
+
   getLockValuesFromOutput(output) {
     let lockType = null;
     let lockValue = null; // contains hash/id/pkHash
@@ -40,8 +45,10 @@ class BlockchainParser {
       const lockKeys = Object.keys(lock);
       if (lockKeys.length) {
         // lockValue should be one of LOCK_VALUE_KEY_OPTIONS
-        lockValue =
-          lockKeys.reduce((value, key) => LOCK_VALUE_KEY_OPTIONS.includes(key)? lock[key] : value, null);
+        lockValue = lockKeys.reduce(
+          (value, key) => (LOCK_VALUE_KEY_OPTIONS.includes(key) ? lock[key] : value),
+          null
+        );
         address = lock.address || null;
         if (!address && lockValue) {
           try {

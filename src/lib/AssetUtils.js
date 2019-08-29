@@ -1,3 +1,4 @@
+import Decimal from 'decimal.js';
 import TextUtils from './TextUtils';
 
 export default {
@@ -5,18 +6,21 @@ export default {
     return asset === '00';
   },
   getAmountDivided(asset, amount) {
-    return this.isZP(asset) ? Number(amount) / 100000000 : Number(amount);
+    return this.isZP(asset)
+      ? new Decimal(amount).div(100000000).toNumber()
+      : new Decimal(amount).toNumber();
   },
   getAmountString(asset, amount) {
     if (!amount) {
       return '0';
     }
 
-    amount = Number(amount);
-    const amountDivided = this.getAmountDivided(asset, amount);
+    const amountDivided = new Decimal(this.getAmountDivided(asset, amount));
 
     if (this.isZP(asset)) {
-      const parsedAmount = Math.floor(amountDivided) !== amountDivided ? amountDivided.toFixed(8) : String(amountDivided);
+      const parsedAmount = amountDivided.floor().equals(amountDivided)
+        ? amountDivided.toString()
+        : amountDivided.toFixed(8);
       return `${TextUtils.formatNumber(parsedAmount)} ${this.getAssetNameFromCode(asset)}`;
     }
     return String(TextUtils.formatNumber(amount));
@@ -30,7 +34,7 @@ export default {
     return this.removeLeadingAndTrailingZeros(name);
   },
   removeLeadingAndTrailingZeros(asset) {
-    if(typeof asset !== 'string') {
+    if (typeof asset !== 'string') {
       return '';
     }
     return asset.length > 8 ? asset.replace(/^0+/, '').replace(/0+$/, '') : asset;

@@ -1,11 +1,17 @@
 'use strict';
 
+const zen = require('@zen/zenjs');
+const config = require('../../../config/Config');
 const getChain = require('../../../lib/getChain');
+const BlockchainParser = require('../../../lib/BlockchainParser');
 const cgpDAL = require('./cgpDAL');
 const blocksBLL = require('../blocks/blocksBLL');
+const addressesBLL = require('../addresses/addressesBLL');
 const createQueryObject = require('../../../lib/createQueryObject');
 const cgpUtils = require('./cgpUtils');
 const formatInterval = require('./modules/formatInterval');
+
+const CGP_FUND_CONTRACT_ID = config.get('CGP_FUND_CONTRACT_ID');
 
 module.exports = {
   findIntervalAndTally: async function({ interval } = {}) {
@@ -81,6 +87,14 @@ module.exports = {
     const { snapshot, tally } = cgpUtils.getRelevantIntervalBlocks(chain, formattedInterval, currentBlock);
 
     return cgpDAL.findZpParticipated({ snapshot, tally, type });
+  },
+  findCgpBalance: async function({ blockNumber } = {}) {
+    const chain = await getChain();
+    const blockchainParser = new BlockchainParser(chain);
+
+    const contractAddress = blockchainParser.getAddressFromContractId(CGP_FUND_CONTRACT_ID);
+
+    return addressesBLL.balance({ address: contractAddress, blockNumber });
   },
 };
 
