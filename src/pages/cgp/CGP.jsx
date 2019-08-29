@@ -9,6 +9,7 @@ import Page from '../../components/Page';
 import PageTitle from '../../components/PageTitle';
 import { getVoteStatus, voteStatus } from './cgpVoteStatus';
 import InfoBox from '../../components/InfoBox';
+import HashLink from '../../components/HashLink';
 import { Tabs, TabHead, TabBody, Tab } from '../../components/tabs';
 import VotesTab from './components/tabs/Votes';
 import ResultsTab from './components/tabs/Results';
@@ -255,15 +256,28 @@ function AfterVoteInfo({ winnerAllocation, winnerPayout, interval, snapshot, tal
         />
         <CgpBalanceInfoBox {...props} />
       </div>
-      {/* {winnerAllocation && (
+      {(winnerAllocation || winnerPayout) && (
         <div className="row">
-          <div className="col border border-dark text-center after-tally-message">
-            {TextUtils.getOrdinal(interval).toUpperCase()} SEMESTER WINNER COMMIT ID:
-            <br />
-            <CommitLink commitId={commitId} />
-          </div>
+          {!!winnerAllocation && (
+            <div className="col winner border border-dark text-center after-tally-message">
+              <div>{TextUtils.getOrdinal(interval).toUpperCase()} INTERVAL WINNER ALLOCATION:</div>
+              <div className="small">
+                Ballot: <HashLink hash={winnerAllocation.ballot} /><br />
+                Zp Voted:{' '}{AssetUtils.getAmountString('00', winnerAllocation.amount)}
+              </div>
+            </div>
+          )}
+          {!!winnerPayout && (
+            <div className="col winner border border-dark text-center after-tally-message">
+              <div>{TextUtils.getOrdinal(interval).toUpperCase()} INTERVAL WINNER PAYOUT:</div>
+              <div className="small">
+                Ballot: <HashLink hash={winnerPayout.ballot} /><br />
+                Zp Voted:{' '}{AssetUtils.getAmountString('00', winnerPayout.amount)}
+              </div>
+            </div>
+          )}
         </div>
-      )} */}
+      )}
     </div>
   );
 }

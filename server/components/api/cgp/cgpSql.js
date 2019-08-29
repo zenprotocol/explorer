@@ -72,7 +72,9 @@ ON "Commands"."id" = "CommandVotes"."CommandId"
 `;
 
 const FIND_ALL_VOTE_RESULTS_BASE_SQL = `
-SELECT "CGPVotes"."ballot", (sum("Snapshots"."amount") / 100000000) AS "zpAmount"
+SELECT "CGPVotes"."ballot", 
+  sum("Snapshots"."amount") as "amount", 
+  (sum("Snapshots"."amount") / 100000000) AS "zpAmount"
 FROM "CGPVotes"
 ${JOIN_COMMANDS_TXS_BLOCKS_TO_REPO_VOTES}
 ${JOIN_SNAPSHOTS_TO_CGP_VOTES}

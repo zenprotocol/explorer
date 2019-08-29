@@ -18,6 +18,14 @@
 
   .after-tally-message {
     @extend %message-shared;
+
+    .small {
+      font-size: 1rem;
+    }
+  }
+
+  .col.winner {
+    min-width: 250px;
   }
 
   .table-bg-wrapper {
