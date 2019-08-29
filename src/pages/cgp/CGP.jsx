@@ -318,7 +318,7 @@ function IntervalsDropDown({ relevantInterval, currentInterval, onIntervalChange
   const options = intervals.map(interval => {
     return {
       value: String(interval),
-      label: `${TextUtils.getOrdinal(interval)} Semester`,
+      label: `${TextUtils.getOrdinal(interval)} Interval`,
     };
   });
   return (
