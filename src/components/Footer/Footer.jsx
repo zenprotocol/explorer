@@ -110,9 +110,12 @@ const FooterLinks = inject('rootStore')(
               </ExternalLink>
             </li>
             <li className="nav-item">
-              <Link className="nav-link text-nowrap" to="/terms">
+              <ExternalLink
+                className="nav-link text-nowrap"
+                url="https://www.zenprotocol.com/legal/zen_protocol_token_sale_agreement.pdf"
+              >
                 Terms of Service
-              </Link>
+              </ExternalLink>
             </li>
           </ul>
         </div>
