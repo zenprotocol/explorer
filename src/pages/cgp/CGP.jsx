@@ -3,20 +3,23 @@ import PropTypes from 'prop-types';
 import { observer, inject } from 'mobx-react';
 import { Helmet } from 'react-helmet';
 import { Route, Switch, Redirect } from 'react-router-dom';
+
 import TextUtils from '../../lib/TextUtils';
 import AssetUtils from '../../lib/AssetUtils';
 import Page from '../../components/Page';
 import PageTitle from '../../components/PageTitle';
-import { getVoteStatus, voteStatus } from './cgpVoteStatus';
 import InfoBox from '../../components/InfoBox';
 import HashLink from '../../components/HashLink';
 import { Tabs, TabHead, TabBody, Tab } from '../../components/tabs';
-import VotesTab from './components/tabs/Votes';
-import ResultsTab from './components/tabs/Results';
 import RouterUtils from '../../lib/RouterUtils';
 import ItemNotFound from '../../components/ItemNotFound';
 import Loading from '../../components/Loading';
-import Dropdown from '../../components/Dropdown';
+
+import { getVoteStatus, voteStatus } from './cgpVoteStatus';
+import VotesTab from './components/tabs/Votes';
+import ResultsTab from './components/tabs/Results';
+import IntervalsDropDown from './components/IntervalsDropDown';
+
 import './CGP.scss';
 
 class CGPPage extends React.Component {
@@ -312,41 +315,6 @@ function VotingTabs({ match, isIntermediate }) {
 VotingTabs.propTypes = {
   match: PropTypes.any,
   isIntermediate: PropTypes.bool,
-};
-
-function IntervalsDropDown({ relevantInterval, currentInterval, onIntervalChange }) {
-  if (!(relevantInterval || {}).interval) return null;
-
-  let intervals = [relevantInterval.interval];
-  for (let i = 1; i < 5; i++) {
-    // interval below
-    if (relevantInterval.interval - i > 0) {
-      intervals = [relevantInterval.interval - i, ...intervals];
-    }
-    // above
-    if (relevantInterval.interval + i <= currentInterval) {
-      intervals = [...intervals, relevantInterval.interval + i];
-    }
-  }
-
-  const options = intervals.map(interval => {
-    return {
-      value: String(interval),
-      label: `${TextUtils.getOrdinal(interval)} Interval`,
-    };
-  });
-  return (
-    <Dropdown
-      options={options}
-      value={String(relevantInterval.interval)}
-      onChange={onIntervalChange}
-    />
-  );
-}
-IntervalsDropDown.propTypes = {
-  relevantInterval: PropTypes.object,
-  currentInterval: PropTypes.number.isRequired,
-  onIntervalChange: PropTypes.func,
 };
 
 function getPageUrl(interval) {
