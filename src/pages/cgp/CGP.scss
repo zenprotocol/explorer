@@ -61,4 +61,35 @@
       }
     }
   }
+
+  // A TransactionAsset as a sub component of a GenericTable
+  .GenericTable .spends {
+    margin-bottom: 0;
+
+    .rt-thead {
+      background-color: transparent;
+
+      .rt-tr {
+        border-bottom-color: $border-color;
+      }
+      .rt-th {
+        padding: $table-padding-y $content-padding-x;
+      }
+    }
+    
+  }
+
+  @media (min-width: map-get($grid-breakpoints, "lg")) {
+    .GenericTable .spends  {
+      align-self: flex-end;
+      width: 80%;
+
+      .GenericTable {
+        .rt-thead .rt-th {
+          padding-left: $content-padding-x-lg;
+          padding-right: $content-padding-x-lg;
+        }
+      }
+    }
+  }
 }

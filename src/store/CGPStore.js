@@ -109,18 +109,18 @@ export default class CGPStore {
       .then(({ data }) => {
         runInAction(() => {
           if (type === 'payout') {
-            this.votesPayout = data;
+            this.resultsPayout = data;
           } else {
-            this.votesAllocation = data;
+            this.resultsAllocation = data;
           }
         });
       })
       .catch(() => {
         runInAction(() => {
           if (type === 'payout') {
-            this.votesPayout = { items: [], count: 0 };
+            this.resultsPayout = { items: [], count: 0 };
           } else {
-            this.votesAllocation = { items: [], count: 0 };
+            this.resultsAllocation = { items: [], count: 0 };
           }
         });
       })

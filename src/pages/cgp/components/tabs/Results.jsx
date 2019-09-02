@@ -7,6 +7,7 @@ import TextUtils from '../../../../lib/TextUtils';
 import { TabPanel } from '../../../../components/tabs';
 import { ItemsTable } from '../../../../components/ItemsTable';
 import HashLink from '../../../../components/HashLink';
+import getTableSubComponent from './getTableSubComponent';
 
 class ResultsTab extends Component {
   get typeParam() {
@@ -52,6 +53,20 @@ class ResultsTab extends Component {
               Cell: data => <HashLink hash={data.value} copy={true} />,
             },
             {
+              Header: 'ALLOCATION',
+              accessor: 'content.allocation',
+              minWidth: config.ui.table.minCellWidth,
+              show: !isPayout,
+              Cell: data => `${data.value}%`,
+            },
+            {
+              Header: 'RECIPIENT',
+              accessor: 'content.recipient.address',
+              minWidth: config.ui.table.minCellWidth,
+              show: isPayout,
+              Cell: data => <HashLink url={`/address/${data.value}`} hash={data.value} />,
+            },
+            {
               Header: 'VOTES',
               accessor: 'zpAmount',
               minWidth: config.ui.table.minCellWidth,
@@ -65,6 +80,7 @@ class ResultsTab extends Component {
           curPage={uiStoreTable.curPage}
           tableDataSetter={uiStoreTableSetter}
           topContent={<div>Total Ballots: {cgpStoreObject.count}</div>}
+          SubComponent={getTableSubComponent(this.typeParam)}
         />
       </TabPanel>
     );

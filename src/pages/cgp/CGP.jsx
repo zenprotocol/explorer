@@ -167,8 +167,8 @@ function VotingTabs({ match, isIntermediate }) {
     <Tabs>
       <TabHead>
         <Tab id="votes/allocation">ALLOCATION VOTES</Tab>
-        <Tab id="votes/payout">PAYOUT VOTES</Tab>
         <Tab id="tally/allocation">{isIntermediate && 'INTERMEDIATE '}ALLOCATION RESULTS</Tab>
+        <Tab id="votes/payout">PAYOUT VOTES</Tab>
         <Tab id="tally/payout">{isIntermediate && 'INTERMEDIATE '}PAYOUT RESULTS</Tab>
       </TabHead>
       <TabBody>

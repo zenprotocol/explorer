@@ -4,6 +4,7 @@ const httpStatus = require('http-status');
 const jsonResponse = require('../../../lib/jsonResponse');
 const HttpError = require('../../../lib/HttpError');
 const cgpBLL = require('./cgpBLL');
+const isTypeValid = require('./modules/isTypeValid');
 
 module.exports = {
   relevantInterval: async function(req, res) {
@@ -61,6 +62,22 @@ module.exports = {
     const { page, pageSize } = req.query;
 
     const result = await cgpBLL.findAllBallots({ type: 'payout', page, pageSize });
+    if (result) {
+      res.status(httpStatus.OK).json(jsonResponse.create(httpStatus.OK, result));
+    } else {
+      throw new HttpError(httpStatus.NOT_FOUND);
+    }
+  },
+  ballotContent: async function(req, res) {
+    const { ballot } = req.query;
+    const { type } = req.params;
+
+    if (!isTypeValid(type)) throw new HttpError(httpStatus.BAD_REQUEST);
+
+    const result =
+      type === 'payout'
+        ? await cgpBLL.getPayoutBallotContent({ ballot })
+        : await cgpBLL.getAllocationBallotContent({ ballot });
     if (result) {
       res.status(httpStatus.OK).json(jsonResponse.create(httpStatus.OK, result));
     } else {

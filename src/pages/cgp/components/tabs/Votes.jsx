@@ -8,6 +8,7 @@ import TextUtils from '../../../../lib/TextUtils';
 import { TabPanel } from '../../../../components/tabs';
 import { ItemsTable } from '../../../../components/ItemsTable';
 import HashLink from '../../../../components/HashLink';
+import getTableSubComponent from './getTableSubComponent';
 
 class VotesTab extends Component {
   get typeParam() {
@@ -38,7 +39,9 @@ class VotesTab extends Component {
     const cgpStore = this.props.rootStore.cgpStore;
     const isPayout = this.typeParam === 'payout';
     const cgpStoreObject = isPayout ? cgpStore.votesPayout : cgpStore.votesAllocation;
-    const uiStoreTable = isPayout ? uiStore.state.cgpPayoutVotesTable : uiStore.state.cgpAllocationVotesTable;
+    const uiStoreTable = isPayout
+      ? uiStore.state.cgpPayoutVotesTable
+      : uiStore.state.cgpAllocationVotesTable;
     const uiStoreTableSetter = isPayout
       ? uiStore.setCGPPayoutVotesTableData.bind(uiStore)
       : uiStore.setCGPAllocationVotesTableData.bind(uiStore);
@@ -51,6 +54,20 @@ class VotesTab extends Component {
               accessor: 'ballot',
               minWidth: config.ui.table.minCellWidth,
               Cell: data => <HashLink hash={data.value} copy={true} />,
+            },
+            {
+              Header: 'ALLOCATION',
+              accessor: 'content.allocation',
+              minWidth: config.ui.table.minCellWidth,
+              show: !isPayout,
+              Cell: data => `${data.value}%`,
+            },
+            {
+              Header: 'RECIPIENT',
+              accessor: 'content.recipient.address',
+              minWidth: config.ui.table.minCellWidth,
+              show: isPayout,
+              Cell: data => <HashLink url={`/address/${data.value}`} hash={data.value} />,
             },
             {
               Header: 'Timestamp',
@@ -82,9 +99,8 @@ class VotesTab extends Component {
           pageSize={uiStoreTable.pageSize}
           curPage={uiStoreTable.curPage}
           tableDataSetter={uiStoreTableSetter}
-          topContent={
-            <div>Total votes: {cgpStoreObject.count}</div>
-          }
+          topContent={<div>Total votes: {cgpStoreObject.count}</div>}
+          SubComponent={getTableSubComponent(this.typeParam)}
         />
       </TabPanel>
     );

@@ -1,6 +1,5 @@
 'use strict';
 
-const zen = require('@zen/zenjs');
 const config = require('../../../config/Config');
 const getChain = require('../../../lib/getChain');
 const BlockchainParser = require('../../../lib/BlockchainParser');
@@ -10,16 +9,29 @@ const addressesBLL = require('../addresses/addressesBLL');
 const createQueryObject = require('../../../lib/createQueryObject');
 const cgpUtils = require('./cgpUtils');
 const formatInterval = require('./modules/formatInterval');
+const isTypeValid = require('./modules/isTypeValid');
+const {
+  getAllocationBallotContent,
+  getPayoutBallotContent,
+} = require('./modules/getBallotContent');
+const addBallotContentToResults = require('./modules/addBallotContentToResults');
 
 const CGP_FUND_CONTRACT_ID = config.get('CGP_FUND_CONTRACT_ID');
 
 module.exports = {
   findIntervalAndTally: async function({ interval } = {}) {
     const formattedInterval = formatInterval(interval);
-    const [currentBlock, chain] = await Promise.all([blocksBLL.getCurrentBlockNumber(), getChain()]);
+    const [currentBlock, chain] = await Promise.all([
+      blocksBLL.getCurrentBlockNumber(),
+      getChain(),
+    ]);
     const relevant = cgpUtils.getRelevantIntervalBlocks(chain, formattedInterval, currentBlock);
 
-    const { interval: currentInterval } = cgpUtils.getRelevantIntervalBlocks(chain, null, currentBlock);
+    const { interval: currentInterval } = cgpUtils.getRelevantIntervalBlocks(
+      chain,
+      null,
+      currentBlock
+    );
     if (relevant.interval > currentInterval) {
       // does not return future intervals
       return null;
@@ -43,13 +55,24 @@ module.exports = {
 
     const formattedInterval = formatInterval(interval);
 
-    const [currentBlock, chain] = await Promise.all([blocksBLL.getCurrentBlockNumber(), getChain()]);
-    const { snapshot, tally } = cgpUtils.getRelevantIntervalBlocks(chain, formattedInterval, currentBlock);
+    const [currentBlock, chain] = await Promise.all([
+      blocksBLL.getCurrentBlockNumber(),
+      getChain(),
+    ]);
+    const { snapshot, tally } = cgpUtils.getRelevantIntervalBlocks(
+      chain,
+      formattedInterval,
+      currentBlock
+    );
 
-    const query = Object.assign({}, { snapshot, tally, type }, createQueryObject({ page, pageSize }));
+    const query = Object.assign(
+      {},
+      { snapshot, tally, type },
+      createQueryObject({ page, pageSize })
+    );
     return await Promise.all([
       cgpDAL.countVotesInInterval({ snapshot, tally, type }),
-      cgpDAL.findAllVotesInInterval(query),
+      cgpDAL.findAllVotesInInterval(query).then(addBallotContentToResults(type)),
     ]).then(cgpDAL.getItemsAndCountResult);
   },
   findAllVoteResults: async function({ interval, type, page = 0, pageSize = 10 } = {}) {
@@ -57,14 +80,21 @@ module.exports = {
 
     const formattedInterval = formatInterval(interval);
 
-    const [currentBlock, chain] = await Promise.all([blocksBLL.getCurrentBlockNumber(), getChain()]);
-    const { snapshot, tally } = cgpUtils.getRelevantIntervalBlocks(chain, formattedInterval, currentBlock);
+    const [currentBlock, chain] = await Promise.all([
+      blocksBLL.getCurrentBlockNumber(),
+      getChain(),
+    ]);
+    const { snapshot, tally } = cgpUtils.getRelevantIntervalBlocks(
+      chain,
+      formattedInterval,
+      currentBlock
+    );
 
     return await Promise.all([
       cgpDAL.countAllVoteResults({ snapshot, tally, type }),
       cgpDAL.findAllVoteResults(
         Object.assign({}, { snapshot, tally, type }, createQueryObject({ page, pageSize }))
-      ),
+      ).then(addBallotContentToResults(type)),
     ]).then(cgpDAL.getItemsAndCountResult);
   },
   findAllBallots: async function({ type, page = 0, pageSize = 10 }) {
@@ -75,7 +105,9 @@ module.exports = {
 
     return await Promise.all([
       cgpDAL.countAllBallots({ type, intervalLength }),
-      cgpDAL.findAllBallots(Object.assign({}, { type, intervalLength }, createQueryObject({ page, pageSize }))),
+      cgpDAL.findAllBallots(
+        Object.assign({}, { type, intervalLength }, createQueryObject({ page, pageSize }))
+      ),
     ]).then(cgpDAL.getItemsAndCountResult);
   },
   findZpParticipated: async function({ interval, type }) {
@@ -83,8 +115,15 @@ module.exports = {
 
     const formattedInterval = formatInterval(interval);
 
-    const [currentBlock, chain] = await Promise.all([blocksBLL.getCurrentBlockNumber(), getChain()]);
-    const { snapshot, tally } = cgpUtils.getRelevantIntervalBlocks(chain, formattedInterval, currentBlock);
+    const [currentBlock, chain] = await Promise.all([
+      blocksBLL.getCurrentBlockNumber(),
+      getChain(),
+    ]);
+    const { snapshot, tally } = cgpUtils.getRelevantIntervalBlocks(
+      chain,
+      formattedInterval,
+      currentBlock
+    );
 
     return cgpDAL.findZpParticipated({ snapshot, tally, type });
   },
@@ -96,8 +135,10 @@ module.exports = {
 
     return addressesBLL.balance({ address: contractAddress, blockNumber });
   },
+  getPayoutBallotContent: async function({ ballot } = {}) {
+    return getPayoutBallotContent({ ballot });
+  },
+  getAllocationBallotContent: async function({ ballot } = {}) {
+    return getAllocationBallotContent({ ballot });
+  },
 };
-
-function isTypeValid(type) {
-  return ['payout', 'allocation'].includes(type.toLowerCase());
-}

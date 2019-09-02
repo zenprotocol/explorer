@@ -71,11 +71,8 @@ class ItemsTable extends Component {
         column.hideOnMobile ? { show: this.state.windowWidth >= config.ui.sizes.breakpointMd } : {}
       );
 
-    const setWidth = column => Object.assign(
-      {},
-      column,
-      { minWidth: column.minWidth || defaultMinWidth }
-    );
+    const setWidth = column =>
+      Object.assign({}, column, { minWidth: column.minWidth || defaultMinWidth });
 
     const columns = this.props.columns.map(column => setWidth(addShow(column)));
 
@@ -185,6 +182,7 @@ class ItemsTable extends Component {
 ItemsTable.defaultProps = {
   pageSize: config.ui.table.defaultPageSize,
   curPage: 0,
+  tableDataSetter: () => {},
 };
 
 ItemsTable.propTypes = {
@@ -194,7 +192,7 @@ ItemsTable.propTypes = {
   items: PropTypes.array,
   pageSize: PropTypes.number,
   curPage: PropTypes.number,
-  tableDataSetter: PropTypes.func.isRequired,
+  tableDataSetter: PropTypes.func,
   SubComponent: PropTypes.any,
   topContent: PropTypes.any,
   multiSort: PropTypes.bool,
