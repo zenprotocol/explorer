@@ -16,7 +16,8 @@ import { getVoteStatus, voteStatus } from './cgpVoteStatus';
 import VotesTab from './components/tabs/Votes';
 import ResultsTab from './components/tabs/Results';
 import IntervalsDropDown from './components/IntervalsDropDown';
-import {AfterVoteInfo, BeforeVoteInfo, DuringVoteInfo} from './components/InfoBoxes';
+import { AfterVoteInfo, BeforeVoteInfo, DuringVoteInfo } from './components/InfoBoxes';
+import WinnerSummary from './components/WinnerSummary';
 
 import './CGP.scss';
 
@@ -120,8 +121,10 @@ class CGPPage extends React.Component {
     const relevantInterval = this.cgpStore.relevantInterval;
     if (this.cgpStore.loading.relevantInterval) return <Loading />;
     if (!this.relevantLoaded) return null;
+    const hasWinner = !!relevantInterval.winnerAllocation || !!relevantInterval.winnerPayout;
+
     return (
-      <div>
+      <>
         <section>
           {this.voteStatus === voteStatus.before && (
             <BeforeVoteInfo {...relevantInterval} currentBlock={this.currentBlock} />
@@ -129,11 +132,14 @@ class CGPPage extends React.Component {
           {this.voteStatus === voteStatus.during && (
             <DuringVoteInfo {...relevantInterval} currentBlock={this.currentBlock} />
           )}
-          {this.voteStatus === voteStatus.after && (
-            <AfterVoteInfo {...relevantInterval} commitId={this.cgpStore.winnerCommitId} />
-          )}
+          {this.voteStatus === voteStatus.after && <AfterVoteInfo {...relevantInterval} />}
         </section>
-      </div>
+        {this.voteStatus === voteStatus.after && hasWinner && (
+          <section>
+            <WinnerSummary {...relevantInterval} />
+          </section>
+        )}
+      </>
     );
   }
 
@@ -158,8 +164,6 @@ class CGPPage extends React.Component {
     return null;
   }
 }
-
-
 
 function VotingTabs({ match, isIntermediate }) {
   const currentPath = match.path;

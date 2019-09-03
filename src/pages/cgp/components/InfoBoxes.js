@@ -4,7 +4,6 @@ import PropTypes from 'prop-types';
 import TextUtils from '../../../lib/TextUtils';
 import AssetUtils from '../../../lib/AssetUtils';
 import InfoBox from '../../../components/InfoBox';
-import HashLink from '../../../components/HashLink';
 
 function CgpBalanceInfoBox({ cgpBalance }) {
   const zpBalance = cgpBalance.find(item => AssetUtils.isZP(item.asset)) || {
@@ -88,7 +87,7 @@ DuringVoteInfo.propTypes = {
   tally: PropTypes.number,
 };
 
-export function AfterVoteInfo({ winnerAllocation, winnerPayout, interval, snapshot, tally, ...props }) {
+export function AfterVoteInfo({ snapshot, tally, ...props }) {
   return (
     <div className="container">
       <div className="row">
@@ -104,35 +103,10 @@ export function AfterVoteInfo({ winnerAllocation, winnerPayout, interval, snapsh
         />
         <CgpBalanceInfoBox {...props} />
       </div>
-      {(winnerAllocation || winnerPayout) && (
-        <div className="row">
-          {!!winnerAllocation && (
-            <div className="col winner border border-dark text-center after-tally-message">
-              <div>{TextUtils.getOrdinal(interval).toUpperCase()} INTERVAL WINNER ALLOCATION:</div>
-              <div className="small">
-                Ballot: <HashLink hash={winnerAllocation.ballot} /><br />
-                Zp Voted:{' '}{AssetUtils.getAmountString('00', winnerAllocation.amount)}
-              </div>
-            </div>
-          )}
-          {!!winnerPayout && (
-            <div className="col winner border border-dark text-center after-tally-message">
-              <div>{TextUtils.getOrdinal(interval).toUpperCase()} INTERVAL WINNER PAYOUT:</div>
-              <div className="small">
-                Ballot: <HashLink hash={winnerPayout.ballot} /><br />
-                Zp Voted:{' '}{AssetUtils.getAmountString('00', winnerPayout.amount)}
-              </div>
-            </div>
-          )}
-        </div>
-      )}
     </div>
   );
 }
 AfterVoteInfo.propTypes = {
-  interval: PropTypes.number,
   snapshot: PropTypes.number,
   tally: PropTypes.number,
-  winnerAllocation: PropTypes.object,
-  winnerPayout: PropTypes.object,
 };

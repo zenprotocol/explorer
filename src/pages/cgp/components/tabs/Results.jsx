@@ -7,6 +7,7 @@ import TextUtils from '../../../../lib/TextUtils';
 import { TabPanel } from '../../../../components/tabs';
 import { ItemsTable } from '../../../../components/ItemsTable';
 import HashLink from '../../../../components/HashLink';
+import AddressLink from '../../../../components/AddressLink';
 import getTableSubComponent from './getTableSubComponent';
 
 class ResultsTab extends Component {
@@ -38,7 +39,9 @@ class ResultsTab extends Component {
     const cgpStore = this.props.rootStore.cgpStore;
     const isPayout = this.typeParam === 'payout';
     const cgpStoreObject = isPayout ? cgpStore.resultsPayout : cgpStore.resultsAllocation;
-    const uiStoreTable = isPayout ? uiStore.state.cgpPayoutResultsTable : uiStore.state.cgpAllocationResultsTable;
+    const uiStoreTable = isPayout
+      ? uiStore.state.cgpPayoutResultsTable
+      : uiStore.state.cgpAllocationResultsTable;
     const uiStoreTableSetter = isPayout
       ? uiStore.setCGPPayoutVotesTableData.bind(uiStore)
       : uiStore.setCGPAllocationVotesTableData.bind(uiStore);
@@ -64,7 +67,7 @@ class ResultsTab extends Component {
               accessor: 'content.recipient.address',
               minWidth: config.ui.table.minCellWidth,
               show: isPayout,
-              Cell: data => <HashLink url={`/address/${data.value}`} hash={data.value} />,
+              Cell: data => <AddressLink address={data.value} hash={data.value} />,
             },
             {
               Header: 'VOTES',

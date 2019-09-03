@@ -14,7 +14,10 @@ const {
   getAllocationBallotContent,
   getPayoutBallotContent,
 } = require('./modules/getBallotContent');
-const addBallotContentToResults = require('./modules/addBallotContentToResults');
+const {
+  addBallotContentToResults,
+  addBallotContentToResult,
+} = require('./modules/addBallotContentToResults');
 
 const CGP_FUND_CONTRACT_ID = config.get('CGP_FUND_CONTRACT_ID');
 
@@ -46,8 +49,8 @@ module.exports = {
       interval: relevant.interval,
       snapshot: relevant.snapshot,
       tally: relevant.tally,
-      winnerAllocation,
-      winnerPayout,
+      winnerAllocation: await addBallotContentToResult('allocation')(winnerAllocation),
+      winnerPayout: await addBallotContentToResult('payout')(winnerPayout),
     };
   },
   findAllVotesByInterval: async function({ interval, type, page = 0, pageSize = 10 } = {}) {
@@ -92,9 +95,11 @@ module.exports = {
 
     return await Promise.all([
       cgpDAL.countAllVoteResults({ snapshot, tally, type }),
-      cgpDAL.findAllVoteResults(
-        Object.assign({}, { snapshot, tally, type }, createQueryObject({ page, pageSize }))
-      ).then(addBallotContentToResults(type)),
+      cgpDAL
+        .findAllVoteResults(
+          Object.assign({}, { snapshot, tally, type }, createQueryObject({ page, pageSize }))
+        )
+        .then(addBallotContentToResults(type)),
     ]).then(cgpDAL.getItemsAndCountResult);
   },
   findAllBallots: async function({ type, page = 0, pageSize = 10 }) {

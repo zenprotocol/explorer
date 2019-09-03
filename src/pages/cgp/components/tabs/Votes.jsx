@@ -8,6 +8,7 @@ import TextUtils from '../../../../lib/TextUtils';
 import { TabPanel } from '../../../../components/tabs';
 import { ItemsTable } from '../../../../components/ItemsTable';
 import HashLink from '../../../../components/HashLink';
+import AddressLink from '../../../../components/AddressLink';
 import getTableSubComponent from './getTableSubComponent';
 
 class VotesTab extends Component {
@@ -67,7 +68,7 @@ class VotesTab extends Component {
               accessor: 'content.recipient.address',
               minWidth: config.ui.table.minCellWidth,
               show: isPayout,
-              Cell: data => <HashLink url={`/address/${data.value}`} hash={data.value} />,
+              Cell: data => <AddressLink address={data.value} hash={data.value} />,
             },
             {
               Header: 'Timestamp',
