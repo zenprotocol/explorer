@@ -41,6 +41,8 @@ class AssetPage extends Component {
   }
 
   render() {
+    if (this.assetStore.loading.asset) return <Loading />;
+
     const is404 = this.assetStore.asset.status === 404;
     const assetName = AssetUtils.getAssetNameFromCode(this.assetProp);
 

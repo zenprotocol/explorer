@@ -18,7 +18,7 @@ module.exports = {
     }
 
     const item = await assetsBLL.findOne({ asset });
-    if (asset) {
+    if (item) {
       res.status(httpStatus.OK).json(jsonResponse.create(httpStatus.OK, item));
     } else {
       throw new HttpError(httpStatus.NOT_FOUND);
