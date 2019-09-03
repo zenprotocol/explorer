@@ -1,8 +1,10 @@
 'use strict';
 
 const zen = require('@zen/zenjs');
+const { Hash } = require('@zen/zenjs/build/src/Consensus/Types/Hash');
 const sha3 = require('js-sha3');
 const Decimal = require('decimal.js');
+const Bigi = require('bigi');
 const { fromPairs } = require('ramda');
 const logger = require('../../lib/logger')('votes');
 const cgpDAL = require('../../../server/components/api/cgp/cgpDAL');
@@ -60,7 +62,9 @@ class CGPVotesAdder {
   }
 
   async processCommands(commands) {
-    const voteGroupsToAdd = await Promise.all(commands.map(command => this.getVotesFromCommand(command)));
+    const voteGroupsToAdd = await Promise.all(
+      commands.map(command => this.getVotesFromCommand(command))
+    );
     // a command can contain more than 1 vote or none
     return voteGroupsToAdd.reduce((all, voteGroup) => {
       all.push.apply(all, voteGroup);
@@ -120,7 +124,9 @@ class CGPVotesAdder {
 
   validateMessageBody(command) {
     const { messageBody } = command;
-    const isTopLevelValid = Boolean(messageBody && messageBody.dict && messageBody.dict.length === 2);
+    const isTopLevelValid = Boolean(
+      messageBody && messageBody.dict && messageBody.dict.length === 2
+    );
     if (!isTopLevelValid) return false;
 
     const ballotSignature = fromPairs(messageBody.dict);
@@ -136,19 +142,22 @@ class CGPVotesAdder {
 
   validateSignatureDictElement(element) {
     return Boolean(
-      element && element.length === 2 && typeof element[0] === 'string' && typeof element[1].signature === 'string'
+      element &&
+        element.length === 2 &&
+        typeof element[0] === 'string' &&
+        typeof element[1].signature === 'string'
     );
   }
 
   verify({ publicKey, signature, interval, ballot } = {}) {
-    const { Data, PublicKey, Signature, Hash } = zen;
+    const { Data, PublicKey, Signature } = zen;
     return PublicKey.fromString(publicKey).verify(
-      new Hash(
-        Data.serialize(new Data.UInt32(new Decimal(interval).valueOf())).concat(
+      Hash.compute(
+        Data.serialize(new Data.UInt32(Bigi.valueOf(interval))).concat(
           Data.serialize(new Data.String(ballot))
-        ).bytes,
-        Signature.fromString(signature)
-      )
+        )
+      ).bytes,
+      Signature.fromString(signature)
     );
   }
 }
