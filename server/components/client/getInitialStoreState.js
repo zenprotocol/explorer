@@ -169,11 +169,15 @@ async function getRepoVoteStoreData(req) {
 }
 
 async function getCGPStoreData(req) {
-  const [relevantInterval] = await Promise.all([
+  const [intervalAndTally, cgpBalance] = await Promise.all([
     cgpBLL.findIntervalAndTally(req.params),
+    cgpBLL.findCgpBalance(),
   ]);
   return {
-    relevantInterval,
+    relevantInterval: {
+      ...intervalAndTally,
+      cgpBalance,
+    },
   };
 }
 
