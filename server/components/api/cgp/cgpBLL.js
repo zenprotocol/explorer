@@ -49,8 +49,10 @@ module.exports = {
       interval: relevant.interval,
       snapshot: relevant.snapshot,
       tally: relevant.tally,
-      winnerAllocation: await addBallotContentToResult('allocation')(winnerAllocation),
-      winnerPayout: await addBallotContentToResult('payout')(winnerPayout),
+      winnerAllocation: await addBallotContentToResult({ type: 'allocation', chain })(
+        winnerAllocation
+      ),
+      winnerPayout: await addBallotContentToResult({ type: 'payout', chain })(winnerPayout),
     };
   },
   findAllVotesByInterval: async function({ interval, type, page = 0, pageSize = 10 } = {}) {
@@ -75,7 +77,7 @@ module.exports = {
     );
     return await Promise.all([
       cgpDAL.countVotesInInterval({ snapshot, tally, type }),
-      cgpDAL.findAllVotesInInterval(query).then(addBallotContentToResults(type)),
+      cgpDAL.findAllVotesInInterval(query).then(addBallotContentToResults({ chain, type })),
     ]).then(cgpDAL.getItemsAndCountResult);
   },
   findAllVoteResults: async function({ interval, type, page = 0, pageSize = 10 } = {}) {
@@ -99,7 +101,7 @@ module.exports = {
         .findAllVoteResults(
           Object.assign({}, { snapshot, tally, type }, createQueryObject({ page, pageSize }))
         )
-        .then(addBallotContentToResults(type)),
+        .then(addBallotContentToResults({ type, chain })),
     ]).then(cgpDAL.getItemsAndCountResult);
   },
   findAllBallots: async function({ type, page = 0, pageSize = 10 }) {
@@ -141,7 +143,8 @@ module.exports = {
     return addressesBLL.balance({ address: contractAddress, blockNumber });
   },
   getPayoutBallotContent: async function({ ballot } = {}) {
-    return getPayoutBallotContent({ ballot });
+    const chain = await getChain();
+    return getPayoutBallotContent({ ballot, chain });
   },
   getAllocationBallotContent: async function({ ballot } = {}) {
     return getAllocationBallotContent({ ballot });

@@ -2,21 +2,21 @@
 
 const { getAllocationBallotContent, getPayoutBallotContent } = require('./getBallotContent');
 
-function addBallotContentToResults(type) {
+function addBallotContentToResults({ type, chain } = {}) {
   return async function(results = []) {
-    return Promise.all(results.map(addBallotContentToResult(type)));
+    return Promise.all(results.map(addBallotContentToResult({ type, chain })));
   };
 }
 
-function addBallotContentToResult(type) {
+function addBallotContentToResult({ type, chain } = {}) {
   return async function(result = {}) {
     return result && result.ballot
       ? {
           ...result,
           content:
             type === 'payout'
-              ? await getPayoutBallotContent(result)
-              : await getAllocationBallotContent(result),
+              ? getPayoutBallotContent({ ballot: result.ballot, chain })
+              : getAllocationBallotContent({ ballot: result.ballot }),
         }
       : result;
   };

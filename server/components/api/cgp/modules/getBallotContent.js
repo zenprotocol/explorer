@@ -2,14 +2,12 @@
 
 const R = require('ramda');
 const BlockchainParser = require('../../../../lib/BlockchainParser');
-const getChain = require('../../../../lib/getChain');
 const deserializeBallot = require('./deserializeBallot');
 
-async function getPayoutBallotContent({ ballot } = {}) {
+function getPayoutBallotContent({ ballot, chain } = {}) {
   const deserialized = deserializeBallot(ballot);
   if (!deserialized) return null;
   
-  const chain = await getChain();
   const blockchainParser = new BlockchainParser(chain);
   const address = R.has('contractId', deserialized.recipient)
     ? blockchainParser.getAddressFromContractId(deserialized.recipient.contractId)
@@ -21,7 +19,7 @@ async function getPayoutBallotContent({ ballot } = {}) {
   });
 }
 
-async function getAllocationBallotContent({ ballot } = {}) {
+function getAllocationBallotContent({ ballot } = {}) {
   const deserialized = deserializeBallot(ballot);
   if (!deserialized) return null;
 
