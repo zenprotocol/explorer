@@ -38,7 +38,8 @@ module.exports = async function(job) {
         cgpVotesAdder = new CGPVotesAdder({
           chain,
           blockchainParser: new BlockchainParser(chain),
-          contractId: config.get('CGP_VOTING_CONTRACT_ID'),
+          contractIdFund: config.get('CGP_FUND_CONTRACT_ID'),
+          contractIdVoting: config.get('CGP_VOTING_CONTRACT_ID'),
         });
       }
     }
