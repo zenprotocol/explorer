@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import AssetUtils from '../../../lib/AssetUtils';
 import HashLink from '../../../components/HashLink';
 import AddressLink from '../../../components/AddressLink';
+import percentageToZP from '../modules/percentageToZP';
 
 export default function WinnerSummary(props) {
   return (
@@ -39,7 +40,7 @@ function SummaryAllocation({ winnerAllocation }) {
           </tr>
           <tr>
             <td>ALLOCATION RESULT</td>
-            <td>{winnerAllocation.content.allocation}%</td>
+            <td>{percentageToZP(winnerAllocation.content.allocation)} ZP</td>
           </tr>
         </tbody>
       </table>

@@ -10,6 +10,7 @@ import { ItemsTable } from '../../../../components/ItemsTable';
 import HashLink from '../../../../components/HashLink';
 import AddressLink from '../../../../components/AddressLink';
 import getTableSubComponent from './getTableSubComponent';
+import percentageToZP from '../../modules/percentageToZP';
 
 class VotesTab extends Component {
   get typeParam() {
@@ -61,7 +62,7 @@ class VotesTab extends Component {
               accessor: 'content.allocation',
               minWidth: config.ui.table.minCellWidth,
               show: !isPayout,
-              Cell: data => `${data.value}%`,
+              Cell: data => `${percentageToZP(data.value)} ZP`,
             },
             {
               Header: 'RECIPIENT',
