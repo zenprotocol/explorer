@@ -32,7 +32,7 @@ module.exports = {
     const blockNumber = suppliedBlockNumber
       ? suppliedBlockNumber
       : await blocksBLL.getCurrentBlockNumber();
-    return addressesDAL.snapshotAddressBalancesByBlock(address, blockNumber);
+    return addressesDAL.snapshotAddressBalancesByBlock({ address, blockNumber });
   },
   balanceZp: async function({ address } = {}) {
     const zpAmounts = await addressesDAL.getZpBalance(address);

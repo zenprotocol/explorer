@@ -16,12 +16,15 @@ const cgpDAL = dal.createDAL('CGPVote');
 
 cgpDAL.findAllUnprocessedCommands = async function(contractId) {
   const sql = tags.oneLine`
-    SELECT *
-    FROM "Commands" c
-    WHERE c."ContractId" = :contractId 
-    AND c.id NOT IN 
+    SELECT "Commands".*
+    FROM "Commands"
+    INNER JOIN "Transactions" ON "Commands"."TransactionId" = "Transactions"."id"
+    INNER JOIN "Blocks" ON "Transactions"."BlockId" = "Blocks"."id"
+    WHERE "Commands"."ContractId" = :contractId
+    AND "Commands"."id" NOT IN 
       (SELECT DISTINCT "CommandId"
       FROM "CGPVotes")
+    ORDER BY "Blocks"."blockNumber" ASC, "Transactions"."index" ASC
   `;
 
   return sequelize.query(sql, {
@@ -120,7 +123,7 @@ cgpDAL.countAllVoteResults = async function({ snapshot, tally, type } = {}) {
     .then(this.queryResultToCount);
 };
 
-cgpDAL.findWinner = async function({ snapshot, tally, type } = {}) {
+cgpDAL.findWinner = async function({ snapshot, tally, type, dbTransaction = null } = {}) {
   const sql = tags.oneLine`
   ${WITH_FILTER_TABLES}
   ${FIND_ALL_VOTE_RESULTS_BASE_SQL}
@@ -136,6 +139,7 @@ cgpDAL.findWinner = async function({ snapshot, tally, type } = {}) {
         type,
       },
       type: sequelize.QueryTypes.SELECT,
+      transaction: dbTransaction,
     })
     .then(results => (results.length ? results[0] : null));
 };
@@ -179,14 +183,16 @@ cgpDAL.findZpParticipated = async function({ snapshot, tally, type } = {}) {
   ${FIND_ALL_ZP_PARTICIPATED_BASE_SQL}
   `;
 
-  return sequelize.query(sql, {
-    replacements: {
-      snapshot,
-      tally,
-      type,
-    },
-    type: sequelize.QueryTypes.SELECT,
-  }).then(result => result.length && result[0].amount ? result[0].amount : 0);
+  return sequelize
+    .query(sql, {
+      replacements: {
+        snapshot,
+        tally,
+        type,
+      },
+      type: sequelize.QueryTypes.SELECT,
+    })
+    .then(result => (result.length && result[0].amount ? result[0].amount : 0));
 };
 
 module.exports = cgpDAL;

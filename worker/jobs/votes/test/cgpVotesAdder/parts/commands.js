@@ -2,17 +2,19 @@ const wrapTest = require('../../../../../../test/lib/wrapTest');
 const BlockchainParser = require('../../../../../../server/lib/BlockchainParser');
 const cgpDAL = require('../../../../../../server/components/api/cgp/cgpDAL');
 const CGPVotesAdder = require('../../../CGPVotesAdder');
-const CONTRACT_ID = require('../modules/contractId');
+const contractId = require('../modules/contractId');
 const { addDemoData, addCommands } = require('../modules/addDemoData');
 const getDemoCommand = require('../modules/getDemoCommand');
 const getValidMessageBody = require('../modules/getValidMessageBody');
 
+const blockchainParser = new BlockchainParser('test');
+
 module.exports = async function part({ t, before, after }) {
   await wrapTest('Given no commands', async given => {
     const cgpVotesAdder = new CGPVotesAdder({
-      blockchainParser: new BlockchainParser('test'),
+      blockchainParser,
       chain: 'test',
-      contractId: CONTRACT_ID,
+      ...contractId,
     });
     before(cgpVotesAdder);
     const result = await cgpVotesAdder.doJob();
@@ -25,12 +27,12 @@ module.exports = async function part({ t, before, after }) {
   function testSingleWrongCommand({ given, command }) {
     return wrapTest(given, async () => {
       const cgpVotesAdder = new CGPVotesAdder({
-        blockchainParser: new BlockchainParser('test'),
+        blockchainParser,
         chain: 'test',
-        contractId: CONTRACT_ID,
+        ...contractId,
       });
       before(cgpVotesAdder);
-      await addDemoData({ commands: [command] });
+      await addDemoData({ commands: [command], blockchainParser });
       const result = await cgpVotesAdder.doJob();
       const votes = await cgpDAL.findAll();
       t.assert(
@@ -52,23 +54,24 @@ module.exports = async function part({ t, before, after }) {
 
   await wrapTest('Given a valid payout vote', async given => {
     const cgpVotesAdder = new CGPVotesAdder({
-      blockchainParser: new BlockchainParser('test'),
+      blockchainParser,
       chain: 'test',
-      contractId: CONTRACT_ID,
+      ...contractId,
     });
     before(cgpVotesAdder);
+    const messageBody = getValidMessageBody('Payout');
+    const ballot = messageBody.dict[0][1].string;
     await addDemoData({
-      commands: [getDemoCommand({ command: 'Payout', messageBody: getValidMessageBody('Payout') })],
+      commands: [getDemoCommand({ command: 'Payout', messageBody})],
+      blockchainParser,
     });
     const result = await cgpVotesAdder.doJob();
     const votes = await cgpDAL.findAll();
     t.assert(
       result === 2 &&
         votes.length === 2 &&
-        votes[0].ballot ===
-          '02344dc343f0ac6d0d1d5d6e6388a9dc495ff230b650565455f040c4abd565c1d301000000' &&
-        votes[1].ballot ===
-          '02344dc343f0ac6d0d1d5d6e6388a9dc495ff230b650565455f040c4abd565c1d301000000',
+        votes[0].ballot === ballot &&
+        votes[1].ballot === ballot,
       `${given}: should add the vote`
     );
     after();
@@ -76,73 +79,25 @@ module.exports = async function part({ t, before, after }) {
 
   await wrapTest('Given a valid allocation vote', async given => {
     const cgpVotesAdder = new CGPVotesAdder({
-      blockchainParser: new BlockchainParser('test'),
+      blockchainParser,
       chain: 'test',
-      contractId: CONTRACT_ID,
+      ...contractId,
     });
     before(cgpVotesAdder);
     await addDemoData({
       commands: [
         getDemoCommand({ command: 'Allocation', messageBody: getValidMessageBody('Allocation') }),
       ],
+      blockchainParser,
     });
     const result = await cgpVotesAdder.doJob();
     const votes = await cgpDAL.findAll();
     t.assert(
       result === 2 &&
         votes.length === 2 &&
-        votes[0].ballot === '1000' &&
-        votes[1].ballot === '1000',
+        votes[0].ballot === '0106' &&
+        votes[1].ballot === '0106',
       `${given}: should add the vote`
-    );
-    after();
-  });
-
-  await wrapTest('Given an allocation vote with wrong interval', async given => {
-    const cgpVotesAdder = new CGPVotesAdder({
-      blockchainParser: new BlockchainParser('test'),
-      chain: 'test',
-      contractId: CONTRACT_ID,
-    });
-    // not mocking verify, we want it to return false
-
-    await addDemoData({
-      commands: [
-        getDemoCommand({
-          command: 'Allocation',
-          messageBody: { // signed with the wrong interval
-            dict: [
-              [
-                'Signature',
-                {
-                  dict: [
-                    [
-                      '029ae9b49e60259958302fab6c9be333775fd7ada72f11643218dcf23e5f37ec92',
-                      {
-                        signature:
-                          '05dce7802c4dd909f362316d0c90adfca8ed3743af993c96b147854fa1bfb17e25bead07e9b083873504cf94e18bafbd3cd080d217b5dec28a253508fcd1e55c',
-                      },
-                    ],
-                    [
-                      '02b43a1cb4cb6472e1fcd71b237eb9c1378335cd200dd07536594348d9e450967e',
-                      {
-                        signature:
-                          '0f69d10032f11a6ce861cfdfb8c54c339f9226b8476268d02478629807f11f03605ab1e8e2057abcc3ef60abba27ccbd37d22450d822bc205b3b57795336093e',
-                      },
-                    ],
-                  ],
-                },
-              ],
-              ['Allocation', { string: '010c' }],
-            ],
-          },
-        }),
-      ],
-    });
-    const result = await cgpVotesAdder.doJob();
-    const votes = await cgpDAL.findAll();
-    t.assert(
-      result === 1 && votes.length === 1 && votes[0].ballot === null, `${given}: should not add the vote`
     );
     after();
   });
@@ -150,9 +105,9 @@ module.exports = async function part({ t, before, after }) {
   // several commands
   await wrapTest('Given 2 commands with valid votes', async given => {
     const cgpVotesAdder = new CGPVotesAdder({
-      blockchainParser: new BlockchainParser('test'),
+      blockchainParser,
       chain: 'test',
-      contractId: CONTRACT_ID,
+      ...contractId,
     });
     before(cgpVotesAdder);
     await addDemoData({
@@ -160,6 +115,7 @@ module.exports = async function part({ t, before, after }) {
         getDemoCommand({ command: 'Payout', messageBody: getValidMessageBody('Payout') }),
         getDemoCommand({ command: 'Allocation', messageBody: getValidMessageBody('Allocation') }),
       ],
+      blockchainParser,
     });
     const result = await cgpVotesAdder.doJob();
     const votes = await cgpDAL.findAll();
@@ -178,29 +134,28 @@ module.exports = async function part({ t, before, after }) {
     'Given command with valid votes and a 2nd command with invalid votes',
     async given => {
       const cgpVotesAdder = new CGPVotesAdder({
-        blockchainParser: new BlockchainParser('test'),
+        blockchainParser,
         chain: 'test',
-        contractId: CONTRACT_ID,
+        ...contractId,
       });
       before(cgpVotesAdder);
       await addDemoData({
+        blockchainParser,
         commands: [
           getDemoCommand({ command: 'Payout', messageBody: getValidMessageBody('Payout') }),
           getDemoCommand({
             command: 'Allocation',
             messageBody: {
-              given: 'Given a message body with no signatures',
-              messageBody: {
-                dict: [
-                  [
-                    'Payout',
-                    {
-                      string:
-                        '02344dc343f0ac6d0d1d5d6e6388a9dc495ff230b650565455f040c4abd565c1d301000000',
-                    },
-                  ],
+              // no signatures
+              dict: [
+                [
+                  'Payout',
+                  {
+                    string:
+                      '02344dc343f0ac6d0d1d5d6e6388a9dc495ff230b650565455f040c4abd565c1d301000000',
+                  },
                 ],
-              },
+              ],
             },
           }),
         ],
@@ -220,12 +175,13 @@ module.exports = async function part({ t, before, after }) {
   // worker runs 2 times
   await wrapTest('Given the worker runs 2 times with no new votes on 2nd time', async given => {
     const cgpVotesAdder = new CGPVotesAdder({
-      blockchainParser: new BlockchainParser('test'),
+      blockchainParser,
       chain: 'test',
-      contractId: CONTRACT_ID,
+      ...contractId,
     });
     before(cgpVotesAdder);
     await addDemoData({
+      blockchainParser,
       commands: [
         getDemoCommand({ command: 'Payout', messageBody: getValidMessageBody('Payout') }),
         getDemoCommand({ command: 'Allocation', messageBody: getValidMessageBody('Allocation') }),
@@ -248,12 +204,13 @@ module.exports = async function part({ t, before, after }) {
 
   await wrapTest('Given the worker runs 2 times with new votes on 2nd time', async given => {
     const cgpVotesAdder = new CGPVotesAdder({
-      blockchainParser: new BlockchainParser('test'),
+      blockchainParser,
       chain: 'test',
-      contractId: CONTRACT_ID,
+      ...contractId,
     });
     before(cgpVotesAdder);
     await addDemoData({
+      blockchainParser,
       commandsBlockNumber: 91,
       commands: [
         getDemoCommand({ command: 'Payout', messageBody: getValidMessageBody('Payout') }),

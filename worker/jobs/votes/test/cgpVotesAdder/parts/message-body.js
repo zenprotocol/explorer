@@ -2,20 +2,24 @@ const wrapTest = require('../../../../../../test/lib/wrapTest');
 const BlockchainParser = require('../../../../../../server/lib/BlockchainParser');
 const cgpDAL = require('../../../../../../server/components/api/cgp/cgpDAL');
 const CGPVotesAdder = require('../../../CGPVotesAdder');
-const CONTRACT_ID = require('../modules/contractId');
+const contractId = require('../modules/contractId');
 const { addDemoData } = require('../modules/addDemoData');
 const getDemoCommand = require('../modules/getDemoCommand');
+
+const blockchainParser = new BlockchainParser('test');
 
 module.exports = async function part({ t, before, after }) {
   function testBadMessageBody({ given, messageBody }) {
     return wrapTest(given, async () => {
       const cgpVotesAdder = new CGPVotesAdder({
-        blockchainParser: new BlockchainParser('test'),
+        blockchainParser,
         chain: 'test',
-        contractId: CONTRACT_ID,
+        ...contractId,
       });
+      
       before(cgpVotesAdder);
       await addDemoData({
+        blockchainParser,
         commands: [getDemoCommand({ command: 'Payout', messageBody })],
       });
       const result = await cgpVotesAdder.doJob();

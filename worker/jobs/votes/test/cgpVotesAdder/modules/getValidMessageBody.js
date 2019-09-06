@@ -4,26 +4,24 @@ const MESSAGE_BODY_PAYOUT = {
   dict: [
     [
       'Payout',
-      {
-        string: '02344dc343f0ac6d0d1d5d6e6388a9dc495ff230b650565455f040c4abd565c1d301000000',
-      },
+      { string: '02011cb4afc2a1dd2c4f857460a7abe3efc67c24881fd33978d8a5f9a4cb25c14ef101000004' },
     ],
     [
       'Signature',
       {
         dict: [
           [
-            '032229522443cf166e28468c58a4719ce01eb2d9b5b656ecae6e959001bbe8c469',
+            '026362f82dee835e645eeeba3b7d235b503537d91233c1c28d257f40d8887cd802',
             {
               signature:
-                'b0d63b4a89f53910e82e01b22a3740664ca57756b6304838f8d592008a95047543ba6a281612a41778dc109723c4e4f1937bcbc2fdc847f636a4ff9a9e7d3715',
+                '1b606d8c609d04d0c185cd16c4380d141263c9e44e095621fe6c9497306eed1e3357b49f7940a79f40b1f128b32a3fd2c52fadf522f7f895eb2dcd1128941ff8',
             },
           ],
           [
-            '03c27d63a7a9e2c852b76aee38f51edd07f089a53f43b087ee57811abf61b198b9',
+            '02bf97e00a4fe4f115921ac8b407866c66337281021d6ddf525f845005c582c451',
             {
               signature:
-                '512f09fccba6b5018ff6ccf899baeee1824862999dcb38948b8406c4fcce1aab361f406c9ce261ebd8d381330f1da487a81cd632671471d7f16803683204fb61',
+                '973af3e069c714754465c0c8e75bef1acee2496381a8c3e2c9ce0b359420187c0f03c5bb308863f7f5292ca9385f1400bfef0ae883dd24715fb99cc6b5edf60a',
             },
           ],
         ],
@@ -38,32 +36,29 @@ const MESSAGE_BODY_ALLOCATION = {
       {
         dict: [
           [
-            '032229522443cf166e28468c58a4719ce01eb2d9b5b656ecae6e959001bbe8c469',
+            '02bc3699a0f36fb2352c41c719b9c944ccf8bc9bfae52206847adfd713a0e26d28',
             {
               signature:
-                '422e4a19b03d9aeeac080c541d390cce33c363d125ca348e1e916cd77404965919d316a4ea1bcbb5bdf3a4d01556512cd674f8334e9f7ac08647274cd7b48b0a',
+                'd1d59164da046cf496ac2e8a274534aec0ad8a54435118f0091a1b964e5142922f0212203ffe82f3304397fdc15fe5663e3d346e96bc9714dfa95b4517747fef',
             },
           ],
           [
-            '03c27d63a7a9e2c852b76aee38f51edd07f089a53f43b087ee57811abf61b198b9',
+            '032f64e7f4d053ff2e24d1fc41075605cda80b68decd222ed47374cfce382395cd',
             {
               signature:
-                '5a796d7b8577aa7622d4d9cc04fc831c0255426dacfa3b0bab9bd92fbde784cf28b7e6b84208b8f239fec157505c0fe0302de0638203a2f005eb4017d83fa691',
+                'f38facf5de7c6c0c5bd26547d8b00bdbcbf45f0e12af5c9719a26e8b5e8e2f805685ae597f298322987f4181a06e385fac0776882eb9771e093082205651d658',
             },
           ],
         ],
       },
     ],
-    [
-      'Allocation',
-      {
-        string: '1000',
-      },
-    ],
+    ['Allocation', { string: '0106' }],
   ],
 };
 function getValidMessageBody(type) {
-  return type === 'Payout' ? MESSAGE_BODY_PAYOUT : MESSAGE_BODY_ALLOCATION;
+  return type === 'Payout'
+    ? JSON.parse(JSON.stringify(MESSAGE_BODY_PAYOUT))
+    : JSON.parse(JSON.stringify(MESSAGE_BODY_ALLOCATION));
 }
 
 module.exports = getValidMessageBody;

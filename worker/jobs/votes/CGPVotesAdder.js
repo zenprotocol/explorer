@@ -1,56 +1,72 @@
 'use strict';
 
 const zen = require('@zen/zenjs');
+const R = require('ramda');
 const { Hash } = require('@zen/zenjs/build/src/Consensus/Types/Hash');
-const sha3 = require('js-sha3');
-const Decimal = require('decimal.js');
+const { Decimal } = require('decimal.js');
 const Bigi = require('bigi');
 const { fromPairs } = require('ramda');
 const logger = require('../../lib/logger')('votes');
 const cgpDAL = require('../../../server/components/api/cgp/cgpDAL');
+const {
+  getAllocationBallotContent,
+  getPayoutBallotContent,
+} = require('../../../server/components/api/cgp/modules/getBallotContent');
 const cgpUtils = require('../../../server/components/api/cgp/cgpUtils');
 const commandsDAL = require('../../../server/components/api/commands/commandsDAL');
+const addressesDAL = require('../../../server/components/api/addresses/addressesDAL');
 const QueueError = require('../../lib/QueueError');
 const db = require('../../../server/db/sequelize/models');
 
 class CGPVotesAdder {
-  constructor({ blockchainParser, contractId, chain } = {}) {
+  constructor({ blockchainParser, contractIdVoting, contractIdFund, chain } = {}) {
     this.blockchainParser = blockchainParser;
-    this.contractId = contractId;
+    this.contractIdVoting = contractIdVoting;
+    this.contractIdFund = contractIdFund;
     this.chain = chain;
   }
 
   async doJob() {
+    let dbTransaction = null;
     try {
       this.checkContractId();
       this.checkChain();
-      let dbTransaction = null;
       let result = 0;
 
-      // query for all commands with the voting contract id and that the command id is not in RepoVotes
-      const commands = await cgpDAL.findAllUnprocessedCommands(this.contractId);
+      // query for all commands with the voting contract id and that the command id is not in CGPVotes
+      const commands = await cgpDAL.findAllUnprocessedCommands(this.contractIdVoting);
       if (commands.length) {
         logger.info(`${commands.length} commands to add`);
         dbTransaction = await db.sequelize.transaction();
-        // for each of those commands - verify all signatures and add to RepoVotes
-        const votesToAdd = await this.processCommands(commands);
-        if (votesToAdd.length) {
-          await cgpDAL.bulkCreate(votesToAdd, { transaction: dbTransaction });
+
+        // commands must be processed in ascending order, intervals must be processed in ascending order
+        // vallation of an interval depends on the previous interval
+        for (let i = 0; i < commands.length; i++) {
+          const votesToAdd = await this.getVotesFromCommand({
+            command: commands[i],
+            dbTransaction,
+          });
+          if (votesToAdd.length) {
+            await cgpDAL.bulkCreate(votesToAdd, { transaction: dbTransaction });
+          }
+          result += votesToAdd.length;
         }
 
         await dbTransaction.commit();
-        logger.info(`Added ${votesToAdd.length} votes from ${commands.length} commands`);
-        result = votesToAdd.length;
+        logger.info(`Added ${result} votes from ${commands.length} commands`);
       }
       return result;
     } catch (error) {
       logger.error(`An Error has occurred when adding votes: ${error.message}`);
+      if (dbTransaction) {
+        await dbTransaction.rollback();
+      }
       throw new QueueError(error);
     }
   }
 
   checkContractId() {
-    if (!this.contractId) {
+    if (!this.contractIdVoting || !this.contractIdFund) {
       throw new Error('Contract Id is empty');
     }
   }
@@ -61,18 +77,7 @@ class CGPVotesAdder {
     }
   }
 
-  async processCommands(commands) {
-    const voteGroupsToAdd = await Promise.all(
-      commands.map(command => this.getVotesFromCommand(command))
-    );
-    // a command can contain more than 1 vote or none
-    return voteGroupsToAdd.reduce((all, voteGroup) => {
-      all.push.apply(all, voteGroup);
-      return all;
-    }, []);
-  }
-
-  async getVotesFromCommand(command) {
+  async getVotesFromCommand({ command, dbTransaction } = {}) {
     const votesToAdd = [];
     const interval = await this.getCommandInterval(command);
 
@@ -81,28 +86,33 @@ class CGPVotesAdder {
       const ballotSignature = fromPairs(command.messageBody.dict);
       const type = command.command;
       const ballot = ballotSignature[type].string;
-      // go over each element in the dict and verify it against the interval and ballot
-      // add only the verified votes
-      const dict = ballotSignature.Signature.dict;
-      for (let i = 0; i < dict.length; i++) {
-        const element = dict[i];
-        if (this.validateSignatureDictElement(element)) {
-          const publicKey = element[0];
-          const signature = element[1].signature;
-          const address = this.blockchainParser.getAddressFromPublicKey(publicKey);
-          if (this.verify({ interval, ballot, publicKey, signature })) {
-            votesToAdd.push({
-              CommandId: new Decimal(command.id).toNumber(),
-              type: type.toLowerCase(),
-              ballot,
-              address,
-            });
-          } else {
-            logger.info(
-              `Signature did not pass verification: commandId:${command.id} interval:${interval} ballot:${ballot} publicKey:${publicKey}`
-            );
+
+      if (await this.verifyBallot({ ballot, type, interval, dbTransaction })) {
+        // go over each element in the dict and verify it against the interval and ballot
+        // add only the verified votes
+        const dict = ballotSignature.Signature.dict;
+        for (let i = 0; i < dict.length; i++) {
+          const element = dict[i];
+          if (this.validateSignatureDictElement(element)) {
+            const publicKey = element[0];
+            const signature = element[1].signature;
+            const address = this.blockchainParser.getAddressFromPublicKey(publicKey);
+            if (this.verifySignature({ interval, ballot, publicKey, signature })) {
+              votesToAdd.push({
+                CommandId: new Decimal(command.id).toNumber(),
+                type: type.toLowerCase(),
+                ballot,
+                address,
+              });
+            } else {
+              logger.info(
+                `Signature did not pass verification: commandId:${command.id} interval:${interval} ballot:${ballot} publicKey:${publicKey}`
+              );
+            }
           }
         }
+      } else {
+        logger.info(`Ballot is not valid for command with id ${command.id}`);
       }
     } else {
       logger.info(`MessageBody is not valid for command with id ${command.id}`);
@@ -149,7 +159,7 @@ class CGPVotesAdder {
     );
   }
 
-  verify({ publicKey, signature, interval, ballot } = {}) {
+  verifySignature({ publicKey, signature, interval, ballot } = {}) {
     const { Data, PublicKey, Signature } = zen;
     return PublicKey.fromString(publicKey).verify(
       Hash.compute(
@@ -160,6 +170,102 @@ class CGPVotesAdder {
       Signature.fromString(signature)
     );
   }
+
+  async verifyBallot({ ballot, type, interval, dbTransaction } = {}) {
+    return type === 'Payout'
+      ? await this.verifyPayoutBallot({ ballot, interval, dbTransaction })
+      : await this.verifyAllocationBallot({ ballot, interval, dbTransaction });
+  }
+
+  async verifyAllocationBallot({ ballot, interval, dbTransaction } = {}) {
+    try {
+      const allocationBallot = getAllocationBallotContent({ ballot });
+      if (!allocationBallot || !R.has('allocation', allocationBallot)) return false;
+
+      const allocation = Number(allocationBallot.allocation);
+      if (allocation < 0 || allocation > 90) return false;
+
+      let prevAllocation = 0;
+      if (interval > 1) {
+        const { snapshot, tally } = cgpUtils.getIntervalBlocks(this.chain, interval - 1);
+        const prevWinner = await cgpDAL.findWinner({
+          snapshot,
+          tally,
+          type: 'allocation',
+          dbTransaction,
+        });
+        if (prevWinner) {
+          prevAllocation = getAllocationBallotContent({ ballot: prevWinner.ballot }).allocation;
+        }
+      }
+      const { maxAllocation, minAllocation } = await getAllocationMinMax({ prevAllocation });
+      return minAllocation <= allocation && allocation <= maxAllocation;
+    } catch (error) {
+      return false;
+    }
+  }
+
+  async verifyPayoutBallot({ ballot, interval, dbTransaction } = {}) {
+    try {
+      const { spends } = getPayoutBallotContent({ ballot, chain: this.chain });
+      if (spends.length <= 0 || spends.length > 100) return false;
+      if (spends.some(spend => Number(spend.amount) === 0)) return false;
+
+      // get the cgp balance at snapshot
+      const { snapshot } = cgpUtils.getIntervalBlocks(this.chain, interval);
+      const contractAddress = this.blockchainParser.getAddressFromContractId(this.contractIdFund);
+      const balance = await addressesDAL.snapshotAddressBalancesByBlock({
+        address: contractAddress,
+        blockNumber: snapshot,
+        dbTransaction,
+      });
+      
+      if (allSpendsAreValidAgainstFund({ balance, spends })) return false;
+
+      return true;
+    } catch (error) {
+      return false;
+    }
+  }
 }
 
 module.exports = CGPVotesAdder;
+
+function getAllocationMinMax({ prevAllocation = 0 }) {
+  const prevCoinbaseRatio = 100 - prevAllocation;
+  const correctionCap = 100 - 15;
+  const globalRatioMin = 100 - 90;
+
+  const localRatioMin = (prevCoinbaseRatio * correctionCap) / 100;
+  const localRatioMax = (prevCoinbaseRatio * 100) / correctionCap;
+  const ratioMin = Math.max(globalRatioMin, localRatioMin);
+  const ratioMax = Math.min(100, localRatioMax);
+
+  const minAllocation = 100 - ratioMax;
+  const maxAllocation = 100 - ratioMin;
+  return {
+    minAllocation,
+    maxAllocation,
+  };
+}
+
+function getSpendsAggregated(spends) {
+  const aggregated = spends.reduce((aggregated, cur) => {
+    if (typeof aggregated[cur.asset] === 'undefined') {
+      aggregated[cur.asset] = 0;
+    }
+    aggregated[cur.asset] = Decimal.add(aggregated[cur.asset], cur.amount).toNumber();
+    return aggregated;
+  }, {});
+
+  return Object.keys(aggregated).map(key => ({ asset: key, amount: aggregated[key] }));
+}
+
+function allSpendsAreValidAgainstFund({ spends, balance }) {
+  const fundAssets = balance.map(item => item.asset);
+  return getSpendsAggregated(spends).some(
+    spend =>
+      !fundAssets.includes(spend.asset) ||
+      balance.find(item => item.asset === spend.asset).amount < spend.amount
+  );
+}

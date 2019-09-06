@@ -149,7 +149,7 @@ addressesDAL.getZpBalance = async function(address) {
 /**
  * Get all addresses' balances up until blockNumber
  *
- * @param {number} blockNumber the block number 
+ * @param {number} blockNumber the block number
  */
 addressesDAL.snapshotBalancesByBlock = async function(blockNumber) {
   const sql = tags.oneLine`
@@ -184,22 +184,25 @@ addressesDAL.snapshotBalancesByBlock = async function(blockNumber) {
       ON osums.address = isums.address) AS bothsums;
   `;
 
-  return sequelize
-    .query(sql, {
-      replacements: {
-        blockNumber,
-      },
-      type: sequelize.QueryTypes.SELECT,
-    });
+  return sequelize.query(sql, {
+    replacements: {
+      blockNumber,
+    },
+    type: sequelize.QueryTypes.SELECT,
+  });
 };
 
 /**
  * Get all balances (asset/amount) up until blockNumber for an address
  *
  * @param {string} address the address
- * @param {number} blockNumber the block number 
+ * @param {number} blockNumber the block number
  */
-addressesDAL.snapshotAddressBalancesByBlock = async function(address, blockNumber) {
+addressesDAL.snapshotAddressBalancesByBlock = async function({
+  address,
+  blockNumber,
+  dbTransaction = null,
+} = {}) {
   const sql = tags.oneLine`
   SELECT
     bothsums.asset AS asset,
@@ -232,14 +235,14 @@ addressesDAL.snapshotAddressBalancesByBlock = async function(address, blockNumbe
       ON osums.asset = isums.asset) AS bothsums;
   `;
 
-  return sequelize
-    .query(sql, {
-      replacements: {
-        address,
-        blockNumber,
-      },
-      type: sequelize.QueryTypes.SELECT,
-    });
+  return sequelize.query(sql, {
+    replacements: {
+      address,
+      blockNumber,
+    },
+    type: sequelize.QueryTypes.SELECT,
+    transaction: dbTransaction,
+  });
 };
 
 module.exports = addressesDAL;

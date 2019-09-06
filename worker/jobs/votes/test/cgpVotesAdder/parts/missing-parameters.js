@@ -1,7 +1,7 @@
 const wrapTest = require('../../../../../../test/lib/wrapTest');
 const BlockchainParser = require('../../../../../../server/lib/BlockchainParser');
 const CGPVotesAdder = require('../../../CGPVotesAdder');
-const CONTRACT_ID = require('../modules/contractId');
+const contractId = require('../modules/contractId');
 
 module.exports = async function part({ t, before, after }) {
   await wrapTest('Given no contractId', async given => {
@@ -22,7 +22,7 @@ module.exports = async function part({ t, before, after }) {
   await wrapTest('Given no chain', async given => {
     const cgpVotesAdder = new CGPVotesAdder({
       blockchainParser: new BlockchainParser('test'),
-      contractId: CONTRACT_ID,
+      ...contractId,
     });
     before(cgpVotesAdder);
     try {
