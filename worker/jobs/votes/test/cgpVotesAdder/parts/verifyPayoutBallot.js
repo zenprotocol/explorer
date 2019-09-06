@@ -7,10 +7,10 @@ const { addDemoData, addFundBalance } = require('../modules/addDemoData');
 const getDemoCommand = require('../modules/getDemoCommand');
 const getValidMessageBody = require('../modules/getValidMessageBody');
 const getPayoutBallot = require('../modules/getPayoutBallot');
+const { addsEmptyVoteAssert } = require('../modules/asserts');
 
 const blockchainParser = new BlockchainParser('test');
 
-const addsEmptyVoteAssert = ({ votes }) => votes.length === 1 && votes[0].ballot === null;
 const addsTheVoteAssert = ballot => ({ votes }) =>
   votes.length === 2 && votes[0].ballot === ballot && votes[1].ballot === ballot;
 

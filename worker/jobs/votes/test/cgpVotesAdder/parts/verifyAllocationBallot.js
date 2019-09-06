@@ -38,9 +38,6 @@ module.exports = async function part({ t, before, after }) {
       after();
     });
 
-  /**
-   * Adds an empty vote assertion
-   */
   const addsEmptyVoteAssert = ({ votes }) => votes.length === 1 && votes[0].ballot === null;
   const addsTheVoteAssert = allocationKey => ({ votes }) =>
     votes.length === 2 &&

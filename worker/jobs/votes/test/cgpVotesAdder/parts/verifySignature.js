@@ -1,10 +1,13 @@
+const td = require('testdouble');
 const wrapTest = require('../../../../../../test/lib/wrapTest');
 const BlockchainParser = require('../../../../../../server/lib/BlockchainParser');
 const cgpDAL = require('../../../../../../server/components/api/cgp/cgpDAL');
+const cgpUtils = require('../../../../../../server/components/api/cgp/cgpUtils');
 const CGPVotesAdder = require('../../../CGPVotesAdder');
 const contractId = require('../modules/contractId');
 const { addDemoData } = require('../modules/addDemoData');
 const getDemoCommand = require('../modules/getDemoCommand');
+const getValidMessageBody = require('../modules/getValidMessageBody');
 
 const blockchainParser = new BlockchainParser('test');
 
@@ -49,6 +52,38 @@ module.exports = async function part({ t, before, after }) {
               ['Allocation', { string: '010c' }],
             ],
           },
+        }),
+      ],
+    });
+    const result = await cgpVotesAdder.doJob();
+    const votes = await cgpDAL.findAll();
+    t.assert(
+      result === 1 && votes.length === 1 && votes[0].ballot === null,
+      `${given}: should add an empty vote`
+    );
+    after();
+  });
+
+  await wrapTest('Given an allocation vote with one bad signature', async given => {
+    const cgpVotesAdder = new CGPVotesAdder({
+      blockchainParser,
+      chain: 'test',
+      ...contractId,
+    });
+    before();
+    // the command was made in interval 623
+    td.replace(cgpUtils, 'getIntervalByBlockNumber');
+    td.when(cgpUtils.getIntervalByBlockNumber(td.matchers.anything(), td.matchers.anything())).thenResolve(623);
+
+    const messageBody = getValidMessageBody('Allocation');
+    messageBody.dict[0][1].dict[0][1].signature = '496ac2e8a274534aec0ad8a';
+
+    await addDemoData({
+      blockchainParser,
+      commands: [
+        getDemoCommand({
+          command: 'Allocation',
+          messageBody
         }),
       ],
     });

@@ -29,7 +29,7 @@ const MESSAGE_BODY_PAYOUT = {
     ],
   ],
 };
-const MESSAGE_BODY_ALLOCATION = {
+const MESSAGE_BODY_ALLOCATION = { // was made in interval 623
   dict: [
     [
       'Signature',

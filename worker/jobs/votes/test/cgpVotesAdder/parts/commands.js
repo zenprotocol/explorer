@@ -6,6 +6,7 @@ const contractId = require('../modules/contractId');
 const { addDemoData, addCommands } = require('../modules/addDemoData');
 const getDemoCommand = require('../modules/getDemoCommand');
 const getValidMessageBody = require('../modules/getValidMessageBody');
+const { addsEmptyVoteAssert } = require('../modules/asserts');
 
 const blockchainParser = new BlockchainParser('test');
 
@@ -48,8 +49,62 @@ module.exports = async function part({ t, before, after }) {
     command: getDemoCommand({ command: 'WRONG', messageBody: getValidMessageBody('Payout') }),
   });
   await testSingleWrongCommand({
-    given: 'Given a command with opposite command string',
+    given: 'Given a command with command string opposite from type',
     command: getDemoCommand({ command: 'Allocation', messageBody: getValidMessageBody('Payout') }),
+  });
+
+  const testCommandRange = ({ blockNumber, given, should, assert }) =>
+    wrapTest(given, async () => {
+      const cgpVotesAdder = new CGPVotesAdder({
+        blockchainParser,
+        chain: 'test',
+        ...contractId,
+      });
+      before(cgpVotesAdder);
+      await addDemoData({
+        commandsBlockNumber: blockNumber,
+        lastBlockNumber: 110,
+        commands: [
+          getDemoCommand({ command: 'Allocation', messageBody: getValidMessageBody('Allocation') }),
+        ],
+        blockchainParser,
+      });
+      await cgpVotesAdder.doJob();
+      const votes = await cgpDAL.findAll();
+      t.assert(assert({ votes }), `Given ${given}: should ${should}`);
+      after();
+    });
+
+  await testCommandRange({
+    blockNumber: 40,
+    given: 'a command several blocks before snapshot',
+    should: 'add an empty vote',
+    assert: addsEmptyVoteAssert,
+  });
+  await testCommandRange({
+    blockNumber: 89,
+    given: 'a command 1 block before snapshot',
+    should: 'add an empty vote',
+    assert: addsEmptyVoteAssert,
+  });
+  await testCommandRange({
+    blockNumber: 90,
+    given: 'a command on snapshot block',
+    should: 'add an empty vote',
+    assert: addsEmptyVoteAssert,
+  });
+  await testCommandRange({
+    blockNumber: 101,
+    given: 'a command after tally block',
+    should: 'add an empty vote',
+    assert: addsEmptyVoteAssert,
+  });
+  await testCommandRange({
+    blockNumber: 100,
+    given: 'a command at the tally block',
+    should: 'add the vote',
+    assert: ({ votes }) =>
+      votes.length === 2 && votes[0].ballot !== null && votes[1].ballot !== null,
   });
 
   await wrapTest('Given a valid payout vote', async given => {
@@ -62,7 +117,7 @@ module.exports = async function part({ t, before, after }) {
     const messageBody = getValidMessageBody('Payout');
     const ballot = messageBody.dict[0][1].string;
     await addDemoData({
-      commands: [getDemoCommand({ command: 'Payout', messageBody})],
+      commands: [getDemoCommand({ command: 'Payout', messageBody })],
       blockchainParser,
     });
     const result = await cgpVotesAdder.doJob();

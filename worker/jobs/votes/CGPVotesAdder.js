@@ -79,17 +79,18 @@ class CGPVotesAdder {
 
   async getVotesFromCommand({ command, dbTransaction } = {}) {
     const votesToAdd = [];
-    const interval = await this.getCommandInterval(command);
+    const commandBlockNumber = await commandsDAL.getCommandBlockNumber(command);
+    const interval = cgpUtils.getIntervalByBlockNumber(this.chain, commandBlockNumber);
 
-    // make sure the message body is properly formatted
-    if (this.validateMessageBody(command)) {
+    if (
+      this.verifyCommandInSnapshotRange({ interval, commandBlockNumber }) &&
+      this.validateMessageBody(command)
+    ) {
       const ballotSignature = fromPairs(command.messageBody.dict);
       const type = command.command;
       const ballot = ballotSignature[type].string;
 
       if (await this.verifyBallot({ ballot, type, interval, dbTransaction })) {
-        // go over each element in the dict and verify it against the interval and ballot
-        // add only the verified votes
         const dict = ballotSignature.Signature.dict;
         for (let i = 0; i < dict.length; i++) {
           const element = dict[i];
@@ -108,6 +109,8 @@ class CGPVotesAdder {
               logger.info(
                 `Signature did not pass verification: commandId:${command.id} interval:${interval} ballot:${ballot} publicKey:${publicKey}`
               );
+              // do not enter any votes if any of the signatures is bad
+              break;
             }
           }
         }
@@ -125,11 +128,6 @@ class CGPVotesAdder {
     }
 
     return votesToAdd;
-  }
-
-  async getCommandInterval(command) {
-    const commandBlockNumber = await commandsDAL.getCommandBlockNumber(command);
-    return cgpUtils.getIntervalByBlockNumber(this.chain, commandBlockNumber);
   }
 
   validateMessageBody(command) {
@@ -157,6 +155,11 @@ class CGPVotesAdder {
         typeof element[0] === 'string' &&
         typeof element[1].signature === 'string'
     );
+  }
+
+  verifyCommandInSnapshotRange({ interval, commandBlockNumber } = {}) {
+    const { snapshot, tally } = cgpUtils.getIntervalBlocks(this.chain, interval);
+    return commandBlockNumber > snapshot && commandBlockNumber <= tally;
   }
 
   verifySignature({ publicKey, signature, interval, ballot } = {}) {
@@ -219,7 +222,7 @@ class CGPVotesAdder {
         blockNumber: snapshot,
         dbTransaction,
       });
-      
+
       if (allSpendsAreValidAgainstFund({ balance, spends })) return false;
 
       return true;
