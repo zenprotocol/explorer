@@ -82,15 +82,21 @@ class CGPVotesAdder {
     const commandBlockNumber = await commandsDAL.getCommandBlockNumber(command);
     const interval = cgpUtils.getIntervalByBlockNumber(this.chain, commandBlockNumber);
 
-    if (
-      this.verifyCommandInSnapshotRange({ interval, commandBlockNumber }) &&
-      this.validateMessageBody(command)
-    ) {
+    if (!this.verifyCommandInSnapshotRange({ interval, commandBlockNumber })) {
+      logger.info(
+        `Command with id ${command.id} is not in the voting range, commandBlockNumber=${commandBlockNumber}`
+      );
+    } else if (!this.validateMessageBody(command)) {
+      logger.info(`MessageBody is not valid for command with id ${command.id}`);
+    } else {
       const ballotSignature = fromPairs(command.messageBody.dict);
       const type = command.command;
       const ballot = ballotSignature[type].string;
 
-      if (await this.verifyBallot({ ballot, type, interval, dbTransaction })) {
+      const isBallotVerified = await this.verifyBallot({ ballot, type, interval, dbTransaction });
+      if (!isBallotVerified) {
+        logger.info(`Ballot is not valid for command with id ${command.id}`);
+      } else {
         const dict = ballotSignature.Signature.dict;
         for (let i = 0; i < dict.length; i++) {
           const element = dict[i];
@@ -114,11 +120,7 @@ class CGPVotesAdder {
             }
           }
         }
-      } else {
-        logger.info(`Ballot is not valid for command with id ${command.id}`);
       }
-    } else {
-      logger.info(`MessageBody is not valid for command with id ${command.id}`);
     }
     // command does not contain any valid vote - insert an empty vote so this command is handled
     if (votesToAdd.length === 0) {
