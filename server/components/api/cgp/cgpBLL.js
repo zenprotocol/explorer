@@ -118,8 +118,6 @@ module.exports = {
     ]).then(cgpDAL.getItemsAndCountResult);
   },
   findZpParticipated: async function({ interval, type }) {
-    if (!isTypeValid(type)) return null;
-
     const formattedInterval = formatInterval(interval);
 
     const [currentBlock, chain] = await Promise.all([
