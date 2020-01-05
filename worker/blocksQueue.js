@@ -22,6 +22,7 @@ const taskTimeLimiter = new TaskTimeLimiter(Config.get('queues:slackTimeLimit') 
 // process ---
 addBlocksQueue.process(path.join(__dirname, 'jobs/blocks/addNewBlocks.handler.js'));
 reorgsQueue.process(path.join(__dirname, 'jobs/blocks/reorgs.handler.js'));
+const commandsQueue = queue(Config.get('queues:commands:name'));
 
 // events
 addBlocksQueue.on('active', function(job, jobPromise) {
@@ -30,15 +31,18 @@ addBlocksQueue.on('active', function(job, jobPromise) {
 
 addBlocksQueue.on('completed', function(job, result) {
   if (job.data.type === 'check-synced') {
-    loggerBlocks.info(`A job has been completed. ID=${job.id} TYPE=${job.data.type} result=${result}`);
+    loggerBlocks.info(
+      `A job has been completed. ID=${job.id} TYPE=${job.data.type} result=${result}`
+    );
   } else {
     loggerBlocks.info(
       `A job has been completed. ID=${job.id} TYPE=${job.data.type} count=${result.count} latest block added=${result.latest}`
     );
     if (result.count > 0) {
       addBlocksQueue.add({ type: 'add-blocks', limitBlocks: NUM_OF_BLOCKS_IN_CHUNK });
-      // notify snapshots that blocks were added
+      // notify other queues that blocks were added
       snapshotsQueue.add();
+      commandsQueue.add();
     }
   }
 });

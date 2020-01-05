@@ -8,15 +8,25 @@ import percentageToZP from '../modules/percentageToZP';
 export default function WinnerSummary(props) {
   return (
     <div className="row">
-      <SummaryAllocation {...props} />
-      <SummaryPayout {...props} />
+      {props.winnerAllocation !== null ? (
+        <SummaryAllocation {...props} />
+      ) : (
+        <NoWinner {...props} type="allocation" />
+      )}
+      {props.winnerPayout !== null ? (
+        <SummaryPayout {...props} />
+      ) : (
+        <NoWinner {...props} type="payout" />
+      )}
     </div>
   );
 }
+WinnerSummary.propTypes = {
+  winnerAllocation: PropTypes.number,
+  winnerPayout: PropTypes.object,
+};
 
-function SummaryAllocation({ winnerAllocation }) {
-  if (!winnerAllocation) return null;
-
+function SummaryAllocation({ winnerAllocation, zpParticipatedAllocation }) {
   return (
     <div className="col winner">
       <table className="table table-zen">
@@ -29,18 +39,12 @@ function SummaryAllocation({ winnerAllocation }) {
         </thead>
         <tbody>
           <tr>
-            <td>ALLOCATION WINNER BALLOT ID</td>
-            <td>
-              <HashLink hash={winnerAllocation.ballot} />
-            </td>
-          </tr>
-          <tr>
-            <td>ZP VOTED</td>
-            <td>{AssetUtils.getAmountString('00', winnerAllocation.amount)}</td>
-          </tr>
-          <tr>
             <td>ALLOCATION RESULT</td>
-            <td>{percentageToZP(winnerAllocation.content.allocation)} ZP</td>
+            <td>{percentageToZP(winnerAllocation)} ZP</td>
+          </tr>
+          <tr>
+            <td>TOTAL ZP VOTED</td>
+            <td>{AssetUtils.getAmountString('00', zpParticipatedAllocation)}</td>
           </tr>
         </tbody>
       </table>
@@ -48,7 +52,8 @@ function SummaryAllocation({ winnerAllocation }) {
   );
 }
 SummaryAllocation.propTypes = {
-  winnerAllocation: PropTypes.object,
+  winnerAllocation: PropTypes.number,
+  zpParticipatedAllocation: PropTypes.string,
 };
 
 class SummaryPayout extends React.Component {
@@ -67,7 +72,7 @@ class SummaryPayout extends React.Component {
   }
 
   render() {
-    const { winnerPayout } = this.props;
+    const { winnerPayout, zpParticipatedPayout } = this.props;
     if (!winnerPayout) return null;
 
     const spendsZP = this.getSpendsZP();
@@ -95,6 +100,10 @@ class SummaryPayout extends React.Component {
             <tr>
               <td>ZP VOTED</td>
               <td>{AssetUtils.getAmountString('00', winnerPayout.amount)}</td>
+            </tr>
+            <tr>
+              <td>TOTAL ZP VOTED</td>
+              <td>{AssetUtils.getAmountString('00', zpParticipatedPayout)}</td>
             </tr>
             <tr>
               <td>PAYOUT WINNER RECIPIENT</td>
@@ -130,9 +139,7 @@ class SummaryPayout extends React.Component {
                       url={`/assets/${spend.asset}`}
                     />
                   </td>
-                  <td>
-                    {AssetUtils.getAmountString(spend.asset, spend.amount)}
-                  </td>
+                  <td>{AssetUtils.getAmountString(spend.asset, spend.amount)}</td>
                 </tr>
               ))}
           </tbody>
@@ -150,4 +157,34 @@ class SummaryPayout extends React.Component {
 }
 SummaryPayout.propTypes = {
   winnerPayout: PropTypes.object,
+  zpParticipatedPayout: PropTypes.string,
+};
+
+function NoWinner({ type, zpParticipatedPayout }) {
+  return (
+    <div className="col winner">
+      <table className="table table-zen">
+        <thead>
+          <tr>
+            <th scope="col" colSpan="2">
+              {type.toUpperCase()} SUMMARY
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td colSpan="2">
+              {/* payout - if no result but people voted it means tie */}
+              NO WINNER{type === 'payout' && zpParticipatedPayout > 0 && ' - TIE'}
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  );
+}
+
+NoWinner.propTypes = {
+  type: PropTypes.oneOf(['allocation', 'payout']),
+  zpParticipatedPayout: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
 };

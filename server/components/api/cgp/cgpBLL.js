@@ -4,6 +4,7 @@ const config = require('../../../config/Config');
 const getChain = require('../../../lib/getChain');
 const BlockchainParser = require('../../../lib/BlockchainParser');
 const cgpDAL = require('./cgpDAL');
+const cgpIntervalDAL = require('./cgpIntervalDAL');
 const blocksBLL = require('../blocks/blocksBLL');
 const addressesBLL = require('../addresses/addressesBLL');
 const createQueryObject = require('../../../lib/createQueryObject');
@@ -16,7 +17,6 @@ const {
 } = require('./modules/getBallotContent');
 const {
   addBallotContentToResults,
-  addBallotContentToResult,
 } = require('./modules/addBallotContentToResults');
 
 const CGP_FUND_CONTRACT_ID = config.get('CGP_FUND_CONTRACT_ID');
@@ -40,19 +40,22 @@ module.exports = {
       return null;
     }
 
-    const [winnerPayout, winnerAllocation] = await Promise.all([
-      cgpDAL.findWinner({ type: 'payout', snapshot: relevant.snapshot, tally: relevant.tally }),
-      cgpDAL.findWinner({ type: 'allocation', snapshot: relevant.snapshot, tally: relevant.tally }),
+    const [winners, zpParticipatedAllocation, zpParticipatedPayout] = await Promise.all([
+      cgpIntervalDAL.findByInterval(relevant.interval),
+      cgpDAL.findZpParticipated({ snapshot: relevant.snapshot, tally: relevant.tally, type: 'allocation' }),
+      cgpDAL.findZpParticipated({ snapshot: relevant.snapshot, tally: relevant.tally, type: 'payout' }),
     ]);
+
+    const { winnerAllocation, winnerPayout } = winners || { winnerAllocation: null, winnerPayout: null };
 
     return {
       interval: relevant.interval,
       snapshot: relevant.snapshot,
       tally: relevant.tally,
-      winnerAllocation: await addBallotContentToResult({ type: 'allocation', chain })(
-        winnerAllocation
-      ),
-      winnerPayout: await addBallotContentToResult({ type: 'payout', chain })(winnerPayout),
+      winnerAllocation: JSON.parse(winnerAllocation),
+      winnerPayout: JSON.parse(winnerPayout),
+      zpParticipatedAllocation,
+      zpParticipatedPayout,
     };
   },
   findAllVotesByInterval: async function({ interval, type, page = 0, pageSize = 10 } = {}) {

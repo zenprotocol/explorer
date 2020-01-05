@@ -3,6 +3,7 @@
 const tags = require('common-tags');
 const dal = require('../../../lib/dal');
 const db = require('../../../db/sequelize/models');
+const cgpIntervalsDAL = require('./cgpIntervalDAL');
 const {
   WITH_FILTER_TABLES,
   FIND_ALL_BY_INTERVAL_BASE_SQL,
@@ -85,12 +86,12 @@ cgpDAL.countVotesInInterval = async function({ snapshot, tally, type } = {}) {
  *
  * @param {number} interval
  */
-cgpDAL.findAllVoteResults = async function({ snapshot, tally, type, limit, offset = 0 } = {}) {
+cgpDAL.findAllVoteResults = async function({ snapshot, tally, type, limit, offset = 0, dbTransaction = null } = {}) {
   const sql = tags.oneLine`
   ${WITH_FILTER_TABLES}
   ${FIND_ALL_VOTE_RESULTS_BASE_SQL}
   ORDER BY "zpAmount" DESC
-  LIMIT :limit OFFSET :offset;
+  ${limit ? 'LIMIT :limit' : ''} OFFSET :offset;
   `;
 
   return sequelize.query(sql, {
@@ -102,6 +103,7 @@ cgpDAL.findAllVoteResults = async function({ snapshot, tally, type, limit, offse
       offset,
     },
     type: sequelize.QueryTypes.SELECT,
+    transaction: dbTransaction,
   });
 };
 
@@ -123,25 +125,13 @@ cgpDAL.countAllVoteResults = async function({ snapshot, tally, type } = {}) {
     .then(this.queryResultToCount);
 };
 
-cgpDAL.findWinner = async function({ snapshot, tally, type, dbTransaction = null } = {}) {
-  const sql = tags.oneLine`
-  ${WITH_FILTER_TABLES}
-  ${FIND_ALL_VOTE_RESULTS_BASE_SQL}
-  ORDER BY "zpAmount" DESC
-  LIMIT 1;
-  `;
-
-  return sequelize
-    .query(sql, {
-      replacements: {
-        snapshot,
-        tally,
-        type,
-      },
-      type: sequelize.QueryTypes.SELECT,
-      transaction: dbTransaction,
-    })
-    .then(results => (results.length ? results[0] : null));
+cgpDAL.findWinners = async function({ interval, dbTransaction = null } = {}) {
+  return cgpIntervalsDAL.findOne({
+    where: {
+      interval,
+    },
+    transaction: dbTransaction,
+  });
 };
 
 cgpDAL.findAllBallots = async function({ type, intervalLength, limit, offset = 0 }) {
@@ -192,7 +182,7 @@ cgpDAL.findZpParticipated = async function({ snapshot, tally, type } = {}) {
       },
       type: sequelize.QueryTypes.SELECT,
     })
-    .then(result => (result.length && result[0].amount ? result[0].amount : 0));
+    .then(result => (result.length && result[0].amount ? result[0].amount : '0'));
 };
 
 module.exports = cgpDAL;

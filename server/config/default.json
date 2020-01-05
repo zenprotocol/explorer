@@ -32,6 +32,9 @@
     "cgp": {
       "name": "CGP"
     },
+    "cgp-winner": {
+      "name": "CGP Winner"
+    },
     "snapshots": {
       "name": "Vote Snapshots"
     }
@@ -42,10 +45,12 @@
   },
   "cgp": {
     "main": {
+      "coinbaseMaturity": 100,
       "afterTallyBlocks": 1000,
       "intervalLength": 10000
     },
     "test": {
+      "coinbaseMaturity": 10,
       "afterTallyBlocks": 10,
       "intervalLength": 100
     }

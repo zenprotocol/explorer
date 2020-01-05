@@ -54,11 +54,11 @@ module.exports = {
     if (!isTypeValid(type)) throw new HttpError(httpStatus.BAD_REQUEST);
 
     const result = await cgpBLL.findZpParticipated({ interval, type });
-    if (result) {
-      res.status(httpStatus.OK).json(jsonResponse.create(httpStatus.OK, result));
-    } else {
+    if(result === null) {
       throw new HttpError(httpStatus.NOT_FOUND);
     }
+    
+    res.status(httpStatus.OK).json(jsonResponse.create(httpStatus.OK, result));
   },
   payoutBallots: async function(req, res) {
     const { page, pageSize } = req.query;

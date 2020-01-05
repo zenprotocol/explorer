@@ -7,6 +7,10 @@ function getIntervalLength(chain) {
   return config.get(`cgp:${chain}:intervalLength`);
 }
 
+function getCoinbaseMaturity(chain) {
+  return config.get(`cgp:${chain}:coinbaseMaturity`);
+}
+
 function getIntervalByBlockNumber(chain, blockNumber) {
   return Math.ceil(blockNumber / getIntervalLength(chain));
 }
@@ -47,6 +51,7 @@ function getRelevantIntervalBlocks(chain, interval, currentBlock) {
 
 module.exports = {
   getIntervalLength,
+  getCoinbaseMaturity,
   getIntervalByBlockNumber,
   getIntervalBlocks,
   getRelevantIntervalBlocks,

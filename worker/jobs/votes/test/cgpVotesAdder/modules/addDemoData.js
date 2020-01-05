@@ -13,7 +13,7 @@ const SnapshotsTaker = require('../../../../snapshots/SnapshotsTaker');
 
 async function addDemoData({
   commands = [],
-  lastBlockNumber = 100,
+  lastBlockNumber = 110,
   commandsBlockNumber = 91,
   cgpFundZp = 1000,
   blockchainParser,

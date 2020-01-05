@@ -29,7 +29,7 @@ module.exports = wrapAsync(async (req, res) => {
   const rootStore = new RootStore(initialState);
   const initialStateScript = tags.oneLine`
   <script>
-      window.__INITIAL_STATE__ = ${JSON.stringify(initialState)};
+      window.__INITIAL_STATE__ = JSON.parse(${JSON.stringify(JSON.stringify(initialState))});
   </script>
   `;
   const htmlData = fs.readFileSync(filePath, { encoding: 'utf8' });

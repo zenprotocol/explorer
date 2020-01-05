@@ -444,54 +444,6 @@ test('cgpDAL.countAllVoteResults() (DB)', async function(t) {
   });
 });
 
-test('cgpDAL.findWinner() (DB)', async function(t) {
-  await wrapTest('Given no votes', async given => {
-    await createDemoData();
-    const resultsAllocation = await cgpDAL.findWinner({
-      snapshot: 90,
-      tally: 100,
-      type: 'allocation',
-    });
-    const resultsPayout = await cgpDAL.findWinner({ snapshot: 90, tally: 100, type: 'payout' });
-    t.assert(resultsAllocation === null && resultsPayout === null, `${given}: should return null`);
-  });
-  await wrapTest('Given all vote for same ballot', async given => {
-    await createDemoData();
-    await addVoteForAllAddresses({ blockNumber: 91, type: 'allocation', ballot: '1' });
-    await addVoteForAllAddresses({ blockNumber: 92, type: 'payout', ballot: '2' });
-
-    const winnerAllocation = await cgpDAL.findWinner({
-      snapshot: 90,
-      tally: 100,
-      type: 'allocation',
-    });
-    const winnerPayout = await cgpDAL.findWinner({ snapshot: 90, tally: 100, type: 'payout' });
-    t.assert(winnerAllocation.ballot === '1' && winnerPayout.ballot === '2', `${given}: the ballot should win`);
-    t.assert(
-      Number(winnerAllocation.zpAmount) === 303 && Number(winnerPayout.zpAmount) === 303,
-      `${given}: Should have the sum of amounts`
-    );
-  });
-  await wrapTest('Given each vote for different', async given => {
-    await createDemoData();
-    await addVote({ address: 'tzn11', blockNumber: 91, type: 'payout', ballot: '1' });
-    await addVote({ address: 'tzn12', blockNumber: 92, type: 'payout', ballot: '2' });
-    await addVote({ address: 'tzn13', blockNumber: 93, type: 'payout', ballot: '3' });
-    const winner = await cgpDAL.findWinner({ snapshot: 90, tally: 100, type: 'payout' });
-    t.equal(winner.ballot, '3', `${given}: ballot '3' should win`);
-    t.equal(Number(winner.zpAmount), 102, `${given}: Should have the amount of the winner address`);
-  });
-  await wrapTest('Given 2 ballots', async given => {
-    await createDemoData();
-    await addVote({ address: 'tzn11', blockNumber: 91, type: 'allocation', ballot: '1' });
-    await addVote({ address: 'tzn12', blockNumber: 91, type: 'allocation', ballot: '1' });
-    await addVote({ address: 'tzn13', blockNumber: 95, type: 'allocation', ballot: '2' });
-    const winner = await cgpDAL.findWinner({ snapshot: 90, tally: 100, type: 'allocation' });
-    t.equal(winner.ballot, '1', `${given}: ballot '1' should win`);
-    t.equal(Number(winner.zpAmount), 201, `${given}: Should have the right sum`);
-  });
-});
-
 test('cgpDAL.findAllBallots() (DB)', async function(t) {
   await wrapTest('Given no votes', async given => {
     await createDemoData();

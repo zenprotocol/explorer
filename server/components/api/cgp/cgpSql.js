@@ -84,7 +84,8 @@ GROUP BY "CGPVotes"."ballot"
 `;
 
 const FIND_ALL_ZP_PARTICIPATED_BASE_SQL = `
-SELECT sum("Snapshots"."amount") AS "amount"
+SELECT sum("Snapshots"."amount") AS "amount",
+  (sum("Snapshots"."amount") / 100000000) AS "zpAmount"
 FROM "CGPVotes"
 ${JOIN_COMMANDS_TXS_BLOCKS_TO_REPO_VOTES}
 ${JOIN_SNAPSHOTS_TO_CGP_VOTES}

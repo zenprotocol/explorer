@@ -121,7 +121,6 @@ class CGPPage extends React.Component {
     const relevantInterval = this.cgpStore.relevantInterval;
     if (this.cgpStore.loading.relevantInterval) return <Loading />;
     if (!this.relevantLoaded) return null;
-    const hasWinner = !!relevantInterval.winnerAllocation || !!relevantInterval.winnerPayout;
 
     return (
       <>
@@ -134,7 +133,7 @@ class CGPPage extends React.Component {
           )}
           {this.voteStatus === voteStatus.after && <AfterVoteInfo {...relevantInterval} />}
         </section>
-        {this.voteStatus === voteStatus.after && hasWinner && (
+        {this.voteStatus === voteStatus.after && (
           <section>
             <WinnerSummary {...relevantInterval} />
           </section>

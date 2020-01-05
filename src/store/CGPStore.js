@@ -18,18 +18,6 @@ export default class CGPStore {
     };
   }
 
-  get winnerAllocation() {
-    if (!(this.relevantInterval || {}).winnerAllocation) return '';
-
-    return this.relevantInterval.winner.ballot;
-  }
-
-  get winnerPayout() {
-    if (!(this.relevantInterval || {}).winnerPayout) return '';
-
-    return this.relevantInterval.winnerPayout.ballot;
-  }
-
   get intervalLength() {
     return this.rootStore.infoStore.infos.chain === 'main' ? 10000 : 100;
   }
@@ -166,8 +154,6 @@ decorate(CGPStore, {
   loadVotes: action,
   loadResults: action,
   loadPayoutBallots: action,
-  winnerAllocation: computed,
-  winnerPayout: computed,
   currentInterval: computed,
   intervalLength: computed,
   snapshotBlock: computed,

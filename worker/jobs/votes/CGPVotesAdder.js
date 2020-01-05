@@ -12,11 +12,15 @@ const {
   getAllocationBallotContent,
   getPayoutBallotContent,
 } = require('../../../server/components/api/cgp/modules/getBallotContent');
+const {
+  addBallotContentToResults
+} = require('../../../server/components/api/cgp/modules/addBallotContentToResults');
 const cgpUtils = require('../../../server/components/api/cgp/cgpUtils');
 const commandsDAL = require('../../../server/components/api/commands/commandsDAL');
 const addressesDAL = require('../../../server/components/api/addresses/addressesDAL');
 const QueueError = require('../../lib/QueueError');
 const db = require('../../../server/db/sequelize/models');
+const calculateWinnerAllocation = require('./CGPWinnerCalculator/modules/calculateWinnerAllocation');
 
 class CGPVotesAdder {
   constructor({ blockchainParser, contractIdVoting, contractIdFund, chain } = {}) {
@@ -190,20 +194,11 @@ class CGPVotesAdder {
       const allocation = Number(allocationBallot.allocation);
       if (allocation < 0 || allocation > 90) return false;
 
-      let prevAllocation = 0;
-      if (interval > 1) {
-        const { snapshot, tally } = cgpUtils.getIntervalBlocks(this.chain, interval - 1);
-        const prevWinner = await cgpDAL.findWinner({
-          snapshot,
-          tally,
-          type: 'allocation',
-          dbTransaction,
-        });
-        if (prevWinner) {
-          prevAllocation = getAllocationBallotContent({ ballot: prevWinner.ballot }).allocation;
-        }
-      }
-      const { maxAllocation, minAllocation } = await getAllocationMinMax({ prevAllocation });
+      let prevAllocation =
+        interval > 1
+          ? await this.calcAllocationWinner({ interval: interval - 1, dbTransaction })
+          : 0;
+      const { maxAllocation, minAllocation } = getAllocationMinMax({ prevAllocation });
       return minAllocation <= allocation && allocation <= maxAllocation;
     } catch (error) {
       return false;
@@ -231,6 +226,17 @@ class CGPVotesAdder {
     } catch (error) {
       return false;
     }
+  }
+
+  async calcAllocationWinner({ interval, dbTransaction } = {}) {
+    const { snapshot, tally } = cgpUtils.getIntervalBlocks(this.chain, interval);
+    const voteResults = await cgpDAL.findAllVoteResults({
+      snapshot,
+      tally,
+      type: 'allocation',
+      dbTransaction,
+    }).then(addBallotContentToResults({chain: this.chain, type: 'allocation'}));
+    return calculateWinnerAllocation(voteResults);
   }
 }
 
