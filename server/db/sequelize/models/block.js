@@ -19,7 +19,6 @@ module.exports = (sequelize, DataTypes) => {
   );
   Block.associate = function(models) {
     Block.hasMany(models.Transaction);
-    Block.hasMany(models.CGPInterval, { foreignKey: 'calculatedAtBlockId' });
   };
   return Block;
 };

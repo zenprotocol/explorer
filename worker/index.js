@@ -12,4 +12,3 @@ require('./commandsQueue');
 require('./viewsRefreshQueue');
 require('./snapshotsQueue');
 require('./votesQueue');
-require('./cgpWinnerQueue');

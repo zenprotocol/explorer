@@ -152,4 +152,83 @@ module.exports = async function part({ t, before, after }) {
     should: 'add an empty vote',
     assert: addsEmptyVoteAssert,
   });
+
+  const getAllocationTestWithPrevWinnerAfterGap = ({
+    prevAllocation,
+    allocation,
+    given,
+    should,
+    assert,
+  }) =>
+    wrapTest(given, async () => {
+      const cgpVotesAdder = new CGPVotesAdder({
+        blockchainParser,
+        chain: 'test',
+        ...contractId,
+      });
+      before(cgpVotesAdder);
+
+      const messageBodyPrevWinner = getValidMessageBody('Allocation');
+      const messageBodyCurrent = getValidMessageBody('Allocation');
+      messageBodyPrevWinner.dict[1][1].string = getAllocationBallot(prevAllocation);
+      messageBodyCurrent.dict[1][1].string = getAllocationBallot(allocation);
+      await addDemoData({ blockchainParser, lastBlockNumber: 300 });
+      // add a command to block 91 (prev winner)
+      await addCommands({
+        commandsBlockNumber: 91,
+        commands: [
+          getDemoCommand({
+            command: 'Allocation',
+            messageBody: messageBodyPrevWinner,
+          }),
+        ],
+      });
+      // add a command to block 291 (current)
+      await addCommands({
+        commandsBlockNumber: 291,
+        commands: [
+          getDemoCommand({
+            command: 'Allocation',
+            messageBody: messageBodyCurrent,
+          }),
+        ],
+      });
+
+      await cgpVotesAdder.doJob();
+      const votes = await cgpDAL.findAll({
+        include: [
+          {
+            model: cgpDAL.db.Command,
+            required: true,
+            include: [
+              {
+                model: cgpDAL.db.Transaction,
+                required: true,
+                include: [
+                  {
+                    model: cgpDAL.db.Block,
+                    required: true,
+                    where: {
+                      blockNumber: {
+                        [cgpDAL.db.Sequelize.Op.gt]: 290,
+                      },
+                    },
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+      });
+      t.assert(assert({ votes }), `Given ${given}: should ${should}`);
+      after();
+    });
+
+  await getAllocationTestWithPrevWinnerAfterGap({
+    prevAllocation: allocationValues['5%'].allocation,
+    allocation: allocationValues['18%'].allocation,
+    given: 'prev allocation=5% (max is 19.25%), a gap with no votes and allocation is 18%',
+    should: 'add the vote',
+    assert: addsTheVoteAssert('18%'),
+  });
 };

@@ -3,7 +3,6 @@
 const tags = require('common-tags');
 const dal = require('../../../lib/dal');
 const db = require('../../../db/sequelize/models');
-const cgpIntervalsDAL = require('./cgpIntervalDAL');
 const {
   WITH_FILTER_TABLES,
   FIND_ALL_BY_INTERVAL_BASE_SQL,
@@ -34,6 +33,44 @@ cgpDAL.findAllUnprocessedCommands = async function(contractId) {
     },
     type: sequelize.QueryTypes.SELECT,
   });
+};
+
+/**
+ * Find the highest block number with a valid vote 
+ * @param {Object} params
+ * @param {number} params.startBlockNumber - the highest block number to look from
+ * @param {number} params.intervalLength
+ * @param {number} params.interval1Snapshot - the snapshot of interval 1
+ * @param {number} params.interval1Tally - the tally of interval 1
+ * @param {('allocation'|'payout')} params.type - vote type
+ * @returns {number} the highest block number with a vote or 0
+ */
+cgpDAL.findLastValidVoteBlockNumber = async function({ startBlockNumber, intervalLength, interval1Snapshot, interval1Tally, type, dbTransaction } = {}) {
+  const sql = tags.oneLine`
+  SELECT "Blocks"."blockNumber"
+  FROM "CGPVotes"
+  INNER JOIN "Commands" ON "Commands"."id" = "CGPVotes"."CommandId"
+  INNER JOIN "Transactions" ON "Transactions"."id" = "Commands"."TransactionId"
+  INNER JOIN "Blocks" ON "Blocks"."id" = "Transactions"."BlockId"
+    AND ("Blocks"."blockNumber" - 1) % :intervalLength > :interval1Snapshot - 1
+    AND ("Blocks"."blockNumber" - 1) % :intervalLength < :interval1Tally
+    AND "Blocks"."blockNumber" <= :startBlockNumber
+  WHERE "CGPVotes"."type" = :type
+  ORDER BY "Blocks"."blockNumber" DESC
+  LIMIT 1; 
+  `;
+
+  return sequelize.query(sql, {
+    replacements: {
+      type,
+      startBlockNumber,
+      intervalLength,
+      interval1Snapshot,
+      interval1Tally,
+    },
+    type: sequelize.QueryTypes.SELECT,
+    transaction: dbTransaction,
+  }).then(result => result.length ? result[0].blockNumber : 0);
 };
 
 /**
@@ -123,15 +160,6 @@ cgpDAL.countAllVoteResults = async function({ snapshot, tally, type } = {}) {
       type: sequelize.QueryTypes.SELECT,
     })
     .then(this.queryResultToCount);
-};
-
-cgpDAL.findWinners = async function({ interval, dbTransaction = null } = {}) {
-  return cgpIntervalsDAL.findOne({
-    where: {
-      interval,
-    },
-    transaction: dbTransaction,
-  });
 };
 
 cgpDAL.findAllBallots = async function({ type, intervalLength, limit, offset = 0 }) {

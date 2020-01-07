@@ -11,7 +11,6 @@ const getChain = require('../server/lib/getChain');
 const NODE_URL = Config.get('zp:node');
 const APP_NAME = Config.get('APP_NAME');
 const votesQueue = queue(Config.get('queues:votes:name'));
-const cgpWinnerQueue = queue(Config.get('queues:cgp-winner:name'));
 
 const taskTimeLimiter = new TaskTimeLimiter(Config.get('queues:slackTimeLimit') * 1000);
 
@@ -25,10 +24,6 @@ votesQueue.on('active', function(job) {
 
 votesQueue.on('completed', function(job, result) {
   logger.info(`A job has been completed. TYPE=${job.data.type} result=${result}`);
-
-  if(result > 0) {
-    cgpWinnerQueue.add();
-  }
 });
 
 votesQueue.on('failed', function(job, error) {

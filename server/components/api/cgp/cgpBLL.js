@@ -4,7 +4,6 @@ const config = require('../../../config/Config');
 const getChain = require('../../../lib/getChain');
 const BlockchainParser = require('../../../lib/BlockchainParser');
 const cgpDAL = require('./cgpDAL');
-const cgpIntervalDAL = require('./cgpIntervalDAL');
 const blocksBLL = require('../blocks/blocksBLL');
 const addressesBLL = require('../addresses/addressesBLL');
 const createQueryObject = require('../../../lib/createQueryObject');
@@ -18,6 +17,8 @@ const {
 const {
   addBallotContentToResults,
 } = require('./modules/addBallotContentToResults');
+const calculateWinnerAllocation = require('./modules/calculateWinnerAllocation');
+const calculateWinnerPayout = require('./modules/calculateWinnerPayout');
 
 const CGP_FUND_CONTRACT_ID = config.get('CGP_FUND_CONTRACT_ID');
 
@@ -40,20 +41,22 @@ module.exports = {
       return null;
     }
 
-    const [winners, zpParticipatedAllocation, zpParticipatedPayout] = await Promise.all([
-      cgpIntervalDAL.findByInterval(relevant.interval),
+    const [resultsAllocation, resultsPayout, zpParticipatedAllocation, zpParticipatedPayout] = await Promise.all([
+      cgpDAL.findAllVoteResults({snapshot: relevant.snapshot, tally: relevant.tally, type: 'allocation'}).then(addBallotContentToResults({ type: 'allocation', chain })),
+      cgpDAL.findAllVoteResults({snapshot: relevant.snapshot, tally: relevant.tally, type: 'payout', limit: 2}).then(addBallotContentToResults({ type: 'payout', chain })),
       cgpDAL.findZpParticipated({ snapshot: relevant.snapshot, tally: relevant.tally, type: 'allocation' }),
       cgpDAL.findZpParticipated({ snapshot: relevant.snapshot, tally: relevant.tally, type: 'payout' }),
     ]);
 
-    const { winnerAllocation, winnerPayout } = winners || { winnerAllocation: null, winnerPayout: null };
+    const winnerAllocation = calculateWinnerAllocation(resultsAllocation);
+    const winnerPayout = calculateWinnerPayout(resultsPayout);
 
     return {
       interval: relevant.interval,
       snapshot: relevant.snapshot,
       tally: relevant.tally,
-      winnerAllocation: JSON.parse(winnerAllocation),
-      winnerPayout: JSON.parse(winnerPayout),
+      winnerAllocation,
+      winnerPayout,
       zpParticipatedAllocation,
       zpParticipatedPayout,
     };

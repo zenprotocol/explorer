@@ -16,13 +16,14 @@ const APP_NAME = Config.get('APP_NAME');
 const addBlocksQueue = queue(Config.get('queues:addBlocks:name'));
 const reorgsQueue = queue(Config.get('queues:reorgs:name'));
 const snapshotsQueue = queue(Config.get('queues:snapshots:name'));
+const commandsQueue = queue(Config.get('queues:commands:name'));
 
 const taskTimeLimiter = new TaskTimeLimiter(Config.get('queues:slackTimeLimit') * 1000);
 
 // process ---
 addBlocksQueue.process(path.join(__dirname, 'jobs/blocks/addNewBlocks.handler.js'));
 reorgsQueue.process(path.join(__dirname, 'jobs/blocks/reorgs.handler.js'));
-const commandsQueue = queue(Config.get('queues:commands:name'));
+
 
 // events
 addBlocksQueue.on('active', function(job, jobPromise) {

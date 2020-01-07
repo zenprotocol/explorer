@@ -22,6 +22,66 @@ const ADDRESS_AMOUNTS = {
   tzn13: 10200000000,
 };
 
+test('cgpDAL.findLastValidVoteBlockNumber() (DB)', async function(t) {
+  await wrapTest('Given no votes', async given => {
+    await createDemoData();
+
+    const result = await cgpDAL.findLastValidVoteBlockNumber({
+      startBlockNumber: 100, intervalLength: 100, interval1Snapshot: 90, interval1Tally: 100, type: 'allocation'
+    });
+    t.equal(result, 0, `${given}: should return zero`);
+  });
+
+  await wrapTest('Given votes, current interval = 2', async given => {
+    await createDemoData({toBlock: 101});
+
+    await addVoteForAllAddresses({ blockNumber: 91, type: 'allocation', ballot: '0105' });
+
+    const result = await cgpDAL.findLastValidVoteBlockNumber({
+      startBlockNumber: 101, intervalLength: 100, interval1Snapshot: 90, interval1Tally: 100, type: 'allocation'
+    });
+    t.equal(result, 91, `${given}: should return the highest block with a vote`);
+  });
+
+  await wrapTest('Given votes in first interval, current interval = 4', async given => {
+    await createDemoData({toBlock: 301});
+
+    await addVoteForAllAddresses({ blockNumber: 91, type: 'allocation', ballot: '0105' });
+
+    // start block is 200, we want to find the first vote starting at prev interval
+    const result = await cgpDAL.findLastValidVoteBlockNumber({
+      startBlockNumber: 200, intervalLength: 100, interval1Snapshot: 90, interval1Tally: 100, type: 'allocation'
+    });
+    t.equal(result, 91, `${given}: should return the highest block with a vote`);
+  });
+
+  await wrapTest('Given votes in intervals 1 and 3, current interval = 4, searching for interval 3', async given => {
+    await createDemoData({toBlock: 301});
+
+    await addVoteForAllAddresses({ blockNumber: 91, type: 'allocation', ballot: '0105' });
+    await addVoteForAllAddresses({ blockNumber: 291, type: 'allocation', ballot: '0105' });
+
+    // for calculating the winner of interval 3, to find the prev allocation winner 
+    const result = await cgpDAL.findLastValidVoteBlockNumber({
+      startBlockNumber: 200, intervalLength: 100, interval1Snapshot: 90, interval1Tally: 100, type: 'allocation'
+    });
+    t.equal(result, 91, `${given}: should return the highest block with a vote`);
+  });
+
+  await wrapTest('Given votes in intervals 1 and 3, current interval = 6, searching for interval 5', async given => {
+    await createDemoData({toBlock: 601});
+
+    await addVoteForAllAddresses({ blockNumber: 91, type: 'allocation', ballot: '0105' });
+    await addVoteForAllAddresses({ blockNumber: 291, type: 'allocation', ballot: '0105' });
+
+    // for calculating the winner of interval 5
+    const result = await cgpDAL.findLastValidVoteBlockNumber({
+      startBlockNumber: 400, intervalLength: 100, interval1Snapshot: 90, interval1Tally: 100, type: 'allocation'
+    });
+    t.equal(result, 291, `${given}: should return the highest block with a vote`);
+  });
+});
+
 test('cgpDAL.findAllVotesInInterval() (DB)', async function(t) {
   await wrapTest('Given no votes', async given => {
     await createDemoData();

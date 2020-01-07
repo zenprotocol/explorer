@@ -13,14 +13,14 @@ const {
   getPayoutBallotContent,
 } = require('../../../server/components/api/cgp/modules/getBallotContent');
 const {
-  addBallotContentToResults
+  addBallotContentToResults,
 } = require('../../../server/components/api/cgp/modules/addBallotContentToResults');
 const cgpUtils = require('../../../server/components/api/cgp/cgpUtils');
 const commandsDAL = require('../../../server/components/api/commands/commandsDAL');
 const addressesDAL = require('../../../server/components/api/addresses/addressesDAL');
 const QueueError = require('../../lib/QueueError');
 const db = require('../../../server/db/sequelize/models');
-const calculateWinnerAllocation = require('./CGPWinnerCalculator/modules/calculateWinnerAllocation');
+const calculateWinnerAllocation = require('../../../server/components/api/cgp/modules/calculateWinnerAllocation');
 
 class CGPVotesAdder {
   constructor({ blockchainParser, contractIdVoting, contractIdFund, chain } = {}) {
@@ -229,13 +229,31 @@ class CGPVotesAdder {
   }
 
   async calcAllocationWinner({ interval, dbTransaction } = {}) {
-    const { snapshot, tally } = cgpUtils.getIntervalBlocks(this.chain, interval);
-    const voteResults = await cgpDAL.findAllVoteResults({
-      snapshot,
-      tally,
+    const { tally } = cgpUtils.getIntervalBlocks(this.chain, interval);
+    const interval1 = cgpUtils.getIntervalBlocks(this.chain, 1);
+    const intervalLength = cgpUtils.getIntervalLength(this.chain);
+    const highestBlockNumberWithVote = await cgpDAL.findLastValidVoteBlockNumber({
+      startBlockNumber: tally,
+      intervalLength,
+      interval1Snapshot: interval1.snapshot,
+      interval1Tally: interval1.tally,
       type: 'allocation',
       dbTransaction,
-    }).then(addBallotContentToResults({chain: this.chain, type: 'allocation'}));
+    });
+
+    if(!highestBlockNumberWithVote) {
+      return 0;
+    }
+    const latestWinnerInterval = cgpUtils.getIntervalByBlockNumber(this.chain, highestBlockNumberWithVote);
+    const latestWinnerIntervalBlocks = cgpUtils.getIntervalBlocks(this.chain, latestWinnerInterval);
+    const voteResults = await cgpDAL
+      .findAllVoteResults({
+        snapshot: latestWinnerIntervalBlocks.snapshot,
+        tally: latestWinnerIntervalBlocks.tally,
+        type: 'allocation',
+        dbTransaction,
+      })
+      .then(addBallotContentToResults({ chain: this.chain, type: 'allocation' }));
     return calculateWinnerAllocation(voteResults);
   }
 }
