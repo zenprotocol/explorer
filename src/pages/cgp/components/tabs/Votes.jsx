@@ -91,7 +91,7 @@ class VotesTab extends Component {
             {
               Header: 'VOTES',
               accessor: 'zpAmount',
-              minWidth: config.ui.table.minCellWidth,
+              minWidth: config.ui.table.minCellWidthDate,
               Cell: data => `${TextUtils.formatNumber(data.value)} ZP`,
             },
           ]}
