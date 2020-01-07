@@ -135,7 +135,7 @@ class CGPPage extends React.Component {
         </section>
         {this.voteStatus === voteStatus.after && (
           <section>
-            <WinnerSummary {...relevantInterval} />
+            <WinnerSummary {...relevantInterval} currentBlock={this.currentBlock} />
           </section>
         )}
       </>

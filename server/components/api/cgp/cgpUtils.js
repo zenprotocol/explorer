@@ -23,6 +23,7 @@ function getIntervalBlocks(chain, interval) {
   return {
     snapshot,
     tally,
+    coinbaseMaturity: tally + getCoinbaseMaturity(chain),
   };
 }
 

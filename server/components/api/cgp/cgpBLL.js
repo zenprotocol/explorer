@@ -55,6 +55,7 @@ module.exports = {
       interval: relevant.interval,
       snapshot: relevant.snapshot,
       tally: relevant.tally,
+      coinbaseMaturity: relevant.coinbaseMaturity,
       winnerAllocation,
       winnerPayout,
       zpParticipatedAllocation,

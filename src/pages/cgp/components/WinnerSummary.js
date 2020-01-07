@@ -26,7 +26,7 @@ WinnerSummary.propTypes = {
   winnerPayout: PropTypes.object,
 };
 
-function SummaryAllocation({ winnerAllocation, zpParticipatedAllocation }) {
+function SummaryAllocation({ winnerAllocation, zpParticipatedAllocation, ...props }) {
   return (
     <div className="col winner">
       <table className="table table-zen">
@@ -38,6 +38,7 @@ function SummaryAllocation({ winnerAllocation, zpParticipatedAllocation }) {
           </tr>
         </thead>
         <tbody>
+          <UnconfirmedRow {...props} />
           <tr>
             <td>ALLOCATION RESULT</td>
             <td>{percentageToZP(winnerAllocation)} ZP</td>
@@ -91,6 +92,7 @@ class SummaryPayout extends React.Component {
             </tr>
           </thead>
           <tbody>
+            <UnconfirmedRow {...this.props} />
             <tr>
               <td>PAYOUT WINNER BALLOT ID</td>
               <td>
@@ -158,6 +160,18 @@ class SummaryPayout extends React.Component {
 SummaryPayout.propTypes = {
   winnerPayout: PropTypes.object,
   zpParticipatedPayout: PropTypes.string,
+};
+
+function UnconfirmedRow({ currentBlock, coinbaseMaturity }) {
+  return currentBlock < coinbaseMaturity ? (
+    <tr className="text-danger">
+      <td colSpan="2">Unconfirmed until block {coinbaseMaturity}</td>
+    </tr>
+  ) : null;
+}
+UnconfirmedRow.propTypes = {
+  currentBlock: PropTypes.number,
+  coinbaseMaturity: PropTypes.number,
 };
 
 function NoWinner({ type, zpParticipatedPayout }) {
