@@ -461,8 +461,8 @@ export default function UIStore(rootStore, initialState = {}) {
         Object.assign(
           {},
           {
-            page: state.repoVotesTable.curPage,
-            pageSize: state.repoVotesTable.pageSize
+            page: stateTable.curPage,
+            pageSize: stateTable.pageSize,
           },
           stateTable.interval && { interval: stateTable.interval }
         )

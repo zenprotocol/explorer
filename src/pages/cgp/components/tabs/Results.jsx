@@ -44,8 +44,8 @@ class ResultsTab extends Component {
       ? uiStore.state.cgpPayoutResultsTable
       : uiStore.state.cgpAllocationResultsTable;
     const uiStoreTableSetter = isPayout
-      ? uiStore.setCGPPayoutVotesTableData.bind(uiStore)
-      : uiStore.setCGPAllocationVotesTableData.bind(uiStore);
+      ? uiStore.setCGPPayoutResultsTableData.bind(uiStore)
+      : uiStore.setCGPAllocationResultsTableData.bind(uiStore);
     return (
       <TabPanel>
         <ItemsTable
