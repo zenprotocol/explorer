@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { autorun } from 'mobx';
+import { reaction } from 'mobx';
 import { observer, inject } from 'mobx-react';
 import { Link } from 'react-router-dom';
 import TextUtils from '../../../lib/TextUtils';
@@ -75,18 +75,18 @@ class BlocksTable extends Component {
   }
 
   componentDidMount() {
+    this.forceBlocksReload();
     this.reloadOnBlocksCountChange();
   }
   componentWillUnmount() {
     this.stopReload();
   }
   reloadOnBlocksCountChange() {
-    // should run on first time, hence the autorun
-    this.forceDisposer = autorun(() => {
-      if (this.props.rootStore.blockStore.blocksCount) {
-        this.forceBlocksReload();
-      }
-    });
+    // autorun was reacting to unknown properties, use reaction instead
+    this.forceDisposer = reaction(
+      () => this.props.rootStore.blockStore.blocksCount,
+      () => this.forceBlocksReload()
+    );
   }
   stopReload() {
     this.forceDisposer();
