@@ -1,0 +1,16 @@
+@import 'src/style/variables';
+.AssetsBalancesTable {
+  td, th {
+    width: 50%;
+  }
+  .HeadTableContainer {
+    table {
+      margin-bottom: 0;
+    }
+  }
+  .BodyTableContainer {
+    max-height: 176px;
+    overflow: auto;
+    @include mixin-zen-scrollbar();
+  }
+} 

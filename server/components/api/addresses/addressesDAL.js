@@ -68,7 +68,11 @@ addressesDAL.getAssetAmounts = function(address) {
     .findAll({
       where: {
         address,
+        balance: {
+          [Op.gt]: 0,
+        },
       },
+      order: [['balance', 'DESC']],
     })
     .then(result => {
       return result.length > 0
