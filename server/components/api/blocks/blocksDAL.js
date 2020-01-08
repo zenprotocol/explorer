@@ -12,6 +12,7 @@ blocksDAL.findAllWithCoinbase = function({ limit = 10, offset = 0 } = {}) {
   /**
    * Limit the amount of blocks processed for speed optimization
    * Calculate the coinbase by summing up all the coinbase lock outputs
+   * Calculate the allocation by summing up all the contract lock outputs
    * Special care for genesis block
    */
   const sql = tags.oneLine`
@@ -24,7 +25,11 @@ blocksDAL.findAllWithCoinbase = function({ limit = 10, offset = 0 } = {}) {
     CASE
       WHEN "BlocksLimited"."blockNumber" = 1 THEN 0
       ELSE COALESCE("CoinbaseOutputSum"."amount", 0)
-    END AS "coinbaseAmount"
+    END AS "coinbaseAmount",
+    CASE
+      WHEN "BlocksLimited"."blockNumber" = 1 THEN 0
+      ELSE COALESCE("ContractLockOutputSum"."amount", 0)
+    END AS "allocationAmount"
   FROM "BlocksLimited"
   JOIN 
     (SELECT id,
@@ -45,6 +50,18 @@ blocksDAL.findAllWithCoinbase = function({ limit = 10, offset = 0 } = {}) {
       FROM "BlocksLimited")
     GROUP BY "TransactionId") AS "CoinbaseOutputSum"
   ON "CoinbaseOutputSum"."TransactionId" = "CoinbaseTx"."id"
+
+  LEFT JOIN (
+    SELECT sum(amount) as amount, "TransactionId"
+    FROM "Outputs"
+    JOIN "Transactions" ON "Outputs"."TransactionId" = "Transactions"."id"
+    WHERE "Outputs"."lockType" = 'Contract'
+    AND "Transactions"."BlockId" IN 
+      (SELECT id
+      FROM "BlocksLimited")
+    GROUP BY "TransactionId") AS "ContractLockOutputSum"
+  ON "ContractLockOutputSum"."TransactionId" = "CoinbaseTx"."id"
+
   ORDER BY "BlocksLimited"."blockNumber" DESC
   `;
   return sequelize
