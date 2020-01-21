@@ -8,6 +8,7 @@ const logger = require('./lib/logger')('snapshots');
 const slackLogger = require('../server/lib/slackLogger');
 const getChain = require('../server/lib/getChain');
 
+const NODE_URL = Config.get('zp:node');
 const snapshotsQueue = queue(Config.get('queues:snapshots:name'));
 
 const taskTimeLimiter = new TaskTimeLimiter(Config.get('queues:slackTimeLimit') * 1000);
@@ -30,7 +31,7 @@ snapshotsQueue.on('failed', function(job, error) {
   logger.error(`A job has failed. ID=${job.id}, error=${error.message}`);
   taskTimeLimiter.executeTask(() => {
     getChain().then(chain => {
-      slackLogger.error(`A snapshots job has failed, error=${error.message} chain=${chain}`);
+      slackLogger.error(`A snapshots job has failed, error=${error.message} chain=${chain} node=${NODE_URL}`);
     });
   });
 });

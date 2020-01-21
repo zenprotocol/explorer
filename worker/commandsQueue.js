@@ -8,6 +8,7 @@ const logger = require('./lib/logger')('commands');
 const slackLogger = require('../server/lib/slackLogger');
 const getChain = require('../server/lib/getChain');
 
+const NODE_URL = Config.get('zp:node');
 const commandsQueue = queue(Config.get('queues:commands:name'));
 // notify the votes queue whenever new commands were added
 const votesQueue = queue(Config.get('queues:votes:name'));
@@ -24,9 +25,9 @@ commandsQueue.on('active', function(job, jobPromise) {
 
 commandsQueue.on('completed', function(job, result) {
   logger.info(`A job has been completed. ID=${job.id} result=${result}`);
-  if(result > 0) {
-    votesQueue.add({type: 'cgp'});
-    votesQueue.add({type: 'repo'});
+  if (result > 0) {
+    votesQueue.add({ type: 'cgp' });
+    votesQueue.add({ type: 'repo' });
   }
 });
 
@@ -34,7 +35,9 @@ commandsQueue.on('failed', function(job, error) {
   logger.error(`A job has failed. ID=${job.id}, error=${error.message}`);
   taskTimeLimiter.executeTask(() => {
     getChain().then(chain => {
-      slackLogger.error(`A Commands job has failed, error=${error.message} chain=${chain}`);
+      slackLogger.error(
+        `A Commands job has failed, error=${error.message} chain=${chain} node=${NODE_URL}`
+      );
     });
   });
 });
