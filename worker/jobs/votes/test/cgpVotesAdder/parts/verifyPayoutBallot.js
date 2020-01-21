@@ -86,7 +86,12 @@ module.exports = async function part({ t, before, after }) {
     should: 'add an empty vote',
     ballot: getPayoutBallot({
       address: 'tzn1qx3xuxsls43ks682ade3c32wuf90lyv9k2pt9g40sgrz2h4t9c8fspj43mg',
-      spends: new Array(101).fill('1').map(() => ({ asset: '00', amount: 1 })),
+      spends: new Array(101).fill('1').map((_, index) => {
+        // make sure asset is valid and unique
+        const templateIndex = `00${index}`;
+        const s = templateIndex.substring(templateIndex.length - 3);
+        return ({ asset: `000000000000000000000000000000000000000000000000000000000000000000000${s}`, amount: 1 });
+      }),
     }),
   });
 
