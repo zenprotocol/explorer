@@ -507,7 +507,7 @@ test('cgpDAL.countAllVoteResults() (DB)', async function(t) {
 test('cgpDAL.findAllBallots() (DB)', async function(t) {
   await wrapTest('Given no votes', async given => {
     await createDemoData();
-    const ballots = await cgpDAL.findAllBallots({ type: 'payout', intervalLength: 100, limit: 1000, offset: 0 });
+    const ballots = await cgpDAL.findAllBallots({ type: 'payout', snapshot: 90, tally: 100, limit: 1000, offset: 0 });
     t.equal(ballots.length, 0, `${given}: should return an empty array`);
   });
 
@@ -517,110 +517,47 @@ test('cgpDAL.findAllBallots() (DB)', async function(t) {
     await addVote({ address: 'tzn11', blockNumber: 91, type: 'allocation', ballot: '2' });
     await addVote({ address: 'tzn12', blockNumber: 92, type: 'payout', ballot: 'ballotPayout2' });
 
-    const ballots = await cgpDAL.findAllBallots({ type: 'payout', intervalLength: 100, limit: 1000, offset: 0 });
+    const ballots = await cgpDAL.findAllBallots({ type: 'payout', snapshot: 90, tally: 100, limit: 1000, offset: 0 });
     t.equal(ballots.length, 2, `${given}: should return all ballots`);
     t.assert(ballots[0].ballot === 'ballotPayout2', `${given}: should return the ballot with most zp first`);
   });
 
-  function getTestForIntervals({ given, should, numOfIntervals = 2, votes = [], expected } = {}) {
-    return wrapTest(given, async () => {
-      await createDemoData({ toBlock: numOfIntervals * 100 });
-      await Promise.all(votes.map(vote => addVote(vote)));
+  await wrapTest('Given some votes in 1st interval with double orders', async given => {
+    await createDemoData();
+    await addVote({ address: 'tzn11', blockNumber: 91, type: 'payout', ballot: 'ballotPayout1' });
+    await addVote({ address: 'tzn11', blockNumber: 91, type: 'allocation', ballot: '2' });
+    await addVote({ address: 'tzn11', blockNumber: 93, type: 'payout', ballot: 'ballotPayout2' });
+    await addVote({ address: 'tzn12', blockNumber: 92, type: 'payout', ballot: 'ballotPayout2' });
 
-      const ballots = await cgpDAL.findAllBallots({
-        type: 'payout',
-        intervalLength: 100,
-        limit: 10000,
-        offset: 0,
-      });
-      t.deepEqual(ballots, expected, `Given ${given}: should ${should}`);
-    });
-  }
-
-  await getTestForIntervals({
-    given: 'valid votes in 2 intervals',
-    should: 'return all of the ballots',
-    votes: [
-      { address: 'tzn11', blockNumber: 91, type: 'payout', ballot: 'ballotPayout1' },
-      { address: 'tzn12', blockNumber: 92, type: 'payout', ballot: 'ballotPayout2' },
-      { address: 'tzn11', blockNumber: 192, type: 'payout', ballot: 'ballotPayout3' },
-      { address: 'tzn13', blockNumber: 193, type: 'payout', ballot: 'ballotPayout1' },
-    ],
-    expected: [
-      { ballot: 'ballotPayout1', zpAmount: '202.0000000000000000' },
-      { ballot: 'ballotPayout2', zpAmount: '101.0000000000000000' },
-      { ballot: 'ballotPayout3', zpAmount: '100.0000000000000000' },
-    ],
+    const ballots = await cgpDAL.findAllBallots({ type: 'payout', snapshot: 90, tally: 100, limit: 1000, offset: 0 });
+    t.equal(ballots.length, 2, `${given}: should return all ballots except of the double votes`);
+    t.assert(ballots[0].ballot === 'ballotPayout2', `${given}: should return the ballot with most zp first`);
   });
 
-  await getTestForIntervals({
-    given: 'votes in 2 intervals with double votes',
-    should: 'return all of the ballots except of the double votes, in right order',
-    votes: [
-      { address: 'tzn13', blockNumber: 91, type: 'payout', ballot: 'ballotPayout1' },
-      { address: 'tzn13', blockNumber: 92, type: 'payout', ballot: 'ballotPayout2' },
-      { address: 'tzn11', blockNumber: 192, type: 'payout', ballot: 'ballotPayout3' },
-      { address: 'tzn12', blockNumber: 193, type: 'payout', ballot: 'ballotPayout4' },
-    ],
-    expected: [
-      { ballot: 'ballotPayout1', zpAmount: '102.0000000000000000' },
-      { ballot: 'ballotPayout4', zpAmount: '101.0000000000000000' },
-      { ballot: 'ballotPayout3', zpAmount: '100.0000000000000000' },
-    ],
+  await wrapTest('Given valid votes in 2 intervals', async given => {
+    await createDemoData({toBlock: 200});
+    await addVote({ address: 'tzn11', blockNumber: 91, type: 'payout', ballot: 'ballotPayout1' });
+    await addVote({ address: 'tzn11', blockNumber: 91, type: 'allocation', ballot: '2' });
+    await addVote({ address: 'tzn12', blockNumber: 92, type: 'payout', ballot: 'ballotPayout2' });
+    await addVote({ address: 'tzn11', blockNumber: 191, type: 'payout', ballot: 'ballotPayout1' });
+    await addVote({ address: 'tzn12', blockNumber: 192, type: 'payout', ballot: 'ballotPayout2' });
+
+    const ballots = await cgpDAL.findAllBallots({ type: 'payout', snapshot: 190, tally: 200, limit: 1000, offset: 0 });
+    t.equal(ballots.length, 2, `${given}: should return all ballots from the given interval`);
   });
 
-  await getTestForIntervals({
-    given: 'votes in 2 intervals with double votes',
-    should: 'return all of the ballots except of the double votes, in right order',
-    votes: [
-      { address: 'tzn13', blockNumber: 91, type: 'payout', ballot: 'ballotPayout1' },
-      { address: 'tzn13', blockNumber: 92, type: 'payout', ballot: 'ballotPayout2' },
-      { address: 'tzn11', blockNumber: 192, type: 'payout', ballot: 'ballotPayout3' },
-      { address: 'tzn12', blockNumber: 193, type: 'payout', ballot: 'ballotPayout4' },
-    ],
-    expected: [
-      { ballot: 'ballotPayout1', zpAmount: '102.0000000000000000' },
-      { ballot: 'ballotPayout4', zpAmount: '101.0000000000000000' },
-      { ballot: 'ballotPayout3', zpAmount: '100.0000000000000000' },
-    ],
-  });
+  await wrapTest('Given votes in 2 intervals outside of the voting block range', async given => {
+    await createDemoData({toBlock: 200});
+    await addVote({ address: 'tzn13', blockNumber: 80, type: 'payout', ballot: 'ballotPayout1' });
+    await addVote({ address: 'tzn13', blockNumber: 90, type: 'payout', ballot: 'ballotPayout2' });
+    await addVote({ address: 'tzn13', blockNumber: 100, type: 'payout', ballot: 'ballotPayout3' });
+    await addVote({ address: 'tzn11', blockNumber: 120, type: 'payout', ballot: 'ballotPayout4' });
+    await addVote({ address: 'tzn13', blockNumber: 190, type: 'payout', ballot: 'ballotPayout4' });
+    await addVote({ address: 'tzn12', blockNumber: 193, type: 'payout', ballot: 'ballotPayout5' });
 
-  await getTestForIntervals({
-    given: 'votes in 4 intervals with double votes',
-    should: 'return all of the ballots except of the double votes, in right order',
-    numOfIntervals: 4,
-    votes: [
-      { address: 'tzn13', blockNumber: 91, type: 'payout', ballot: 'ballotPayout1' },
-      { address: 'tzn11', blockNumber: 92, type: 'payout', ballot: 'ballotPayout2' },
-      { address: 'tzn11', blockNumber: 100, type: 'payout', ballot: 'ballotPayout_DOUBLE_VOTE_1' },
-      { address: 'tzn13', blockNumber: 192, type: 'payout', ballot: 'ballotPayout3' },
-      { address: 'tzn13', blockNumber: 192, txIndex: 1, type: 'payout', ballot: 'ballotPayout_DOUBLE_VOTE_2' },
-      { address: 'tzn12', blockNumber: 193, type: 'payout', ballot: 'ballotPayout2' },
-      { address: 'tzn11', blockNumber: 291, type: 'payout', ballot: 'ballotPayout4' },
-      { address: 'tzn12', blockNumber: 291, type: 'payout', ballot: 'ballotPayout3' },
-    ],
-    expected: [
-      { ballot: 'ballotPayout3', zpAmount: '203.0000000000000000' },
-      { ballot: 'ballotPayout2', zpAmount: '201.0000000000000000' },
-      { ballot: 'ballotPayout1', zpAmount: '102.0000000000000000' },
-      { ballot: 'ballotPayout4', zpAmount: '100.0000000000000000' },
-    ],
-  });
-
-  await getTestForIntervals({
-    given: 'votes in 2 intervals outside of the voting block range',
-    should: 'return only the ballots voted in the right blocks',
-    votes: [
-      { address: 'tzn13', blockNumber: 80, type: 'payout', ballot: 'ballotPayout1' },
-      { address: 'tzn13', blockNumber: 90, type: 'payout', ballot: 'ballotPayout2' },
-      { address: 'tzn13', blockNumber: 100, type: 'payout', ballot: 'ballotPayout3' },
-      { address: 'tzn11', blockNumber: 120, type: 'payout', ballot: 'ballotPayout4' },
-      { address: 'tzn12', blockNumber: 193, type: 'payout', ballot: 'ballotPayout5' },
-    ],
-    expected: [
-      { ballot: 'ballotPayout3', zpAmount: '102.0000000000000000' },
-      { ballot: 'ballotPayout5', zpAmount: '101.0000000000000000' },
-    ],
+    const ballots = await cgpDAL.findAllBallots({ type: 'payout', snapshot: 190, tally: 200, limit: 1000, offset: 0 });
+    t.equal(ballots.length, 1, `${given}: should return the ballots that are between snapshot and tally`);
+    t.assert(ballots[0].ballot === 'ballotPayout5', `${given}: should return the ballot with most zp first`);
   });
 });
 

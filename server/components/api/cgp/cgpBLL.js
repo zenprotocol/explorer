@@ -111,16 +111,24 @@ module.exports = {
         .then(addBallotContentToResults({ type, chain })),
     ]).then(cgpDAL.getItemsAndCountResult);
   },
-  findAllBallots: async function({ type, page = 0, pageSize = 10 }) {
+  findAllBallots: async function({ type, interval, page = 0, pageSize = 10 }) {
     if (!isTypeValid(type)) return null;
 
-    const chain = await getChain();
-    const intervalLength = cgpUtils.getIntervalLength(chain);
+    const formattedInterval = formatInterval(interval);
+    const [currentBlock, chain] = await Promise.all([
+      blocksBLL.getCurrentBlockNumber(),
+      getChain(),
+    ]);
+    const { snapshot, tally } = cgpUtils.getRelevantIntervalBlocks(
+      chain,
+      formattedInterval,
+      currentBlock
+    );
 
     return await Promise.all([
-      cgpDAL.countAllBallots({ type, intervalLength }),
+      cgpDAL.countAllBallots({ type, snapshot, tally }),
       cgpDAL.findAllBallots(
-        Object.assign({}, { type, intervalLength }, createQueryObject({ page, pageSize }))
+        Object.assign({}, { type, snapshot, tally }, createQueryObject({ page, pageSize }))
       ),
     ]).then(cgpDAL.getItemsAndCountResult);
   },

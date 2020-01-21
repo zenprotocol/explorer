@@ -36,7 +36,7 @@ cgpDAL.findAllUnprocessedCommands = async function(contractId) {
 };
 
 /**
- * Find the highest block number with a valid vote 
+ * Find the highest block number with a valid vote
  * @param {Object} params
  * @param {number} params.startBlockNumber - the highest block number to look from
  * @param {number} params.intervalLength
@@ -45,7 +45,14 @@ cgpDAL.findAllUnprocessedCommands = async function(contractId) {
  * @param {('allocation'|'payout')} params.type - vote type
  * @returns {number} the highest block number with a vote or 0
  */
-cgpDAL.findLastValidVoteBlockNumber = async function({ startBlockNumber, intervalLength, interval1Snapshot, interval1Tally, type, dbTransaction } = {}) {
+cgpDAL.findLastValidVoteBlockNumber = async function({
+  startBlockNumber,
+  intervalLength,
+  interval1Snapshot,
+  interval1Tally,
+  type,
+  dbTransaction,
+} = {}) {
   const sql = tags.oneLine`
   SELECT "Blocks"."blockNumber"
   FROM "CGPVotes"
@@ -60,17 +67,19 @@ cgpDAL.findLastValidVoteBlockNumber = async function({ startBlockNumber, interva
   LIMIT 1; 
   `;
 
-  return sequelize.query(sql, {
-    replacements: {
-      type,
-      startBlockNumber,
-      intervalLength,
-      interval1Snapshot,
-      interval1Tally,
-    },
-    type: sequelize.QueryTypes.SELECT,
-    transaction: dbTransaction,
-  }).then(result => result.length ? result[0].blockNumber : 0);
+  return sequelize
+    .query(sql, {
+      replacements: {
+        type,
+        startBlockNumber,
+        intervalLength,
+        interval1Snapshot,
+        interval1Tally,
+      },
+      type: sequelize.QueryTypes.SELECT,
+      transaction: dbTransaction,
+    })
+    .then(result => (result.length ? result[0].blockNumber : 0));
 };
 
 /**
@@ -123,7 +132,14 @@ cgpDAL.countVotesInInterval = async function({ snapshot, tally, type } = {}) {
  *
  * @param {number} interval
  */
-cgpDAL.findAllVoteResults = async function({ snapshot, tally, type, limit, offset = 0, dbTransaction = null } = {}) {
+cgpDAL.findAllVoteResults = async function({
+  snapshot,
+  tally,
+  type,
+  limit,
+  offset = 0,
+  dbTransaction = null,
+} = {}) {
   const sql = tags.oneLine`
   ${WITH_FILTER_TABLES}
   ${FIND_ALL_VOTE_RESULTS_BASE_SQL}
@@ -162,8 +178,9 @@ cgpDAL.countAllVoteResults = async function({ snapshot, tally, type } = {}) {
     .then(this.queryResultToCount);
 };
 
-cgpDAL.findAllBallots = async function({ type, intervalLength, limit, offset = 0 }) {
+cgpDAL.findAllBallots = async function({ type, snapshot, tally, limit, offset = 0 }) {
   const sql = tags.oneLine`
+  ${WITH_FILTER_TABLES}
   ${FIND_ALL_BALLOTS_BASE_SQL}
   ORDER BY "zpAmount" DESC
   LIMIT :limit OFFSET :offset;
@@ -172,15 +189,17 @@ cgpDAL.findAllBallots = async function({ type, intervalLength, limit, offset = 0
   return sequelize.query(sql, {
     replacements: {
       type,
-      intervalLength,
+      snapshot,
+      tally,
       limit,
       offset,
     },
     type: sequelize.QueryTypes.SELECT,
   });
 };
-cgpDAL.countAllBallots = async function({ type, intervalLength }) {
+cgpDAL.countAllBallots = async function({ type, snapshot, tally }) {
   const sql = tags.oneLine`
+  ${WITH_FILTER_TABLES}
   SELECT count(*) FROM (${FIND_ALL_BALLOTS_BASE_SQL}) AS "Results"
   `;
 
@@ -188,7 +207,8 @@ cgpDAL.countAllBallots = async function({ type, intervalLength }) {
     .query(sql, {
       replacements: {
         type,
-        intervalLength,
+        snapshot,
+        tally,
       },
       type: sequelize.QueryTypes.SELECT,
     })

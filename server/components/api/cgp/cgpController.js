@@ -61,9 +61,10 @@ module.exports = {
     res.status(httpStatus.OK).json(jsonResponse.create(httpStatus.OK, result));
   },
   payoutBallots: async function(req, res) {
+    const { interval } = req.query;
     const { page, pageSize } = req.query;
 
-    const result = await cgpBLL.findAllBallots({ type: 'payout', page, pageSize });
+    const result = await cgpBLL.findAllBallots({ type: 'payout', interval, page, pageSize });
     if (result) {
       res.status(httpStatus.OK).json(jsonResponse.create(httpStatus.OK, result));
     } else {
