@@ -155,6 +155,37 @@ module.exports = {
 
     return addressesBLL.balance({ address: contractAddress, blockNumber });
   },
+  findWinnerAllocation: async function({interval, chain, dbTransaction = null} = {}) {
+    const formattedInterval = formatInterval(interval);
+
+    if(!formattedInterval || !chain) return 0;
+
+    const { tally } = cgpUtils.getIntervalBlocks(chain, formattedInterval);
+    const interval1 = cgpUtils.getIntervalBlocks(chain, 1);
+    const intervalLength = cgpUtils.getIntervalLength(chain);
+    const highestBlockNumberWithVote = await cgpDAL.findLastValidVoteBlockNumber({
+      startBlockNumber: tally,
+      intervalLength,
+      interval1Snapshot: interval1.snapshot,
+      interval1Tally: interval1.tally,
+      type: 'allocation',
+      dbTransaction
+    });
+
+    if(!highestBlockNumberWithVote) return 0;
+
+    const latestWinnerInterval = cgpUtils.getIntervalByBlockNumber(chain, highestBlockNumberWithVote);
+    const latestWinnerIntervalBlocks = cgpUtils.getIntervalBlocks(chain, latestWinnerInterval);
+    const voteResults = await cgpDAL
+      .findAllVoteResults({
+        snapshot: latestWinnerIntervalBlocks.snapshot,
+        tally: latestWinnerIntervalBlocks.tally,
+        type: 'allocation',
+        dbTransaction
+      })
+      .then(addBallotContentToResults({ chain, type: 'allocation' }));
+    return calculateWinnerAllocation(voteResults);
+  },
   getPayoutBallotContent: async function({ ballot } = {}) {
     const chain = await getChain();
     return getPayoutBallotContent({ ballot, chain });

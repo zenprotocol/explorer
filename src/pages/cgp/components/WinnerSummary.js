@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import AssetUtils from '../../../lib/AssetUtils';
 import HashLink from '../../../components/HashLink';
 import AddressLink from '../../../components/AddressLink';
-import percentageToZP from '../modules/percentageToZP';
+import percentageToZP from '../../../lib/rewardPercentageToZP';
 
 export default function WinnerSummary(props) {
   return (

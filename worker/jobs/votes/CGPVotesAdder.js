@@ -12,15 +12,12 @@ const {
   getAllocationBallotContent,
   getPayoutBallotContent,
 } = require('../../../server/components/api/cgp/modules/getBallotContent');
-const {
-  addBallotContentToResults,
-} = require('../../../server/components/api/cgp/modules/addBallotContentToResults');
 const cgpUtils = require('../../../server/components/api/cgp/cgpUtils');
+const cgpBLL = require('../../../server/components/api/cgp/cgpBLL');
 const commandsDAL = require('../../../server/components/api/commands/commandsDAL');
 const addressesDAL = require('../../../server/components/api/addresses/addressesDAL');
 const QueueError = require('../../lib/QueueError');
 const db = require('../../../server/db/sequelize/models');
-const calculateWinnerAllocation = require('../../../server/components/api/cgp/modules/calculateWinnerAllocation');
 
 class CGPVotesAdder {
   constructor({ blockchainParser, contractIdVoting, contractIdFund, chain } = {}) {
@@ -196,7 +193,7 @@ class CGPVotesAdder {
 
       let prevAllocation =
         interval > 1
-          ? await this.calcAllocationWinner({ interval: interval - 1, dbTransaction })
+          ? await cgpBLL.findWinnerAllocation({ interval: interval - 1, chain: this.chain, dbTransaction })
           : 0;
       const { maxAllocation, minAllocation } = getAllocationMinMax({ prevAllocation });
       return minAllocation <= allocation && allocation <= maxAllocation;
@@ -226,35 +223,6 @@ class CGPVotesAdder {
     } catch (error) {
       return false;
     }
-  }
-
-  async calcAllocationWinner({ interval, dbTransaction } = {}) {
-    const { tally } = cgpUtils.getIntervalBlocks(this.chain, interval);
-    const interval1 = cgpUtils.getIntervalBlocks(this.chain, 1);
-    const intervalLength = cgpUtils.getIntervalLength(this.chain);
-    const highestBlockNumberWithVote = await cgpDAL.findLastValidVoteBlockNumber({
-      startBlockNumber: tally,
-      intervalLength,
-      interval1Snapshot: interval1.snapshot,
-      interval1Tally: interval1.tally,
-      type: 'allocation',
-      dbTransaction,
-    });
-
-    if(!highestBlockNumberWithVote) {
-      return 0;
-    }
-    const latestWinnerInterval = cgpUtils.getIntervalByBlockNumber(this.chain, highestBlockNumberWithVote);
-    const latestWinnerIntervalBlocks = cgpUtils.getIntervalBlocks(this.chain, latestWinnerInterval);
-    const voteResults = await cgpDAL
-      .findAllVoteResults({
-        snapshot: latestWinnerIntervalBlocks.snapshot,
-        tally: latestWinnerIntervalBlocks.tally,
-        type: 'allocation',
-        dbTransaction,
-      })
-      .then(addBallotContentToResults({ chain: this.chain, type: 'allocation' }));
-    return calculateWinnerAllocation(voteResults);
   }
 }
 

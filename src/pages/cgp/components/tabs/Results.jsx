@@ -9,7 +9,7 @@ import { ItemsTable } from '../../../../components/ItemsTable';
 import HashLink from '../../../../components/HashLink';
 import AddressLink from '../../../../components/AddressLink';
 import getTableSubComponent from './getTableSubComponent';
-import percentageToZP from '../../modules/percentageToZP';
+import percentageToZP from '../../../../lib/rewardPercentageToZP';
 
 class ResultsTab extends Component {
   get typeParam() {

@@ -4,6 +4,8 @@ import { reaction } from 'mobx';
 import { observer, inject } from 'mobx-react';
 import { Helmet } from 'react-helmet';
 import TextUtils from '../../lib/TextUtils.js';
+import AssetUtils from '../../lib/AssetUtils';
+import percentageToZP from '../../lib/rewardPercentageToZP';
 import Loading from '../../components/Loading';
 import Button from '../../components/buttons/Button';
 import { ChartLoader } from '../../components/charts';
@@ -58,8 +60,21 @@ class InfoPage extends Component {
       return null;
     }
 
-    const { chain, blocks, transactions, difficulty, nodeVersion, walletVersion } = infos;
+    const {
+      chain,
+      blocks,
+      transactions,
+      difficulty,
+      nodeVersion,
+      walletVersion,
+      cgpBalance,
+      cgpAllocation
+    } = infos;
     const formattedHashRate = formatHashRate(infos);
+    const cgpZpBalance = (cgpBalance || []).find(item => AssetUtils.isZP(item.asset)) || {
+      asset: '00',
+      amount: '0',
+    };
 
     return (
       <Page className="Info">
@@ -98,8 +113,24 @@ class InfoPage extends Component {
             <InfoBox
               className="hashrate"
               title="Network Hashrate"
-              content={`${TextUtils.formatNumber(formattedHashRate.value)} ${formattedHashRate.unit}`}
+              content={`${TextUtils.formatNumber(formattedHashRate.value)} ${
+                formattedHashRate.unit
+              }`}
               iconClass="fal fa-tachometer-alt-fastest fa-fw"
+            />
+          </div>
+          <div className="row">
+            <InfoBox
+              className="cgp-balance"
+              title="CGP Balance"
+              content={`${AssetUtils.getAmountString(cgpZpBalance.asset, cgpZpBalance.amount)}`}
+              iconClass="fal fa-coins fa-fw"
+            />
+            <InfoBox
+              className="cgp-allocation"
+              title="CGP Current Allocation"
+              content={`${percentageToZP(cgpAllocation || 0)} ZP`}
+              iconClass="fal fa-coin fa-fw"
             />
           </div>
           <div className="row bg-black-accent">
