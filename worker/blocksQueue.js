@@ -36,6 +36,7 @@ addBlocksQueue.on('completed', function(job, result) {
     // notify snapshots that blocks were added
     snapshotsQueue.add();
   }
+  commandsQueue.add();
 });
 
 addBlocksQueue.on('failed', function(job, error) {
