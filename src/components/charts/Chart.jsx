@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import ReactHighcharts from 'react-highcharts';
+import { mergeDeepRight } from 'ramda';
 
 const COLORS = {
   text: '#f2f2f2',
@@ -15,74 +16,75 @@ const titleStyle = {
   fontFamily: 'Roboto',
 };
 
-export default function Chart(props) {
-  ReactHighcharts.Highcharts.setOptions({
-    lang: {
-      thousandsSep: ',',
-    },
-    chart: {
-      height: '50%',
-      backgroundColor: 'transparent',
-      borderWidth: 0,
-      style: { color: COLORS.text },
-    },
-    plotOptions: {
-      series: {
-        dataLabels: {
-          color: COLORS.text,
-        }
-      },
-      pie: {
-        borderColor: COLORS.bg,
-      }
-    },
-    title: {
-      style: { display: 'none' },
-    },
-    colors: ['#3384f3', '#f63d3d', '#50d166'],
-    xAxis: {
-      gridLineWidth: 0,
-      lineColor: COLORS.border,
-      tickColor: COLORS.border,
-      labels: {
-        style: {
-          color: COLORS.text,
-          fontFamily: 'Roboto',
-        },
-      },
-      title: {
-        style: titleStyle,
+const styleOptions = {
+  lang: {
+    thousandsSep: ',',
+  },
+  chart: {
+    height: '50%',
+    backgroundColor: 'transparent',
+    borderWidth: 0,
+    style: { color: COLORS.text },
+  },
+  plotOptions: {
+    series: {
+      dataLabels: {
+        color: COLORS.text,
       },
     },
-    yAxis: {
-      gridLineColor: COLORS.border,
-      lineWidth: 0,
-      tickWidth: 1,
-      tickColor: '#000',
-      labels: {
-        style: {
-          color: COLORS.text,
-          fontFamily: 'Roboto',
-        },
-      },
-      title: {
-        style: titleStyle,
-        margin: 20,
-      },
+    pie: {
+      borderColor: COLORS.bg,
     },
-    legend: {
-      enabled: false,
-    },
-    tooltip: {
+  },
+  title: {
+    style: { display: 'none' },
+  },
+  colors: ['#3384f3', '#f63d3d', '#50d166'],
+  xAxis: {
+    gridLineWidth: 0,
+    lineColor: COLORS.border,
+    tickColor: COLORS.border,
+    labels: {
       style: {
+        color: COLORS.text,
         fontFamily: 'Roboto',
       },
     },
-    credits: {
-      enabled: false,
+    title: {
+      style: titleStyle,
     },
-  });
-  return <ReactHighcharts config={props.config} />;
+  },
+  yAxis: {
+    gridLineColor: COLORS.border,
+    lineWidth: 0,
+    tickWidth: 1,
+    tickColor: '#000',
+    labels: {
+      style: {
+        color: COLORS.text,
+        fontFamily: 'Roboto',
+      },
+    },
+    title: {
+      style: titleStyle,
+      margin: 20,
+    },
+  },
+  legend: {
+    enabled: false,
+  },
+  tooltip: {
+    style: {
+      fontFamily: 'Roboto',
+    },
+  },
+  credits: {
+    enabled: false,
+  },
+};
+
+export default function Chart(props) {
+  return <ReactHighcharts config={mergeDeepRight(styleOptions, props.config)} />;
 }
 
 Chart.propTypes = {

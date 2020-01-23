@@ -176,10 +176,6 @@ class ChartLoader extends PureComponent {
       return <Loading />;
     }
 
-    if (this.chartItems.length === 0) {
-      return null;
-    }
-
     let componentType = null;
     switch (chartConfig.type) {
       case 'pie':
