@@ -3,8 +3,11 @@ import PropTypes from 'prop-types';
 import TextUtils from '../../../lib/TextUtils';
 import Dropdown from '../../../components/Dropdown';
 
-export default function IntervalsDropDown({ relevantInterval, currentInterval, onIntervalChange }) {
+export default function IntervalsDropDown({ relevantInterval, currentInterval, currentBlock, onIntervalChange }) {
   if (!(relevantInterval || {}).interval) return null;
+
+  const maturityBlocks = relevantInterval.coinbaseMaturity - relevantInterval.tally;
+  const intervalLength = relevantInterval.tally / relevantInterval.interval;
 
   let intervals = [relevantInterval.interval];
   for (let i = 1; i < 5; i++) {
@@ -14,7 +17,9 @@ export default function IntervalsDropDown({ relevantInterval, currentInterval, o
     }
     // above
     if (relevantInterval.interval + i <= currentInterval) {
-      intervals = [relevantInterval.interval + i, ...intervals];
+      if((relevantInterval.interval + i - 1) * intervalLength + maturityBlocks < currentBlock) {
+        intervals = [relevantInterval.interval + i, ...intervals];
+      }
     }
   }
 
@@ -35,5 +40,6 @@ export default function IntervalsDropDown({ relevantInterval, currentInterval, o
 IntervalsDropDown.propTypes = {
   relevantInterval: PropTypes.object,
   currentInterval: PropTypes.number.isRequired,
+  currentBlock: PropTypes.number.isRequired,
   onIntervalChange: PropTypes.func,
 };
