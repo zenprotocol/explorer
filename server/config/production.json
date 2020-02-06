@@ -12,5 +12,9 @@
     "request": {
       "limit": "100kb"
     }
+  },
+  "cors": {
+    "enabled": true,
+    "origins": "zp.io"
   }
 }

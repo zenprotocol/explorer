@@ -26,5 +26,9 @@
   },
   "governance": {
     "afterTallyBlocks": 10
+  },
+  "cors": {
+    "enabled": false,
+    "origins": ""
   }
 }
