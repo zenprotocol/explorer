@@ -5,8 +5,8 @@ const morgan = require('morgan');
 const logger = require('./lib/logger');
 const bodyParser = require('body-parser');
 const helmet = require('helmet');
-const cors = require('cors');
 const compression = require('compression');
+const cors = require('./lib/cors');
 const config = require('./config/Config');
 const errorHandlers = require('./errorHandlers');
 
@@ -26,19 +26,15 @@ app.use(
   )
 );
 
-// cors
-if (process.env.NODE_ENV === 'development') {
-  app.use(cors());
-} else {
-  app.use(
-    cors({
-      origin: /zp\.io$/,
-    })
-  );
-}
+cors.setup(app);
 
 app.use(bodyParser.json({ limit: config.get('http:request:limit') }));
-app.use(bodyParser.urlencoded({ extended: false, limit: config.get('http:request:limit') }));
+app.use(
+  bodyParser.urlencoded({
+    extended: false,
+    limit: config.get('http:request:limit')
+  })
+);
 app.use(helmet());
 
 // routes
