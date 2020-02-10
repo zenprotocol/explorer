@@ -22,10 +22,11 @@ voteIntervalsDAL.findAllWithoutSnapshot = async function(height) {
   });
 };
 
-voteIntervalsDAL.findByInterval = async function(interval) {
+voteIntervalsDAL.findByIntervalAndPhase = async function(interval, phase) {
   return this.findOne({
     where: {
       interval,
+      phase,
     },
   });
 };

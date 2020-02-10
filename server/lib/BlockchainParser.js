@@ -17,7 +17,7 @@ class BlockchainParser {
 
   getChainBaseName(chain) {
     const append = 'net'; // remove this append text
-    return chain.endsWith(append) ? chain.substring(0, chain.length - append.length) : chain;
+    return chain.endsWith(append) ? chain.substring(0, chain.length - append.length).toLowerCase() : chain.toLowerCase();
   }
 
   getPublicKeyHashAddress(pkHash) {

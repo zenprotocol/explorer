@@ -4,7 +4,6 @@ module.exports = (sequelize, DataTypes) => {
     'RepoVote',
     {
       CommandId: DataTypes.BIGINT,
-      interval: DataTypes.INTEGER,
       commitId: DataTypes.STRING,
       address: DataTypes.STRING,
     },

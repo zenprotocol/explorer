@@ -4,7 +4,6 @@ const fs = require('fs');
 const path = require('path');
 const Config = require('./Config');
 const merge = require('deepmerge');
-const Sequelize = require('sequelize');
 
 const developmentJson = JSON.parse(fs.readFileSync(path.join(__dirname, 'development.json')));
 const testJson = JSON.parse(fs.readFileSync(path.join(__dirname, 'test.json')));

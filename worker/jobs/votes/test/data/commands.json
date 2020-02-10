@@ -1,9 +1,41 @@
 [
   {
     "id": "1",
-    "command": "interval is missing",
+    "command": "commit id is missing",
     "messageBody": {
       "list": [
+        {
+          "dict": [
+            [
+              "029ae9b49e60259958302fab6c9be333775fd7ada72f11643218dcf23e5f37ec92",
+              {
+                "signature": "d0d01ed241f3ca624cfd987a6d0208fd44e758a9d21c007f09e89c5d2a74e290bed769f07b8f9c853b73445a0325f35278556c67fed68020d0b2b1767bb5d850"
+              }
+            ],
+            [
+              "02b43a1cb4cb6472e1fcd71b237eb9c1378335cd200dd07536594348d9e450967e",
+              {
+                "signature": "f379996a3977a41b7ac8822c80dcd4be09b1246967d52b5676d22a644e9e8c898e20674ecaa7164769d4cdd2fa13b5915d39a8f6da8c0fee08dc20984632f354"
+              }
+            ]
+          ]
+        }
+      ]
+    },
+    "TransactionId": "100",
+    "indexInTransaction": 0,
+    "ContractId": "test-contract-id",
+    "createdAt": "2019-04-25T14:03:00.726Z",
+    "updatedAt": "2019-04-25T14:03:00.726Z"
+  },
+  {
+    "id": "2",
+    "command": "unknown extra data",
+    "messageBody": {
+      "list": [
+        {
+          "u32": 1
+        },
         {
           "string": "1234512345123451234512345123451234512345"
         },
@@ -32,13 +64,10 @@
     "updatedAt": "2019-04-25T14:03:00.726Z"
   },
   {
-    "id": "2",
+    "id": "3",
     "command": "no data in dictionary",
     "messageBody": {
       "list": [
-        {
-          "u32": 0
-        },
         {
           "string": "1234512345123451234512345123451234512345"
         },
@@ -54,13 +83,10 @@
     "updatedAt": "2019-04-25T14:03:00.726Z"
   },
   {
-    "id": "3",
+    "id": "4",
     "command": "",
     "messageBody": {
       "list": [
-        {
-          "u32": 1
-        },
         {
           "string": "1234512345123451234512345123451234512345"
         },
@@ -89,13 +115,10 @@
     "updatedAt": "2019-04-25T14:03:00.726Z"
   },
   {
-    "id": "4",
+    "id": "5",
     "command": "",
     "messageBody": {
       "list": [
-        {
-          "u32": 1
-        },
         {
           "string": "1234512345123451234512345123451234512345"
         },
@@ -124,13 +147,10 @@
     "updatedAt": "2019-04-25T14:03:00.726Z"
   },
   {
-    "id": "5",
+    "id": "6",
     "command": "",
     "messageBody": {
       "list": [
-        {
-          "u32": 1
-        },
         {
           "string": "1234512345123451234512345123451234512345"
         },
@@ -159,13 +179,10 @@
     "updatedAt": "2019-04-25T14:03:00.726Z"
   },
   {
-    "id": "6",
+    "id": "7",
     "command": "",
     "messageBody": {
       "list": [
-        {
-          "u32": 1
-        },
         {
           "string": "1234512345123451234512345123451234512345"
         },
@@ -194,13 +211,10 @@
     "updatedAt": "2019-04-25T14:03:00.726Z"
   },
   {
-    "id": "7",
+    "id": "8",
     "command": "",
     "messageBody": {
       "list": [
-        {
-          "u32": 1
-        },
         {
           "string": "1234512345123451234512345123451234512345"
         },
@@ -229,13 +243,10 @@
     "updatedAt": "2019-04-25T14:03:00.726Z"
   },
   {
-    "id": "8",
+    "id": "9",
     "command": "",
     "messageBody": {
       "list": [
-        {
-          "u32": 1
-        },
         {
           "string": "1234512345123451234512345123451234512345"
         },

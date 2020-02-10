@@ -14,27 +14,30 @@ const createDemoBlocksFromTo = require('../../../../test/lib/createDemoBlocksFro
 const faker = require('faker');
 
 const CONTRACT_ID = '00000000e3113f8bf9cf8b764d945d6f99c642bdb069d137bdd5f7e44f1e75947f58a044';
-const SNAPSHOT_BLOCK = 5;
-const TALLY_BLOCK = 10;
+const SNAPSHOT_BLOCK_CONTESTANT = 5;
+const TALLY_BLOCK_CONTESTANT = 10;
+const SNAPSHOT_BLOCK_CANDIDATE = 15;
+const TALLY_BLOCK_CANDIDATE = 20;
 const ADDRESS_AMOUNTS = {
-  tzn11: 10000000000,
-  tzn12: 10100000000,
-  tzn13: 10200000000,
+  tzn11: '100' + '00000000' + '000000',
+  tzn12: '101' + '00000000' + '000000',
+  tzn13: '102' + '00000000' + '000000',
+  tzn14: '311' + '00000000', // has less than 1,000,000 ZP
 };
 
 test('votesDAL.findAllByInterval() (DB)', async function(t) {
   await wrapTest('Given no votes', async given => {
     await createDemoData();
-    const votes = await votesDAL.findAllByInterval({ interval: 1, limit: 1000, offset: 0 });
+    const votes = await votesDAL.findAllByInterval({ interval: 1, phase: 'Contestant', limit: 1000, offset: 0 });
     t.equal(votes.length, 0, `${given}: should return an empty array`);
   });
 
   await wrapTest('Given 1 vote per address', async given => {
     await createDemoData();
-    await addVoteForAll({ blockNumber: 6, commitId: '1' });
+    await addVoteForAll({ blockNumber: 6, phase: 'Contestant', commitId: '1' });
 
-    const votes = await votesDAL.findAllByInterval({ interval: 1, limit: 1000, offset: 0 });
-    t.equal(votes.length, 3, `${given}: should return 3 votes`);
+    const votes = await votesDAL.findAllByInterval({ interval: 1, phase: 'Contestant', limit: 1000, offset: 0 });
+    t.equal(votes.length, 4, `${given}: should return 4 votes`);
   });
 
   await wrapTest('Given a double vote', async given => {
@@ -42,8 +45,8 @@ test('votesDAL.findAllByInterval() (DB)', async function(t) {
     await addVoteForAll({ blockNumber: 6, commitId: '1' });
     await addVote({ address: 'tzn11', blockNumber: 7, commitId: '2' });
 
-    const votes = await votesDAL.findAllByInterval({ interval: 1, limit: 1000, offset: 0 });
-    t.equal(votes.length, 3, `${given}: should return 3 votes`);
+    const votes = await votesDAL.findAllByInterval({ interval: 1, phase: 'Contestant', limit: 1000, offset: 0 });
+    t.equal(votes.length, 4, `${given}: should return 4 votes`);
     const hasSecondCommit = votes.some(item => item.commitId === '2');
     t.equal(hasSecondCommit, false, `${given}: should return the first vote`);
   });
@@ -51,14 +54,14 @@ test('votesDAL.findAllByInterval() (DB)', async function(t) {
   await wrapTest('Given a vote before the snapshot', async given => {
     await createDemoData();
     await addVote({ address: 'tzn11', blockNumber: 4, commitId: '1' });
-    const votes = await votesDAL.findAllByInterval({ interval: 1, limit: 1000, offset: 0 });
+    const votes = await votesDAL.findAllByInterval({ interval: 1, phase: 'Contestant', limit: 1000, offset: 0 });
     t.equal(votes.length, 0, `${given}: should not return the vote`);
   });
 
   await wrapTest('Given a vote at the tally block', async given => {
     await createDemoData();
     await addVote({ address: 'tzn11', blockNumber: 10, commitId: '1' });
-    const votes = await votesDAL.findAllByInterval({ interval: 1, limit: 1000, offset: 0 });
+    const votes = await votesDAL.findAllByInterval({ interval: 1, phase: 'Contestant', limit: 1000, offset: 0 });
     t.equal(votes.length, 0, `${given}: should not return the vote`);
   });
 });
@@ -66,7 +69,7 @@ test('votesDAL.findAllByInterval() (DB)', async function(t) {
 test('votesDAL.findAllVoteResults() (DB)', async function(t) {
   await wrapTest('Given no votes', async given => {
     await createDemoData();
-    const results = await votesDAL.findAllVoteResults({ interval: 1, limit: 1000, offset: 0 });
+    const results = await votesDAL.findAllVoteResults({ interval: 1, phase: 'Contestant', limit: 1000, offset: 0 });
     t.equal(results.length, 0, `${given}: should return an empty array`);
   });
 
@@ -74,11 +77,11 @@ test('votesDAL.findAllVoteResults() (DB)', async function(t) {
     await createDemoData();
     await addVoteForAll({ blockNumber: 6, commitId: '1' });
 
-    const results = await votesDAL.findAllVoteResults({ interval: 1, limit: 1000, offset: 0 });
+    const results = await votesDAL.findAllVoteResults({ interval: 1, phase: 'Contestant', limit: 1000, offset: 0 });
     t.equal(results.length, 1, `${given}: should return 1 result`);
     const result = results[0];
     t.equal(result.commitId, '1', `${given}: should have the right commitId`);
-    t.equal(Number(result.zpAmount), 303, `${given}: should have a sum of the addresses' amount`);
+    t.equal(Number(result.zpAmount), 303000311, `${given}: should have a sum of the addresses' amount`);
   });
 
   await wrapTest('Given a double vote', async given => {
@@ -86,34 +89,34 @@ test('votesDAL.findAllVoteResults() (DB)', async function(t) {
     await addVoteForAll({ blockNumber: 6, commitId: '1' });
     await addVote({ address: 'tzn11', blockNumber: 7, commitId: '2' });
 
-    const results = await votesDAL.findAllVoteResults({ interval: 1, limit: 1000, offset: 0 });
+    const results = await votesDAL.findAllVoteResults({ interval: 1, phase: 'Contestant', limit: 1000, offset: 0 });
     t.equal(results.length, 1, `${given}: should return 1 result`);
     const result = results[0];
     t.equal(result.commitId, '1', `${given}: should have the right commitId`);
-    t.equal(Number(result.zpAmount), 303, `${given}: should have a sum of the addresses' amount`);
+    t.equal(Number(result.zpAmount), 303000311, `${given}: should have a sum of the addresses' amount`);
   });
 
   await wrapTest('Given a vote before the snapshot', async given => {
     await createDemoData();
     await addVote({ address: 'tzn11', blockNumber: 4, commitId: '1' });
-    const votes = await votesDAL.findAllVoteResults({ interval: 1, limit: 1000, offset: 0 });
+    const votes = await votesDAL.findAllVoteResults({ interval: 1, phase: 'Contestant', limit: 1000, offset: 0 });
     t.equal(votes.length, 0, `${given}: should not calculate the vote`);
   });
 
   await wrapTest('Given a vote at the tally block', async given => {
     await createDemoData();
     await addVote({ address: 'tzn11', blockNumber: 10, commitId: '1' });
-    const votes = await votesDAL.findAllVoteResults({ interval: 1, limit: 1000, offset: 0 });
+    const votes = await votesDAL.findAllVoteResults({ interval: 1, phase: 'Contestant', limit: 1000, offset: 0 });
     t.equal(votes.length, 0, `${given}: should not calculate the vote`);
   });
 
   await wrapTest('Given each vote for different commit', async given => {
     await createDemoData();
-    await addVote({ address: 'tzn11', blockNumber: 5, commitId: '1' });
-    await addVote({ address: 'tzn12', blockNumber: 6, commitId: '2' });
-    await addVote({ address: 'tzn13', blockNumber: 7, commitId: '3' });
+    await addVote({ address: 'tzn11', blockNumber: 5, commitId: '1'});
+    await addVote({ address: 'tzn12', blockNumber: 6, commitId: '2'});
+    await addVote({ address: 'tzn13', blockNumber: 7, commitId: '3'});
 
-    const results = await votesDAL.findAllVoteResults({ interval: 1, limit: 1000, offset: 0 });
+    const results = await votesDAL.findAllVoteResults({ interval: 1, phase: 'Contestant', limit: 1000, offset: 0 });
     t.equal(results.length, 3, `${given}: should return a result per commit`);
     t.assert(
       results.every(item => {
@@ -138,25 +141,26 @@ test('votesDAL.findAllVoteResults() (DB)', async function(t) {
     await addVote({ address: 'tzn12', blockNumber: 6, commitId: '1' });
     await addVote({ address: 'tzn13', blockNumber: 7, commitId: '2' });
 
-    const results = await votesDAL.findAllVoteResults({ interval: 1, limit: 1000, offset: 0 });
+    const results = await votesDAL.findAllVoteResults({ interval: 1, phase: 'Contestant', limit: 1000, offset: 0 });
     t.equal(results.length, 2, `${given}: should return a result per commit`);
   });
 });
 
-test('votesDAL.findWinner() (DB)', async function(t) {
+test('votesDAL.findContestantWinners() (DB)', async function(t) {
   await wrapTest('Given no votes', async given => {
     await createDemoData();
-    const results = await votesDAL.findWinner({ interval: 1 });
-    t.equal(results, null, `${given}: should return null`);
+    const results = await votesDAL.findContestantWinners({ interval: 1 });
+    t.equal(results.length, 0, `${given}: should return empty array`);
   });
 
   await wrapTest('Given all vote for same', async given => {
     await createDemoData();
     await addVoteForAll({ blockNumber: 6, commitId: '1' });
 
-    const winner = await votesDAL.findWinner({ interval: 1 });
-    t.equal(winner.commitId, '1', `${given}: commit '1' should win`);
-    t.equal(Number(winner.zpAmount), 303, `${given}: Should have the sum of amounts`);
+    const winners = await votesDAL.findContestantWinners({ interval: 1 });
+    t.equal(winners.length, 1, `${given}: should have 1 winner`);
+    t.equal(winners[0].commitId, '1', `${given}: commit '1' should win`);
+    t.equal(Number(winners[0].zpAmount), 303000311, `${given}: Should have the sum of amounts`);
   });
 
   await wrapTest('Given each vote for different', async given => {
@@ -165,9 +169,8 @@ test('votesDAL.findWinner() (DB)', async function(t) {
     await addVote({ address: 'tzn12', blockNumber: 6, commitId: '2' });
     await addVote({ address: 'tzn13', blockNumber: 7, commitId: '3' });
 
-    const winner = await votesDAL.findWinner({ interval: 1 });
-    t.equal(winner.commitId, '3', `${given}: commit '3' should win`);
-    t.equal(Number(winner.zpAmount), 102, `${given}: Should have the amount of the winner address`);
+    const winners = await votesDAL.findContestantWinners({ interval: 1 });
+    t.equal(winners.length, 3, `${given}: should have 3 winners`);
   });
 
   await wrapTest('Given 2 commits', async given => {
@@ -176,9 +179,49 @@ test('votesDAL.findWinner() (DB)', async function(t) {
     await addVote({ address: 'tzn12', blockNumber: 6, commitId: '1' });
     await addVote({ address: 'tzn13', blockNumber: 7, commitId: '2' });
 
-    const winner = await votesDAL.findWinner({ interval: 1 });
+    const winners = await votesDAL.findContestantWinners({ interval: 1 });
+    t.equal(winners.length, 2, `${given}: should have 2 winners`);
+  });
+});
+
+test('votesDAL.findCandidateWinner() (DB)', async function(t) {
+  await wrapTest('Given no votes', async given => {
+    await createDemoData();
+    const results = await votesDAL.findCandidateWinner({ interval: 1 });
+    t.equal(results, null, `${given}: should return null`);
+  });
+
+  await wrapTest('Given all vote for same', async given => {
+    await createDemoData();
+    await addVoteForAll({ blockNumber: 16, commitId: '1' });
+
+    const winner = await votesDAL.findCandidateWinner({ interval: 1 });
     t.equal(winner.commitId, '1', `${given}: commit '1' should win`);
-    t.equal(Number(winner.zpAmount), 201, `${given}: Should have the right sum`);
+    t.equal(Number(winner.zpAmount), 303000311, `${given}: Should have the sum of amounts`);
+  });
+
+  await wrapTest('Given each vote for different', async given => {
+    await createDemoData();
+
+    await addVote({ address: 'tzn11', blockNumber: 15, commitId: '1' });
+    await addVote({ address: 'tzn12', blockNumber: 16, commitId: '2' });
+    await addVote({ address: 'tzn13', blockNumber: 17, commitId: '3' });
+
+    const winner = await votesDAL.findCandidateWinner({ interval: 1 });
+    t.equal(winner.commitId, '3', `${given}: commit '3' should win`);
+    t.equal(Number(winner.zpAmount), 102000000, `${given}: Should have the amount of the winner address`);
+  });
+
+  await wrapTest('Given 2 commits', async given => {
+    await createDemoData();
+
+    await addVote({ address: 'tzn11', blockNumber: 15, commitId: '1' });
+    await addVote({ address: 'tzn12', blockNumber: 16, commitId: '1' });
+    await addVote({ address: 'tzn13', blockNumber: 17, commitId: '2' });
+
+    const winner = await votesDAL.findCandidateWinner({ interval: 1 });
+    t.equal(winner.commitId, '1', `${given}: commit '1' should win`);
+    t.equal(Number(winner.zpAmount), 201000000, `${given}: Should have the right sum`);
   });
 });
 
@@ -196,7 +239,7 @@ async function wrapTest(given, test) {
  */
 async function createDemoData() {
   // create a range of blocks
-  await createDemoBlocksFromTo(1, TALLY_BLOCK);
+  await createDemoBlocksFromTo(1, TALLY_BLOCK_CANDIDATE);
   const block1 = await blocksDAL.findByBlockNumber(1);
   // add amount to some addresses all in block 1
   for (let i = 0; i < Object.keys(ADDRESS_AMOUNTS).length; i++) {
@@ -229,11 +272,20 @@ async function createDemoData() {
     expiryBlock: 1000,
   });
 
-  // add an interval
+  // add the intervals
+  const contestant = await voteIntervalsDAL.create({
+    interval: 1,
+    phase: 'Contestant',
+    beginHeight: SNAPSHOT_BLOCK_CONTESTANT,
+    endHeight: TALLY_BLOCK_CONTESTANT,
+    thresholdZp: 1000000
+  });
   await voteIntervalsDAL.create({
     interval: 1,
-    beginHeight: SNAPSHOT_BLOCK,
-    endHeight: TALLY_BLOCK,
+    phase: 'Candidate',
+    beginHeight: SNAPSHOT_BLOCK_CANDIDATE,
+    endHeight: TALLY_BLOCK_CANDIDATE,
+    prevPhaseId: contestant.id,
   });
 
   const snapshotsTaker = new SnapshotsTaker({ chain: 'test' });
@@ -261,7 +313,6 @@ async function addVote({ address, commitId, blockNumber } = {}) {
 
   await votesDAL.create({
     CommandId: command.id,
-    interval: 1,
     commitId,
     address,
   });

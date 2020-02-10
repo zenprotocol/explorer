@@ -7,27 +7,32 @@ const votesBLL = require('./votesBLL');
 
 module.exports = {
   index: async function(req, res) {
-    const { interval, page, pageSize } = req.query;
+    const { interval, phase, page, pageSize } = req.query;
     const formattedInterval = formatInterval(interval);
 
-    const vote = await votesBLL.findAllVotesByInterval({
+    const votes = await votesBLL.findAllVotesByInterval({
       interval: formattedInterval,
+      phase,
       page,
-      pageSize,
+      pageSize
     });
-    if (vote) {
-      res.status(httpStatus.OK).json(jsonResponse.create(httpStatus.OK, vote));
-    } else {
-      throw new HttpError(httpStatus.NOT_FOUND);
-    }
+
+    res
+      .status(httpStatus.OK)
+      .json(jsonResponse.create(httpStatus.OK, votes || []));
   },
   relevantInterval: async function(req, res) {
-    const { interval } = req.query;
+    const { interval, phase } = req.query;
     const formattedInterval = formatInterval(interval);
 
-    const result = await votesBLL.findIntervalAndTally({ interval: formattedInterval });
+    const result = await votesBLL.findIntervalAndTally({
+      interval: formattedInterval,
+      phase
+    });
     if (result) {
-      res.status(httpStatus.OK).json(jsonResponse.create(httpStatus.OK, result));
+      res
+        .status(httpStatus.OK)
+        .json(jsonResponse.create(httpStatus.OK, result));
     } else {
       throw new HttpError(httpStatus.NOT_FOUND);
     }
@@ -35,28 +40,46 @@ module.exports = {
   nextInterval: async function(req, res) {
     const result = await votesBLL.findNextInterval();
     if (result) {
-      res.status(httpStatus.OK).json(jsonResponse.create(httpStatus.OK, result));
+      res
+        .status(httpStatus.OK)
+        .json(jsonResponse.create(httpStatus.OK, result));
     } else {
       throw new HttpError(httpStatus.NOT_FOUND);
     }
   },
   results: async function(req, res) {
-    const { interval, page, pageSize } = req.query;
+    const { interval, phase, page, pageSize } = req.query;
     const formattedInterval = formatInterval(interval);
 
-    const result = await votesBLL.findAllVoteResults({ interval: formattedInterval, page, pageSize });
-    if (result) {
-      res.status(httpStatus.OK).json(jsonResponse.create(httpStatus.OK, result));
-    } else {
-      throw new HttpError(httpStatus.NOT_FOUND);
-    }
+    const result = await votesBLL.findAllVoteResults({
+      interval: formattedInterval,
+      phase,
+      page,
+      pageSize
+    });
+    res
+      .status(httpStatus.OK)
+      .json(jsonResponse.create(httpStatus.OK, result || []));
   },
   recentIntervals: async function(req, res) {
-    const result = await votesBLL.findRecentIntervals()
+    const result = await votesBLL.findRecentIntervals();
     res.status(httpStatus.OK).json(jsonResponse.create(httpStatus.OK, result));
   },
+  getCandidates: async function(req, res) {
+    const { interval } = req.query;
+    const formattedInterval = formatInterval(interval);
+
+    const result = await votesBLL.findContestantWinners({
+      interval: formattedInterval
+    });
+    res
+      .status(httpStatus.OK)
+      .json(jsonResponse.create(httpStatus.OK, result || []));
+  }
 };
 
 function formatInterval(interval) {
-  return isNaN(Number(interval)) || Number(interval) === 0 ? null : Number(interval);
+  return isNaN(Number(interval)) || Number(interval) === 0
+    ? null
+    : Number(interval);
 }
