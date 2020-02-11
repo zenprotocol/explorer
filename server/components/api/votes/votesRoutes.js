@@ -1,13 +1,17 @@
 const router = require('express').Router();
 const controller = require('./votesController');
+const middleware = require('./votesMiddleware');
 const interval1CacheController = require('./cache/1/interval1CacheController');
 const wrapAsync = require('../../../lib/wrapAsyncForExpressErrors');
 
-router.route('/').get(wrapAsync(interval1CacheController.index), wrapAsync(controller.index));
+router
+  .route('/')
+  .get(wrapAsync(interval1CacheController.index), wrapAsync(controller.index));
 
 router
   .route('/relevant')
   .get(
+    middleware.parsePhaseParam,
     wrapAsync(interval1CacheController.relevantInterval),
     wrapAsync(controller.relevantInterval)
   );
@@ -15,17 +19,23 @@ router
 router
   .route('/next')
   .get(
+    middleware.parsePhaseParam,
     wrapAsync(interval1CacheController.nextInterval),
     wrapAsync(controller.nextInterval)
   );
 
 router
   .route('/results')
-  .get(wrapAsync(interval1CacheController.results), wrapAsync(controller.results));
+  .get(
+    middleware.parsePhaseParam,
+    wrapAsync(interval1CacheController.results),
+    wrapAsync(controller.results)
+  );
 
 router
   .route('/candidates')
   .get(
+    middleware.parsePhaseParam,
     wrapAsync(interval1CacheController.getCandidates),
     wrapAsync(controller.getCandidates)
   );
@@ -33,6 +43,7 @@ router
 router
   .route('/intervals')
   .get(
+    middleware.parsePhaseParam,
     wrapAsync(interval1CacheController.recentIntervals),
     wrapAsync(controller.recentIntervals)
   );
