@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { observer, inject } from 'mobx-react';
 import { Link } from 'react-router-dom';
 import config from '../../../../lib/Config';
-import WithSetIdOnUiStore from '../../../../components/hoc/WithSetIdOnUiStore';
+import WithSetIdsOnUiStore from '../../../../components/hoc/WithSetIdsOnUiStore';
 import TextUtils from '../../../../lib/TextUtils';
 import { TabPanel } from '../../../../components/tabs';
 import { ItemsTable } from '../../../../components/ItemsTable';
@@ -55,5 +55,5 @@ TransactionsTab.propTypes = {
 };
 
 export default inject('rootStore')(
-  observer(WithSetIdOnUiStore(TransactionsTab, 'setAddressTxsTableData', 'address'))
+  observer(WithSetIdsOnUiStore(TransactionsTab, 'setAddressTxsTableData', ['address']))
 );

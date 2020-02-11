@@ -3,7 +3,7 @@ import { reaction } from 'mobx';
 import { observer, inject } from 'mobx-react';
 import { Link } from 'react-router-dom';
 import config from '../../../../lib/Config';
-import WithSetIdOnUiStore from '../../../../components/hoc/WithSetIdOnUiStore';
+import WithSetIdsOnUiStore from '../../../../components/hoc/WithSetIdsOnUiStore';
 import TextUtils from '../../../../lib/TextUtils';
 import { TabPanel } from '../../../../components/tabs';
 import { ItemsTable } from '../../../../components/ItemsTable';
@@ -78,5 +78,5 @@ class VotesTab extends Component {
   }
 }
 export default inject('rootStore')(
-  observer(WithSetIdOnUiStore(observer(VotesTab), 'setRepoVotesTableData', 'interval'))
+  observer(WithSetIdsOnUiStore(observer(VotesTab), 'setRepoVotesTableData', ['interval', 'phase']))
 );

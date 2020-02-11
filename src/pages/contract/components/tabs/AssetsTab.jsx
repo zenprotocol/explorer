@@ -4,7 +4,7 @@ import { observer, inject } from 'mobx-react';
 import config from '../../../../lib/Config';
 import TextUtils from '../../../../lib/TextUtils';
 import AssetUtils from '../../../../lib/AssetUtils';
-import WithSetIdOnUiStore from '../../../../components/hoc/WithSetIdOnUiStore';
+import WithSetIdsOnUiStore from '../../../../components/hoc/WithSetIdsOnUiStore';
 import { TabPanel } from '../../../../components/tabs';
 import { ItemsTable } from '../../../../components/ItemsTable';
 import HashLink from '../../../../components/HashLink';
@@ -64,5 +64,5 @@ AssetsTab.propTypes = {
 };
 
 export default inject('rootStore')(
-  observer(WithSetIdOnUiStore(AssetsTab, 'setContractAssetsTableData', 'address'))
+  observer(WithSetIdsOnUiStore(AssetsTab, 'setContractAssetsTableData', ['address']))
 );

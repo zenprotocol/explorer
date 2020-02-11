@@ -17,7 +17,7 @@ router.get('/contracts', insertRouteName('contracts'), clientRenderer);
 router.get('/contracts/:address/:tab?', insertRouteName('contract'), clientRenderer);
 router.get('/assets', insertRouteName('assets'), clientRenderer);
 router.get('/assets/:asset/:tab?', insertRouteName('asset'), clientRenderer);
-router.get('/governance/:interval/:tab?', insertRouteName('governance'), clientRenderer);
+router.get('/governance/:interval/:phase/:tab?', insertRouteName('governance'), clientRenderer);
 router.get('/cgp/:interval/:tab?/:type?', insertRouteName('cgp'), clientRenderer);
 router.get('*', clientRenderer);
 

@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { reaction } from 'mobx';
 import { observer, inject } from 'mobx-react';
 import config from '../../../../lib/Config';
-import WithSetIdOnUiStore from '../../../../components/hoc/WithSetIdOnUiStore';
+import WithSetIdsOnUiStore from '../../../../components/hoc/WithSetIdsOnUiStore';
 import TextUtils from '../../../../lib/TextUtils';
 import { TabPanel } from '../../../../components/tabs';
 import { ItemsTable } from '../../../../components/ItemsTable';
@@ -60,5 +60,5 @@ class ResultsTab extends Component {
 }
 
 export default inject('rootStore')(
-  observer(WithSetIdOnUiStore(observer(ResultsTab), 'setRepoVoteResultsTableData', 'interval'))
+  observer(WithSetIdsOnUiStore(observer(ResultsTab), 'setRepoVoteResultsTableData', ['interval', 'phase']))
 );

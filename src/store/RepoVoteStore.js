@@ -1,4 +1,4 @@
-import { observable, decorate, action, runInAction, computed } from 'mobx';
+import { observable, decorate, action, runInAction } from 'mobx';
 import Service from '../lib/Service';
 
 export default class RepoVoteStore {
@@ -18,12 +18,6 @@ export default class RepoVoteStore {
       results: false,
       recentIntervals: false,
     };
-  }
-
-  get winnerCommitId() {
-    if(!(this.relevantInterval || {}).winner) return '';
-    
-    return this.relevantInterval.winner.commitId;
   }
 
   loadRelevantInterval(params = {}) {
@@ -161,5 +155,4 @@ decorate(RepoVoteStore, {
   loadNextInterval: action,
   loadResults: action,
   loadRecentIntervals: action,
-  winnerCommitId: computed,
 });

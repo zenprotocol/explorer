@@ -109,9 +109,9 @@ export default function MainRoutes() {
       <Route path="/oracle" component={Oracle} />
       <Route path="/assets" exact={true} component={Assets} />
       <Route path="/assets/:asset" component={Asset} />
-      <Route path="/governance/:interval" component={Governance} />
+      <Route path="/governance/:interval/:phase" component={Governance} />
       <Route path="/cgp/:interval" component={CGP} />
-      <Redirect from="/governance" to="/governance/0" />
+      <Redirect from="/governance" to="/governance/0/Contestant" />
       <Redirect from="/cgp" to="/cgp/0" />
       <Route component={NotFound} />
     </Switch>
