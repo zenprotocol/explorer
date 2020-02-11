@@ -9,24 +9,42 @@ const db = require('../../server/db/sequelize/models');
 const run = async () => {
   const argv = await cli
     .number('-b, --begin', { desc: 'The start block', required: true })
-    .number('-l, --length', { desc: 'The interval length in blocks', required: true })
-    .number('-g, --gap', { desc: 'The gap between snapshots in blocks', required: true })
-    .number('-a, --amount', { desc: 'The amount of intervals to insert', required: true })
-    .number('-i, --interval', { desc: 'The first interval number', defaultValue: 1 })
+    .number('-l, --length', {
+      desc: 'The interval length in blocks',
+      required: true
+    })
+    .number('-g, --gap', {
+      desc: 'The gap between intervals in blocks',
+      required: true
+    })
+    .number('-a, --amount', {
+      desc: 'The amount of intervals to insert',
+      required: true
+    })
+    .number('-t, --threshold', {
+      desc: 'The threshold in zp for a valid candidate',
+      required: true
+    })
     .help('-h, --help')
     .showHelpByDefault()
     .parseAndExit();
 
-  const { begin, length, gap, amount, interval } = argv;
-  const intervals = [];
-  for (let i = 0; i < amount; i++) {
-    intervals.push({
-      interval: interval + i,
-      beginHeight: begin + i * gap,
-      endHeight: begin + i * gap + length,
+  const { begin, length, gap, amount, threshold } = argv;
+  const lastIntervalInDb = await voteIntervalsDAL.findOne({
+    order: [['interval', 'DESC']]
+  });
+  const interval = lastIntervalInDb ? lastIntervalInDb.interval : 0;
+  let prevPhase = null;
+  for (let i = 0; i < amount * 2; i++) {
+    prevPhase = await voteIntervalsDAL.create({
+      interval: interval + Math.floor(i / 2) + 1,
+      phase: i % 2 === 0 ? 'Contestant' : 'Candidate',
+      beginHeight: begin + i * (length + gap),
+      endHeight: begin + i * (length + gap) + length,
+      thresholdZp: i % 2 === 0 ? threshold : null,
+      prevPhaseId: i % 2 === 1 ? prevPhase.id : null,
     });
   }
-  await voteIntervalsDAL.bulkCreate(intervals);
   logger.info('Finished inserting intervals');
 };
 
