@@ -126,9 +126,10 @@ class GovernancePage extends React.Component {
           <div className="col-md-8">
             <PageTitle
               title="Community Votes"
-              subtitle={!this.noIntervalsFound && `${
-                isContestantsPhase ? 'Contestants' : 'Candidates'
-              } phase`}
+              subtitle={
+                !this.noIntervalsFound &&
+                `${isContestantsPhase ? 'Contestants' : 'Candidates'} phase`
+              }
             />
           </div>
           <div className="col-md-4">
@@ -345,16 +346,16 @@ function IntervalsDropDown({ relevantInterval, intervals, onIntervalChange }) {
 
   const options = intervals.map(item => ({
     value: intervalsDDCreateValue(item),
-    label: `${TextUtils.getOrdinal(item.interval)} Semester, ${item.phase}s - ${
-      item.beginHeight
-    }-${item.endHeight}`
+    label: getDropDownSemesterText(item)
   }));
+
+  let value = intervalsDDCreateValue(relevantInterval);
+  if (!options.find(option => option.value === value)) {
+    value = getDropDownSemesterText(relevantInterval);
+  }
+
   return (
-    <Dropdown
-      options={options}
-      value={intervalsDDCreateValue(relevantInterval)}
-      onChange={onIntervalChange}
-    />
+    <Dropdown options={options} value={value} onChange={onIntervalChange} />
   );
 }
 IntervalsDropDown.propTypes = {
@@ -362,6 +363,12 @@ IntervalsDropDown.propTypes = {
   intervals: PropTypes.array.isRequired,
   onIntervalChange: PropTypes.func
 };
+
+function getDropDownSemesterText(interval) {
+  return `${TextUtils.getOrdinal(interval.interval)} Semester, ${
+    interval.phase
+  }s - ${interval.beginHeight}-${interval.endHeight}`;
+}
 
 function getPageUrl(interval, phase) {
   return `/governance/${interval}/${phase}`;
