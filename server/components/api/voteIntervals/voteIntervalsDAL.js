@@ -70,16 +70,39 @@ voteIntervalsDAL.findNext = async function(currentBlock) {
 };
 
 /**
- * Find a few recent intervals
+ * Find all recent intervals up to the next one
  *
  * @param {number} currentBlock
  */
-voteIntervalsDAL.findAllRecent = async function({ limit, offset = 0 }) {
-  return await this.findAll({
-    limit,
-    offset,
-    order: [['beginHeight', 'ASC']]
-  });
+voteIntervalsDAL.findAllRecent = async function(currentBlock = 0) {
+  const [prev, next] = await Promise.all([
+    this.findAll({
+      where: {
+        beginHeight: {
+          [Op.lte]: currentBlock // including current
+        }
+      },
+      order: [['beginHeight', 'DESC']]
+    }),
+    this.findAll({
+      where: {
+        beginHeight: {
+          [Op.gt]: currentBlock
+        }
+      },
+      order: [['beginHeight', 'ASC']],
+      limit: 3
+    })
+  ]);
+
+  const intervals = [];
+  // order should be new to old
+  intervals.push.apply(intervals, next.reverse());
+  intervals.push.apply(intervals, prev);
+  if (intervals.length > 2 && intervals[0].phase === 'Contestant') {
+    intervals.shift();
+  }
+  return intervals;
 };
 
 /**

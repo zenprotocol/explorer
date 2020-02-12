@@ -121,10 +121,9 @@ module.exports = {
       )
     ]).then(votesDAL.getItemsAndCountResult);
   },
-  findRecentIntervals: async function({ page, pageSize } = {}) {
-    return voteIntervalsDAL.findAllRecent(
-      createQueryObject({ page, pageSize })
-    );
+  findRecentIntervals: async function() {
+    const currentBlock = await blocksBLL.getCurrentBlockNumber();
+    return voteIntervalsDAL.findAllRecent(currentBlock);
   },
   findContestantWinners: async function({ interval } = {}) {
     const currentBlock = await blocksBLL.getCurrentBlockNumber();
