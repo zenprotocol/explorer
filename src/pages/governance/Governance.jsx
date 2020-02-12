@@ -4,6 +4,7 @@ import { observer, inject } from 'mobx-react';
 import { Helmet } from 'react-helmet';
 import { Route, Switch, Redirect } from 'react-router-dom';
 import TextUtils from '../../lib/TextUtils';
+import ObjectUtils from '../../lib/ObjectUtils';
 import Page from '../../components/Page';
 import PageTitle from '../../components/PageTitle';
 import { getVoteStatus, voteStatus } from './voteStatus';
@@ -107,6 +108,14 @@ class GovernancePage extends React.Component {
     const redirectToRelevantInterval = this.getRedirectForIntervalZero();
     if (redirectToRelevantInterval) return redirectToRelevantInterval;
 
+    const isContestantsPhase =
+      (
+        ObjectUtils.getSafeProperty(
+          this.repoVoteStore,
+          'relevantInterval.phase'
+        ) || ''
+      ).toLowerCase() === 'contestant';
+
     return (
       <Page className="Governance">
         <Helmet>
@@ -115,7 +124,12 @@ class GovernancePage extends React.Component {
 
         <div className="row">
           <div className="col-md-8">
-            <PageTitle title="Community Votes" />
+            <PageTitle
+              title="Community Votes"
+              subtitle={!this.noIntervalsFound && `${
+                isContestantsPhase ? 'Contestants' : 'Candidates'
+              } phase`}
+            />
           </div>
           <div className="col-md-4">
             <IntervalsDropDown
