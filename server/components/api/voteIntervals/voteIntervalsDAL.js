@@ -16,9 +16,9 @@ voteIntervalsDAL.findAllWithoutSnapshot = async function(height) {
     where: {
       hasSnapshot: false,
       beginHeight: {
-        [Op.lte]: height,
-      },
-    },
+        [Op.lte]: height
+      }
+    }
   });
 };
 
@@ -26,8 +26,8 @@ voteIntervalsDAL.findByIntervalAndPhase = async function(interval, phase) {
   return this.findOne({
     where: {
       interval,
-      phase,
-    },
+      phase
+    }
   });
 };
 
@@ -36,14 +36,14 @@ voteIntervalsDAL.findCurrent = async function(currentBlock) {
     where: {
       [Op.and]: {
         beginHeight: {
-          [Op.lte]: currentBlock,
+          [Op.lte]: currentBlock
         },
         endHeight: {
-          [Op.gt]: currentBlock,
-        },
-      },
+          [Op.gt]: currentBlock
+        }
+      }
     },
-    order: [['beginHeight', 'ASC']],
+    order: [['beginHeight', 'ASC']]
   });
 };
 
@@ -51,10 +51,10 @@ voteIntervalsDAL.findPrev = async function(currentBlock) {
   return this.findOne({
     where: {
       endHeight: {
-        [Op.lte]: currentBlock,
-      },
+        [Op.lte]: currentBlock
+      }
     },
-    order: [['endHeight', 'DESC']],
+    order: [['endHeight', 'DESC']]
   });
 };
 
@@ -62,10 +62,10 @@ voteIntervalsDAL.findNext = async function(currentBlock) {
   return this.findOne({
     where: {
       beginHeight: {
-        [Op.gt]: currentBlock,
-      },
+        [Op.gt]: currentBlock
+      }
     },
-    order: [['beginHeight', 'ASC']],
+    order: [['beginHeight', 'ASC']]
   });
 };
 
@@ -74,26 +74,12 @@ voteIntervalsDAL.findNext = async function(currentBlock) {
  *
  * @param {number} currentBlock
  */
-voteIntervalsDAL.findAllRecent = async function(currentBlock, limit = 5) {
-  const [prevs, current, next] = await Promise.all([
-    this.findAll({
-      where: {
-        endHeight: {
-          [Op.lte]: currentBlock,
-        },
-      },
-      order: [['endHeight', 'DESC']],
-      limit,
-    }),
-    this.findCurrent(currentBlock),
-    this.findNext(currentBlock),
-  ]);
-
-  const intervals = [];
-  next && intervals.push(next);
-  current && intervals.push(current);
-  intervals.push.apply(intervals, prevs);
-  return intervals;
+voteIntervalsDAL.findAllRecent = async function({ limit, offset = 0 }) {
+  return await this.findAll({
+    limit,
+    offset,
+    order: [['beginHeight', 'ASC']]
+  });
 };
 
 /**

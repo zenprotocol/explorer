@@ -15,7 +15,11 @@ const AFTER_TALLY_BLOCKS = configAfterTallyBlocks
 module.exports = {
   findIntervalAndTally: async function({ interval, phase } = {}) {
     const currentBlock = await blocksBLL.getCurrentBlockNumber();
-    const currentInterval = await getCurrentInterval({interval, phase, currentBlock});
+    const currentInterval = await getCurrentInterval({
+      interval,
+      phase,
+      currentBlock
+    });
 
     if (!currentInterval) {
       return null;
@@ -53,7 +57,11 @@ module.exports = {
     sorted
   } = {}) {
     const currentBlock = await blocksBLL.getCurrentBlockNumber();
-    const currentInterval = await getCurrentInterval({interval, phase, currentBlock});
+    const currentInterval = await getCurrentInterval({
+      interval,
+      phase,
+      currentBlock
+    });
     if (!currentInterval) {
       return null;
     }
@@ -87,7 +95,11 @@ module.exports = {
     pageSize = 10
   } = {}) {
     const currentBlock = await blocksBLL.getCurrentBlockNumber();
-    const currentInterval = await getCurrentInterval({interval, phase, currentBlock});
+    const currentInterval = await getCurrentInterval({
+      interval,
+      phase,
+      currentBlock
+    });
     if (!currentInterval) {
       return null;
     }
@@ -109,13 +121,18 @@ module.exports = {
       )
     ]).then(votesDAL.getItemsAndCountResult);
   },
-  findRecentIntervals: async function() {
-    const currentBlock = await blocksBLL.getCurrentBlockNumber();
-    return voteIntervalsDAL.findAllRecent(currentBlock);
+  findRecentIntervals: async function({ page, pageSize } = {}) {
+    return voteIntervalsDAL.findAllRecent(
+      createQueryObject({ page, pageSize })
+    );
   },
   findContestantWinners: async function({ interval } = {}) {
     const currentBlock = await blocksBLL.getCurrentBlockNumber();
-    const currentInterval = await getCurrentInterval({interval, phase: 'Contestant', currentBlock});
+    const currentInterval = await getCurrentInterval({
+      interval,
+      phase: 'Contestant',
+      currentBlock
+    });
     if (!currentInterval) {
       return null;
     }
@@ -134,7 +151,7 @@ module.exports = {
  * 4. previous interval if next does not exist
  * 4. next block
  */
-async function getCurrentInterval({interval, phase, currentBlock} = {}) {
+async function getCurrentInterval({ interval, phase, currentBlock } = {}) {
   if (interval && phase) {
     return voteIntervalsDAL.findByIntervalAndPhase(interval, phase);
   }

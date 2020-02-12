@@ -62,7 +62,8 @@ module.exports = {
       .json(jsonResponse.create(httpStatus.OK, result || []));
   },
   recentIntervals: async function(req, res) {
-    const result = await votesBLL.findRecentIntervals();
+    const { page, pageSize } = req.query;
+    const result = await votesBLL.findRecentIntervals({ page, pageSize });
     res.status(httpStatus.OK).json(jsonResponse.create(httpStatus.OK, result));
   },
   getCandidates: async function(req, res) {
