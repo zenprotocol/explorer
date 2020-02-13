@@ -7,12 +7,14 @@ import RouterUtils from '../../../lib/RouterUtils';
  * @param {*} WrappedComponent
  * @param {*} uiStoreFunctionName
  * @param {[string]} [ids=[]] - a list of ids for the ui table
+ * @param {boolean} shouldForceOnMount - should force an update on each mount, false by default
  * @returns HOC
  */
 export default function WithSetIdsOnUiStore(
   WrappedComponent,
   uiStoreFunctionName,
-  ids = []
+  ids = [],
+  shouldForceOnMount = false
 ) {
   return class HOC extends Component {
     componentDidMount() {
@@ -39,7 +41,7 @@ export default function WithSetIdsOnUiStore(
           ...all,
           [id]: this.getIdValue(id)
         }),
-        {}
+        { force: shouldForceOnMount }
       );
       this.props.rootStore.uiStore[uiStoreFunctionName](payload);
     }
