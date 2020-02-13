@@ -22,7 +22,6 @@ export default function Footer() {
         <div className="FooterSocialContact col-lg-4 d-flex flex-column">
           <FooterSocial />
           <FooterContact />
-          <FooterCopyright />
         </div>
       </div>
     </footer>
@@ -177,18 +176,6 @@ function FooterSocial() {
         <ExternalLink className="nav-link discourse-icon" url="https://forum.zenprotocol.com">
           <i className="fab fa-discourse" />
         </ExternalLink>
-      </li>
-    </ul>
-  );
-}
-
-function FooterCopyright() {
-  return (
-    <ul className="nav flex-column">
-      <li className="nav-item text-nowrap">
-        <div className="copyright nav-link">
-          <span>{`© ${new Date().getFullYear()}`} Blockchain Development LTD.</span>
-        </div>
       </li>
     </ul>
   );
