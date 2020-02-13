@@ -27,22 +27,26 @@ module.exports = {
 
     const _phase = phase || currentInterval.phase;
 
-    const winner =
+    const winnerPromise =
       _phase === 'Contestant'
-        ? await votesDAL.findContestantWinners({
+        ? votesDAL.findContestantWinners({
             interval: currentInterval.interval
           })
-        : await votesDAL.findCandidateWinner({
+        : votesDAL.findCandidateWinner({
             interval: currentInterval.interval
           });
 
+    const candidatesPromise = votesDAL.findContestantWinners({interval: currentInterval.interval});
+
+    const [ winner, candidates] = await Promise.all([winnerPromise, candidatesPromise]);
     return {
       interval: currentInterval.interval,
       phase: currentInterval.phase,
       beginHeight: currentInterval ? currentInterval.beginHeight : null,
       endHeight: currentInterval ? currentInterval.endHeight : null,
       thresholdZp: currentInterval.thresholdZp,
-      winner
+      winner,
+      candidates
     };
   },
   findNextInterval: async function() {

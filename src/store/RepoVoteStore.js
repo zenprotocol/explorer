@@ -5,6 +5,7 @@ export default class RepoVoteStore {
   constructor(rootStore, initialState = {}) {
     this.rootStore = rootStore;
     this.relevantInterval = initialState.relevantInterval || {};
+    this.currentInterval = initialState.currentInterval || {};
     this.nextInterval = initialState.nextInterval || {};
     this.votes = initialState.votes || [];
     this.votesCount = initialState.votesCount || 0;
@@ -13,6 +14,7 @@ export default class RepoVoteStore {
     this.recentIntervals = initialState.recentIntervals || [];
     this.loading = {
       relevantInterval: false,
+      currentInterval: false,
       nextInterval: false,
       votes: false,
       results: false,
@@ -41,6 +43,31 @@ export default class RepoVoteStore {
       .then(() => {
         runInAction(() => {
           this.loading.relevantInterval = false;
+        });
+      });
+  }
+
+  loadCurrentInterval() {
+    this.loading.currentInterval = true;
+
+    return Service.votes
+      .findCurrent()
+      .then(({ data }) => {
+        runInAction(() => {
+          this.currentInterval = data;
+        });
+      })
+      .catch(error => {
+        runInAction(() => {
+          this.currentInterval = {};
+          if (error.status === 404) {
+            this.currentInterval.status = 404;
+          }
+        });
+      })
+      .then(() => {
+        runInAction(() => {
+          this.loading.currentInterval = false;
         });
       });
   }
@@ -143,6 +170,7 @@ export default class RepoVoteStore {
 
 decorate(RepoVoteStore, {
   relevantInterval: observable,
+  currentInterval: observable,
   votes: observable,
   votesCount: observable,
   nextInterval: observable,
@@ -151,6 +179,7 @@ decorate(RepoVoteStore, {
   recentIntervals: observable,
   loading: observable,
   loadRelevantInterval: action,
+  loadCurrentInterval: action,
   loadVotes: action,
   loadNextInterval: action,
   loadResults: action,
