@@ -8,9 +8,7 @@ const config = require('../../../config/Config');
 
 const configAfterTallyBlocks = config.get('governance:afterTallyBlocks');
 // number of blocks to show tally results
-const AFTER_TALLY_BLOCKS = configAfterTallyBlocks
-  ? Number(configAfterTallyBlocks)
-  : 1000;
+const AFTER_TALLY_BLOCKS = configAfterTallyBlocks ? Number(configAfterTallyBlocks) : 1000;
 
 module.exports = {
   findIntervalAndTally: async function({ interval, phase } = {}) {
@@ -18,7 +16,7 @@ module.exports = {
     const currentInterval = await getCurrentInterval({
       interval,
       phase,
-      currentBlock
+      currentBlock,
     });
 
     if (!currentInterval) {
@@ -30,15 +28,17 @@ module.exports = {
     const winnerPromise =
       _phase === 'Contestant'
         ? votesDAL.findContestantWinners({
-            interval: currentInterval.interval
+            interval: currentInterval.interval,
           })
         : votesDAL.findCandidateWinner({
-            interval: currentInterval.interval
+            interval: currentInterval.interval,
           });
 
-    const candidatesPromise = votesDAL.findContestantWinners({interval: currentInterval.interval});
+    const candidatesPromise = votesDAL.findContestantWinners({
+      interval: currentInterval.interval,
+    });
 
-    const [ winner, candidates] = await Promise.all([winnerPromise, candidatesPromise]);
+    const [winner, candidates] = await Promise.all([winnerPromise, candidatesPromise]);
     return {
       interval: currentInterval.interval,
       phase: currentInterval.phase,
@@ -46,25 +46,29 @@ module.exports = {
       endHeight: currentInterval ? currentInterval.endHeight : null,
       thresholdZp: currentInterval.thresholdZp,
       winner,
-      candidates
+      candidates,
     };
   },
   findNextInterval: async function() {
     const currentBlock = await blocksBLL.getCurrentBlockNumber();
     return voteIntervalsDAL.findNext(currentBlock);
   },
+  findCurrentOrNextInterval: async function() {
+    const currentBlock = await blocksBLL.getCurrentBlockNumber();
+    return voteIntervalsDAL.findCurrentOrNext(currentBlock);
+  },
   findAllVotesByInterval: async function({
     interval,
     phase,
     page = 0,
     pageSize = 10,
-    sorted
+    sorted,
   } = {}) {
     const currentBlock = await blocksBLL.getCurrentBlockNumber();
     const currentInterval = await getCurrentInterval({
       interval,
       phase,
-      currentBlock
+      currentBlock,
     });
     if (!currentInterval) {
       return null;
@@ -72,37 +76,30 @@ module.exports = {
 
     // this is currently ignored
     const sortBy =
-      sorted && sorted != '[]'
-        ? JSON.parse(sorted)
-        : [{ id: 'blockNumber', desc: true }];
+      sorted && sorted != '[]' ? JSON.parse(sorted) : [{ id: 'blockNumber', desc: true }];
 
     const query = Object.assign(
       {},
       {
         interval: currentInterval.interval,
-        phase: phase || currentInterval.phase
+        phase: phase || currentInterval.phase,
       },
       createQueryObject({ page, pageSize, sorted: sortBy })
     );
     return await Promise.all([
       votesDAL.countByInterval({
         interval: currentInterval.interval,
-        phase: phase || currentInterval.phase
+        phase: phase || currentInterval.phase,
       }),
-      votesDAL.findAllByInterval(query)
+      votesDAL.findAllByInterval(query),
     ]).then(votesDAL.getItemsAndCountResult);
   },
-  findAllVoteResults: async function({
-    interval,
-    phase,
-    page = 0,
-    pageSize = 10
-  } = {}) {
+  findAllVoteResults: async function({ interval, phase, page = 0, pageSize = 10 } = {}) {
     const currentBlock = await blocksBLL.getCurrentBlockNumber();
     const currentInterval = await getCurrentInterval({
       interval,
       phase,
-      currentBlock
+      currentBlock,
     });
     if (!currentInterval) {
       return null;
@@ -111,18 +108,18 @@ module.exports = {
     return await Promise.all([
       votesDAL.countAllVoteResults({
         interval: currentInterval.interval,
-        phase: phase || currentInterval.phase
+        phase: phase || currentInterval.phase,
       }),
       votesDAL.findAllVoteResults(
         Object.assign(
           {},
           {
             interval: currentInterval.interval,
-            phase: phase || currentInterval.phase
+            phase: phase || currentInterval.phase,
           },
           createQueryObject({ page, pageSize })
         )
-      )
+      ),
     ]).then(votesDAL.getItemsAndCountResult);
   },
   findRecentIntervals: async function() {
@@ -134,16 +131,16 @@ module.exports = {
     const currentInterval = await getCurrentInterval({
       interval,
       phase: 'Contestant',
-      currentBlock
+      currentBlock,
     });
     if (!currentInterval) {
       return null;
     }
 
     return votesDAL.findContestantWinners({
-      interval: currentInterval.interval
+      interval: currentInterval.interval,
     });
-  }
+  },
 };
 
 /**
@@ -162,7 +159,7 @@ async function getCurrentInterval({ interval, phase, currentBlock } = {}) {
   const [current, next, prev] = await Promise.all([
     voteIntervalsDAL.findCurrent(currentBlock),
     voteIntervalsDAL.findNext(currentBlock),
-    voteIntervalsDAL.findPrev(currentBlock)
+    voteIntervalsDAL.findPrev(currentBlock),
   ]);
 
   return current

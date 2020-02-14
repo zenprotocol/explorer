@@ -21,10 +21,7 @@ module.exports = {
       res
         .status(httpStatus.OK)
         .json(
-          jsonResponse.create(
-            httpStatus.OK,
-            votesData.slice(sliceParams.start, sliceParams.end)
-          )
+          jsonResponse.create(httpStatus.OK, votesData.slice(sliceParams.start, sliceParams.end))
         );
     } else {
       next();
@@ -35,14 +32,15 @@ module.exports = {
     const chain = await getChain();
 
     if (interval == 1 && chain === 'main') {
-      res
-        .status(httpStatus.OK)
-        .json(jsonResponse.create(httpStatus.OK, relevantData));
+      res.status(httpStatus.OK).json(jsonResponse.create(httpStatus.OK, relevantData));
     } else {
       next();
     }
   },
   nextInterval: async function(req, res, next) {
+    next();
+  },
+  currentOrNextInterval: async function(req, res, next) {
     next();
   },
   results: async function(req, res, next) {
@@ -53,7 +51,9 @@ module.exports = {
       const sliceParams = getSliceParamsFromPageParams({ page, pageSize });
       res
         .status(httpStatus.OK)
-        .json(jsonResponse.create(httpStatus.OK, resultsData.slice(sliceParams.start, sliceParams.end)));
+        .json(
+          jsonResponse.create(httpStatus.OK, resultsData.slice(sliceParams.start, sliceParams.end))
+        );
     } else {
       next();
     }
@@ -63,12 +63,12 @@ module.exports = {
   },
   getCandidates: async function(req, res, next) {
     next();
-  }
+  },
 };
 
 function getSliceParamsFromPageParams({ page, pageSize } = {}) {
   return {
     start: page * pageSize,
-    end: page * pageSize + Number(pageSize)
+    end: page * pageSize + Number(pageSize),
   };
 }

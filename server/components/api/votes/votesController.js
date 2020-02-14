@@ -14,12 +14,10 @@ module.exports = {
       interval: formattedInterval,
       phase,
       page,
-      pageSize
+      pageSize,
     });
 
-    res
-      .status(httpStatus.OK)
-      .json(jsonResponse.create(httpStatus.OK, votes || []));
+    res.status(httpStatus.OK).json(jsonResponse.create(httpStatus.OK, votes || []));
   },
   relevantInterval: async function(req, res) {
     const { interval, phase } = req.query;
@@ -27,12 +25,10 @@ module.exports = {
 
     const result = await votesBLL.findIntervalAndTally({
       interval: formattedInterval,
-      phase
+      phase,
     });
     if (result) {
-      res
-        .status(httpStatus.OK)
-        .json(jsonResponse.create(httpStatus.OK, result));
+      res.status(httpStatus.OK).json(jsonResponse.create(httpStatus.OK, result));
     } else {
       throw new HttpError(httpStatus.NOT_FOUND);
     }
@@ -40,9 +36,15 @@ module.exports = {
   nextInterval: async function(req, res) {
     const result = await votesBLL.findNextInterval();
     if (result) {
-      res
-        .status(httpStatus.OK)
-        .json(jsonResponse.create(httpStatus.OK, result));
+      res.status(httpStatus.OK).json(jsonResponse.create(httpStatus.OK, result));
+    } else {
+      throw new HttpError(httpStatus.NOT_FOUND);
+    }
+  },
+  currentOrNextInterval: async function(req, res) {
+    const result = await votesBLL.findCurrentOrNextInterval();
+    if (result) {
+      res.status(httpStatus.OK).json(jsonResponse.create(httpStatus.OK, result));
     } else {
       throw new HttpError(httpStatus.NOT_FOUND);
     }
@@ -55,11 +57,9 @@ module.exports = {
       interval: formattedInterval,
       phase,
       page,
-      pageSize
+      pageSize,
     });
-    res
-      .status(httpStatus.OK)
-      .json(jsonResponse.create(httpStatus.OK, result || []));
+    res.status(httpStatus.OK).json(jsonResponse.create(httpStatus.OK, result || []));
   },
   recentIntervals: async function(req, res) {
     const result = await votesBLL.findRecentIntervals();
@@ -70,16 +70,12 @@ module.exports = {
     const formattedInterval = formatInterval(interval);
 
     const result = await votesBLL.findContestantWinners({
-      interval: formattedInterval
+      interval: formattedInterval,
     });
-    res
-      .status(httpStatus.OK)
-      .json(jsonResponse.create(httpStatus.OK, result || []));
-  }
+    res.status(httpStatus.OK).json(jsonResponse.create(httpStatus.OK, result || []));
+  },
 };
 
 function formatInterval(interval) {
-  return isNaN(Number(interval)) || Number(interval) === 0
-    ? null
-    : Number(interval);
+  return isNaN(Number(interval)) || Number(interval) === 0 ? null : Number(interval);
 }
