@@ -5,7 +5,7 @@ export default class RepoVoteStore {
   constructor(rootStore, initialState = {}) {
     this.rootStore = rootStore;
     this.relevantInterval = initialState.relevantInterval || {};
-    this.currentInterval = initialState.currentInterval || {};
+    this.currentOrNextInterval = initialState.currentInterval || {};
     this.nextInterval = initialState.nextInterval || {};
     this.votes = initialState.votes || [];
     this.votesCount = initialState.votesCount || 0;
@@ -14,7 +14,7 @@ export default class RepoVoteStore {
     this.recentIntervals = initialState.recentIntervals || [];
     this.loading = {
       relevantInterval: false,
-      currentInterval: false,
+      currentOrNextInterval: false,
       nextInterval: false,
       votes: false,
       results: false,
@@ -47,27 +47,27 @@ export default class RepoVoteStore {
       });
   }
 
-  loadCurrentInterval() {
-    this.loading.currentInterval = true;
+  loadCurrentOrNextInterval() {
+    this.loading.currentOrNextInterval = true;
 
     return Service.votes
-      .findCurrent()
+      .findCurrentOrNext()
       .then(({ data }) => {
         runInAction(() => {
-          this.currentInterval = data;
+          this.currentOrNextInterval = data;
         });
       })
       .catch(error => {
         runInAction(() => {
-          this.currentInterval = {};
+          this.currentOrNextInterval = {};
           if (error.status === 404) {
-            this.currentInterval.status = 404;
+            this.currentOrNextInterval.status = 404;
           }
         });
       })
       .then(() => {
         runInAction(() => {
-          this.loading.currentInterval = false;
+          this.loading.currentOrNextInterval = false;
         });
       });
   }
@@ -170,7 +170,7 @@ export default class RepoVoteStore {
 
 decorate(RepoVoteStore, {
   relevantInterval: observable,
-  currentInterval: observable,
+  currentOrNextInterval: observable,
   votes: observable,
   votesCount: observable,
   nextInterval: observable,
@@ -179,7 +179,7 @@ decorate(RepoVoteStore, {
   recentIntervals: observable,
   loading: observable,
   loadRelevantInterval: action,
-  loadCurrentInterval: action,
+  loadCurrentOrNextInterval: action,
   loadVotes: action,
   loadNextInterval: action,
   loadResults: action,

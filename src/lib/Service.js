@@ -309,6 +309,13 @@ export default {
         params,
       });
     },
+    findCurrentOrNext(params) {
+      return cancelableHttpRequest({
+        url: `${Endpoints.votes}/current-or-next`,
+        method: 'get',
+        params,
+      });
+    },
     findAllVotes(params) {
       return cancelableHttpRequest({
         url: `${Endpoints.votes}`,
@@ -359,6 +366,6 @@ export default {
         method: 'get',
         params,
       });
-    }
+    },
   },
 };

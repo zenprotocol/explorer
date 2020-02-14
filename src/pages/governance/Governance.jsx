@@ -39,15 +39,10 @@ class GovernancePage extends React.Component {
   }
   get phaseRouteParam() {
     const phase = RouterUtils.getRouteParams(this.props).phase;
-    return ['contestant', 'candidate'].indexOf(phase.toLowerCase()) > -1
-      ? phase
-      : 'Contestant';
+    return ['contestant', 'candidate'].indexOf(phase.toLowerCase()) > -1 ? phase : 'Contestant';
   }
   get relevantLoaded() {
-    return (
-      this.repoVoteStore.relevantInterval.interval &&
-      this.repoVoteStore.currentInterval.interval
-    );
+    return this.repoVoteStore.relevantInterval.interval;
   }
   get noIntervalsFound() {
     return this.repoVoteStore.relevantInterval.status === 404;
@@ -56,7 +51,7 @@ class GovernancePage extends React.Component {
     return getVoteStatus({
       currentBlock: this.currentBlock,
       beginHeight: this.repoVoteStore.relevantInterval.beginHeight,
-      endHeight: this.repoVoteStore.relevantInterval.endHeight
+      endHeight: this.repoVoteStore.relevantInterval.endHeight,
     });
   }
 
@@ -66,12 +61,9 @@ class GovernancePage extends React.Component {
    */
   handleIntervalChange(data) {
     const { interval, phase } = intervalsDDParseValue(data.value);
-    if (
-      interval !== this.intervalRouteParam ||
-      phase !== this.phaseRouteParam
-    ) {
+    if (interval !== this.intervalRouteParam || phase !== this.phaseRouteParam) {
       this.props.history.push({
-        pathname: getPageUrl(interval, phase)
+        pathname: getPageUrl(interval, phase),
       });
     }
   }
@@ -80,7 +72,7 @@ class GovernancePage extends React.Component {
     if (!this.repoVoteStore.relevantInterval.interval) {
       this.loadRelevantInterval();
     }
-    this.loadCurrentInterval();
+    this.loadCurrentOrNextInterval();
     this.reloadCurrentIntervalOnBlocksCountChange();
 
     // load once only
@@ -101,7 +93,7 @@ class GovernancePage extends React.Component {
       (curPhase !== prevPhase && storePhase !== curPhase)
     ) {
       this.loadRelevantInterval();
-      this.loadCurrentInterval();
+      this.loadCurrentOrNextInterval();
     }
   }
   componentWillUnmount() {
@@ -111,7 +103,7 @@ class GovernancePage extends React.Component {
     this.forceDisposer = reaction(
       () => this.props.rootStore.blockStore.blocksCount,
       () => {
-        this.loadCurrentInterval();
+        this.loadCurrentOrNextInterval();
       }
     );
   }
@@ -122,11 +114,11 @@ class GovernancePage extends React.Component {
   loadRelevantInterval() {
     this.repoVoteStore.loadRelevantInterval({
       interval: this.intervalRouteParam,
-      phase: this.phaseRouteParam
+      phase: this.phaseRouteParam,
     });
   }
-  loadCurrentInterval() {
-    this.repoVoteStore.loadCurrentInterval();
+  loadCurrentOrNextInterval() {
+    this.repoVoteStore.loadCurrentOrNextInterval();
   }
 
   render() {
@@ -135,10 +127,7 @@ class GovernancePage extends React.Component {
 
     const isContestantsPhase =
       (
-        ObjectUtils.getSafeProperty(
-          this.repoVoteStore,
-          'relevantInterval.phase'
-        ) || ''
+        ObjectUtils.getSafeProperty(this.repoVoteStore, 'relevantInterval.phase') || ''
       ).toLowerCase() === 'contestant';
 
     return (
@@ -179,10 +168,10 @@ class GovernancePage extends React.Component {
   }
 
   renderTopData() {
-    const { relevantInterval, currentInterval } = this.repoVoteStore;
+    const { relevantInterval, currentOrNextInterval } = this.repoVoteStore;
     if (
       this.repoVoteStore.loading.relevantInterval ||
-      this.repoVoteStore.loading.currentInterval
+      this.repoVoteStore.loading.currentOrNextInterval
     ) {
       return <Loading />;
     }
@@ -194,21 +183,21 @@ class GovernancePage extends React.Component {
           {this.voteStatus === voteStatus.before && (
             <BeforeVoteInfo
               relevantInterval={relevantInterval}
-              currentInterval={currentInterval}
+              currentOrNextInterval={currentOrNextInterval}
               currentBlock={this.currentBlock}
             />
           )}
           {this.voteStatus === voteStatus.during && (
             <DuringVoteInfo
               relevantInterval={relevantInterval}
-              currentInterval={currentInterval}
+              currentOrNextInterval={currentOrNextInterval}
               currentBlock={this.currentBlock}
             />
           )}
           {this.voteStatus === voteStatus.after && (
             <AfterVoteInfo
               relevantInterval={relevantInterval}
-              currentInterval={currentInterval}
+              currentOrNextInterval={currentOrNextInterval}
             />
           )}
         </section>
@@ -220,10 +209,7 @@ class GovernancePage extends React.Component {
     if (!this.relevantLoaded) return null;
     return this.voteStatus !== voteStatus.before ? (
       <section>
-        <VotingTabs
-          {...this.props}
-          isIntermediate={this.voteStatus === voteStatus.during}
-        />
+        <VotingTabs {...this.props} isIntermediate={this.voteStatus === voteStatus.during} />
       </section>
     ) : null;
   }
@@ -241,12 +227,12 @@ class GovernancePage extends React.Component {
   }
 }
 
-function BeforeVoteInfo({ currentBlock, relevantInterval, currentInterval }) {
+function BeforeVoteInfo({ currentBlock, relevantInterval, currentOrNextInterval }) {
   const blocksToStart = relevantInterval.beginHeight - currentBlock;
   const noEligibleCandidates = hasNoEligibleCandidates({
-    currentInterval,
+    currentOrNextInterval,
     relevantInterval,
-    currentBlock
+    currentBlock,
   });
 
   return (
@@ -272,9 +258,7 @@ function BeforeVoteInfo({ currentBlock, relevantInterval, currentInterval }) {
         <div
           className={classNames(
             'col border border-dark text-center',
-            noEligibleCandidates
-              ? 'no-eligible-candidates-message'
-              : 'before-snapshot-message'
+            noEligibleCandidates ? 'no-eligible-candidates-message' : 'before-snapshot-message'
           )}
         >
           {noEligibleCandidates
@@ -290,14 +274,14 @@ function BeforeVoteInfo({ currentBlock, relevantInterval, currentInterval }) {
 BeforeVoteInfo.propTypes = {
   currentBlock: PropTypes.number,
   relevantInterval: PropTypes.object,
-  currentInterval: PropTypes.object
+  currentOrNextInterval: PropTypes.object,
 };
 
-function DuringVoteInfo({ currentBlock, relevantInterval, currentInterval }) {
+function DuringVoteInfo({ currentBlock, relevantInterval, currentOrNextInterval }) {
   const noEligibleCandidates = hasNoEligibleCandidates({
-    currentInterval,
+    currentOrNextInterval,
     relevantInterval,
-    currentBlock
+    currentBlock,
   });
 
   return (
@@ -318,13 +302,10 @@ function DuringVoteInfo({ currentBlock, relevantInterval, currentInterval }) {
         <div
           className={classNames(
             'col border border-dark text-center',
-            noEligibleCandidates
-              ? 'no-eligible-candidates-message'
-              : 'during-vote-message'
+            noEligibleCandidates ? 'no-eligible-candidates-message' : 'during-vote-message'
           )}
         >
-          {relevantInterval.phase === 'Candidate' &&
-          !relevantInterval.candidates.length
+          {relevantInterval.phase === 'Candidate' && !relevantInterval.candidates.length
             ? 'NO ELIGIBLE CANDIDATES IN THIS SEMESTER'
             : 'VOTE IS OPEN'}
         </div>
@@ -335,16 +316,14 @@ function DuringVoteInfo({ currentBlock, relevantInterval, currentInterval }) {
 DuringVoteInfo.propTypes = {
   currentBlock: PropTypes.number,
   relevantInterval: PropTypes.object,
-  currentInterval: PropTypes.object
+  currentOrNextInterval: PropTypes.object,
 };
 
 function AfterVoteInfo({ relevantInterval }) {
   const { winner, beginHeight, endHeight, interval } = relevantInterval;
   const winnerArr = Array.isArray(winner) ? winner : winner ? [winner] : [];
   const winnerJsx = winnerArr.map(item =>
-    item && item.commitId ? (
-      <CommitLink commitId={item.commitId} key={item.commitId} />
-    ) : null
+    item && item.commitId ? <CommitLink commitId={item.commitId} key={item.commitId} /> : null
   );
 
   return (
@@ -380,7 +359,7 @@ function AfterVoteInfo({ relevantInterval }) {
   );
 }
 AfterVoteInfo.propTypes = {
-  relevantInterval: PropTypes.object
+  relevantInterval: PropTypes.object,
 };
 
 function VotingTabs({ match, isIntermediate }) {
@@ -403,7 +382,7 @@ function VotingTabs({ match, isIntermediate }) {
 }
 VotingTabs.propTypes = {
   match: PropTypes.any,
-  isIntermediate: PropTypes.bool
+  isIntermediate: PropTypes.bool,
 };
 
 function IntervalsDropDown({ relevantInterval, intervals, onIntervalChange }) {
@@ -411,7 +390,7 @@ function IntervalsDropDown({ relevantInterval, intervals, onIntervalChange }) {
 
   const options = intervals.map(item => ({
     value: intervalsDDCreateValue(item),
-    label: getDropDownSemesterText(item)
+    label: getDropDownSemesterText(item),
   }));
 
   let value = intervalsDDCreateValue(relevantInterval);
@@ -419,20 +398,18 @@ function IntervalsDropDown({ relevantInterval, intervals, onIntervalChange }) {
     value = getDropDownSemesterText(relevantInterval);
   }
 
-  return (
-    <Dropdown options={options} value={value} onChange={onIntervalChange} />
-  );
+  return <Dropdown options={options} value={value} onChange={onIntervalChange} />;
 }
 IntervalsDropDown.propTypes = {
   relevantInterval: PropTypes.object,
   intervals: PropTypes.array.isRequired,
-  onIntervalChange: PropTypes.func
+  onIntervalChange: PropTypes.func,
 };
 
 function getDropDownSemesterText(interval) {
-  return `${TextUtils.getOrdinal(interval.interval)} Semester, ${
-    interval.phase
-  }s - ${interval.beginHeight}-${interval.endHeight}`;
+  return `${TextUtils.getOrdinal(interval.interval)} Semester, ${interval.phase}s - ${
+    interval.beginHeight
+  }-${interval.endHeight}`;
 }
 
 function getPageUrl(interval, phase) {
@@ -446,26 +423,17 @@ function intervalsDDParseValue(value) {
   const parsed = value.split(' ');
   return {
     interval: Number(parsed[0]),
-    phase: parsed[1]
+    phase: parsed[1],
   };
 }
 
 /**
  * Check if the relevant interval has no eligible candidates, only if it is the current interval
  */
-function hasNoEligibleCandidates({
-  relevantInterval,
-  currentInterval,
-  currentBlock
-} = {}) {
-  const relevantIsTheCurrentInterval =
-    (relevantInterval.interval === currentInterval.interval &&
-      relevantInterval.phase === currentInterval.phase) ||
-    (relevantInterval.interval === currentInterval.interval &&
-      currentInterval.phase === 'Contestant' &&
-      currentBlock >= currentInterval.endHeight);
+function hasNoEligibleCandidates({ relevantInterval, currentOrNextInterval } = {}) {
   return (
-    relevantIsTheCurrentInterval &&
+    relevantInterval.interval === currentOrNextInterval.interval &&
+    relevantInterval.phase === currentOrNextInterval.phase &&
     relevantInterval.phase === 'Candidate' &&
     !relevantInterval.candidates.length
   );
