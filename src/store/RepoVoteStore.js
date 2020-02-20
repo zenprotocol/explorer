@@ -1,10 +1,11 @@
-import { observable, decorate, action, runInAction, computed } from 'mobx';
+import { observable, decorate, action, runInAction } from 'mobx';
 import Service from '../lib/Service';
 
 export default class RepoVoteStore {
   constructor(rootStore, initialState = {}) {
     this.rootStore = rootStore;
     this.relevantInterval = initialState.relevantInterval || {};
+    this.currentOrNextInterval = initialState.currentInterval || {};
     this.nextInterval = initialState.nextInterval || {};
     this.votes = initialState.votes || [];
     this.votesCount = initialState.votesCount || 0;
@@ -13,17 +14,12 @@ export default class RepoVoteStore {
     this.recentIntervals = initialState.recentIntervals || [];
     this.loading = {
       relevantInterval: false,
+      currentOrNextInterval: false,
       nextInterval: false,
       votes: false,
       results: false,
       recentIntervals: false,
     };
-  }
-
-  get winnerCommitId() {
-    if(!(this.relevantInterval || {}).winner) return '';
-    
-    return this.relevantInterval.winner.commitId;
   }
 
   loadRelevantInterval(params = {}) {
@@ -47,6 +43,31 @@ export default class RepoVoteStore {
       .then(() => {
         runInAction(() => {
           this.loading.relevantInterval = false;
+        });
+      });
+  }
+
+  loadCurrentOrNextInterval() {
+    this.loading.currentOrNextInterval = true;
+
+    return Service.votes
+      .findCurrentOrNext()
+      .then(({ data }) => {
+        runInAction(() => {
+          this.currentOrNextInterval = data;
+        });
+      })
+      .catch(error => {
+        runInAction(() => {
+          this.currentOrNextInterval = {};
+          if (error.status === 404) {
+            this.currentOrNextInterval.status = 404;
+          }
+        });
+      })
+      .then(() => {
+        runInAction(() => {
+          this.loading.currentOrNextInterval = false;
         });
       });
   }
@@ -149,6 +170,7 @@ export default class RepoVoteStore {
 
 decorate(RepoVoteStore, {
   relevantInterval: observable,
+  currentOrNextInterval: observable,
   votes: observable,
   votesCount: observable,
   nextInterval: observable,
@@ -157,9 +179,9 @@ decorate(RepoVoteStore, {
   recentIntervals: observable,
   loading: observable,
   loadRelevantInterval: action,
+  loadCurrentOrNextInterval: action,
   loadVotes: action,
   loadNextInterval: action,
   loadResults: action,
   loadRecentIntervals: action,
-  winnerCommitId: computed,
 });

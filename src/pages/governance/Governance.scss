@@ -16,6 +16,14 @@
     color: $red;
   }
 
+  .no-eligible-candidates-message {
+    @extend %message-shared;
+  }
+
+  .during-vote-message {
+    @extend %message-shared;
+  }
+
   .after-tally-message {
     @extend %message-shared;
   }

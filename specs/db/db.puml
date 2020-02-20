@@ -81,9 +81,12 @@ package "Blockchain" {
 package "Votes" {
   Table(VoteInterval, "VoteInterval") {
     primary_key(id)
-    interval
+    interval field_type(number)
+    phase field_comment(Contestant/Candidate)
     beginHeight
     endHeight
+    thresholdZp
+    prevPhaseId
     hasSnapshot
   }
   Table(Snapshot, "Snapshot") {
@@ -96,6 +99,7 @@ package "Votes" {
     primary_key(id)
     foreign_key(CommandId)
     interval
+    phase field_comment(Contestant/Candidate)
     commitId
     address
   }

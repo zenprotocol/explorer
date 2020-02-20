@@ -1,7 +1,7 @@
 import React from 'react';
 import { observer, inject } from 'mobx-react';
 import config from '../../../../lib/Config';
-import WithSetIdOnUiStore from '../../../../components/hoc/WithSetIdOnUiStore';
+import WithSetIdsOnUiStore from '../../../../components/hoc/WithSetIdsOnUiStore';
 import AssetUtils from '../../../../lib/AssetUtils';
 import { TabPanel } from '../../../../components/tabs';
 import { ItemsTable } from '../../../../components/ItemsTable';
@@ -53,5 +53,5 @@ const KeyholdersTab = observer(props => {
   );
 });
 export default inject('rootStore')(
-  observer(WithSetIdOnUiStore(KeyholdersTab, 'setAssetKeyholdersTableData', 'asset'))
+  observer(WithSetIdsOnUiStore(KeyholdersTab, 'setAssetKeyholdersTableData', ['asset']))
 );

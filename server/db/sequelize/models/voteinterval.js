@@ -4,16 +4,21 @@ module.exports = (sequelize, DataTypes) => {
     'VoteInterval',
     {
       interval: DataTypes.INTEGER,
+      phase: DataTypes.STRING,
       beginHeight: DataTypes.INTEGER,
       endHeight: DataTypes.INTEGER,
-      hasSnapshot: DataTypes.BOOLEAN,
+      thresholdZp: DataTypes.BIGINT,
+      hasSnapshot: DataTypes.BOOLEAN
     },
     {
-      timestamps: false,
+      timestamps: false
     }
   );
-  VoteInterval.associate = function(models) {
-    // associations can be defined here
+  VoteInterval.associate = function() {
+    VoteInterval.belongsTo(VoteInterval, {
+      as: 'PrevPhase',
+      foreignKey: 'prevPhaseId'
+    });
   };
   return VoteInterval;
 };

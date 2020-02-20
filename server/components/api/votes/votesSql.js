@@ -32,7 +32,7 @@ WITH
     FROM "RepoVotes"
     ${JOIN_COMMANDS_TXS_BLOCKS_TO_REPO_VOTES}
     ${JOIN_VOTE_INTERVALS_TO_BLOCKS}
-    WHERE "VoteIntervals"."interval" = :interval
+    WHERE "VoteIntervals"."interval" = :interval AND "VoteIntervals"."phase" = :phase
     GROUP BY "RepoVotes"."address"
   ),
   "FilterByTxIndex" AS (
@@ -42,7 +42,7 @@ WITH
     FROM "RepoVotes"
     ${JOIN_COMMANDS_TXS_BLOCKS_TO_REPO_VOTES}
     ${JOIN_VOTE_INTERVALS_TO_BLOCKS}
-    WHERE "VoteIntervals"."interval" = :interval
+    WHERE "VoteIntervals"."interval" = :interval AND "VoteIntervals"."phase" = :phase
     GROUP BY "RepoVotes"."address", "Blocks"."blockNumber"
   )
 `;
@@ -66,7 +66,7 @@ INNER JOIN (
   ${JOIN_VOTE_INTERVALS_TO_BLOCKS}
   ${JOIN_SNAPSHOTS_TO_VOTE_INTERVALS}
   ${JOIN_FILTERS_TO_REPO_VOTES_BLOCK_AND_TXS}
-  WHERE "VoteIntervals"."interval" = :interval AND "RepoVotes"."address" IS NOT NULL
+  WHERE "VoteIntervals"."interval" = :interval AND "VoteIntervals"."phase" = :phase AND "RepoVotes"."address" IS NOT NULL
   GROUP BY "RepoVotes"."CommandId", "RepoVotes"."commitId"
 ) AS "CommandVotes"
 ON "Commands"."id" = "CommandVotes"."CommandId"
@@ -79,8 +79,21 @@ ${JOIN_COMMANDS_TXS_BLOCKS_TO_REPO_VOTES}
 ${JOIN_VOTE_INTERVALS_TO_BLOCKS}
 ${JOIN_SNAPSHOTS_TO_VOTE_INTERVALS}
 ${JOIN_FILTERS_TO_REPO_VOTES_BLOCK_AND_TXS}
-WHERE "VoteIntervals"."interval" = :interval
+WHERE "VoteIntervals"."interval" = :interval AND "VoteIntervals"."phase" = :phase
 GROUP BY "RepoVotes"."commitId"
+`;
+
+const FIND_ALL_CANDIDATES = `
+SELECT "commitId", "zpAmount" FROM
+(SELECT "RepoVotes"."commitId", (sum("Snapshots"."amount") / 100000000) AS "zpAmount", min("VoteIntervals"."thresholdZp") as "thresholdZp"
+FROM "RepoVotes"
+${JOIN_COMMANDS_TXS_BLOCKS_TO_REPO_VOTES}
+${JOIN_VOTE_INTERVALS_TO_BLOCKS}
+${JOIN_SNAPSHOTS_TO_VOTE_INTERVALS}
+${JOIN_FILTERS_TO_REPO_VOTES_BLOCK_AND_TXS}
+WHERE "VoteIntervals"."interval" = :interval AND "VoteIntervals"."phase" = :phase
+GROUP BY "RepoVotes"."commitId") AS Results
+WHERE "zpAmount" >= "thresholdZp"
 `;
 
 module.exports = {
@@ -91,4 +104,5 @@ module.exports = {
   WITH_FILTER_TABLES,
   FIND_ALL_BY_INTERVAL_BASE_SQL,
   FIND_ALL_VOTE_RESULTS_BASE_SQL,
+  FIND_ALL_CANDIDATES,
 };

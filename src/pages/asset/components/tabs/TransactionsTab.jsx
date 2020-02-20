@@ -2,7 +2,7 @@ import React from 'react';
 import { observer, inject } from 'mobx-react';
 import { Link } from 'react-router-dom';
 import config from '../../../../lib/Config';
-import WithSetIdOnUiStore from '../../../../components/hoc/WithSetIdOnUiStore';
+import WithSetIdsOnUiStore from '../../../../components/hoc/WithSetIdsOnUiStore';
 import TextUtils from '../../../../lib/TextUtils';
 import AssetUtils from '../../../../lib/AssetUtils';
 import { TabPanel } from '../../../../components/tabs';
@@ -59,5 +59,5 @@ const TransactionsTab = observer(props => {
   );
 });
 export default inject('rootStore')(
-  observer(WithSetIdOnUiStore(TransactionsTab, 'setAssetTxsTableData', 'asset'))
+  observer(WithSetIdsOnUiStore(TransactionsTab, 'setAssetTxsTableData', ['asset']))
 );

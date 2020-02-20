@@ -1,9 +1,8 @@
 import React, { Component } from 'react';
-import { reaction } from 'mobx';
 import { observer, inject } from 'mobx-react';
 import { Link } from 'react-router-dom';
 import config from '../../../../lib/Config';
-import WithSetIdOnUiStore from '../../../../components/hoc/WithSetIdOnUiStore';
+import WithSetIdsOnUiStore from '../../../../components/hoc/WithSetIdsOnUiStore';
 import TextUtils from '../../../../lib/TextUtils';
 import { TabPanel } from '../../../../components/tabs';
 import { ItemsTable } from '../../../../components/ItemsTable';
@@ -12,21 +11,16 @@ import CommitLink from '../CommitLink';
 
 class VotesTab extends Component {
   componentDidMount() {
-    this.reloadOnBlocksCountChange();
+    this.poll();
   }
   componentWillUnmount() {
-    this.stopReload();
+    clearInterval(this.fetchInterval);
   }
-  reloadOnBlocksCountChange() {
-    this.forceDisposer = reaction(
-      () => this.props.rootStore.blockStore.blocksCount,
-      () => {
-        this.props.rootStore.uiStore.setRepoVotesTableData({ force: true });
-      }
+  poll() {
+    this.fetchInterval = setInterval(
+      () => this.props.rootStore.uiStore.setRepoVotesTableData({ force: true }),
+      15000
     );
-  }
-  stopReload() {
-    this.forceDisposer();
   }
   render() {
     const uiStore = this.props.rootStore.uiStore;
@@ -39,31 +33,35 @@ class VotesTab extends Component {
               Header: 'COMMIT ID',
               accessor: 'commitId',
               minWidth: config.ui.table.minCellWidth,
-              Cell: data => <CommitLink commitId={data.value} />,
+              Cell: data => <CommitLink commitId={data.value} />
             },
             {
               Header: 'Timestamp',
               accessor: 'timestamp',
               minWidth: config.ui.table.minCellWidthDate,
-              Cell: data => TextUtils.getDateStringFromTimestamp(data.value),
+              Cell: data => TextUtils.getDateStringFromTimestamp(data.value)
             },
             {
               Header: 'TX HASH',
               accessor: 'txHash',
               minWidth: config.ui.table.minCellWidth,
-              Cell: data => <HashLink url={`/tx/${data.value}`} hash={data.value} />,
+              Cell: data => (
+                <HashLink url={`/tx/${data.value}`} hash={data.value} />
+              )
             },
             {
               Header: 'Block',
               accessor: 'blockNumber',
-              Cell: data => <Link to={`/blocks/${data.value}`}>{data.value}</Link>,
+              Cell: data => (
+                <Link to={`/blocks/${data.value}`}>{data.value}</Link>
+              )
             },
             {
               Header: 'VOTES',
               accessor: 'zpAmount',
               minWidth: config.ui.table.minCellWidth,
-              Cell: data => `${TextUtils.formatNumber(data.value)} ZP`,
-            },
+              Cell: data => `${TextUtils.formatNumber(data.value)} ZP`
+            }
           ]}
           loading={repoVoteStore.loading.votes}
           itemsCount={repoVoteStore.votesCount}
@@ -78,5 +76,10 @@ class VotesTab extends Component {
   }
 }
 export default inject('rootStore')(
-  observer(WithSetIdOnUiStore(observer(VotesTab), 'setRepoVotesTableData', 'interval'))
+  observer(
+    WithSetIdsOnUiStore(observer(VotesTab), 'setRepoVotesTableData', [
+      'interval',
+      'phase'
+    ], true)
+  )
 );

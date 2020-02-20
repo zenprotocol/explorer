@@ -32,8 +32,8 @@ class App extends Component {
   }
 
   componentWillUnmount() {
-    clearInterval(this.blocksTimer);
-    clearInterval(this.syncingTimer);
+    clearTimeout(this.blocksTimer);
+    clearTimeout(this.syncingTimer);
   }
 
   pollBlocksCount() {

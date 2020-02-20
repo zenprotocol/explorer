@@ -7,6 +7,7 @@
 !define unique(x) <color:green>x</color>
 !define not_null(x) <u>x</u>
 !define field_comment(x) - <i><color:gray>x</color></i>
+!define field_type(x) - <i><color:blue>x</color></i>
 hide methods
 hide stereotypes
 @enduml

@@ -7,6 +7,7 @@ const {
   WITH_FILTER_TABLES,
   FIND_ALL_BY_INTERVAL_BASE_SQL,
   FIND_ALL_VOTE_RESULTS_BASE_SQL,
+  FIND_ALL_CANDIDATES,
 } = require('./votesSql');
 
 const sequelize = db.sequelize;
@@ -24,15 +25,20 @@ votesDAL.findAllUnprocessedCommands = async function(contractId) {
 
   return sequelize.query(sql, {
     replacements: {
-      contractId,
+      contractId
     },
-    type: sequelize.QueryTypes.SELECT,
+    type: sequelize.QueryTypes.SELECT
   });
 };
 /**
  * Find all votes for an interval, grouped by command and filter double votes
  */
-votesDAL.findAllByInterval = async function({ interval, limit, offset = 0 } = {}) {
+votesDAL.findAllByInterval = async function({
+  interval,
+  phase,
+  limit,
+  offset = 0
+} = {}) {
   const sql = tags.oneLine`
   ${WITH_FILTER_TABLES}
   ${FIND_ALL_BY_INTERVAL_BASE_SQL}
@@ -43,17 +49,18 @@ votesDAL.findAllByInterval = async function({ interval, limit, offset = 0 } = {}
   return sequelize.query(sql, {
     replacements: {
       interval,
+      phase,
       limit,
-      offset,
+      offset
     },
-    type: sequelize.QueryTypes.SELECT,
+    type: sequelize.QueryTypes.SELECT
   });
 };
 
 /**
  * Count all votes for an interval, grouped by command and filter double votes
  */
-votesDAL.countByInterval = async function({ interval } = {}) {
+votesDAL.countByInterval = async function({ interval, phase } = {}) {
   const sql = tags.oneLine`
   ${WITH_FILTER_TABLES}
   SELECT count(*) FROM (${FIND_ALL_BY_INTERVAL_BASE_SQL}) AS "Votes";
@@ -63,8 +70,9 @@ votesDAL.countByInterval = async function({ interval } = {}) {
     .query(sql, {
       replacements: {
         interval,
+        phase
       },
-      type: sequelize.QueryTypes.SELECT,
+      type: sequelize.QueryTypes.SELECT
     })
     .then(this.queryResultToCount);
 };
@@ -75,7 +83,12 @@ votesDAL.countByInterval = async function({ interval } = {}) {
  *
  * @param {number} interval
  */
-votesDAL.findAllVoteResults = async function({ interval, limit, offset = 0 } = {}) {
+votesDAL.findAllVoteResults = async function({
+  interval,
+  phase,
+  limit,
+  offset = 0
+} = {}) {
   const sql = tags.oneLine`
   ${WITH_FILTER_TABLES}
   ${FIND_ALL_VOTE_RESULTS_BASE_SQL}
@@ -86,14 +99,15 @@ votesDAL.findAllVoteResults = async function({ interval, limit, offset = 0 } = {
   return sequelize.query(sql, {
     replacements: {
       interval,
+      phase,
       limit,
-      offset,
+      offset
     },
-    type: sequelize.QueryTypes.SELECT,
+    type: sequelize.QueryTypes.SELECT
   });
 };
 
-votesDAL.countAllVoteResults = async function({ interval } = {}) {
+votesDAL.countAllVoteResults = async function({ interval, phase } = {}) {
   const sql = tags.oneLine`
   ${WITH_FILTER_TABLES}
   SELECT count(*) FROM (${FIND_ALL_VOTE_RESULTS_BASE_SQL}) AS "Results"
@@ -103,13 +117,31 @@ votesDAL.countAllVoteResults = async function({ interval } = {}) {
     .query(sql, {
       replacements: {
         interval,
+        phase
       },
-      type: sequelize.QueryTypes.SELECT,
+      type: sequelize.QueryTypes.SELECT
     })
     .then(this.queryResultToCount);
 };
 
-votesDAL.findWinner = async function({ interval } = {}) {
+votesDAL.findContestantWinners = async function({ interval } = {}) {
+  const sql = tags.oneLine`
+  ${WITH_FILTER_TABLES}
+  ${FIND_ALL_CANDIDATES}
+  ORDER BY "zpAmount" DESC
+  `;
+
+  return sequelize
+    .query(sql, {
+      replacements: {
+        interval,
+        phase: 'Contestant'
+      },
+      type: sequelize.QueryTypes.SELECT
+    });
+};
+
+votesDAL.findCandidateWinner = async function({ interval } = {}) {
   const sql = tags.oneLine`
   ${WITH_FILTER_TABLES}
   ${FIND_ALL_VOTE_RESULTS_BASE_SQL}
@@ -121,8 +153,9 @@ votesDAL.findWinner = async function({ interval } = {}) {
     .query(sql, {
       replacements: {
         interval,
+        phase: 'Candidate'
       },
-      type: sequelize.QueryTypes.SELECT,
+      type: sequelize.QueryTypes.SELECT
     })
     .then(results => (results.length ? results[0] : null));
 };

@@ -22,14 +22,28 @@ voteIntervalsDAL.findAllWithoutSnapshot = async function(height) {
   });
 };
 
-voteIntervalsDAL.findByInterval = async function(interval) {
+/**
+ * Find a specific voteInterval
+ *
+ * @param {number} interval
+ * @param {(Contestant|Candidate)} phase
+ * @returns {VoteInterval}
+ */
+voteIntervalsDAL.findByIntervalAndPhase = async function(interval, phase) {
   return this.findOne({
     where: {
       interval,
+      phase,
     },
   });
 };
 
+/**
+ * Find the on-going interval
+ *
+ * @param {number} currentBlock
+ * @returns {VoteInterval}
+ */
 voteIntervalsDAL.findCurrent = async function(currentBlock) {
   return this.findOne({
     where: {
@@ -46,6 +60,12 @@ voteIntervalsDAL.findCurrent = async function(currentBlock) {
   });
 };
 
+/**
+ * Find the previous interval
+ *
+ * @param {number} currentBlock
+ * @returns {VoteInterval}
+ */
 voteIntervalsDAL.findPrev = async function(currentBlock) {
   return this.findOne({
     where: {
@@ -57,6 +77,12 @@ voteIntervalsDAL.findPrev = async function(currentBlock) {
   });
 };
 
+/**
+ * Find the next interval
+ *
+ * @param {number} currentBlock
+ * @returns {VoteInterval}
+ */
 voteIntervalsDAL.findNext = async function(currentBlock) {
   return this.findOne({
     where: {
@@ -69,29 +95,55 @@ voteIntervalsDAL.findNext = async function(currentBlock) {
 };
 
 /**
- * Find a few recent intervals
+ * Find the on-going interval or the next one
+ *
+ * @param {number} currentBlock
+ * @returns {VoteInterval}
+ */
+voteIntervalsDAL.findCurrentOrNext = async function(currentBlock) {
+  return this.findOne({
+    where: {
+      endHeight: {
+        [Op.gt]: currentBlock,
+      },
+    },
+    order: [['beginHeight', 'ASC']],
+  });
+};
+
+/**
+ * Find all recent intervals up to the next one
  *
  * @param {number} currentBlock
  */
-voteIntervalsDAL.findAllRecent = async function(currentBlock, limit = 5) {
-  const [prevs, current, next] = await Promise.all([
+voteIntervalsDAL.findAllRecent = async function(currentBlock = 0) {
+  const [prev, next] = await Promise.all([
     this.findAll({
       where: {
-        endHeight: {
-          [Op.lte]: currentBlock,
+        beginHeight: {
+          [Op.lte]: currentBlock, // including current
         },
       },
-      order: [['endHeight', 'DESC']],
-      limit,
+      order: [['beginHeight', 'DESC']],
     }),
-    this.findCurrent(currentBlock),
-    this.findNext(currentBlock),
+    this.findAll({
+      where: {
+        beginHeight: {
+          [Op.gt]: currentBlock,
+        },
+      },
+      order: [['beginHeight', 'ASC']],
+      limit: 3,
+    }),
   ]);
 
   const intervals = [];
-  next && intervals.push(next);
-  current && intervals.push(current);
-  intervals.push.apply(intervals, prevs);
+  // order should be new to old
+  intervals.push.apply(intervals, next.reverse());
+  intervals.push.apply(intervals, prev);
+  if (intervals.length > 2 && intervals[0].phase === 'Contestant') {
+    intervals.shift();
+  }
   return intervals;
 };
 

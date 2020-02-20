@@ -1,9 +1,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { observer, inject } from 'mobx-react';
+import { reaction } from 'mobx';
 import { Helmet } from 'react-helmet';
 import { Route, Switch, Redirect } from 'react-router-dom';
+import classNames from 'classnames';
 import TextUtils from '../../lib/TextUtils';
+import ObjectUtils from '../../lib/ObjectUtils';
 import Page from '../../components/Page';
 import PageTitle from '../../components/PageTitle';
 import { getVoteStatus, voteStatus } from './voteStatus';
@@ -34,8 +37,12 @@ class GovernancePage extends React.Component {
     const interval = RouterUtils.getRouteParams(this.props).interval;
     return !isNaN(interval) ? interval : '0';
   }
+  get phaseRouteParam() {
+    const phase = RouterUtils.getRouteParams(this.props).phase;
+    return ['contestant', 'candidate'].indexOf(phase.toLowerCase()) > -1 ? phase : 'Contestant';
+  }
   get relevantLoaded() {
-    return this.repoVoteStore.relevantInterval.interval !== undefined;
+    return this.repoVoteStore.relevantInterval.interval;
   }
   get noIntervalsFound() {
     return this.repoVoteStore.relevantInterval.status === 404;
@@ -53,10 +60,10 @@ class GovernancePage extends React.Component {
    * is called when selecting an interval in the dropdown
    */
   handleIntervalChange(data) {
-    const toInterval = data.value;
-    if (toInterval !== this.intervalRouteParam) {
+    const { interval, phase } = intervalsDDParseValue(data.value);
+    if (interval !== this.intervalRouteParam || phase !== this.phaseRouteParam) {
       this.props.history.push({
-        pathname: getPageUrl(toInterval),
+        pathname: getPageUrl(interval, phase),
       });
     }
   }
@@ -65,6 +72,8 @@ class GovernancePage extends React.Component {
     if (!this.repoVoteStore.relevantInterval.interval) {
       this.loadRelevantInterval();
     }
+    this.loadCurrentOrNextInterval();
+    this.reloadCurrentIntervalOnBlocksCountChange();
 
     // load once only
     if (!this.repoVoteStore.recentIntervals.length) {
@@ -74,20 +83,52 @@ class GovernancePage extends React.Component {
 
   componentDidUpdate(prevProps) {
     const curInterval = RouterUtils.getRouteParams(this.props).interval;
+    const curPhase = RouterUtils.getRouteParams(this.props).phase;
     const prevInterval = RouterUtils.getRouteParams(prevProps).interval;
+    const prevPhase = RouterUtils.getRouteParams(prevProps).phase;
     const storeInterval = String(this.repoVoteStore.relevantInterval.interval);
-    if (curInterval !== prevInterval && storeInterval !== curInterval) {
+    const storePhase = String(this.repoVoteStore.relevantInterval.phase);
+    if (
+      (curInterval !== prevInterval && storeInterval !== curInterval) ||
+      (curPhase !== prevPhase && storePhase !== curPhase)
+    ) {
       this.loadRelevantInterval();
+      this.loadCurrentOrNextInterval();
     }
+  }
+  componentWillUnmount() {
+    this.stopReload();
+  }
+  reloadCurrentIntervalOnBlocksCountChange() {
+    this.forceDisposer = reaction(
+      () => this.props.rootStore.blockStore.blocksCount,
+      () => {
+        this.loadCurrentOrNextInterval();
+      }
+    );
+  }
+  stopReload() {
+    this.forceDisposer();
   }
 
   loadRelevantInterval() {
-    this.repoVoteStore.loadRelevantInterval({ interval: this.intervalRouteParam });
+    this.repoVoteStore.loadRelevantInterval({
+      interval: this.intervalRouteParam,
+      phase: this.phaseRouteParam,
+    });
+  }
+  loadCurrentOrNextInterval() {
+    this.repoVoteStore.loadCurrentOrNextInterval();
   }
 
   render() {
     const redirectToRelevantInterval = this.getRedirectForIntervalZero();
     if (redirectToRelevantInterval) return redirectToRelevantInterval;
+
+    const isContestantsPhase =
+      (
+        ObjectUtils.getSafeProperty(this.repoVoteStore, 'relevantInterval.phase') || ''
+      ).toLowerCase() === 'contestant';
 
     return (
       <Page className="Governance">
@@ -97,7 +138,13 @@ class GovernancePage extends React.Component {
 
         <div className="row">
           <div className="col-md-8">
-            <PageTitle title="Community Votes" />
+            <PageTitle
+              title="Community Votes"
+              subtitle={
+                !this.noIntervalsFound &&
+                `${isContestantsPhase ? 'Contestants' : 'Candidates'} phase`
+              }
+            />
           </div>
           <div className="col-md-4">
             <IntervalsDropDown
@@ -121,21 +168,37 @@ class GovernancePage extends React.Component {
   }
 
   renderTopData() {
-    const relevantInterval = this.repoVoteStore.relevantInterval;
-    if (this.repoVoteStore.loading.interval) return <Loading />;
+    const { relevantInterval, currentOrNextInterval } = this.repoVoteStore;
+    if (
+      this.repoVoteStore.loading.relevantInterval ||
+      this.repoVoteStore.loading.currentOrNextInterval
+    ) {
+      return <Loading />;
+    }
     if (!this.relevantLoaded) return null;
 
     return (
       <div>
         <section>
           {this.voteStatus === voteStatus.before && (
-            <BeforeVoteInfo {...relevantInterval} currentBlock={this.currentBlock} />
+            <BeforeVoteInfo
+              relevantInterval={relevantInterval}
+              currentOrNextInterval={currentOrNextInterval}
+              currentBlock={this.currentBlock}
+            />
           )}
           {this.voteStatus === voteStatus.during && (
-            <DuringVoteInfo {...relevantInterval} currentBlock={this.currentBlock} />
+            <DuringVoteInfo
+              relevantInterval={relevantInterval}
+              currentOrNextInterval={currentOrNextInterval}
+              currentBlock={this.currentBlock}
+            />
           )}
           {this.voteStatus === voteStatus.after && (
-            <AfterVoteInfo {...relevantInterval} commitId={this.repoVoteStore.winnerCommitId} />
+            <AfterVoteInfo
+              relevantInterval={relevantInterval}
+              currentOrNextInterval={currentOrNextInterval}
+            />
           )}
         </section>
       </div>
@@ -157,14 +220,21 @@ class GovernancePage extends React.Component {
   getRedirectForIntervalZero() {
     const routeInterval = this.intervalRouteParam;
     if (routeInterval === '0' && this.relevantLoaded) {
-      const interval = this.repoVoteStore.relevantInterval.interval;
-      return <Redirect to={getPageUrl(interval)} />;
+      const { interval, phase } = this.repoVoteStore.relevantInterval;
+      return <Redirect to={getPageUrl(interval, phase)} />;
     }
     return null;
   }
 }
 
-function BeforeVoteInfo({ currentBlock, beginHeight }) {
+function BeforeVoteInfo({ currentBlock, relevantInterval, currentOrNextInterval }) {
+  const blocksToStart = relevantInterval.beginHeight - currentBlock;
+  const noEligibleCandidates = hasNoEligibleCandidates({
+    currentOrNextInterval,
+    relevantInterval,
+    currentBlock,
+  });
+
   return (
     <div className="container">
       <div className="row">
@@ -175,13 +245,27 @@ function BeforeVoteInfo({ currentBlock, beginHeight }) {
         />
         <InfoBox
           title="Snapshot Block"
-          content={TextUtils.formatNumber(beginHeight)}
+          content={TextUtils.formatNumber(relevantInterval.beginHeight)}
+          iconClass="fal fa-cubes fa-fw"
+        />
+        <InfoBox
+          title="Tally Block"
+          content={TextUtils.formatNumber(relevantInterval.endHeight)}
           iconClass="fal fa-cubes fa-fw"
         />
       </div>
       <div className="row">
-        <div className="col border border-dark text-center before-snapshot-message">
-          VOTE BEGINS IN {TextUtils.formatNumber(beginHeight - currentBlock)} BLOCKS
+        <div
+          className={classNames(
+            'col border border-dark text-center',
+            noEligibleCandidates ? 'no-eligible-candidates-message' : 'before-snapshot-message'
+          )}
+        >
+          {noEligibleCandidates
+            ? 'NO ELIGIBLE CANDIDATES IN THIS SEMESTER'
+            : `VOTE BEGINS IN ${TextUtils.formatNumber(blocksToStart)} ${
+                blocksToStart > 1 ? 'BLOCKS' : 'BLOCK'
+              }`}
         </div>
       </div>
     </div>
@@ -189,10 +273,17 @@ function BeforeVoteInfo({ currentBlock, beginHeight }) {
 }
 BeforeVoteInfo.propTypes = {
   currentBlock: PropTypes.number,
-  beginHeight: PropTypes.number,
+  relevantInterval: PropTypes.object,
+  currentOrNextInterval: PropTypes.object,
 };
 
-function DuringVoteInfo({ currentBlock, endHeight }) {
+function DuringVoteInfo({ currentBlock, relevantInterval, currentOrNextInterval }) {
+  const noEligibleCandidates = hasNoEligibleCandidates({
+    currentOrNextInterval,
+    relevantInterval,
+    currentBlock,
+  });
+
   return (
     <div className="container">
       <div className="row">
@@ -203,19 +294,38 @@ function DuringVoteInfo({ currentBlock, endHeight }) {
         />
         <InfoBox
           title="Tally Block"
-          content={TextUtils.formatNumber(endHeight)}
+          content={TextUtils.formatNumber(relevantInterval.endHeight)}
           iconClass="fal fa-money-check fa-fw"
         />
+      </div>
+      <div className="row">
+        <div
+          className={classNames(
+            'col border border-dark text-center',
+            noEligibleCandidates ? 'no-eligible-candidates-message' : 'during-vote-message'
+          )}
+        >
+          {relevantInterval.phase === 'Candidate' && !relevantInterval.candidates.length
+            ? 'NO ELIGIBLE CANDIDATES IN THIS SEMESTER'
+            : 'VOTE IS OPEN'}
+        </div>
       </div>
     </div>
   );
 }
 DuringVoteInfo.propTypes = {
   currentBlock: PropTypes.number,
-  endHeight: PropTypes.number,
+  relevantInterval: PropTypes.object,
+  currentOrNextInterval: PropTypes.object,
 };
 
-function AfterVoteInfo({ commitId, interval, beginHeight, endHeight }) {
+function AfterVoteInfo({ relevantInterval }) {
+  const { winner, beginHeight, endHeight, interval } = relevantInterval;
+  const winnerArr = Array.isArray(winner) ? winner : winner ? [winner] : [];
+  const winnerJsx = winnerArr.map(item =>
+    item && item.commitId ? <CommitLink commitId={item.commitId} key={item.commitId} /> : null
+  );
+
   return (
     <div className="container">
       <div className="row">
@@ -230,23 +340,26 @@ function AfterVoteInfo({ commitId, interval, beginHeight, endHeight }) {
           iconClass="fal fa-money-check fa-fw"
         />
       </div>
-      {commitId && (
-        <div className="row">
-          <div className="col border border-dark text-center after-tally-message">
-            {TextUtils.getOrdinal(interval).toUpperCase()} SEMESTER WINNER COMMIT ID:
-            <br />
-            <CommitLink commitId={commitId} />
-          </div>
+      <div className="row">
+        <div className="col border border-dark text-center after-tally-message">
+          {winnerArr.length ? (
+            <>
+              {TextUtils.getOrdinal(interval).toUpperCase()} SEMESTER{' '}
+              {winnerArr.length > 1 ? 'WINNERS ' : 'WINNER '}
+              COMMIT {winnerArr.length > 1 ? 'IDS ' : 'ID '}:
+              <br />
+              <React.Fragment>{winnerJsx}</React.Fragment>
+            </>
+          ) : (
+            'NO WINNERS IN THIS SEMESTER'
+          )}
         </div>
-      )}
+      </div>
     </div>
   );
 }
 AfterVoteInfo.propTypes = {
-  interval: PropTypes.number,
-  beginHeight: PropTypes.number,
-  endHeight: PropTypes.number,
-  commitId: PropTypes.string,
+  relevantInterval: PropTypes.object,
 };
 
 function VotingTabs({ match, isIntermediate }) {
@@ -276,18 +389,16 @@ function IntervalsDropDown({ relevantInterval, intervals, onIntervalChange }) {
   if (!(relevantInterval || {}).interval) return null;
 
   const options = intervals.map(item => ({
-    value: String(item.interval),
-    label: `${TextUtils.getOrdinal(item.interval)} Semester - ${item.beginHeight}-${
-      item.endHeight
-    }`,
+    value: intervalsDDCreateValue(item),
+    label: getDropDownSemesterText(item),
   }));
-  return (
-    <Dropdown
-      options={options}
-      value={String(relevantInterval.interval)}
-      onChange={onIntervalChange}
-    />
-  );
+
+  let value = intervalsDDCreateValue(relevantInterval);
+  if (!options.find(option => option.value === value)) {
+    value = getDropDownSemesterText(relevantInterval);
+  }
+
+  return <Dropdown options={options} value={value} onChange={onIntervalChange} />;
 }
 IntervalsDropDown.propTypes = {
   relevantInterval: PropTypes.object,
@@ -295,8 +406,37 @@ IntervalsDropDown.propTypes = {
   onIntervalChange: PropTypes.func,
 };
 
-function getPageUrl(interval) {
-  return `/governance/${interval}`;
+function getDropDownSemesterText(interval) {
+  return `${TextUtils.getOrdinal(interval.interval)} Semester, ${interval.phase}s - ${
+    interval.beginHeight
+  }-${interval.endHeight}`;
+}
+
+function getPageUrl(interval, phase) {
+  return `/governance/${interval}/${phase}`;
+}
+
+function intervalsDDCreateValue(voteInterval) {
+  return `${voteInterval.interval} ${voteInterval.phase}`;
+}
+function intervalsDDParseValue(value) {
+  const parsed = value.split(' ');
+  return {
+    interval: Number(parsed[0]),
+    phase: parsed[1],
+  };
+}
+
+/**
+ * Check if the relevant interval has no eligible candidates, only if it is the current interval
+ */
+function hasNoEligibleCandidates({ relevantInterval, currentOrNextInterval } = {}) {
+  return (
+    relevantInterval.interval === currentOrNextInterval.interval &&
+    relevantInterval.phase === currentOrNextInterval.phase &&
+    relevantInterval.phase === 'Candidate' &&
+    !relevantInterval.candidates.length
+  );
 }
 
 export default inject('rootStore')(observer(GovernancePage));
