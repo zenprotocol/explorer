@@ -25,6 +25,7 @@ module.exports = async function part({ t, before, after }) {
       messageBody.dict[1][1].string = getAllocationBallot(allocation);
       await addDemoData({
         blockchainParser,
+        commandsBlockNumber: 96,
         commands: [
           getDemoCommand({
             command: 'Allocation',
@@ -70,9 +71,9 @@ module.exports = async function part({ t, before, after }) {
       messageBodyPrevWinner.dict[1][1].string = getAllocationBallot(prevAllocation);
       messageBodyCurrent.dict[1][1].string = getAllocationBallot(allocation);
       await addDemoData({ blockchainParser, lastBlockNumber: 200 });
-      // add a command to block 91 (prev winner)
+      // add a command to block 96 (prev winner)
       await addCommands({
-        commandsBlockNumber: 91,
+        commandsBlockNumber: 96,
         commands: [
           getDemoCommand({
             command: 'Allocation',
@@ -80,9 +81,9 @@ module.exports = async function part({ t, before, after }) {
           }),
         ],
       });
-      // add a command to block 191 (current)
+      // add a command to block 196 (current)
       await addCommands({
-        commandsBlockNumber: 191,
+        commandsBlockNumber: 196,
         commands: [
           getDemoCommand({
             command: 'Allocation',
@@ -173,9 +174,9 @@ module.exports = async function part({ t, before, after }) {
       messageBodyPrevWinner.dict[1][1].string = getAllocationBallot(prevAllocation);
       messageBodyCurrent.dict[1][1].string = getAllocationBallot(allocation);
       await addDemoData({ blockchainParser, lastBlockNumber: 300 });
-      // add a command to block 91 (prev winner)
+      // (prev winner)
       await addCommands({
-        commandsBlockNumber: 91,
+        commandsBlockNumber: 96,
         commands: [
           getDemoCommand({
             command: 'Allocation',
@@ -183,9 +184,9 @@ module.exports = async function part({ t, before, after }) {
           }),
         ],
       });
-      // add a command to block 291 (current)
+      // (current)
       await addCommands({
-        commandsBlockNumber: 291,
+        commandsBlockNumber: 296,
         commands: [
           getDemoCommand({
             command: 'Allocation',

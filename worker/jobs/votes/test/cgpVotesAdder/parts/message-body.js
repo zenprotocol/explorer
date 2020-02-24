@@ -20,7 +20,7 @@ module.exports = async function part({ t, before, after }) {
       before(cgpVotesAdder);
       await addDemoData({
         blockchainParser,
-        commands: [getDemoCommand({ command: 'Payout', messageBody })],
+        commands: [getDemoCommand({ command: 'Nomination', messageBody })],
       });
       const result = await cgpVotesAdder.doJob();
       const votes = await cgpDAL.findAll();
@@ -37,7 +37,7 @@ module.exports = async function part({ t, before, after }) {
     messageBody: {
       wrongKey: [
         [
-          'Payout',
+          'Nomination',
           {
             string: '02344dc343f0ac6d0d1d5d6e6388a9dc495ff230b650565455f040c4abd565c1d301000000',
           },
@@ -136,7 +136,7 @@ module.exports = async function part({ t, before, after }) {
     messageBody: {
       dict: [
         [
-          'Payout',
+          'Nomination',
           {
             string: '',
           },
@@ -171,7 +171,7 @@ module.exports = async function part({ t, before, after }) {
     messageBody: {
       dict: [
         [
-          'Payout',
+          'Nomination',
           {
             string: '02344dc343f0ac6d0d1d5d6e6388a9dc495ff230b650565455f040c4abd565c1d301000000',
           },
@@ -185,7 +185,7 @@ module.exports = async function part({ t, before, after }) {
     messageBody: {
       dict: [
         [
-          'Payout',
+          'Nomination',
           {
             string: '02344dc343f0ac6d0d1d5d6e6388a9dc495ff230b650565455f040c4abd565c1d301000000',
           },

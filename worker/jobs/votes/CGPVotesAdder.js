@@ -79,23 +79,22 @@ class CGPVotesAdder {
   }
 
   async getVotesFromCommand({ command, dbTransaction } = {}) {
-    const votesToAdd = [];
+    let votesToAdd = [];
     const commandBlockNumber = await commandsDAL.getCommandBlockNumber(command);
     const interval = cgpUtils.getIntervalByBlockNumber(this.chain, commandBlockNumber);
-
-    if (!this.verifyCommandInSnapshotRange({ interval, commandBlockNumber })) {
+    if (!this.verifyCommandInSnapshotRange({ interval, commandBlockNumber, command })) {
       logger.info(
-        `Command with id ${command.id} is not in the voting range, commandBlockNumber=${commandBlockNumber}`
+        `Command with id ${command.id} is not in the voting range or not in the right phase, commandBlockNumber=${commandBlockNumber}`
       );
     } else if (!this.validateMessageBody(command)) {
       logger.info(`MessageBody is not valid for command with id ${command.id}`);
     } else {
       const ballotSignature = fromPairs(command.messageBody.dict);
       const type = command.command;
+      const phase = type === 'Nomination' ? 'Nomination' : 'Vote';
       const ballot = ballotSignature[type].string;
 
-      const isBallotVerified = await this.verifyBallot({ ballot, type, interval, dbTransaction });
-      if (!isBallotVerified) {
+      if (!(await this.verifyBallot({ ballot, type, interval, dbTransaction }))) {
         logger.info(`Ballot is not valid for command with id ${command.id}`);
       } else {
         const dict = ballotSignature.Signature.dict;
@@ -105,7 +104,7 @@ class CGPVotesAdder {
             const publicKey = element[0];
             const signature = element[1].signature;
             const address = this.blockchainParser.getAddressFromPublicKey(publicKey);
-            if (this.verifySignature({ interval, ballot, publicKey, signature })) {
+            if (this.verifySignature({ interval, ballot, phase, publicKey, signature })) {
               votesToAdd.push({
                 CommandId: new Decimal(command.id).toNumber(),
                 type: type.toLowerCase(),
@@ -117,6 +116,7 @@ class CGPVotesAdder {
                 `Signature did not pass verification: commandId:${command.id} interval:${interval} ballot:${ballot} publicKey:${publicKey}`
               );
               // do not enter any votes if any of the signatures is bad
+              votesToAdd = [];
               break;
             }
           }
@@ -144,9 +144,12 @@ class CGPVotesAdder {
     const ballotSignatureKeys = Object.keys(ballotSignature);
     return Boolean(
       ballotSignatureKeys.includes('Signature') &&
-        (ballotSignatureKeys.includes('Payout') || ballotSignatureKeys.includes('Allocation')) &&
+        (ballotSignatureKeys.includes('Nomination') ||
+          ballotSignatureKeys.includes('Payout') ||
+          ballotSignatureKeys.includes('Allocation')) &&
         ballotSignatureKeys.includes(command.command) &&
-        (ballotSignature.Payout || ballotSignature.Allocation).string &&
+        (ballotSignature.Nomination || ballotSignature.Payout || ballotSignature.Allocation)
+          .string &&
         Array.isArray(ballotSignature.Signature.dict)
     );
   }
@@ -160,25 +163,29 @@ class CGPVotesAdder {
     );
   }
 
-  verifyCommandInSnapshotRange({ interval, commandBlockNumber } = {}) {
+  verifyCommandInSnapshotRange({ interval, commandBlockNumber, command } = {}) {
     const { snapshot, tally } = cgpUtils.getIntervalBlocks(this.chain, interval);
-    return commandBlockNumber > snapshot && commandBlockNumber <= tally;
+    return command.command === 'Nomination'
+      ? commandBlockNumber > snapshot && commandBlockNumber <= snapshot + (tally - snapshot) / 2
+      : commandBlockNumber > snapshot + (tally - snapshot) / 2 && commandBlockNumber <= tally;
   }
 
-  verifySignature({ publicKey, signature, interval, ballot } = {}) {
+  verifySignature({ publicKey, signature, interval, ballot, phase } = {}) {
     const { Data, PublicKey, Signature } = zen;
     return PublicKey.fromString(publicKey).verify(
       Hash.compute(
-        Data.serialize(new Data.UInt32(Bigi.valueOf(interval))).concat(
-          Data.serialize(new Data.String(ballot))
-        )
+        Data.serialize(new Data.UInt32(Bigi.valueOf(interval)))
+          .concat(Data.serialize(new Data.String(phase)))
+          .concat(Data.serialize(new Data.String(ballot)))
       ).bytes,
       Signature.fromString(signature)
     );
   }
 
   async verifyBallot({ ballot, type, interval, dbTransaction } = {}) {
-    return type === 'Payout'
+    return type === 'Nomination'
+      ? await this.verifyNominationBallot({ ballot, dbTransaction, interval })
+      : type === 'Payout'
       ? await this.verifyPayoutBallot({ ballot, interval, dbTransaction })
       : await this.verifyAllocationBallot({ ballot, interval, dbTransaction });
   }
@@ -193,7 +200,11 @@ class CGPVotesAdder {
 
       let prevAllocation =
         interval > 1
-          ? await cgpBLL.findWinnerAllocation({ interval: interval - 1, chain: this.chain, dbTransaction })
+          ? await cgpBLL.findWinnerAllocation({
+              interval: interval - 1,
+              chain: this.chain,
+              dbTransaction,
+            })
           : 0;
       const { maxAllocation, minAllocation } = getAllocationMinMax({ prevAllocation });
       return minAllocation <= allocation && allocation <= maxAllocation;
@@ -202,11 +213,11 @@ class CGPVotesAdder {
     }
   }
 
-  async verifyPayoutBallot({ ballot, interval, dbTransaction } = {}) {
+  async verifyNominationBallot({ ballot, interval, dbTransaction } = {}) {
     try {
       const { spends } = getPayoutBallotContent({ ballot, chain: this.chain });
       if (spends.length <= 0 || spends.length > 100) return false;
-      if (spends.some(spend => Number(spend.amount) === 0)) return false;
+      if (spends.some(spend => spend.amount == 0)) return false;
 
       // get the cgp balance at snapshot
       const { snapshot } = cgpUtils.getIntervalBlocks(this.chain, interval);
@@ -217,7 +228,33 @@ class CGPVotesAdder {
         dbTransaction,
       });
 
-      if (allSpendsAreValidAgainstFund({ balance, spends })) return false;
+      if (someSpendsAreInvalidAgainstFund({ balance, spends })) return false;
+
+      return true;
+    } catch (error) {
+      return false;
+    }
+  }
+
+  async verifyPayoutBallot({ ballot, interval, dbTransaction } = {}) {
+    try {
+      const { snapshot, tally } = cgpUtils.getIntervalBlocks(this.chain, interval);
+
+      // first check that the ballot passes the normal nomination rules
+      if (!(await this.verifyNominationBallot({ ballot, dbTransaction, interval }))) {
+        return false;
+      }
+
+      // check that the ballot is one of the nominees
+      const nominees = await cgpDAL.findAllNominees({
+        snapshot,
+        tally,
+        chain: this.chain,
+        dbTransaction,
+      });
+      if (!nominees.find(nominee => nominee.ballot === ballot)) {
+        return false;
+      }
 
       return true;
     } catch (error) {
@@ -258,7 +295,7 @@ function getSpendsAggregated(spends) {
   return Object.keys(aggregated).map(key => ({ asset: key, amount: aggregated[key] }));
 }
 
-function allSpendsAreValidAgainstFund({ spends, balance }) {
+function someSpendsAreInvalidAgainstFund({ spends, balance }) {
   const fundAssets = balance.map(item => item.asset);
   return getSpendsAggregated(spends).some(
     spend =>

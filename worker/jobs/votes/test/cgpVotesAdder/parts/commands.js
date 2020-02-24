@@ -46,14 +46,14 @@ module.exports = async function part({ t, before, after }) {
 
   await testSingleWrongCommand({
     given: 'Given a command with wrong command string',
-    command: getDemoCommand({ command: 'WRONG', messageBody: getValidMessageBody('Payout') }),
+    command: getDemoCommand({ command: 'WRONG', messageBody: getValidMessageBody('Nomination') }),
   });
   await testSingleWrongCommand({
     given: 'Given a command with command string opposite from type',
-    command: getDemoCommand({ command: 'Allocation', messageBody: getValidMessageBody('Payout') }),
+    command: getDemoCommand({ command: 'Nomination', messageBody: getValidMessageBody('Payout') }),
   });
 
-  const testCommandRange = ({ blockNumber, given, should, assert }) =>
+  const testCommandRange = ({ blockNumber, command, execBeforeJob, execAfterJob, given, should, assert } = {}) =>
     wrapTest(given, async () => {
       const cgpVotesAdder = new CGPVotesAdder({
         blockchainParser,
@@ -64,12 +64,16 @@ module.exports = async function part({ t, before, after }) {
       await addDemoData({
         commandsBlockNumber: blockNumber,
         lastBlockNumber: 110,
-        commands: [
-          getDemoCommand({ command: 'Allocation', messageBody: getValidMessageBody('Allocation') }),
-        ],
+        commands: [getDemoCommand({ command, messageBody: getValidMessageBody(command) })],
         blockchainParser,
       });
+      if (typeof execBeforeJob === 'function') {
+        await execBeforeJob();
+      }
       await cgpVotesAdder.doJob();
+      if (typeof execAfterJob === 'function') {
+        await execAfterJob();
+      }
       const votes = await cgpDAL.findAll();
       t.assert(assert({ votes }), `Given ${given}: should ${should}`);
       after();
@@ -77,34 +81,117 @@ module.exports = async function part({ t, before, after }) {
 
   await testCommandRange({
     blockNumber: 40,
+    command: 'Nomination',
     given: 'a command several blocks before snapshot',
     should: 'add an empty vote',
     assert: addsEmptyVoteAssert,
   });
   await testCommandRange({
     blockNumber: 89,
-    given: 'a command 1 block before snapshot',
+    command: 'Nomination',
+    given: 'a Nomination command 1 block before snapshot',
     should: 'add an empty vote',
     assert: addsEmptyVoteAssert,
   });
   await testCommandRange({
     blockNumber: 90,
-    given: 'a command on snapshot block',
+    command: 'Nomination',
+    given: 'a Nomination command on snapshot block',
     should: 'add an empty vote',
     assert: addsEmptyVoteAssert,
   });
   await testCommandRange({
     blockNumber: 101,
-    given: 'a command after tally block',
+    command: 'Payout',
+    execBeforeJob: async () => {
+      await addCommands({
+        commandsBlockNumber: 91,
+        commands: [
+          getDemoCommand({ command: 'Nomination', messageBody: getValidMessageBody('Nomination') }),
+        ],
+      });
+    },
+    given: 'a Payout command after tally block',
+    should: 'add an empty vote',
+    assert: ({ votes }) => votes.length === 3 && !votes.find(vote => vote.type === 'payout'),
+  });
+  await testCommandRange({
+    blockNumber: 100,
+    command: 'Payout',
+    execBeforeJob: async () => {
+      await addCommands({
+        commandsBlockNumber: 91,
+        commands: [
+          getDemoCommand({ command: 'Nomination', messageBody: getValidMessageBody('Nomination') }),
+        ],
+      });
+    },
+    given: 'a Payout command at the tally block',
+    should: 'add the vote',
+    assert: ({ votes }) => votes.length === 4 && votes.every(vote => vote.ballot !== null),
+  });
+  await testCommandRange({
+    blockNumber: 100,
+    command: 'Allocation',
+    given: 'a Allocation command at the tally block',
+    should: 'add the vote',
+    assert: ({ votes }) =>
+      votes.length === 2 && votes[0].ballot !== null && votes[1].ballot !== null,
+  });
+  await testCommandRange({
+    blockNumber: 95,
+    command: 'Nomination',
+    given: 'a Nomination command at the end height of phase 0',
+    should: 'add the vote',
+    assert: ({ votes }) =>
+      votes.length === 2 && votes[0].ballot !== null && votes[1].ballot !== null,
+  });
+  await testCommandRange({
+    blockNumber: 91,
+    command: 'Payout',
+    given: 'a Payout command in phase 0',
     should: 'add an empty vote',
     assert: addsEmptyVoteAssert,
   });
   await testCommandRange({
-    blockNumber: 100,
-    given: 'a command at the tally block',
-    should: 'add the vote',
-    assert: ({ votes }) =>
-      votes.length === 2 && votes[0].ballot !== null && votes[1].ballot !== null,
+    blockNumber: 91,
+    command: 'Allocation',
+    given: 'a Allocation command in phase 0',
+    should: 'add an empty vote',
+    assert: addsEmptyVoteAssert,
+  });
+  await testCommandRange({
+    blockNumber: 96,
+    command: 'Nomination',
+    given: 'a Nomination command in phase 1',
+    should: 'add an empty vote',
+    assert: addsEmptyVoteAssert,
+  });
+
+  await wrapTest('Given a valid nomination vote', async given => {
+    const cgpVotesAdder = new CGPVotesAdder({
+      blockchainParser,
+      chain: 'test',
+      ...contractId,
+    });
+    before(cgpVotesAdder);
+    const messageBody = getValidMessageBody('Nomination');
+    const ballot = messageBody.dict[0][1].string;
+    await addDemoData({
+      commands: [getDemoCommand({ command: 'Nomination', messageBody })],
+      blockchainParser,
+      commandsBlockNumber: 91,
+    });
+    const result = await cgpVotesAdder.doJob();
+    const votes = await cgpDAL.findAll();
+    t.assert(
+      result === 2 &&
+        votes.length === 2 &&
+        votes[0].ballot === ballot &&
+        votes[1].ballot === ballot,
+      `${given}: should add the vote`
+    );
+    after();
   });
 
   await wrapTest('Given a valid payout vote', async given => {
@@ -114,19 +201,26 @@ module.exports = async function part({ t, before, after }) {
       ...contractId,
     });
     before(cgpVotesAdder);
-    const messageBody = getValidMessageBody('Payout');
+    const messageBody = getValidMessageBody('Nomination');
     const ballot = messageBody.dict[0][1].string;
     await addDemoData({
-      commands: [getDemoCommand({ command: 'Payout', messageBody })],
+      commands: [getDemoCommand({ command: 'Nomination', messageBody })],
       blockchainParser,
+      commandsBlockNumber: 91,
+    });
+    await addCommands({
+      commandsBlockNumber: 96,
+      commands: [getDemoCommand({ command: 'Payout', messageBody: getValidMessageBody('Payout') })],
     });
     const result = await cgpVotesAdder.doJob();
     const votes = await cgpDAL.findAll();
     t.assert(
-      result === 2 &&
-        votes.length === 2 &&
+      result === 4 &&
+        votes.length === 4 &&
         votes[0].ballot === ballot &&
-        votes[1].ballot === ballot,
+        votes[1].ballot === ballot &&
+        votes[2].ballot === ballot &&
+        votes[3].ballot === ballot,
       `${given}: should add the vote`
     );
     after();
@@ -144,6 +238,7 @@ module.exports = async function part({ t, before, after }) {
         getDemoCommand({ command: 'Allocation', messageBody: getValidMessageBody('Allocation') }),
       ],
       blockchainParser,
+      commandsBlockNumber: 96,
     });
     const result = await cgpVotesAdder.doJob();
     const votes = await cgpDAL.findAll();
@@ -167,16 +262,23 @@ module.exports = async function part({ t, before, after }) {
     before(cgpVotesAdder);
     await addDemoData({
       commands: [
+        getDemoCommand({ command: 'Nomination', messageBody: getValidMessageBody('Nomination') }),
+      ],
+      blockchainParser,
+      commandsBlockNumber: 91,
+    });
+    await addCommands({
+      commandsBlockNumber: 96,
+      commands: [
         getDemoCommand({ command: 'Payout', messageBody: getValidMessageBody('Payout') }),
         getDemoCommand({ command: 'Allocation', messageBody: getValidMessageBody('Allocation') }),
       ],
-      blockchainParser,
     });
     const result = await cgpVotesAdder.doJob();
     const votes = await cgpDAL.findAll();
     t.assert(
-      result === 4 &&
-        votes.length === 4 &&
+      result === 6 &&
+        votes.length === 6 &&
         votes.every(vote => vote.address) &&
         votes.every(vote => vote.ballot) &&
         votes.filter(vote => vote.type === 'payout').length === 2,
@@ -195,7 +297,14 @@ module.exports = async function part({ t, before, after }) {
       });
       before(cgpVotesAdder);
       await addDemoData({
+        commands: [
+          getDemoCommand({ command: 'Nomination', messageBody: getValidMessageBody('Nomination') }),
+        ],
         blockchainParser,
+        commandsBlockNumber: 91,
+      });
+      await addCommands({
+        commandsBlockNumber: 96,
         commands: [
           getDemoCommand({ command: 'Payout', messageBody: getValidMessageBody('Payout') }),
           getDemoCommand({
@@ -218,8 +327,8 @@ module.exports = async function part({ t, before, after }) {
       const result = await cgpVotesAdder.doJob();
       const votes = await cgpDAL.findAll();
       t.assert(
-        result === 3 &&
-          votes.length === 3 &&
+        result === 5 &&
+          votes.length === 5 &&
           votes.filter(vote => vote.type === 'payout').length === 2,
         `${given}: should add all of the valid votes and 1 empty vote`
       );
@@ -236,7 +345,14 @@ module.exports = async function part({ t, before, after }) {
     });
     before(cgpVotesAdder);
     await addDemoData({
+      commands: [
+        getDemoCommand({ command: 'Nomination', messageBody: getValidMessageBody('Nomination') }),
+      ],
       blockchainParser,
+      commandsBlockNumber: 91,
+    });
+    await addCommands({
+      commandsBlockNumber: 96,
       commands: [
         getDemoCommand({ command: 'Payout', messageBody: getValidMessageBody('Payout') }),
         getDemoCommand({ command: 'Allocation', messageBody: getValidMessageBody('Allocation') }),
@@ -246,9 +362,9 @@ module.exports = async function part({ t, before, after }) {
     const result2 = await cgpVotesAdder.doJob();
     const votes = await cgpDAL.findAll();
     t.assert(
-      result1 === 4 &&
+      result1 === 6 &&
         result2 === 0 &&
-        votes.length === 4 &&
+        votes.length === 6 &&
         votes.every(vote => vote.address) &&
         votes.every(vote => vote.ballot) &&
         votes.filter(vote => vote.type === 'payout').length === 2,
@@ -265,8 +381,14 @@ module.exports = async function part({ t, before, after }) {
     });
     before(cgpVotesAdder);
     await addDemoData({
+      commands: [
+        getDemoCommand({ command: 'Nomination', messageBody: getValidMessageBody('Nomination') }),
+      ],
       blockchainParser,
       commandsBlockNumber: 91,
+    });
+    await addCommands({
+      commandsBlockNumber: 96,
       commands: [
         getDemoCommand({ command: 'Payout', messageBody: getValidMessageBody('Payout') }),
         getDemoCommand({ command: 'Allocation', messageBody: getValidMessageBody('Allocation') }),
@@ -274,15 +396,15 @@ module.exports = async function part({ t, before, after }) {
     });
     const result1 = await cgpVotesAdder.doJob();
     await addCommands({
-      commandsBlockNumber: 93,
+      commandsBlockNumber: 97,
       commands: [getDemoCommand({ command: 'Payout', messageBody: getValidMessageBody('Payout') })],
     });
     const result2 = await cgpVotesAdder.doJob();
     const votes = await cgpDAL.findAll();
     t.assert(
-      result1 === 4 &&
+      result1 === 6 &&
         result2 === 2 &&
-        votes.length === 6 &&
+        votes.length === 8 &&
         votes.every(vote => vote.address) &&
         votes.every(vote => vote.ballot) &&
         votes.filter(vote => vote.type === 'payout').length === 4,

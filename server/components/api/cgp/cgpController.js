@@ -4,14 +4,13 @@ const httpStatus = require('http-status');
 const jsonResponse = require('../../../lib/jsonResponse');
 const HttpError = require('../../../lib/HttpError');
 const cgpBLL = require('./cgpBLL');
-const isTypeValid = require('./modules/isTypeValid');
 
 module.exports = {
   relevantInterval: async function(req, res) {
-    const { interval } = req.query;
+    const { interval, phase } = req.query;
 
     const [result, cgpBalance] = await Promise.all([
-      cgpBLL.findIntervalAndTally({ interval }),
+      cgpBLL.findIntervalAndTally({ interval, phase }),
       cgpBLL.findCgpBalance(),
     ]);
     if (result) {
@@ -51,18 +50,25 @@ module.exports = {
     const { interval } = req.query;
     const { type } = req.params;
 
-    if (!isTypeValid(type)) throw new HttpError(httpStatus.BAD_REQUEST);
-
     const result = await cgpBLL.findZpParticipated({ interval, type });
-    if(result === null) {
+    if (result === null) {
       throw new HttpError(httpStatus.NOT_FOUND);
     }
-    
+
     res.status(httpStatus.OK).json(jsonResponse.create(httpStatus.OK, result));
   },
+  nominationBallots: async function(req, res) {
+    const { interval, page, pageSize } = req.query;
+
+    const result = await cgpBLL.findNomineesBallots({ interval, page, pageSize });
+    if (result) {
+      res.status(httpStatus.OK).json(jsonResponse.create(httpStatus.OK, result));
+    } else {
+      throw new HttpError(httpStatus.NOT_FOUND);
+    }
+  },
   payoutBallots: async function(req, res) {
-    const { interval } = req.query;
-    const { page, pageSize } = req.query;
+    const { interval, page, pageSize } = req.query;
 
     const result = await cgpBLL.findAllBallots({ type: 'payout', interval, page, pageSize });
     if (result) {
@@ -75,12 +81,9 @@ module.exports = {
     const { ballot } = req.query;
     const { type } = req.params;
 
-    if (!isTypeValid(type)) throw new HttpError(httpStatus.BAD_REQUEST);
-
-    const result =
-      type === 'payout'
-        ? await cgpBLL.getPayoutBallotContent({ ballot })
-        : await cgpBLL.getAllocationBallotContent({ ballot });
+    const result = ['payout', 'nomination'].includes(type)
+      ? await cgpBLL.getPayoutBallotContent({ ballot })
+      : await cgpBLL.getAllocationBallotContent({ ballot });
     if (result) {
       res.status(httpStatus.OK).json(jsonResponse.create(httpStatus.OK, result));
     } else {

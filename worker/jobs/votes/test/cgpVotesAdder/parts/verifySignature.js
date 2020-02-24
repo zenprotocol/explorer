@@ -22,6 +22,7 @@ module.exports = async function part({ t, before, after }) {
 
     await addDemoData({
       blockchainParser,
+      commandsBlockNumber: 96,
       commands: [
         getDemoCommand({
           command: 'Allocation',
@@ -80,6 +81,7 @@ module.exports = async function part({ t, before, after }) {
 
     await addDemoData({
       blockchainParser,
+      commandsBlockNumber: 96,
       commands: [
         getDemoCommand({
           command: 'Allocation',

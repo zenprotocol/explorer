@@ -1,8 +1,10 @@
 'use strict';
 
 const tags = require('common-tags');
+const { Decimal } = require('decimal.js');
 const dal = require('../../../lib/dal');
 const db = require('../../../db/sequelize/models');
+const calcTotalZpByHeight = require('../../../lib/calcTotalZpByHeight');
 const {
   WITH_FILTER_TABLES,
   FIND_ALL_BY_INTERVAL_BASE_SQL,
@@ -85,12 +87,18 @@ cgpDAL.findLastValidVoteBlockNumber = async function({
 /**
  * Find all votes for an interval, grouped by command and filter double votes
  */
-cgpDAL.findAllVotesInInterval = async function({ snapshot, tally, type, limit, offset = 0 } = {}) {
+cgpDAL.findAllVotesInInterval = async function({
+  snapshot,
+  tally,
+  type,
+  limit,
+  offset = 0,
+} = {}) {
   const sql = tags.oneLine`
   ${WITH_FILTER_TABLES}
   ${FIND_ALL_BY_INTERVAL_BASE_SQL}
   ORDER BY "Blocks"."blockNumber" DESC
-  LIMIT :limit OFFSET :offset; 
+  ${limit ? 'LIMIT :limit' : ''} OFFSET :offset; 
   `;
 
   return sequelize.query(sql, {
@@ -183,7 +191,7 @@ cgpDAL.findAllBallots = async function({ type, snapshot, tally, limit, offset = 
   ${WITH_FILTER_TABLES}
   ${FIND_ALL_BALLOTS_BASE_SQL}
   ORDER BY "zpAmount" DESC
-  LIMIT :limit OFFSET :offset;
+  ${limit ? 'LIMIT :limit' : ''} OFFSET :offset;
   `;
 
   return sequelize.query(sql, {
@@ -231,6 +239,64 @@ cgpDAL.findZpParticipated = async function({ snapshot, tally, type } = {}) {
       type: sequelize.QueryTypes.SELECT,
     })
     .then(result => (result.length && result[0].amount ? result[0].amount : '0'));
+};
+
+cgpDAL.findAllNominees = async function({ snapshot, tally, chain, limit, offset = 0, dbTransaction = null } = {}) {
+  const sql = tags.oneLine`
+  ${WITH_FILTER_TABLES}
+  SELECT "ballot", "zpAmount" FROM
+  (${FIND_ALL_BALLOTS_BASE_SQL}) AS Results
+  WHERE "zpAmount" >= :thresholdZp
+  ORDER BY "zpAmount" DESC
+  ${limit ? 'LIMIT :limit' : ''} OFFSET :offset;
+  `;
+
+  const thresholdZp = new Decimal(calcTotalZpByHeight({ height: snapshot, chain }))
+    .times(3)
+    .div(100)
+    .div(100000000)
+    .toFixed(8);
+
+  return sequelize.query(sql, {
+    replacements: {
+      type: 'nomination',
+      snapshot,
+      tally,
+      limit,
+      offset,
+      thresholdZp,
+    },
+    type: sequelize.QueryTypes.SELECT,
+    transaction: dbTransaction,
+  });
+};
+
+cgpDAL.countAllNominees = async function({ snapshot, tally, chain, dbTransaction = null } = {}) {
+  const sql = tags.oneLine`
+  ${WITH_FILTER_TABLES}
+  SELECT count(*) from (
+    SELECT "ballot", "zpAmount" FROM
+    (${FIND_ALL_BALLOTS_BASE_SQL}) AS Results
+    WHERE "zpAmount" >= :thresholdZp
+  ) AS "CountResults"
+  `;
+
+  const thresholdZp = new Decimal(calcTotalZpByHeight({ height: snapshot, chain }))
+    .times(3)
+    .div(100)
+    .div(100000000)
+    .toFixed(8);
+
+  return sequelize.query(sql, {
+    replacements: {
+      type: 'nomination',
+      snapshot,
+      tally,
+      thresholdZp,
+    },
+    type: sequelize.QueryTypes.SELECT,
+    transaction: dbTransaction,
+  }).then(this.queryResultToCount);
 };
 
 module.exports = cgpDAL;

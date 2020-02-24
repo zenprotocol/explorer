@@ -7,12 +7,8 @@ const { addDemoData, addFundBalance } = require('../modules/addDemoData');
 const getDemoCommand = require('../modules/getDemoCommand');
 const getValidMessageBody = require('../modules/getValidMessageBody');
 const getPayoutBallot = require('../modules/getPayoutBallot');
-const { addsEmptyVoteAssert } = require('../modules/asserts');
 
 const blockchainParser = new BlockchainParser('test');
-
-const addsTheVoteAssert = ballot => ({ votes }) =>
-  votes.length === 2 && votes[0].ballot === ballot && votes[1].ballot === ballot;
 
 module.exports = async function part({ t, before, after }) {
   const testBallot = ({
@@ -20,7 +16,8 @@ module.exports = async function part({ t, before, after }) {
     should,
     ballot,
     cgpFundBalance = [{ asset: '00', amount: 1000 * 100000000 }],
-    assert = addsEmptyVoteAssert,
+    assert = ({ votes }) =>
+      votes.length === 1 && votes[0].ballot === null,
   }) =>
     wrapTest(given, async () => {
       const cgpVotesAdder = new CGPVotesAdder({
@@ -29,17 +26,14 @@ module.exports = async function part({ t, before, after }) {
         ...contractId,
       });
       before(cgpVotesAdder);
-      const messageBody = getValidMessageBody('Payout');
+      const messageBody = getValidMessageBody('Nomination');
       // change the ballot
       messageBody.dict[0][1].string = ballot;
       await addDemoData({
         cgpFundZp: 0,
         blockchainParser,
         commands: [
-          getDemoCommand({
-            command: 'Payout',
-            messageBody,
-          }),
+          getDemoCommand({ command: 'Nomination', messageBody }),
         ],
       });
       await Promise.all(
@@ -70,7 +64,10 @@ module.exports = async function part({ t, before, after }) {
     should: 'add an empty vote',
     ballot: getPayoutBallot({
       address: 'tzn1qx3xuxsls43ks682ade3c32wuf90lyv9k2pt9g40sgrz2h4t9c8fspj43mg',
-      spends: [{ asset: '00', amount: 0 }, { asset: '00', amount: 0 }],
+      spends: [
+        { asset: '00', amount: 0 },
+        { asset: '00', amount: 0 },
+      ],
     }),
   });
   await testBallot({
@@ -90,7 +87,10 @@ module.exports = async function part({ t, before, after }) {
         // make sure asset is valid and unique
         const templateIndex = `00${index}`;
         const s = templateIndex.substring(templateIndex.length - 3);
-        return ({ asset: `000000000000000000000000000000000000000000000000000000000000000000000${s}`, amount: 1 });
+        return {
+          asset: `000000000000000000000000000000000000000000000000000000000000000000000${s}`,
+          amount: 1,
+        };
       }),
     }),
   });
@@ -213,7 +213,8 @@ module.exports = async function part({ t, before, after }) {
           amount: 100,
         },
       ],
-      assert: addsTheVoteAssert(ballot),
+      assert: ({ votes }) =>
+        votes.length === 2 && votes.every(vote => vote.ballot === ballot),
     });
   })();
 };

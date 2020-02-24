@@ -53,7 +53,7 @@ async function addDemoData({
 
   for (let i = 0; i < Addresses.length; i++) {
     const address = Addresses[i];
-    const amount = 50 * 100000000; // 50 ZP each
+    const amount = 500 * 100000000; // 500 ZP each
     const tx = await transactionsDAL.create({
       index: i,
       version: 0,
