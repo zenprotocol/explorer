@@ -9,12 +9,9 @@ module.exports = {
   relevantInterval: async function(req, res) {
     const { interval, phase } = req.query;
 
-    const [result, cgpBalance] = await Promise.all([
-      cgpBLL.findIntervalAndTally({ interval, phase }),
-      cgpBLL.findCgpBalance(),
-    ]);
+    const result = await cgpBLL.findIntervalAndTally({ interval, phase });
     if (result) {
-      res.status(httpStatus.OK).json(jsonResponse.create(httpStatus.OK, { ...result, cgpBalance }));
+      res.status(httpStatus.OK).json(jsonResponse.create(httpStatus.OK, result));
     } else {
       throw new HttpError(httpStatus.NOT_FOUND);
     }

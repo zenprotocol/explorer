@@ -40,13 +40,17 @@ module.exports = {
       return null;
     }
 
+    const cgpBalance = await this.findCgpBalance({ blockNumber: relevant.snapshot });
+
     if (relevant.phase === 'Nomination') {
       const [winnersNomination, zpParticipatedNomination] = await Promise.all([
-        cgpDAL.findAllNominees({
-          snapshot: relevant.snapshot,
-          tally: relevant.tally,
-          chain,
-        }).then(addBallotContentToResults({ type: 'nomination', chain })),
+        cgpDAL
+          .findAllNominees({
+            snapshot: relevant.snapshot,
+            tally: relevant.tally,
+            chain,
+          })
+          .then(addBallotContentToResults({ type: 'nomination', chain })),
         cgpDAL.findZpParticipated({
           snapshot: relevant.snapshot,
           tally: relevant.tally,
@@ -62,6 +66,7 @@ module.exports = {
         zpParticipatedNomination,
         zpParticipatedAllocation: '0',
         zpParticipatedPayout: '0',
+        cgpBalance,
       };
     } else {
       const [
@@ -108,6 +113,7 @@ module.exports = {
         zpParticipatedNomination: '0',
         zpParticipatedAllocation,
         zpParticipatedPayout,
+        cgpBalance,
       };
     }
   },
