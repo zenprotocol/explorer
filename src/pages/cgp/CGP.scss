@@ -9,11 +9,16 @@
     padding: 40px 0;
     font-weight: $font-weight-bold;
     font-size: $h3-font-size;
+    text-transform: uppercase;
   }
 
   .before-snapshot-message {
     @extend %message-shared;
     color: $red;
+  }
+
+  .during-vote-message {
+    @extend %message-shared;
   }
 
   .after-tally-message {
@@ -59,6 +64,12 @@
           padding-right: $content-padding-x-lg - 11;
         }
       }
+    }
+  }
+
+  .GenericTable .ReactTable .rt-tbody .rt-tr {
+    &.above-threshold {
+      background-color: $gray-600;
     }
   }
 

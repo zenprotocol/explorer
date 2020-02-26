@@ -68,13 +68,14 @@ class InfoPage extends Component {
       nodeVersion,
       walletVersion,
       cgpBalance,
-      cgpAllocation
+      cgpAllocation,
     } = infos;
     const formattedHashRate = formatHashRate(infos);
     const cgpZpBalance = (cgpBalance || []).find(item => AssetUtils.isZP(item.asset)) || {
       asset: '00',
       amount: '0',
     };
+    const { blockStore } = this.props.rootStore;
 
     return (
       <Page className="Info">
@@ -129,7 +130,10 @@ class InfoPage extends Component {
             <InfoBox
               className="cgp-allocation"
               title="CGP Current Allocation"
-              content={`${percentageToZP(cgpAllocation || 0)} ZP`}
+              content={`${percentageToZP({
+                percentage: cgpAllocation || 0,
+                height: blockStore.blocksCount,
+              })} ZP`}
               iconClass="fal fa-coin fa-fw"
             />
           </div>

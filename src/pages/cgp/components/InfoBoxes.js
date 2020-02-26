@@ -4,10 +4,12 @@ import PropTypes from 'prop-types';
 import TextUtils from '../../../lib/TextUtils';
 import AssetUtils from '../../../lib/AssetUtils';
 import InfoBox from '../../../components/InfoBox';
+import getPhaseBlocks from '../modules/getPhaseBlocks';
+import getPhaseName from '../modules/getPhaseName';
 
 const { truncateHash, formatNumber } = TextUtils;
 
-function CgpBalanceInfoBox({ cgpBalance }) {
+function CgpBalanceInfoBox({ cgpBalance, isAtSnapshot = false } = {}) {
   const zpBalance = cgpBalance.find(item => AssetUtils.isZP(item.asset)) || {
     asset: '00',
     amount: '0',
@@ -19,7 +21,7 @@ function CgpBalanceInfoBox({ cgpBalance }) {
   }, '');
   return (
     <InfoBox
-      title="Funds In CGP"
+      title={isAtSnapshot ? 'Funds in CGP at snapshot block' : 'Current funds in CGP'}
       content={
         <div title={allAssetsString}>
           {AssetUtils.getAmountString(zpBalance.asset, zpBalance.amount)}
@@ -31,17 +33,22 @@ function CgpBalanceInfoBox({ cgpBalance }) {
 }
 CgpBalanceInfoBox.propTypes = {
   cgpBalance: PropTypes.array,
+  isAtSnapshot: PropTypes.bool,
 };
 CgpBalanceInfoBox.defaultProps = {
   cgpBalance: [],
 };
 
-export function BeforeVoteInfo({ currentBlock, snapshot, ...props }) {
-  const blocksToStart = snapshot - currentBlock;
+export function BeforeVoteInfo({ currentBlock, snapshot, tally, phase, ...props }) {
+  const phaseBlocks = getPhaseBlocks({ phase, snapshot, tally });
+  const blocksToStart = phaseBlocks.snapshot - currentBlock;
+  const phaseName = getPhaseName(phase);
   const voteBeginsMessage =
     blocksToStart > 0
-      ? `VOTE BEGINS IN ${formatNumber(blocksToStart)} ${blocksToStart > 1 ? 'BLOCKS' : 'BLOCK'}`
-      : 'VOTE BEGINS NOW';
+      ? `${phaseName} phase begins in ${formatNumber(blocksToStart)} ${
+          blocksToStart > 1 ? 'blocks' : 'block'
+        }`
+      : `${phaseName} phase begins now`;
 
   return (
     <div className="container">
@@ -52,11 +59,11 @@ export function BeforeVoteInfo({ currentBlock, snapshot, ...props }) {
           iconClass="fal fa-cube fa-fw"
         />
         <InfoBox
-          title="Snapshot Block"
-          content={formatNumber(snapshot)}
+          title={phase === 'Nomination' ? 'Snapshot block' : 'Voting block'}
+          content={formatNumber(phaseBlocks.snapshot)}
           iconClass="fal fa-cubes fa-fw"
         />
-        <CgpBalanceInfoBox {...props} />
+        <CgpBalanceInfoBox {...props} isAtSnapshot={false} />
       </div>
       <div className="row">
         <div className="col border border-dark text-center before-snapshot-message">
@@ -69,9 +76,12 @@ export function BeforeVoteInfo({ currentBlock, snapshot, ...props }) {
 BeforeVoteInfo.propTypes = {
   currentBlock: PropTypes.number,
   snapshot: PropTypes.number,
+  tally: PropTypes.number,
+  phase: PropTypes.string,
 };
 
-export function DuringVoteInfo({ currentBlock, tally, ...props }) {
+export function DuringVoteInfo({ currentBlock, snapshot, tally, phase, ...props }) {
+  const phaseBlocks = getPhaseBlocks({ phase, snapshot, tally });
   return (
     <div className="container">
       <div className="row">
@@ -81,18 +91,25 @@ export function DuringVoteInfo({ currentBlock, tally, ...props }) {
           iconClass="fal fa-cube fa-fw"
         />
         <InfoBox
-          title="Tally Block"
-          content={formatNumber(tally)}
+          title={phase === 'Nomination' ? 'Voting block' : 'Tally block'}
+          content={formatNumber(phaseBlocks.tally)}
           iconClass="fal fa-money-check fa-fw"
         />
-        <CgpBalanceInfoBox {...props} />
+        <CgpBalanceInfoBox {...props} isAtSnapshot={true} />
+      </div>
+      <div className="row">
+        <div className="col border border-dark text-center during-vote-message">
+          {getPhaseName(phase)} phase is open
+        </div>
       </div>
     </div>
   );
 }
 DuringVoteInfo.propTypes = {
   currentBlock: PropTypes.number,
+  snapshot: PropTypes.number,
   tally: PropTypes.number,
+  phase: PropTypes.string,
 };
 
 export function AfterVoteInfo({ snapshot, tally, ...props }) {
@@ -105,11 +122,11 @@ export function AfterVoteInfo({ snapshot, tally, ...props }) {
           iconClass="fal fa-cube fa-fw"
         />
         <InfoBox
-          title="Tally Block"
+          title="Tally block"
           content={formatNumber(tally)}
           iconClass="fal fa-money-check fa-fw"
         />
-        <CgpBalanceInfoBox {...props} />
+        <CgpBalanceInfoBox {...props} isAtSnapshot={true} />
       </div>
     </div>
   );

@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { reaction } from 'mobx';
 import { observer, inject } from 'mobx-react';
 import { Link } from 'react-router-dom';
 import config from '../../../../lib/Config';
@@ -14,37 +13,44 @@ import percentageToZP from '../../../../lib/rewardPercentageToZP';
 
 class VotesTab extends Component {
   get typeParam() {
-    return this.props.match.params.type;
+    return String(this.props.match.params.type).toLowerCase();
   }
   componentDidMount() {
-    this.reloadOnBlocksCountChange();
+    this.poll();
   }
   componentWillUnmount() {
-    this.stopReload();
+    clearInterval(this.fetchInterval);
   }
-  reloadOnBlocksCountChange() {
-    const uiStore = this.props.rootStore.uiStore;
-    this.forceDisposer = reaction(
-      () => this.props.rootStore.blockStore.blocksCount,
-      () => {
-        this.typeParam === 'payout'
+  poll() {
+    const { uiStore } = this.props.rootStore;
+    this.fetchInterval = setInterval(
+      () =>
+        this.typeParam === 'nomination'
+          ? uiStore.setCGPNominationVotesTableData({ force: true })
+          : this.typeParam === 'payout'
           ? uiStore.setCGPPayoutVotesTableData({ force: true })
-          : uiStore.setCGPAllocationVotesTableData({ force: true });
-      }
+          : uiStore.setCGPAllocationVotesTableData({ force: true }),
+      30000
     );
   }
-  stopReload() {
-    this.forceDisposer();
-  }
   render() {
-    const uiStore = this.props.rootStore.uiStore;
-    const cgpStore = this.props.rootStore.cgpStore;
+    const { uiStore, cgpStore, blockStore } = this.props.rootStore;
     const isPayout = this.typeParam === 'payout';
-    const cgpStoreObject = isPayout ? cgpStore.votesPayout : cgpStore.votesAllocation;
-    const uiStoreTable = isPayout
+    const isNomination = this.typeParam === 'nomination';
+    const isAllocation = this.typeParam === 'allocation';
+    const cgpStoreObject = isNomination
+      ? cgpStore.votesNomination
+      : isPayout
+      ? cgpStore.votesPayout
+      : cgpStore.votesAllocation;
+    const uiStoreTable = isNomination
+      ? uiStore.state.cgpNominationVotesTable
+      : isPayout
       ? uiStore.state.cgpPayoutVotesTable
       : uiStore.state.cgpAllocationVotesTable;
-    const uiStoreTableSetter = isPayout
+    const uiStoreTableSetter = isNomination
+      ? uiStore.setCGPNominationVotesTableData.bind(uiStore)
+      : isPayout
       ? uiStore.setCGPPayoutVotesTableData.bind(uiStore)
       : uiStore.setCGPAllocationVotesTableData.bind(uiStore);
     return (
@@ -61,14 +67,15 @@ class VotesTab extends Component {
               Header: 'ALLOCATION',
               accessor: 'content.allocation',
               minWidth: config.ui.table.minCellWidth,
-              show: !isPayout,
-              Cell: data => `${percentageToZP(data.value)} ZP`,
+              show: isAllocation,
+              Cell: data =>
+                `${percentageToZP({ percentage: data.value, height: blockStore.blocksCount })} ZP`,
             },
             {
               Header: 'RECIPIENT',
               accessor: 'content.recipient.address',
               minWidth: config.ui.table.minCellWidth,
-              show: isPayout,
+              show: !isAllocation,
               Cell: data => <AddressLink address={data.value} hash={data.value} />,
             },
             {
@@ -109,5 +116,12 @@ class VotesTab extends Component {
   }
 }
 export default inject('rootStore')(
-  observer(WithSetIdsOnUiStore(observer(VotesTab), 'setCGPVotesTablesData', ['interval']))
+  observer(
+    WithSetIdsOnUiStore(
+      observer(VotesTab),
+      'setCGPVotesTablesData',
+      ['interval', 'phase', 'type'],
+      true
+    )
+  )
 );

@@ -110,9 +110,10 @@ export default function MainRoutes() {
       <Route path="/assets" exact={true} component={Assets} />
       <Route path="/assets/:asset" component={Asset} />
       <Route path="/governance/:interval/:phase" component={Governance} />
-      <Route path="/cgp/:interval" component={CGP} />
+      <Route path="/cgp/:interval/:phase" component={CGP} />
       <Redirect from="/governance" to="/governance/0/Contestant" />
-      <Redirect from="/cgp" to="/cgp/0" />
+      <Redirect from="/cgp/:interval" to="/cgp/:interval/Nomination" />
+      <Redirect from="/cgp" to="/cgp/0/Nomination" />
       <Route component={NotFound} />
     </Switch>
   );

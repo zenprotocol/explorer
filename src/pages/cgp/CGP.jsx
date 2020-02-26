@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { reaction } from 'mobx';
 import { observer, inject } from 'mobx-react';
 import { Helmet } from 'react-helmet';
 import { Route, Switch, Redirect } from 'react-router-dom';
@@ -11,13 +12,17 @@ import { Tabs, TabHead, TabBody, Tab } from '../../components/tabs';
 import RouterUtils from '../../lib/RouterUtils';
 import ItemNotFound from '../../components/ItemNotFound';
 import Loading from '../../components/Loading';
+import HashLink from '../../components/HashLink';
 
-import { getVoteStatus, voteStatus } from './cgpVoteStatus';
+import { getVoteStatus, voteStatus } from './modules/cgpVoteStatus';
 import VotesTab from './components/tabs/Votes';
 import ResultsTab from './components/tabs/Results';
 import IntervalsDropDown from './components/IntervalsDropDown';
 import { AfterVoteInfo, BeforeVoteInfo, DuringVoteInfo } from './components/InfoBoxes';
 import WinnerSummary from './components/WinnerSummary';
+import DuringSummary from './components/DuringSummary';
+import PageDescription from './components/PageDescription';
+import getPhaseName from './modules/getPhaseName';
 
 import './CGP.scss';
 
@@ -37,6 +42,10 @@ class CGPPage extends React.Component {
     const interval = RouterUtils.getRouteParams(this.props).interval;
     return !isNaN(interval) ? interval : '0';
   }
+  get phaseRouteParam() {
+    const phase = RouterUtils.getRouteParams(this.props).phase;
+    return parsePhase(phase);
+  }
   get relevantLoaded() {
     return this.cgpStore.relevantInterval.interval !== undefined;
   }
@@ -46,8 +55,7 @@ class CGPPage extends React.Component {
   get voteStatus() {
     return getVoteStatus({
       currentBlock: this.currentBlock,
-      snapshot: this.cgpStore.relevantInterval.snapshot,
-      tally: this.cgpStore.relevantInterval.tally,
+      ...this.cgpStore.relevantInterval,
     });
   }
 
@@ -55,11 +63,10 @@ class CGPPage extends React.Component {
    * redirect to the requested interval
    * is called when selecting an interval in the dropdown
    */
-  handleIntervalChange(data) {
-    const toInterval = data.value;
-    if (toInterval !== this.intervalRouteParam) {
+  handleIntervalChange({ interval, phase } = {}) {
+    if (interval !== this.intervalRouteParam || parsePhase(phase) !== this.phaseRouteParam) {
       this.props.history.push({
-        pathname: getPageUrl(toInterval),
+        pathname: getPageUrl({ interval, phase }),
       });
     }
   }
@@ -68,24 +75,52 @@ class CGPPage extends React.Component {
     if (!this.cgpStore.relevantInterval.interval) {
       this.loadRelevantInterval();
     }
+    this.reloadIntervalOnBlocksCountChange();
   }
 
   componentDidUpdate(prevProps) {
     const curInterval = RouterUtils.getRouteParams(this.props).interval;
     const prevInterval = RouterUtils.getRouteParams(prevProps).interval;
     const storeInterval = String(this.cgpStore.relevantInterval.interval);
-    if (curInterval !== prevInterval && storeInterval !== curInterval) {
+
+    const curPhase = RouterUtils.getRouteParams(this.props).phase;
+    const prevPhase = RouterUtils.getRouteParams(prevProps).phase;
+    const storePhase = String(this.cgpStore.relevantInterval.phase);
+    if (
+      (curInterval !== prevInterval && storeInterval !== curInterval) ||
+      (curPhase !== prevPhase && storePhase !== curPhase)
+    ) {
       this.loadRelevantInterval();
     }
   }
 
+  componentWillUnmount() {
+    this.stopReload();
+  }
+  reloadIntervalOnBlocksCountChange() {
+    // autorun was reacting to unknown properties, use reaction instead
+    this.forceDisposer = reaction(
+      () => this.props.rootStore.blockStore.blocksCount,
+      () => this.loadRelevantInterval()
+    );
+  }
+  stopReload() {
+    this.forceDisposer();
+  }
+
   loadRelevantInterval() {
-    this.cgpStore.loadRelevantInterval({ interval: this.intervalRouteParam });
+    this.cgpStore.loadRelevantInterval({
+      interval: this.intervalRouteParam,
+      phase: this.phaseRouteParam,
+    });
   }
 
   render() {
     const redirectToRelevantInterval = this.getRedirectForIntervalZero();
     if (redirectToRelevantInterval) return redirectToRelevantInterval;
+
+    const { infoStore, cgpStore } = this.props.rootStore;
+
     return (
       <Page className="CGP">
         <Helmet>
@@ -93,8 +128,37 @@ class CGPPage extends React.Component {
         </Helmet>
 
         <div className="row">
+          <div className="col">
+            <PageTitle
+              title="Common Goods Pool"
+              subtitle={
+                infoStore.infos.cgpVotingContractAddress ? (
+                  <div>
+                    <strong>Contract address</strong>:{' '}
+                    <HashLink
+                      hash={infoStore.infos.cgpVotingContractAddress}
+                      url={`/contracts/${infoStore.infos.cgpVotingContractAddress}`}
+                      truncate={false}
+                      copy={true}
+                    />
+                  </div>
+                ) : null
+              }
+            />
+          </div>
+        </div>
+
+        <div className="row">
+          <div className="col-lg-8 mb-3 mb-lg-5">
+            <PageDescription />
+          </div>
+        </div>
+
+        <div className="row mb-3">
           <div className="col-md-8">
-            <PageTitle title="Common Goods Pool" />
+            <h4>
+              {getPhaseName(cgpStore.relevantInterval.phase)} phase
+            </h4>
           </div>
           <div className="col-md-4">
             <IntervalsDropDown
@@ -134,6 +198,12 @@ class CGPPage extends React.Component {
           )}
           {this.voteStatus === voteStatus.after && <AfterVoteInfo {...relevantInterval} />}
         </section>
+
+        {this.voteStatus === voteStatus.during && (
+          <section>
+            <DuringSummary {...relevantInterval} currentBlock={this.currentBlock} />
+          </section>
+        )}
         {this.voteStatus === voteStatus.after && (
           <section>
             <WinnerSummary {...relevantInterval} currentBlock={this.currentBlock} />
@@ -145,9 +215,14 @@ class CGPPage extends React.Component {
 
   renderTabs() {
     if (!this.relevantLoaded) return null;
+    const { relevantInterval } = this.cgpStore;
     return this.voteStatus !== voteStatus.before ? (
       <section>
-        <VotingTabs {...this.props} isIntermediate={this.voteStatus === voteStatus.during} />
+        <VotingTabs
+          {...this.props}
+          isIntermediate={this.voteStatus === voteStatus.during}
+          relevantInterval={relevantInterval}
+        />
       </section>
     ) : null;
   }
@@ -159,27 +234,41 @@ class CGPPage extends React.Component {
     const routeInterval = this.intervalRouteParam;
     if (routeInterval === '0' && this.relevantLoaded) {
       const interval = this.cgpStore.relevantInterval.interval;
-      return <Redirect to={getPageUrl(interval)} />;
+      const phase = this.cgpStore.relevantInterval.phase;
+      return <Redirect to={getPageUrl({ interval, phase })} />;
     }
     return null;
   }
 }
 
-function VotingTabs({ match, isIntermediate }) {
+function VotingTabs({ match, isIntermediate, relevantInterval }) {
   const currentPath = match.path;
+  const isNomination = relevantInterval.phase === 'Nomination';
   return (
     <Tabs>
       <TabHead>
-        <Tab id="votes/allocation">ALLOCATION VOTES</Tab>
-        <Tab id="tally/allocation">{isIntermediate && 'INTERMEDIATE '}ALLOCATION RESULTS</Tab>
-        <Tab id="votes/payout">PAYOUT VOTES</Tab>
-        <Tab id="tally/payout">{isIntermediate && 'INTERMEDIATE '}PAYOUT RESULTS</Tab>
+        {isNomination ? (
+          <>
+            <Tab id="votes/nomination">NOMINATION VOTES</Tab>
+            <Tab id="results/nomination">{isIntermediate && 'INTERMEDIATE '}NOMINATION RESULTS</Tab>
+          </>
+        ) : (
+          <>
+            <Tab id="votes/allocation">ALLOCATION VOTES</Tab>
+            <Tab id="results/allocation">{isIntermediate && 'INTERMEDIATE '}ALLOCATION RESULTS</Tab>
+            <Tab id="votes/payout">PAYOUT VOTES</Tab>
+            <Tab id="results/payout">{isIntermediate && 'INTERMEDIATE '}PAYOUT RESULTS</Tab>
+          </>
+        )}
       </TabHead>
       <TabBody>
         <Switch>
           <Route path={`${currentPath}/votes/:type`} component={VotesTab} />
-          <Route path={`${currentPath}/tally/:type`} component={ResultsTab} />
-          <Redirect from={`${currentPath}`} to={`${currentPath}/votes/allocation`} />
+          <Route path={`${currentPath}/results/:type`} component={ResultsTab} />
+          <Redirect
+            from={`${currentPath}`}
+            to={`${currentPath}/votes/${isNomination ? 'nomination' : 'allocation'}`}
+          />
         </Switch>
       </TabBody>
     </Tabs>
@@ -188,10 +277,20 @@ function VotingTabs({ match, isIntermediate }) {
 VotingTabs.propTypes = {
   match: PropTypes.any,
   isIntermediate: PropTypes.bool,
+  relevantInterval: PropTypes.object,
 };
 
-function getPageUrl(interval) {
-  return `/cgp/${interval}`;
+function getPageUrl({ interval, phase } = {}) {
+  return `/cgp/${interval}/${phase}/votes/${phase === 'Nomination' ? 'nomination' : 'allocation'}`;
+}
+
+/**
+ * Parses the phase, make Nomination the default phase
+ * @param {string} phase
+ * @returns the phase in the right case
+ */
+function parsePhase(phase) {
+  return String(phase).toLowerCase() === 'vote' ? 'Vote' : 'Nomination';
 }
 
 export default inject('rootStore')(observer(CGPPage));
