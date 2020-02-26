@@ -48,6 +48,7 @@ WITH
 
 const FIND_ALL_BY_INTERVAL_BASE_SQL = `
 SELECT "CommandVotes"."ballot",
+  "CommandVotes"."amount",
   "CommandVotes"."zpAmount",
   "CommandVotes"."CommandId",
   "Blocks"."blockNumber",
@@ -59,6 +60,7 @@ INNER JOIN "Blocks" ON "Transactions"."BlockId" = "Blocks"."id"
 INNER JOIN (
   SELECT "CGPVotes"."CommandId",
     "CGPVotes"."ballot",
+    sum("Snapshots"."amount") AS "amount",
     (sum("Snapshots"."amount") / 100000000) AS "zpAmount"
   FROM "CGPVotes"
   ${JOIN_COMMANDS_TXS_BLOCKS_TO_REPO_VOTES}
@@ -94,25 +96,15 @@ WHERE "CGPVotes"."type" = :type
 `;
 
 const FIND_ALL_BALLOTS_BASE_SQL = `
-SELECT "CGPVotes"."ballot", (sum("Snapshots"."amount") / 100000000) AS "zpAmount"
+SELECT "CGPVotes"."ballot", 
+  sum("Snapshots"."amount") as "amount", 
+  (sum("Snapshots"."amount") / 100000000) AS "zpAmount"
 FROM "CGPVotes"
 ${JOIN_COMMANDS_TXS_BLOCKS_TO_REPO_VOTES}
 ${JOIN_SNAPSHOTS_TO_CGP_VOTES}
 ${JOIN_FILTERS_TO_CGP_VOTES_BLOCK_AND_TXS}
 WHERE "CGPVotes"."type" = :type
 GROUP BY "CGPVotes"."ballot"
-`;
-
-const FIND_ALL_NOMINEES_BASE_SQL = `
-SELECT "ballot", "zpAmount" FROM
-(SELECT "CGPVotes"."ballot", (sum("Snapshots"."amount") / 100000000) AS "zpAmount"
-FROM "CGPVotes"
-${JOIN_COMMANDS_TXS_BLOCKS_TO_REPO_VOTES}
-${JOIN_SNAPSHOTS_TO_CGP_VOTES}
-${JOIN_FILTERS_TO_CGP_VOTES_BLOCK_AND_TXS}
-WHERE "CGPVotes"."type" = :type
-GROUP BY "CGPVotes"."ballot") AS Results
-WHERE "zpAmount" >= :thresholdZp
 `;
 
 module.exports = {
@@ -124,5 +116,4 @@ module.exports = {
   FIND_ALL_VOTE_RESULTS_BASE_SQL,
   FIND_ALL_BALLOTS_BASE_SQL,
   FIND_ALL_ZP_PARTICIPATED_BASE_SQL,
-  FIND_ALL_NOMINEES_BASE_SQL,
 };

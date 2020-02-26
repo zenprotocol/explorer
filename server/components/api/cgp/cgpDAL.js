@@ -244,17 +244,16 @@ cgpDAL.findZpParticipated = async function({ snapshot, tally, type } = {}) {
 cgpDAL.findAllNominees = async function({ snapshot, tally, chain, limit, offset = 0, dbTransaction = null } = {}) {
   const sql = tags.oneLine`
   ${WITH_FILTER_TABLES}
-  SELECT "ballot", "zpAmount" FROM
+  SELECT "ballot", "amount", "zpAmount" FROM
   (${FIND_ALL_BALLOTS_BASE_SQL}) AS Results
-  WHERE "zpAmount" >= :thresholdZp
+  WHERE "amount" >= :threshold
   ORDER BY "zpAmount" DESC
   ${limit ? 'LIMIT :limit' : ''} OFFSET :offset;
   `;
 
-  const thresholdZp = new Decimal(calcTotalZpByHeight({ height: snapshot, chain }))
+  const threshold = new Decimal(calcTotalZpByHeight({ height: snapshot, chain }))
     .times(3)
     .div(100)
-    .div(100000000)
     .toFixed(8);
 
   return sequelize.query(sql, {
@@ -264,7 +263,7 @@ cgpDAL.findAllNominees = async function({ snapshot, tally, chain, limit, offset 
       tally,
       limit,
       offset,
-      thresholdZp,
+      threshold,
     },
     type: sequelize.QueryTypes.SELECT,
     transaction: dbTransaction,
@@ -275,16 +274,15 @@ cgpDAL.countAllNominees = async function({ snapshot, tally, chain, dbTransaction
   const sql = tags.oneLine`
   ${WITH_FILTER_TABLES}
   SELECT count(*) from (
-    SELECT "ballot", "zpAmount" FROM
+    SELECT "ballot", "amount" FROM
     (${FIND_ALL_BALLOTS_BASE_SQL}) AS Results
-    WHERE "zpAmount" >= :thresholdZp
+    WHERE "amount" >= :threshold
   ) AS "CountResults"
   `;
 
-  const thresholdZp = new Decimal(calcTotalZpByHeight({ height: snapshot, chain }))
+  const threshold = new Decimal(calcTotalZpByHeight({ height: snapshot, chain }))
     .times(3)
     .div(100)
-    .div(100000000)
     .toFixed(8);
 
   return sequelize.query(sql, {
@@ -292,7 +290,7 @@ cgpDAL.countAllNominees = async function({ snapshot, tally, chain, dbTransaction
       type: 'nomination',
       snapshot,
       tally,
-      thresholdZp,
+      threshold,
     },
     type: sequelize.QueryTypes.SELECT,
     transaction: dbTransaction,

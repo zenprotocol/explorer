@@ -1,5 +1,6 @@
 'use strict';
 
+const { Decimal } = require('decimal.js');
 const config = require('../../../config/Config');
 const getChain = require('../../../lib/getChain');
 const BlockchainParser = require('../../../lib/BlockchainParser');
@@ -7,6 +8,7 @@ const cgpDAL = require('./cgpDAL');
 const blocksBLL = require('../blocks/blocksBLL');
 const addressesBLL = require('../addresses/addressesBLL');
 const createQueryObject = require('../../../lib/createQueryObject');
+const calcTotalZpByHeight = require('../../../lib/calcTotalZpByHeight');
 const cgpUtils = require('./cgpUtils');
 const {
   getAllocationBallotContent,
@@ -31,19 +33,13 @@ module.exports = {
       phase,
     });
 
-    const { interval: currentInterval } = cgpUtils.getRelevantIntervalBlocks({
-      chain,
-      currentBlock,
-    });
-    if (relevant.interval > currentInterval) {
-      // does not return future intervals
-      return null;
-    }
-
+    const threshold = new Decimal(calcTotalZpByHeight({ chain, height: relevant.snapshot }))
+      .times(3)
+      .div(100);
     const cgpBalance = await this.findCgpBalance({ blockNumber: relevant.snapshot });
 
     if (relevant.phase === 'Nomination') {
-      const [winnersNomination, zpParticipatedNomination] = await Promise.all([
+      const [winnersNomination, zpParticipatedNomination, nominees] = await Promise.all([
         cgpDAL
           .findAllNominees({
             snapshot: relevant.snapshot,
@@ -56,6 +52,7 @@ module.exports = {
           tally: relevant.tally,
           type: 'nomination',
         }),
+        cgpDAL.findAllNominees({ snapshot: relevant.snapshot, tally: relevant.tally, chain }),
       ]);
 
       return {
@@ -67,6 +64,8 @@ module.exports = {
         zpParticipatedAllocation: '0',
         zpParticipatedPayout: '0',
         cgpBalance,
+        threshold,
+        nominees,
       };
     } else {
       const [
@@ -74,6 +73,7 @@ module.exports = {
         resultsPayout,
         zpParticipatedAllocation,
         zpParticipatedPayout,
+        nominees,
       ] = await Promise.all([
         cgpDAL
           .findAllVoteResults({
@@ -87,7 +87,6 @@ module.exports = {
             snapshot: relevant.snapshot,
             tally: relevant.tally,
             type: 'payout',
-            limit: 2,
           })
           .then(addBallotContentToResults({ type: 'payout', chain })),
         cgpDAL.findZpParticipated({
@@ -100,20 +99,33 @@ module.exports = {
           tally: relevant.tally,
           type: 'payout',
         }),
+        cgpDAL.findAllNominees({ snapshot: relevant.snapshot, tally: relevant.tally, chain }),
       ]);
 
       const winnerAllocation = calculateWinnerAllocation(resultsAllocation);
-      const winnerPayout = calculateWinnerPayout(resultsPayout);
+      const winnerPayout = calculateWinnerPayout(resultsPayout.slice(0, 2));
+
+      // with the nominees list, find each current amount
+      const participatingNominees = nominees.map(nominee => {
+        const result = resultsPayout.find(result => result.ballot === nominee.ballot) || {};
+        return {
+          ...nominee,
+          amount: result.amount || '0',
+          zpAmount: result.zpAmount || '0',
+        };
+      });
 
       return {
         ...relevant,
-        winnerNomination: null,
+        winnersNomination: null,
         winnerAllocation,
         winnerPayout,
         zpParticipatedNomination: '0',
         zpParticipatedAllocation,
         zpParticipatedPayout,
         cgpBalance,
+        threshold,
+        nominees: participatingNominees,
       };
     }
   },
