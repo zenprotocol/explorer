@@ -2,6 +2,7 @@ const path = require('path');
 const express = require('express');
 const router = express.Router();
 const clientRenderer = require('./clientRenderer');
+const cgpMiddleware = require('../api/cgp/cgpMiddleware');
 
 router.use(
   '/public',
@@ -18,7 +19,12 @@ router.get('/contracts/:address/:tab?', insertRouteName('contract'), clientRende
 router.get('/assets', insertRouteName('assets'), clientRenderer);
 router.get('/assets/:asset/:tab?', insertRouteName('asset'), clientRenderer);
 router.get('/governance/:interval/:phase/:tab?', insertRouteName('governance'), clientRenderer);
-router.get('/cgp/:interval/:phase/:tab?/:type?', insertRouteName('cgp'), clientRenderer);
+router.get(
+  '/cgp/:interval/:phase/:tab?/:type?',
+  cgpMiddleware.parseParams,
+  insertRouteName('cgp'),
+  clientRenderer
+);
 router.get('*', clientRenderer);
 
 function insertRouteName(name) {

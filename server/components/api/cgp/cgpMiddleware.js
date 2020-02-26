@@ -6,16 +6,25 @@ module.exports = {
    * Make sure params are correct
    */
   parseParams: function(req, res, next) {
-    const { interval, phase } = req.query;
-    const { type } = req.params;
+    // interval and phase can come from query (API) or params (client renderer)
+    const { interval: qInterval, phase: qPhase } = req.query;
+    const { type, interval: pInterval, phase: pPhase } = req.params;
 
-    if (typeof interval !== 'undefined') {
+    if (typeof qInterval !== 'undefined') {
       req.query.interval =
-        isNaN(Number(interval)) || Number(interval) === 0 ? null : Number(interval);
+        isNaN(Number(qInterval)) || Number(qInterval) === 0 ? null : Number(qInterval);
     }
-    if (typeof phase !== 'undefined') {
-      const p = String(phase).toLowerCase();
+    if (typeof pInterval !== 'undefined') {
+      req.params.interval =
+        isNaN(Number(pInterval)) || Number(pInterval) === 0 ? null : Number(pInterval);
+    }
+    if (typeof qPhase !== 'undefined') {
+      const p = String(qPhase).toLowerCase();
       req.query.phase = p === 'nomination' ? 'Nomination' : p === 'vote' ? 'Vote' : null;
+    }
+    if (typeof pPhase !== 'undefined') {
+      const p = String(pPhase).toLowerCase();
+      req.params.phase = p === 'nomination' ? 'Nomination' : p === 'vote' ? 'Vote' : null;
     }
     if (typeof type !== 'undefined') {
       const t = type.toLowerCase();
