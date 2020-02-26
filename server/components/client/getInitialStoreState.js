@@ -25,6 +25,8 @@ module.exports = async req => {
   const promises = [];
   // blocks
   promises.push(blocksBLL.count().then(count => (initialState.blockStore.blocksCount = count)));
+  // info
+  promises.push(getInfoStoreData(req).then(data => (initialState.infoStore = data)));
 
   const { page: curPage, pageSize } = safePaginationParams(req);
   switch (routeName) {
@@ -59,9 +61,6 @@ module.exports = async req => {
       break;
     case 'asset':
       promises.push(getAssetStoreData(req).then(data => (initialState.assetStore = data)));
-      break;
-    case 'info':
-      promises.push(getInfoStoreData(req).then(data => (initialState.infoStore = data)));
       break;
     case 'governance':
       promises.push(getRepoVoteStoreData(req).then(data => (initialState.repoVoteStore = data)));
