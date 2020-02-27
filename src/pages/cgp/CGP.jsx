@@ -136,8 +136,8 @@ class CGPPage extends React.Component {
                   <div>
                     <strong>Contract address</strong>:{' '}
                     <HashLink
-                      hash={infoStore.infos.cgpVotingContractAddress}
-                      url={`/contracts/${infoStore.infos.cgpVotingContractAddress}`}
+                      hash={infoStore.infos.cgpFundContractAddress}
+                      url={`/contracts/${infoStore.infos.cgpFundContractAddress}`}
                       truncate={false}
                       copy={true}
                     />
