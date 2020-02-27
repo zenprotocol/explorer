@@ -16,8 +16,7 @@ module.exports = async function part({ t, before, after }) {
     should,
     ballot,
     cgpFundBalance = [{ asset: '00', amount: 1000 * 100000000 }],
-    assert = ({ votes }) =>
-      votes.length === 1 && votes[0].ballot === null,
+    assert = ({ votes }) => votes.length === 1 && votes[0].ballot === null,
   }) =>
     wrapTest(given, async () => {
       const cgpVotesAdder = new CGPVotesAdder({
@@ -32,9 +31,7 @@ module.exports = async function part({ t, before, after }) {
       await addDemoData({
         cgpFundZp: 0,
         blockchainParser,
-        commands: [
-          getDemoCommand({ command: 'Nomination', messageBody }),
-        ],
+        commands: [getDemoCommand({ command: 'Nomination', messageBody })],
       });
       await Promise.all(
         cgpFundBalance.map(({ asset, amount }) =>
@@ -186,6 +183,22 @@ module.exports = async function part({ t, before, after }) {
       },
     ],
   });
+  await testBallot({
+    given: 'vote for the cgp fund while it has no balance',
+    should: 'add an empty vote',
+    ballot: '020200eac6c58bed912ff310df9f6960e8ed5c28aac83b8a98964224bab1e06c779b9301000001',
+    cgpFundBalance: [],
+  });
+  await testBallot({
+    given: 'vote for the cgp fund while it has balance',
+    should: 'add the vote',
+    ballot: '020200eac6c58bed912ff310df9f6960e8ed5c28aac83b8a98964224bab1e06c779b9301000001',
+    cgpFundBalance: [{ asset: '00', amount: 10000 }],
+    assert: ({ votes }) =>
+      votes.length &&
+      votes[0].ballot ===
+        '020200eac6c58bed912ff310df9f6960e8ed5c28aac83b8a98964224bab1e06c779b9301000001',
+  });
 
   await (async () => {
     const ballot = getPayoutBallot({
@@ -213,8 +226,7 @@ module.exports = async function part({ t, before, after }) {
           amount: 100,
         },
       ],
-      assert: ({ votes }) =>
-        votes.length === 2 && votes.every(vote => vote.ballot === ballot),
+      assert: ({ votes }) => votes.length === 2 && votes.every(vote => vote.ballot === ballot),
     });
   })();
 };

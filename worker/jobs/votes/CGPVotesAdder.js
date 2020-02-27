@@ -20,11 +20,19 @@ const QueueError = require('../../lib/QueueError');
 const db = require('../../../server/db/sequelize/models');
 
 class CGPVotesAdder {
-  constructor({ blockchainParser, contractIdVoting, contractIdFund, chain } = {}) {
+  constructor({
+    blockchainParser,
+    contractIdVoting,
+    contractIdFund,
+    cgpFundPayoutBallot,
+    chain,
+  } = {}) {
     this.blockchainParser = blockchainParser;
     this.contractIdVoting = contractIdVoting;
     this.contractIdFund = contractIdFund;
+    this.cgpFundPayoutBallot = cgpFundPayoutBallot;
     this.chain = chain;
+    this.contractAddress = blockchainParser.getAddressFromContractId(contractIdFund);
   }
 
   async doJob() {
@@ -32,6 +40,7 @@ class CGPVotesAdder {
     try {
       this.checkContractId();
       this.checkChain();
+      this.checkCGPFundPayoutBallot();
       let result = 0;
 
       // query for all commands with the voting contract id and that the command id is not in CGPVotes
@@ -72,6 +81,12 @@ class CGPVotesAdder {
     }
   }
 
+  checkCGPFundPayoutBallot() {
+    if (!this.cgpFundPayoutBallot) {
+      throw new Error('Fund Payout Ballot is empty');
+    }
+  }
+
   checkChain() {
     if (!this.chain) {
       throw new Error('Chain is empty');
@@ -94,8 +109,11 @@ class CGPVotesAdder {
       const phase = type === 'Nomination' ? 'Nomination' : 'Vote';
       const ballot = ballotSignature[type].string;
 
-      if (!(await this.verifyBallot({ ballot, type, interval, dbTransaction }))) {
-        logger.info(`Ballot is not valid for command with id ${command.id}`);
+      const verifyBallotResult = await this.verifyBallot({ ballot, type, interval, dbTransaction });
+      if (verifyBallotResult.error) {
+        logger.info(
+          `Ballot is not valid for command with id ${command.id}: ${verifyBallotResult.error}`
+        );
       } else {
         const dict = ballotSignature.Signature.dict;
         for (let i = 0; i < dict.length; i++) {
@@ -182,6 +200,11 @@ class CGPVotesAdder {
     );
   }
 
+  /**
+   * Each verify ballot type function should return an object with an error property
+   *
+   * @returns {{error: string}} an object with the validation error
+   */
   async verifyBallot({ ballot, type, interval, dbTransaction } = {}) {
     return type === 'Nomination'
       ? await this.verifyNominationBallot({ ballot, dbTransaction, interval })
@@ -193,10 +216,14 @@ class CGPVotesAdder {
   async verifyAllocationBallot({ ballot, interval, dbTransaction } = {}) {
     try {
       const allocationBallot = getAllocationBallotContent({ ballot });
-      if (!allocationBallot || !R.has('allocation', allocationBallot)) return false;
+      if (!allocationBallot || !R.has('allocation', allocationBallot)) {
+        return { error: 'no allocation ballot found' };
+      }
 
       const allocation = Number(allocationBallot.allocation);
-      if (allocation < 0 || allocation > 90) return false;
+      if (allocation < 0 || allocation > 90) {
+        return { error: 'allocation is outside of the allowed range' };
+      }
 
       let prevAllocation =
         interval > 1
@@ -207,32 +234,47 @@ class CGPVotesAdder {
             })
           : 0;
       const { maxAllocation, minAllocation } = getAllocationMinMax({ prevAllocation });
-      return minAllocation <= allocation && allocation <= maxAllocation;
+      if (allocation < minAllocation || allocation > maxAllocation) {
+        return { error: 'allocation is not in the range of the prev allocation min and max' };
+      }
+
+      return { error: '' };
     } catch (error) {
-      return false;
+      return { error: error.message };
     }
   }
 
   async verifyNominationBallot({ ballot, interval, dbTransaction } = {}) {
     try {
       const { spends } = getPayoutBallotContent({ ballot, chain: this.chain });
-      if (spends.length <= 0 || spends.length > 100) return false;
-      if (spends.some(spend => spend.amount == 0)) return false;
+      if (spends.length <= 0 || spends.length > 100) {
+        return {
+          error: `there are ${spends.length <= 0 ? 'no' : 'to many'} spends`,
+        };
+      }
+      if (spends.some(spend => spend.amount == 0)) {
+        return {
+          error: 'there are spends with amount 0',
+        };
+      }
 
       // get the cgp balance at snapshot
       const { snapshot } = cgpUtils.getIntervalBlocks(this.chain, interval);
-      const contractAddress = this.blockchainParser.getAddressFromContractId(this.contractIdFund);
       const balance = await addressesDAL.snapshotAddressBalancesByBlock({
-        address: contractAddress,
+        address: this.contractAddress,
         blockNumber: snapshot,
         dbTransaction,
       });
 
-      if (someSpendsAreInvalidAgainstFund({ balance, spends })) return false;
+      if (someSpendsAreInvalidAgainstFund({ balance, spends })) {
+        return {
+          error: 'some spends are invalid against the cgp fund',
+        };
+      }
 
-      return true;
+      return { error: '' };
     } catch (error) {
-      return false;
+      return { error: error.message };
     }
   }
 
@@ -241,24 +283,41 @@ class CGPVotesAdder {
       const { snapshot, tally } = cgpUtils.getIntervalBlocks(this.chain, interval);
 
       // first check that the ballot passes the normal nomination rules
-      if (!(await this.verifyNominationBallot({ ballot, dbTransaction, interval }))) {
-        return false;
-      }
+      const nominationResult = await this.verifyNominationBallot({
+        ballot,
+        dbTransaction,
+        interval,
+      });
+      if (nominationResult.error) return nominationResult;
 
       // check that the ballot is one of the nominees
-      const nominees = await cgpDAL.findAllNominees({
-        snapshot,
-        tally,
-        chain: this.chain,
-        dbTransaction,
-      });
+      const [cgpBalance, nominees] = await Promise.all([
+        addressesDAL.snapshotAddressBalancesByBlock({
+          address: this.contractAddress,
+          blockNumber: snapshot,
+          dbTransaction,
+        }),
+        cgpDAL.findAllNominees({
+          snapshot,
+          tally,
+          chain: this.chain,
+          dbTransaction,
+        }),
+      ]);
+      if (cgpBalance.length > 0) {
+        nominees.push({
+          ballot: this.cgpFundPayoutBallot,
+          amount: '0',
+          zpAmount: '0',
+        });
+      }
       if (!nominees.find(nominee => nominee.ballot === ballot)) {
-        return false;
+        return { error: 'payout ballot is not in nominees' };
       }
 
-      return true;
+      return { error: '' };
     } catch (error) {
-      return false;
+      return { error: error.message };
     }
   }
 }

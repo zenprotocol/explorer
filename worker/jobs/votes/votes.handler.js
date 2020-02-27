@@ -40,6 +40,7 @@ module.exports = async function(job) {
           blockchainParser: new BlockchainParser(chain),
           contractIdFund: config.get('CGP_FUND_CONTRACT_ID'),
           contractIdVoting: config.get('CGP_VOTING_CONTRACT_ID'),
+          cgpFundPayoutBallot: config.get('CGP_FUND_PAYOUT_BALLOT'),
         });
       }
     }
