@@ -114,6 +114,21 @@ module.exports = {
           zpAmount: result.zpAmount || '0',
         };
       });
+      // sort by the amount
+      participatingNominees.sort((a, b) => new Decimal(a.amount).minus(b.amount).toNumber());
+      // add the cgp fund ballot if does not exist
+      const cgpFundPayoutBallot = config.get('CGP_FUND_PAYOUT_BALLOT');
+      if (
+        cgpFundPayoutBallot &&
+        !participatingNominees.find(nominee => nominee.ballot === cgpFundPayoutBallot) &&
+        cgpBalance.length > 0
+      ) {
+        participatingNominees.push({
+          ballot: cgpFundPayoutBallot,
+          amount: '0',
+          zpAmount: '0',
+        });
+      }
 
       return {
         ...relevant,
