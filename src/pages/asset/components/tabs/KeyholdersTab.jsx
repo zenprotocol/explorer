@@ -6,6 +6,7 @@ import AssetUtils from '../../../../lib/AssetUtils';
 import { TabPanel } from '../../../../components/tabs';
 import { ItemsTable } from '../../../../components/ItemsTable';
 import HashLink from '../../../../components/HashLink';
+import TextUtils from '../../../../lib/TextUtils';
 
 const KeyholdersTab = observer(props => {
   const assetStore = props.rootStore.assetStore;
@@ -17,7 +18,7 @@ const KeyholdersTab = observer(props => {
         columns={[
           {
             Header: 'RANK',
-            Cell: data => data.index + 1 + data.page * data.pageSize,
+            Cell: data => TextUtils.formatNumber(data.index + 1 + data.page * data.pageSize),
           },
           {
             Header: 'ADDRESS',
@@ -46,7 +47,7 @@ const KeyholdersTab = observer(props => {
         curPage={uiStore.state.assetKeyholdersTable.curPage}
         tableDataSetter={uiStore.setAssetKeyholdersTableData.bind(uiStore)}
         topContent={
-          <div>{assetStore.assetKeyholdersCount} unique keyholders found for this asset</div>
+          <div>{TextUtils.formatNumber(assetStore.assetKeyholdersCount)} unique keyholders found for this asset</div>
         }
       />
     </TabPanel>

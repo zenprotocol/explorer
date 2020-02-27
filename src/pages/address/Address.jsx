@@ -87,7 +87,7 @@ class AddressPage extends Component {
                       <td>NO. ASSET TYPES</td>
                       <td>
                         {this.addressStore.address.assetAmounts
-                          ? this.addressStore.address.assetAmounts.length
+                          ? TextUtils.formatNumber(this.addressStore.address.assetAmounts.length)
                           : ''}
                       </td>
                     </tr>

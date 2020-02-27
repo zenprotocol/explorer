@@ -14,7 +14,7 @@ function LatestBlockInfo() {
   return (
     <div className="LatestBlockInfo">
       <span className="latest">Latest block: </span>
-      <Link to={`/blocks/${blockNumber}`}>{blockNumber}</Link>
+      <Link to={`/blocks/${blockNumber}`}>{TextUtils.formatNumber(blockNumber)}</Link>
       {', '}
       <span className="timezone">{TextUtils.getDateStringFromTimestamp(timestamp)}</span>
     </div>

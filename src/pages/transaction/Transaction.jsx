@@ -103,7 +103,7 @@ class TransactionPage extends Component {
                     <td>Block</td>
                     <td>
                       <Link to={`/blocks/${transaction.Block.blockNumber}`}>
-                        {transaction.Block.blockNumber}
+                        {TextUtils.formatNumber(transaction.Block.blockNumber)}
                       </Link>
                     </td>
                   </tr>
@@ -118,7 +118,7 @@ class TransactionPage extends Component {
                   <tr>
                     <td>Confirmations</td>
                     <td className="no-text-transform">
-                      {this.blockStore.confirmations(transaction.Block.blockNumber)}
+                      {TextUtils.formatNumber(this.blockStore.confirmations(transaction.Block.blockNumber))}
                     </td>
                   </tr>
                   {transaction.isCoinbaseTx && (

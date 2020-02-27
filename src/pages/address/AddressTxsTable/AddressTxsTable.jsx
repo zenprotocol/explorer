@@ -44,7 +44,7 @@ class AddressTxsTable extends Component {
         Header: 'Block',
         accessor: 'blockNumber',
         Cell: data => {
-          return <Link to={`/blocks/${data.value}`}>{data.value}</Link>;
+          return <Link to={`/blocks/${data.value}`}>{TextUtils.formatNumber(data.value)}</Link>;
         },
       },
       {

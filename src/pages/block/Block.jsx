@@ -70,7 +70,7 @@ class BlockPage extends Component {
 
   render() {
     const block = this.blockStore.block;
-    const blockNumberStr = block.blockNumber ? `#${block.blockNumber}` : this.hashOrBlockNumber;
+    const blockNumberStr = block.blockNumber ? `#${TextUtils.formatNumber(block.blockNumber)}` : this.hashOrBlockNumber;
     const is404 = block.status === 404;
     const renderContent = !is404 && block.blockNumber;
     const hasContracts = this.blockStore.blockContractsCount > 0;
@@ -121,7 +121,7 @@ class BlockPage extends Component {
             </Link>
           </li>
           <li className="page-item disabled">
-            <div className="page-link bg-transparent border-0">BLOCK {blockNumber}</div>
+            <div className="page-link bg-transparent border-0">BLOCK {TextUtils.formatNumber(blockNumber)}</div>
           </li>
           <li className={classNames('page-item', { disabled: nextDisabled })}>
             <Link
@@ -167,7 +167,7 @@ class BlockPage extends Component {
               ) : null}
               <tr>
                 <td>TRANSACTIONS</td>
-                <td>{block.transactionCount}</td>
+                <td>{TextUtils.formatNumber(block.transactionCount)}</td>
               </tr>
               <tr>
                 <td>TIMESTAMP</td>
@@ -180,13 +180,13 @@ class BlockPage extends Component {
               <tr>
                 <td>DIFFICULTY</td>
                 <td className="no-text-transform">
-                  {BlockUtils.formatDifficulty(block.difficulty)}
+                  {TextUtils.formatNumber(block.difficulty)}
                 </td>
               </tr>
               <tr>
                 <td>CONFIRMATIONS</td>
                 <td className="no-text-transform">
-                  {this.blockStore.confirmations(block.blockNumber)}
+                  {TextUtils.formatNumber(this.blockStore.confirmations(block.blockNumber))}
                 </td>
               </tr>
               <tr>

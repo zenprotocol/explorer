@@ -33,35 +33,33 @@ class VotesTab extends Component {
               Header: 'COMMIT ID',
               accessor: 'commitId',
               minWidth: config.ui.table.minCellWidth,
-              Cell: data => <CommitLink commitId={data.value} />
+              Cell: ({ value }) => <CommitLink commitId={value} />,
             },
             {
               Header: 'Timestamp',
               accessor: 'timestamp',
               minWidth: config.ui.table.minCellWidthDate,
-              Cell: data => TextUtils.getDateStringFromTimestamp(data.value)
+              Cell: ({ value }) => TextUtils.getDateStringFromTimestamp(value),
             },
             {
               Header: 'TX HASH',
               accessor: 'txHash',
               minWidth: config.ui.table.minCellWidth,
-              Cell: data => (
-                <HashLink url={`/tx/${data.value}`} hash={data.value} />
-              )
+              Cell: ({ value }) => <HashLink url={`/tx/${value}`} hash={value} />,
             },
             {
               Header: 'Block',
               accessor: 'blockNumber',
-              Cell: data => (
-                <Link to={`/blocks/${data.value}`}>{data.value}</Link>
-              )
+              Cell: ({ value }) => (
+                <Link to={`/blocks/${value}`}>{TextUtils.formatNumber(value)}</Link>
+              ),
             },
             {
               Header: 'VOTES',
               accessor: 'zpAmount',
               minWidth: config.ui.table.minCellWidth,
-              Cell: data => `${TextUtils.formatNumber(data.value)} ZP`
-            }
+              Cell: ({ value }) => `${TextUtils.formatNumber(value)} ZP`,
+            },
           ]}
           loading={repoVoteStore.loading.votes}
           itemsCount={repoVoteStore.votesCount}
@@ -69,7 +67,7 @@ class VotesTab extends Component {
           pageSize={uiStore.state.repoVotesTable.pageSize}
           curPage={uiStore.state.repoVotesTable.curPage}
           tableDataSetter={uiStore.setRepoVotesTableData.bind(uiStore)}
-          topContent={<div>Total votes: {repoVoteStore.votesCount}</div>}
+          topContent={<div>Total votes: {TextUtils.formatNumber(repoVoteStore.votesCount)}</div>}
         />
       </TabPanel>
     );
@@ -77,9 +75,6 @@ class VotesTab extends Component {
 }
 export default inject('rootStore')(
   observer(
-    WithSetIdsOnUiStore(observer(VotesTab), 'setRepoVotesTableData', [
-      'interval',
-      'phase'
-    ], true)
+    WithSetIdsOnUiStore(observer(VotesTab), 'setRepoVotesTableData', ['interval', 'phase'], true)
   )
 );

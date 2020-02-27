@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
+import TextUtils from '../../lib/TextUtils';
 
 const PAGES_TO_SHOW = 4;
 const MIN_PAGE_SKIP = 10;
@@ -191,7 +192,7 @@ export default class ReactTablePagination extends Component {
           }}
           className="page-link"
         >
-          {text || page + 1}
+          {text || TextUtils.formatNumber(page + 1)}
         </button>
       </li>
     );

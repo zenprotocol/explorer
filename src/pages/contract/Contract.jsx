@@ -104,7 +104,7 @@ class ContractPage extends Component {
               <tr>
                 <td>STATUS</td>
                 <td>
-                  {contract.expiryBlock ? `Active until block ${contract.expiryBlock}` : 'Inactive'}
+                  {contract.expiryBlock ? `Active until block ${TextUtils.formatNumber(contract.expiryBlock)}` : 'Inactive'}
                 </td>
               </tr>
               <tr>
@@ -116,7 +116,7 @@ class ContractPage extends Component {
                   <td>LAST ACTIVATION BLOCK</td>
                   <td>
                     <Link to={`/blocks/${lastActivationBlockNumber}`}>
-                      {lastActivationBlockNumber}
+                      {TextUtils.formatNumber(lastActivationBlockNumber)}
                     </Link>
                   </td>
                 </tr>

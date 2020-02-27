@@ -25,18 +25,20 @@ const CommandsTab = observer(props => {
             Header: 'Timestamp',
             accessor: 'Transaction.Block.timestamp',
             minWidth: config.ui.table.minCellWidthDate,
-            Cell: data => TextUtils.getDateStringFromTimestamp(data.value),
+            Cell: ({ value }) => TextUtils.getDateStringFromTimestamp(value),
           },
           {
             Header: 'TX Hash',
             accessor: 'Transaction.hash',
             minWidth: config.ui.table.minCellWidth,
-            Cell: data => <HashLink url={`/tx/${data.value}`} hash={data.value} />,
+            Cell: ({ value }) => <HashLink url={`/tx/${value}`} hash={value} />,
           },
           {
             Header: 'Block',
             accessor: 'Transaction.Block.blockNumber',
-            Cell: data => <Link to={`/blocks/${data.value}`}>{data.value}</Link>,
+            Cell: ({ value }) => (
+              <Link to={`/blocks/${value}`}>{TextUtils.formatNumber(value)}</Link>
+            ),
           },
         ]}
         loading={contractStore.loading.commands}
@@ -45,7 +47,12 @@ const CommandsTab = observer(props => {
         pageSize={uiStore.state.contractCommandsTable.pageSize}
         curPage={uiStore.state.contractCommandsTable.curPage}
         tableDataSetter={uiStore.setContractCommandsTableData.bind(uiStore)}
-        topContent={<div>Total of {contractStore.commandsCount} events found for all commands</div>}
+        topContent={
+          <div>
+            Total of {TextUtils.formatNumber(contractStore.commandsCount)} events found for all
+            commands
+          </div>
+        }
       />
     </TabPanel>
   );

@@ -124,7 +124,7 @@ class SearchResultsPage extends Component {
           <div className="row">
             <div className="col-sm">
               <h1 className="d-block text-white mb-1 mb-lg-5">
-                {total ? `${total} Search Results For:` : 'No search results found for:'}
+                {total ? `${TextUtils.formatNumber(total)} Search Results For:` : 'No search results found for:'}
                 <div
                   className={classNames('search-string text-light', {
                     'border-top border-dark mt-3': !total,
@@ -156,7 +156,7 @@ class SearchResultsPage extends Component {
                     accessor: 'Block.blockNumber',
                     cell: data => (
                       <span>
-                        Block <Link to={`/blocks/${data}`}>{data}</Link>
+                        Block <Link to={`/blocks/${data}`}>{TextUtils.formatNumber(data)}</Link>
                       </span>
                     ),
                   },
@@ -178,7 +178,7 @@ class SearchResultsPage extends Component {
                     accessor: 'Transaction.Block.blockNumber',
                     cell: data => (
                       <span>
-                        Block <Link to={`/blocks/${data}`}>{data}</Link>
+                        Block <Link to={`/blocks/${data}`}>{TextUtils.formatNumber(data)}</Link>
                       </span>
                     ),
                   },
@@ -205,7 +205,7 @@ class SearchResultsPage extends Component {
                     accessor: 'blockNumber',
                     cell: data => (
                       <Link to={`/blocks/${data}`}>
-                        {this.getHighlightedSearchResult(search, data)}
+                        {this.getHighlightedSearchResult(search, TextUtils.formatNumber(data), true)}
                       </Link>
                     ),
                   },
@@ -224,7 +224,7 @@ class SearchResultsPage extends Component {
                     accessor: 'timestamp',
                     cell: data => TextUtils.getDateStringFromTimestamp(data),
                   },
-                  { accessor: 'transactionCount', cell: data => <span>{data} txns</span> },
+                  { accessor: 'transactionCount', cell: data => <span>{TextUtils.formatNumber(data)} txns</span> },
                 ]}
               />
               <SearchResultsTable

@@ -18,7 +18,7 @@ class ResultsTab extends Component {
     this.fetchInterval = setInterval(
       () =>
         this.props.rootStore.uiStore.setRepoVoteResultsTableData({
-          force: true
+          force: true,
         }),
       15000
     );
@@ -34,14 +34,14 @@ class ResultsTab extends Component {
               Header: 'COMMIT ID',
               accessor: 'commitId',
               minWidth: config.ui.table.minCellWidth,
-              Cell: data => <CommitLink commitId={data.value} />
+              Cell: ({ value }) => <CommitLink commitId={value} />,
             },
             {
               Header: 'VOTES',
               accessor: 'zpAmount',
               minWidth: config.ui.table.minCellWidth,
-              Cell: data => `${TextUtils.formatNumber(data.value)} ZP`
-            }
+              Cell: ({ value }) => `${TextUtils.formatNumber(value)} ZP`,
+            },
           ]}
           loading={repoVoteStore.loading.results}
           itemsCount={repoVoteStore.resultsCount}
@@ -49,7 +49,9 @@ class ResultsTab extends Component {
           pageSize={uiStore.state.repoVoteResultsTable.pageSize}
           curPage={uiStore.state.repoVoteResultsTable.curPage}
           tableDataSetter={uiStore.setRepoVoteResultsTableData.bind(uiStore)}
-          topContent={<div>Total commit IDs: {repoVoteStore.resultsCount}</div>}
+          topContent={
+            <div>Total commit IDs: {TextUtils.formatNumber(repoVoteStore.resultsCount)}</div>
+          }
         />
       </TabPanel>
     );
@@ -58,9 +60,11 @@ class ResultsTab extends Component {
 
 export default inject('rootStore')(
   observer(
-    WithSetIdsOnUiStore(observer(ResultsTab), 'setRepoVoteResultsTableData', [
-      'interval',
-      'phase'
-    ], true)
+    WithSetIdsOnUiStore(
+      observer(ResultsTab),
+      'setRepoVoteResultsTableData',
+      ['interval', 'phase'],
+      true
+    )
   )
 );

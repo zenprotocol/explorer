@@ -32,7 +32,7 @@ const TransactionsTab = observer(props => {
           {
             Header: 'Block',
             accessor: 'blockNumber',
-            Cell: data => <Link to={`/blocks/${data.value}`}>{data.value}</Link>,
+            Cell: data => <Link to={`/blocks/${data.value}`}>{TextUtils.formatNumber(data.value)}</Link>,
           },
           {
             Header: 'Output total',
@@ -47,7 +47,7 @@ const TransactionsTab = observer(props => {
         curPage={uiStore.state.assetTxsTable.curPage}
         tableDataSetter={uiStore.setAssetTxsTableData.bind(uiStore)}
         topContent={
-          <div>Total of {assetStore.assetTxsCount} transactions found involving this asset</div>
+          <div>Total of {TextUtils.formatNumber(assetStore.assetTxsCount)} transactions found involving this asset</div>
         }
         SubComponent={row => {
           return (

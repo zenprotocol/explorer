@@ -19,18 +19,20 @@ const TransactionsTab = observer(props => {
             Header: 'TX HASH',
             accessor: 'hash',
             minWidth: config.ui.table.minCellWidth,
-            Cell: data => <HashLink url={`/tx/${data.value}`} hash={data.value} />,
+            Cell: ({ value }) => <HashLink url={`/tx/${value}`} hash={value} />,
           },
           {
             Header: 'Timestamp',
             accessor: 'Block.timestamp',
             minWidth: config.ui.table.minCellWidthDate,
-            Cell: data => TextUtils.getDateStringFromTimestamp(data.value),
+            Cell: ({ value }) => TextUtils.getDateStringFromTimestamp(value),
           },
           {
             Header: 'Block',
             accessor: 'Block.blockNumber',
-            Cell: data => <Link to={`/blocks/${data.value}`}>{data.value}</Link>,
+            Cell: ({ value }) => (
+              <Link to={`/blocks/${value}`}>{TextUtils.formatNumber(value)}</Link>
+            ),
           },
           {
             Header: 'Command',
@@ -44,7 +46,12 @@ const TransactionsTab = observer(props => {
         pageSize={uiStore.state.addressTxsTable.pageSize}
         curPage={uiStore.state.addressTxsTable.curPage}
         tableDataSetter={uiStore.setAddressTxsTableData.bind(uiStore)}
-        topContent={<div>Total of {addressStore.addressTransactionsCount} transactions found</div>}
+        topContent={
+          <div>
+            Total of {TextUtils.formatNumber(addressStore.addressTransactionsCount)} transactions
+            found
+          </div>
+        }
       />
     </TabPanel>
   );

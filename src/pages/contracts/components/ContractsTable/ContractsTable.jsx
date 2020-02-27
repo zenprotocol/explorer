@@ -27,7 +27,7 @@ class ContractsTable extends Component {
         Header: 'Status',
         accessor: 'expiryBlock',
         sortable: true,
-        Cell: ({ value }) => (value ? `Active until block ${value}` : 'Inactive'),
+        Cell: ({ value }) => (value ? `Active until block ${TextUtils.formatNumber(value)}` : 'Inactive'),
       },
       {
         Header: 'Txs',
@@ -47,7 +47,7 @@ class ContractsTable extends Component {
         accessor: 'lastActivationBlockNumber',
         sortable: true,
         hideOnMobile: true,
-        Cell: ({ value }) => <Link to={`/blocks/${value}`}>{value}</Link>,
+        Cell: ({ value }) => <Link to={`/blocks/${value}`}>{TextUtils.formatNumber(value)}</Link>,
       },
     ];
   }

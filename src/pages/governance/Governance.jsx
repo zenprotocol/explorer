@@ -407,9 +407,11 @@ IntervalsDropDown.propTypes = {
 };
 
 function getDropDownSemesterText(interval) {
-  return `${TextUtils.getOrdinal(interval.interval)} Semester, ${interval.phase}s - ${
-    interval.beginHeight
-  }-${interval.endHeight}`;
+  return `${TextUtils.getOrdinal(interval.interval)} Semester, ${
+    interval.phase
+  }s - ${TextUtils.formatNumber(interval.beginHeight)}-${TextUtils.formatNumber(
+    interval.endHeight
+  )}`;
 }
 
 function getPageUrl(interval, phase) {

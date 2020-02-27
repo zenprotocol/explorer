@@ -6,7 +6,6 @@ import { Link } from 'react-router-dom';
 import TextUtils from '../../../lib/TextUtils';
 import AssetUtils from '../../../lib/AssetUtils';
 import config from '../../../lib/Config';
-import BlockUtils from '../../../lib/BlockUtils';
 import { ItemsTableWithUrlPagination } from '../../../components/ItemsTable';
 import PageTitle from '../../../components/PageTitle';
 import HashLink from '../../../components/HashLink';
@@ -25,37 +24,32 @@ class BlocksTable extends Component {
       {
         Header: 'Block',
         accessor: 'blockNumber',
-        Cell: data => <Link to={`/blocks/${data.value}`}>{data.value}</Link>,
+        Cell: ({ value }) => <Link to={`/blocks/${value}`}>{TextUtils.formatNumber(value)}</Link>,
       },
       {
         Header: 'Hash',
         accessor: 'hash',
         minWidth: config.ui.table.minCellWidth,
         hideOnMobile: true,
-        Cell: ({ value }) => {
-          return <HashLink url={`/blocks/${value}`} hash={value} />;
-        },
+        Cell: ({ value }) => <HashLink url={`/blocks/${value}`} hash={value} />,
       },
       {
         Header: 'Parent',
         accessor: 'parent',
         minWidth: config.ui.table.minCellWidth,
         hideOnMobile: true,
-        Cell: ({ value }) => {
-          return <HashLink url={`/blocks/${value}`} hash={value} />;
-        },
+        Cell: ({ value }) => <HashLink url={`/blocks/${value}`} hash={value} />,
       },
       {
         Header: 'Difficulty',
         accessor: 'difficulty',
         hideOnMobile: true,
-        Cell: function(data) {
-          return BlockUtils.formatDifficulty(data.value);
-        },
+        Cell: ({ value }) => TextUtils.formatNumber(value),
       },
       {
         Header: 'Txs',
         accessor: 'transactionCount',
+        Cell: ({ value }) => TextUtils.formatNumber(value),
       },
       {
         Header: 'Fees',
