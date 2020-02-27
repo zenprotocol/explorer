@@ -41,6 +41,7 @@ module.exports = async function(job) {
           contractIdFund: config.get('CGP_FUND_CONTRACT_ID'),
           contractIdVoting: config.get('CGP_VOTING_CONTRACT_ID'),
           cgpFundPayoutBallot: config.get('CGP_FUND_PAYOUT_BALLOT'),
+          genesisTotal: config.get('GENESIS_TOTAL_ZP'),
         });
       }
     }

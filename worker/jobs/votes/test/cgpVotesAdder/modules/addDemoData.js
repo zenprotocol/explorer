@@ -8,7 +8,7 @@ const transactionsDAL = require('../../../../../../server/components/api/transac
 const outputsDAL = require('../../../../../../server/components/api/outputs/outputsDAL');
 const contractsDAL = require('../../../../../../server/components/api/contracts/contractsDAL');
 const commandsDAL = require('../../../../../../server/components/api/commands/commandsDAL');
-const contractId = require('./contractId');
+const cgpAdderParams = require('./cgpAdderParams');
 const SnapshotsTaker = require('../../../../snapshots/SnapshotsTaker');
 
 async function addDemoData({
@@ -21,20 +21,20 @@ async function addDemoData({
   await createDemoBlocksFromTo(1, lastBlockNumber);
 
   const contractAddressVote = blockchainParser.getAddressFromContractId(
-    contractId.contractIdVoting
+    cgpAdderParams.contractIdVoting
   );
-  const contractAddressFund = blockchainParser.getAddressFromContractId(contractId.contractIdFund);
+  const contractAddressFund = blockchainParser.getAddressFromContractId(cgpAdderParams.contractIdFund);
 
   // add a demo contract
   await Promise.all([
     contractsDAL.create({
-      id: contractId.contractIdVoting,
+      id: cgpAdderParams.contractIdVoting,
       address: contractAddressVote,
       code: '',
       expiryBlock: 1000000,
     }),
     contractsDAL.create({
-      id: contractId.contractIdFund,
+      id: cgpAdderParams.contractIdFund,
       address: contractAddressFund,
       code: '',
       expiryBlock: 1000000,
@@ -112,7 +112,7 @@ async function addCommands({ commandsBlockNumber = 91, commands = [] }) {
 }
 
 async function addFundBalance({ blockchainParser, asset, amount }) {
-  const contractAddressFund = blockchainParser.getAddressFromContractId(contractId.contractIdFund);
+  const contractAddressFund = blockchainParser.getAddressFromContractId(cgpAdderParams.contractIdFund);
   const block1 = await blocksDAL.findByBlockNumber(1);
 
   const tx = await transactionsDAL.create({

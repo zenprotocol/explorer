@@ -87,13 +87,7 @@ cgpDAL.findLastValidVoteBlockNumber = async function({
 /**
  * Find all votes for an interval, grouped by command and filter double votes
  */
-cgpDAL.findAllVotesInInterval = async function({
-  snapshot,
-  tally,
-  type,
-  limit,
-  offset = 0,
-} = {}) {
+cgpDAL.findAllVotesInInterval = async function({ snapshot, tally, type, limit, offset = 0 } = {}) {
   const sql = tags.oneLine`
   ${WITH_FILTER_TABLES}
   ${FIND_ALL_BY_INTERVAL_BASE_SQL}
@@ -241,7 +235,14 @@ cgpDAL.findZpParticipated = async function({ snapshot, tally, type } = {}) {
     .then(result => (result.length && result[0].amount ? result[0].amount : '0'));
 };
 
-cgpDAL.findAllNominees = async function({ snapshot, tally, chain, limit, offset = 0, dbTransaction = null } = {}) {
+cgpDAL.findAllNominees = async function({
+  snapshot,
+  tally,
+  genesisTotal = '20000000',
+  limit,
+  offset = 0,
+  dbTransaction = null,
+} = {}) {
   const sql = tags.oneLine`
   ${WITH_FILTER_TABLES}
   SELECT "ballot", "amount", "zpAmount" FROM
@@ -251,7 +252,7 @@ cgpDAL.findAllNominees = async function({ snapshot, tally, chain, limit, offset 
   ${limit ? 'LIMIT :limit' : ''} OFFSET :offset;
   `;
 
-  const threshold = new Decimal(calcTotalZpByHeight({ height: snapshot, chain }))
+  const threshold = new Decimal(calcTotalZpByHeight({ height: snapshot, genesis: genesisTotal }))
     .times(3)
     .div(100)
     .toFixed(8);
@@ -270,7 +271,12 @@ cgpDAL.findAllNominees = async function({ snapshot, tally, chain, limit, offset 
   });
 };
 
-cgpDAL.countAllNominees = async function({ snapshot, tally, chain, dbTransaction = null } = {}) {
+cgpDAL.countAllNominees = async function({
+  snapshot,
+  tally,
+  genesisTotal = '20000000',
+  dbTransaction = null,
+} = {}) {
   const sql = tags.oneLine`
   ${WITH_FILTER_TABLES}
   SELECT count(*) from (
@@ -280,21 +286,23 @@ cgpDAL.countAllNominees = async function({ snapshot, tally, chain, dbTransaction
   ) AS "CountResults"
   `;
 
-  const threshold = new Decimal(calcTotalZpByHeight({ height: snapshot, chain }))
+  const threshold = new Decimal(calcTotalZpByHeight({ height: snapshot, genesis: genesisTotal }))
     .times(3)
     .div(100)
     .toFixed(8);
 
-  return sequelize.query(sql, {
-    replacements: {
-      type: 'nomination',
-      snapshot,
-      tally,
-      threshold,
-    },
-    type: sequelize.QueryTypes.SELECT,
-    transaction: dbTransaction,
-  }).then(this.queryResultToCount);
+  return sequelize
+    .query(sql, {
+      replacements: {
+        type: 'nomination',
+        snapshot,
+        tally,
+        threshold,
+      },
+      type: sequelize.QueryTypes.SELECT,
+      transaction: dbTransaction,
+    })
+    .then(this.queryResultToCount);
 };
 
 module.exports = cgpDAL;

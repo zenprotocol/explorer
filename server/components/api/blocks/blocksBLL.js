@@ -3,7 +3,7 @@
 const blocksDAL = require('./blocksDAL');
 const createQueryObject = require('../../../lib/createQueryObject');
 const isHash = require('../../../lib/isHash');
-const getChain = require('../../../lib/getChain');
+const config = require('../../../config/Config');
 const calcTotalZpByHeight = require('../../../lib/calcTotalZpByHeight');
 
 module.exports = {
@@ -35,7 +35,7 @@ module.exports = {
     return await blocksDAL.findById(id);
   },
   getTotalZp: async function() {
-    const [height, chain] = await Promise.all([blocksDAL.count(), getChain()]);
-    return calcTotalZpByHeight({ height, chain });
+    const height = await blocksDAL.count();
+    return calcTotalZpByHeight({ height, genesis: config.get('GENESIS_TOTAL_ZP') });
   },
 };

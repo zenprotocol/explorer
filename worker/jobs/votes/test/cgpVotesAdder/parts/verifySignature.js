@@ -4,7 +4,7 @@ const BlockchainParser = require('../../../../../../server/lib/BlockchainParser'
 const cgpDAL = require('../../../../../../server/components/api/cgp/cgpDAL');
 const cgpUtils = require('../../../../../../server/components/api/cgp/cgpUtils');
 const CGPVotesAdder = require('../../../CGPVotesAdder');
-const contractId = require('../modules/contractId');
+const cgpAdderParams = require('../modules/cgpAdderParams');
 const { addDemoData } = require('../modules/addDemoData');
 const getDemoCommand = require('../modules/getDemoCommand');
 const getValidMessageBody = require('../modules/getValidMessageBody');
@@ -16,7 +16,7 @@ module.exports = async function part({ t, before, after }) {
     const cgpVotesAdder = new CGPVotesAdder({
       blockchainParser,
       chain: 'test',
-      ...contractId,
+      ...cgpAdderParams,
     });
     before();
 
@@ -69,12 +69,14 @@ module.exports = async function part({ t, before, after }) {
     const cgpVotesAdder = new CGPVotesAdder({
       blockchainParser,
       chain: 'test',
-      ...contractId,
+      ...cgpAdderParams,
     });
     before();
     // the command was made in interval 623
     td.replace(cgpUtils, 'getIntervalByBlockNumber');
-    td.when(cgpUtils.getIntervalByBlockNumber(td.matchers.anything(), td.matchers.anything())).thenResolve(623);
+    td.when(
+      cgpUtils.getIntervalByBlockNumber(td.matchers.anything(), td.matchers.anything())
+    ).thenResolve(623);
 
     const messageBody = getValidMessageBody('Allocation');
     messageBody.dict[0][1].dict[0][1].signature = '496ac2e8a274534aec0ad8a';
@@ -85,7 +87,7 @@ module.exports = async function part({ t, before, after }) {
       commands: [
         getDemoCommand({
           command: 'Allocation',
-          messageBody
+          messageBody,
         }),
       ],
     });

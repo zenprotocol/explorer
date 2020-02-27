@@ -1060,12 +1060,12 @@ test('cgpDAL.findAllNominees() + cgpDAL.countAllNominees() (DB)', async function
       cgpDAL.findAllNominees({
         snapshot: 90,
         tally: 100,
-        chain: 'test',
+        genesisTotal: '0.00000001',
       }),
       cgpDAL.countAllNominees({
         snapshot: 90,
         tally: 100,
-        chain: 'test',
+        genesisTotal: '0.00000001',
       })
     ]);
     t.equal(nominees.length, 0, `${given}: should return an empty array`);
@@ -1094,12 +1094,12 @@ test('cgpDAL.findAllNominees() + cgpDAL.countAllNominees() (DB)', async function
       cgpDAL.findAllNominees({
         snapshot: 90,
         tally: 100,
-        chain: 'test',
+        genesisTotal: '0.00000001',
       }),
       cgpDAL.countAllNominees({
         snapshot: 90,
         tally: 100,
-        chain: 'test',
+        genesisTotal: '0.00000001',
       })
     ]);
     t.equal(nominees.length, 2, `${given}: should return all nomination ballots`);
@@ -1156,12 +1156,12 @@ test('cgpDAL.findAllNominees() + cgpDAL.countAllNominees() (DB)', async function
       cgpDAL.findAllNominees({
         snapshot: 90,
         tally: 100,
-        chain: 'test',
+        genesisTotal: '0.00000001',
       }),
       cgpDAL.countAllNominees({
         snapshot: 90,
         tally: 100,
-        chain: 'test',
+        genesisTotal: '0.00000001',
       })
     ]);
     t.equal(nominees.length, 3, `${given}: should return only ballots which >= 3%`);

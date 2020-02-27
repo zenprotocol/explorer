@@ -19,6 +19,7 @@ const calculateWinnerAllocation = require('./modules/calculateWinnerAllocation')
 const calculateWinnerPayout = require('./modules/calculateWinnerPayout');
 
 const CGP_FUND_CONTRACT_ID = config.get('CGP_FUND_CONTRACT_ID');
+const GENESIS_TOTAL_ZP = config.get('GENESIS_TOTAL_ZP');
 
 module.exports = {
   findIntervalAndTally: async function({ interval, phase } = {}) {
@@ -33,7 +34,9 @@ module.exports = {
       phase,
     });
 
-    const threshold = new Decimal(calcTotalZpByHeight({ chain, height: relevant.snapshot }))
+    const threshold = new Decimal(
+      calcTotalZpByHeight({ genesis: GENESIS_TOTAL_ZP, height: relevant.snapshot })
+    )
       .times(3)
       .div(100);
     const cgpBalance = await this.findCgpBalance({ blockNumber: relevant.snapshot });
@@ -44,7 +47,7 @@ module.exports = {
           .findAllNominees({
             snapshot: relevant.snapshot,
             tally: relevant.tally,
-            chain,
+            genesisTotal: GENESIS_TOTAL_ZP,
           })
           .then(addBallotContentToResults({ type: 'nomination', chain })),
         cgpDAL.findZpParticipated({
@@ -52,7 +55,11 @@ module.exports = {
           tally: relevant.tally,
           type: 'nomination',
         }),
-        cgpDAL.findAllNominees({ snapshot: relevant.snapshot, tally: relevant.tally, chain }),
+        cgpDAL.findAllNominees({
+          snapshot: relevant.snapshot,
+          tally: relevant.tally,
+          genesisTotal: GENESIS_TOTAL_ZP,
+        }),
       ]);
 
       return {
@@ -99,7 +106,11 @@ module.exports = {
           tally: relevant.tally,
           type: 'payout',
         }),
-        cgpDAL.findAllNominees({ snapshot: relevant.snapshot, tally: relevant.tally, chain }),
+        cgpDAL.findAllNominees({
+          snapshot: relevant.snapshot,
+          tally: relevant.tally,
+          genesisTotal: GENESIS_TOTAL_ZP,
+        }),
       ]);
 
       const winnerAllocation = calculateWinnerAllocation(resultsAllocation);
@@ -217,7 +228,11 @@ module.exports = {
     return await Promise.all([
       cgpDAL.countAllNominees({ snapshot, tally, chain }),
       cgpDAL.findAllNominees(
-        Object.assign({}, { snapshot, tally, chain }, createQueryObject({ page, pageSize }))
+        Object.assign(
+          {},
+          { snapshot, tally, genesisTotal: GENESIS_TOTAL_ZP },
+          createQueryObject({ page, pageSize })
+        )
       ),
     ]).then(cgpDAL.getItemsAndCountResult);
   },

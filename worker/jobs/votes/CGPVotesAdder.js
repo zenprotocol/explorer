@@ -25,6 +25,7 @@ class CGPVotesAdder {
     contractIdVoting,
     contractIdFund,
     cgpFundPayoutBallot,
+    genesisTotal,
     chain,
   } = {}) {
     this.blockchainParser = blockchainParser;
@@ -32,6 +33,7 @@ class CGPVotesAdder {
     this.contractIdFund = contractIdFund;
     this.cgpFundPayoutBallot = cgpFundPayoutBallot;
     this.chain = chain;
+    this.genesisTotal = genesisTotal;
     this.contractAddress = blockchainParser.getAddressFromContractId(contractIdFund);
   }
 
@@ -41,6 +43,7 @@ class CGPVotesAdder {
       this.checkContractId();
       this.checkChain();
       this.checkCGPFundPayoutBallot();
+      this.checkGenesisTotal();
       let result = 0;
 
       // query for all commands with the voting contract id and that the command id is not in CGPVotes
@@ -84,6 +87,12 @@ class CGPVotesAdder {
   checkCGPFundPayoutBallot() {
     if (!this.cgpFundPayoutBallot) {
       throw new Error('Fund Payout Ballot is empty');
+    }
+  }
+
+  checkGenesisTotal() {
+    if (typeof this.genesisTotal === 'undefined') {
+      throw new Error('Genesis total is not supplied');
     }
   }
 
@@ -300,7 +309,7 @@ class CGPVotesAdder {
         cgpDAL.findAllNominees({
           snapshot,
           tally,
-          chain: this.chain,
+          genesisTotal: this.genesisTotal,
           dbTransaction,
         }),
       ]);

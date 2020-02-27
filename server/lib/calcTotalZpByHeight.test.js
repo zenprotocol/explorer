@@ -4,10 +4,15 @@ const test = require('blue-tape');
 const { Decimal } = require('decimal.js');
 const calcTotalZpByHeight = require('./calcTotalZpByHeight');
 
+const GENESIS = {
+  main: '20000000',
+  test: '0.00000001',
+};
+
 test('calcTotalZpByHeight()', async function(t) {
-  const getTest = ({ height, chain, expected, message = '' } = {}) =>
-    wrapTest(`Given height=${height}, chain=${chain}`, async given => {
-      const result = calcTotalZpByHeight({ height, chain });
+  const getTest = ({ height, genesis, expected, message = '' } = {}) =>
+    wrapTest(`Given height=${height}, genesis=${genesis}`, async given => {
+      const result = calcTotalZpByHeight({ height, genesis });
       t.equal(
         result,
         expected,
@@ -15,27 +20,27 @@ test('calcTotalZpByHeight()', async function(t) {
       );
     });
 
-  getTest({ height: 0, chain: 'test', expected: '0', message: '(typeof height = number)' });
-  getTest({ height: '0', chain: 'test', expected: '0', message: '(typeof height = string)' });
-  getTest({ height: 0, chain: 'main', expected: '0', message: '(typeof height = number)' });
-  getTest({ height: '0', chain: 'main', expected: '0', message: '(typeof height = string)' });
-  getTest({ height: 1, chain: 'test', expected: '1' });
-  getTest({ height: 1, chain: 'main', expected: '2000000000000000' });
-  getTest({ height: 2, chain: 'test', expected: '5000000001' });
+  getTest({ height: 0, genesis: GENESIS.test, expected: '0', message: '(typeof height = number)' });
+  getTest({ height: '0', genesis: GENESIS.test, expected: '0', message: '(typeof height = string)' });
+  getTest({ height: 0, genesis: GENESIS.main, expected: '0', message: '(typeof height = number)' });
+  getTest({ height: '0', genesis: GENESIS.main, expected: '0', message: '(typeof height = string)' });
+  getTest({ height: 1, genesis: GENESIS.test, expected: '1' });
+  getTest({ height: 1, genesis: GENESIS.main, expected: '2000000000000000' });
+  getTest({ height: 2, genesis: GENESIS.test, expected: '5000000001' });
   getTest({
     height: 2,
-    chain: 'main',
+    genesis: GENESIS.main,
     expected: new Decimal('5000000000').plus('2000000000000000').toString(),
   });
-  getTest({ height: 3, chain: 'test', expected: '10000000001' });
+  getTest({ height: 3, genesis: GENESIS.test, expected: '10000000001' });
   getTest({
     height: 3,
-    chain: 'main',
+    genesis: GENESIS.main,
     expected: new Decimal('10000000000').plus('2000000000000000').toString(),
   });
   getTest({
     height: 800001,
-    chain: 'test',
+    genesis: GENESIS.test,
     expected: new Decimal(800000)
       .times(50)
       .plus(0.00000001)
@@ -44,7 +49,7 @@ test('calcTotalZpByHeight()', async function(t) {
   });
   getTest({
     height: 800001,
-    chain: 'main',
+    genesis: GENESIS.main,
     expected: new Decimal(800000)
       .times(50)
       .plus('20000000')
@@ -53,7 +58,7 @@ test('calcTotalZpByHeight()', async function(t) {
   });
   getTest({
     height: 800002,
-    chain: 'test',
+    genesis: GENESIS.test,
     expected: new Decimal(800000)
       .times(50)
       .plus(25)
@@ -63,7 +68,7 @@ test('calcTotalZpByHeight()', async function(t) {
   });
   getTest({
     height: 800002,
-    chain: 'main',
+    genesis: GENESIS.main,
     expected: new Decimal(800000)
       .times(50)
       .plus(25)
@@ -73,7 +78,7 @@ test('calcTotalZpByHeight()', async function(t) {
   });
   getTest({
     height: 800003,
-    chain: 'test',
+    genesis: GENESIS.test,
     expected: new Decimal(800000)
       .times(50)
       .plus(25)
@@ -84,7 +89,7 @@ test('calcTotalZpByHeight()', async function(t) {
   });
   getTest({
     height: 800003,
-    chain: 'main',
+    genesis: GENESIS.main,
     expected: new Decimal(800000)
       .times(50)
       .plus(25)
@@ -95,7 +100,7 @@ test('calcTotalZpByHeight()', async function(t) {
   });
   getTest({
     height: 1600000,
-    chain: 'test',
+    genesis: GENESIS.test,
     expected: new Decimal(800000)
       .times(50)
       .plus(new Decimal(799999).times(25))
@@ -105,7 +110,7 @@ test('calcTotalZpByHeight()', async function(t) {
   });
   getTest({
     height: 1600000,
-    chain: 'test',
+    genesis: GENESIS.test,
     expected: new Decimal(800000)
       .times(50)
       .plus(new Decimal(799999).times(25))
@@ -115,7 +120,7 @@ test('calcTotalZpByHeight()', async function(t) {
   });
   getTest({
     height: 1600001,
-    chain: 'main',
+    genesis: GENESIS.main,
     expected: new Decimal(800000)
       .times(50)
       .plus(new Decimal(800000).times(25))
@@ -125,7 +130,7 @@ test('calcTotalZpByHeight()', async function(t) {
   });
   getTest({
     height: 1600002,
-    chain: 'test',
+    genesis: GENESIS.test,
     expected: new Decimal(800000)
       .times(50)
       .plus(new Decimal(800000).times(25))
@@ -136,7 +141,7 @@ test('calcTotalZpByHeight()', async function(t) {
   });
   getTest({
     height: 1600002,
-    chain: 'main',
+    genesis: GENESIS.main,
     expected: new Decimal(800000)
       .times(50)
       .plus(new Decimal(800000).times(25))
@@ -147,7 +152,7 @@ test('calcTotalZpByHeight()', async function(t) {
   });
   getTest({
     height: 2400001,
-    chain: 'test',
+    genesis: GENESIS.test,
     expected: new Decimal(800000)
       .times(50)
       .plus(new Decimal(800000).times(25))
@@ -158,7 +163,7 @@ test('calcTotalZpByHeight()', async function(t) {
   });
   getTest({
     height: 2400001,
-    chain: 'main',
+    genesis: GENESIS.main,
     expected: new Decimal(800000)
       .times(50)
       .plus(new Decimal(800000).times(25))
@@ -169,7 +174,7 @@ test('calcTotalZpByHeight()', async function(t) {
   });
   getTest({
     height: 2400002,
-    chain: 'test',
+    genesis: GENESIS.test,
     expected: new Decimal(800000)
       .times(50)
       .plus(new Decimal(800000).times(25))
@@ -181,7 +186,7 @@ test('calcTotalZpByHeight()', async function(t) {
   });
   getTest({
     height: 2400002,
-    chain: 'main',
+    genesis: GENESIS.main,
     expected: new Decimal(800000)
       .times(50)
       .plus(new Decimal(800000).times(25))

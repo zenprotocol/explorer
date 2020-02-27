@@ -2,7 +2,7 @@ const wrapTest = require('../../../../../../test/lib/wrapTest');
 const BlockchainParser = require('../../../../../../server/lib/BlockchainParser');
 const cgpDAL = require('../../../../../../server/components/api/cgp/cgpDAL');
 const CGPVotesAdder = require('../../../CGPVotesAdder');
-const contractId = require('../modules/contractId');
+const cgpAdderParams = require('../modules/cgpAdderParams');
 const { addDemoData, addCommands } = require('../modules/addDemoData');
 const getDemoCommand = require('../modules/getDemoCommand');
 const getValidMessageBody = require('../modules/getValidMessageBody');
@@ -17,7 +17,7 @@ module.exports = async function part({ t, before, after }) {
       const cgpVotesAdder = new CGPVotesAdder({
         blockchainParser,
         chain: 'test',
-        ...contractId,
+        ...cgpAdderParams,
       });
       before(cgpVotesAdder);
 
@@ -62,7 +62,7 @@ module.exports = async function part({ t, before, after }) {
       const cgpVotesAdder = new CGPVotesAdder({
         blockchainParser,
         chain: 'test',
-        ...contractId,
+        ...cgpAdderParams,
       });
       before(cgpVotesAdder);
 
@@ -165,7 +165,7 @@ module.exports = async function part({ t, before, after }) {
       const cgpVotesAdder = new CGPVotesAdder({
         blockchainParser,
         chain: 'test',
-        ...contractId,
+        ...cgpAdderParams,
       });
       before(cgpVotesAdder);
 
