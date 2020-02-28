@@ -113,7 +113,7 @@ export default function MainRoutes() {
       <Route path="/cgp/:interval/:phase" component={CGP} />
       <Redirect from="/governance" to="/governance/0/Contestant" />
       <Redirect from="/cgp/:interval" to="/cgp/:interval/Nomination" />
-      <Redirect from="/cgp" to="/cgp/0/Nomination" />
+      <Redirect from="/cgp" to="/cgp/0/0" />
       <Route component={NotFound} />
     </Switch>
   );
