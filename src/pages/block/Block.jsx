@@ -6,7 +6,6 @@ import PropTypes from 'prop-types';
 import { Helmet } from 'react-helmet';
 import RouterUtils from '../../lib/RouterUtils';
 import TextUtils from '../../lib/TextUtils';
-import BlockUtils from '../../lib/BlockUtils';
 import BlockTxsTable from './BlockTxsTable';
 import BlockContractsTable from './BlockContractsTable';
 import Loading from '../../components/Loading';
