@@ -101,7 +101,20 @@ class CGPPage extends React.Component {
     // autorun was reacting to unknown properties, use reaction instead
     this.forceDisposer = reaction(
       () => this.props.rootStore.blockStore.blocksCount,
-      () => this.loadRelevantInterval()
+      () => {
+        if (this.relevantLoaded) {
+          const { snapshot, tally, phase } = this.cgpStore.relevantInterval;
+          // 
+          if (phase === 'Nomination' && this.currentBlock == snapshot + (tally - snapshot) / 2) { // eslint-disable-line eqeqeq
+            // nomination is switched to vote RIGHT NOW
+            this.props.history.push({
+              pathname: getPageUrl({ interval: this.intervalRouteParam, phase: 'Vote' }),
+            });
+          } else {
+            this.loadRelevantInterval({ phase });
+          }
+        }
+      }
     );
   }
   stopReload() {
@@ -156,9 +169,7 @@ class CGPPage extends React.Component {
 
         <div className="row mb-3">
           <div className="col-md-8">
-            <h4>
-              {getPhaseName(cgpStore.relevantInterval.phase)} phase
-            </h4>
+            <h4>{getPhaseName(cgpStore.relevantInterval.phase)} phase</h4>
           </div>
           <div className="col-md-4">
             <IntervalsDropDown
