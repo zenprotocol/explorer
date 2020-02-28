@@ -104,8 +104,8 @@ class CGPPage extends React.Component {
       () => {
         if (this.relevantLoaded) {
           const { snapshot, tally, phase } = this.cgpStore.relevantInterval;
-          // 
-          if (phase === 'Nomination' && this.currentBlock == snapshot + (tally - snapshot) / 2) { // eslint-disable-line eqeqeq
+          // eslint-disable-next-line eqeqeq
+          if (phase === 'Nomination' && this.currentBlock == snapshot + (tally - snapshot) / 2) {
             // nomination is switched to vote RIGHT NOW
             this.props.history.push({
               pathname: getPageUrl({ interval: this.intervalRouteParam, phase: 'Vote' }),
@@ -198,16 +198,28 @@ class CGPPage extends React.Component {
     if (this.cgpStore.loading.relevantInterval) return <Loading />;
     if (!this.relevantLoaded) return null;
 
+    const contractAddress = this.props.rootStore.infoStore.infos.cgpFundContractAddress;
+
     return (
       <>
         <section>
           {this.voteStatus === voteStatus.before && (
-            <BeforeVoteInfo {...relevantInterval} currentBlock={this.currentBlock} />
+            <BeforeVoteInfo
+              {...relevantInterval}
+              currentBlock={this.currentBlock}
+              contractAddress={contractAddress}
+            />
           )}
           {this.voteStatus === voteStatus.during && (
-            <DuringVoteInfo {...relevantInterval} currentBlock={this.currentBlock} />
+            <DuringVoteInfo
+              {...relevantInterval}
+              currentBlock={this.currentBlock}
+              contractAddress={contractAddress}
+            />
           )}
-          {this.voteStatus === voteStatus.after && <AfterVoteInfo {...relevantInterval} />}
+          {this.voteStatus === voteStatus.after && (
+            <AfterVoteInfo {...relevantInterval} contractAddress={contractAddress} />
+          )}
         </section>
 
         {this.voteStatus === voteStatus.during && (
