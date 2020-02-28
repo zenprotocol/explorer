@@ -30,7 +30,7 @@ function getIntervalBlocks(chain, interval) {
 /**
  * Get interval snapshot and tally blocks by:
  * 1. if interval is supplied, by that interval
- * 2. previous interval if currentBlock - prev.endHeight < 10,000
+ * 2. previous interval if currentBlock - prev.endHeight < maturity
  * 3. on going interval
  */
 function getRelevantIntervalBlocks({ chain, interval, phase, currentBlock } = {}) {
@@ -58,7 +58,7 @@ function getRelevantIntervalBlocks({ chain, interval, phase, currentBlock } = {}
     chosenPhase = interval
       ? 'Nomination'
       : currentBlock > 0
-      ? currentBlock <= middlePoint
+      ? currentBlock < middlePoint
         ? 'Nomination'
         : 'Vote'
       : 'Nomination';

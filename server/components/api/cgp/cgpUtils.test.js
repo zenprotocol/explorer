@@ -79,7 +79,6 @@ test('cgpUtils.getRelevantIntervalBlocks()', async function(t) {
     );
   }
 
-  // test executions
   await getTest({
     chain: 'test',
     interval: 0,
@@ -118,6 +117,16 @@ test('cgpUtils.getRelevantIntervalBlocks()', async function(t) {
     chain: 'test',
     block: 1,
     expected: { interval: 1, snapshot: 90, tally: 100, phase: 'Nomination', coinbaseMaturity: 110 },
+  });
+  await getTest({
+    chain: 'test',
+    block: 94,
+    expected: { interval: 1, snapshot: 90, tally: 100, phase: 'Nomination', coinbaseMaturity: 110 },
+  });
+  await getTest({
+    chain: 'test',
+    block: 95,
+    expected: { interval: 1, snapshot: 90, tally: 100, phase: 'Vote', coinbaseMaturity: 110 },
   });
   await getTest({
     chain: 'test',

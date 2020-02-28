@@ -43,12 +43,9 @@ export function BeforeVoteInfo({ currentBlock, snapshot, tally, phase, ...props 
   const phaseBlocks = getPhaseBlocks({ phase, snapshot, tally });
   const blocksToStart = phaseBlocks.snapshot - currentBlock;
   const phaseName = getPhaseName(phase);
-  const voteBeginsMessage =
-    blocksToStart > 0
-      ? `${phaseName} phase begins in ${formatNumber(blocksToStart)} ${
-          blocksToStart > 1 ? 'blocks' : 'block'
-        }`
-      : `${phaseName} phase begins now`;
+  const voteBeginsMessage = `${phaseName} phase begins in ${formatNumber(blocksToStart)} ${
+    blocksToStart > 1 ? 'blocks' : 'block'
+  }`;
 
   return (
     <div className="container">

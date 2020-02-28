@@ -111,7 +111,7 @@ class CGPPage extends React.Component {
   loadRelevantInterval() {
     this.cgpStore.loadRelevantInterval({
       interval: this.intervalRouteParam,
-      phase: this.phaseRouteParam,
+      phase: this.intervalRouteParam === '0' ? null : this.phaseRouteParam, // do not send phase if we don't know the interval
     });
   }
 
