@@ -69,7 +69,9 @@
 
   .GenericTable .ReactTable .rt-tbody .rt-tr {
     &.above-threshold {
-      background-color: $gray-600;
+      .rt-td {
+        font-weight: 500;
+      }
     }
   }
 

@@ -104,6 +104,13 @@ class ResultsTab extends Component {
               minWidth: config.ui.table.minCellWidth,
               Cell: data => `${TextUtils.formatNumber(data.value)} ZP`,
             },
+            {
+              Header: 'ABOVE THRESHOLD',
+              accessor: 'amount',
+              minWidth: config.ui.table.minCellWidth,
+              show: isNomination,
+              Cell: ({value}) => isNomination && new Decimal(value).gte(cgpStore.relevantInterval.threshold) ? 'YES' : 'NO',
+            },
           ]}
           loading={cgpStore.loading.results}
           itemsCount={cgpStoreObject.count}
