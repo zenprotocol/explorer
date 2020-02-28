@@ -6,7 +6,7 @@ const { Hash } = require('@zen/zenjs/build/src/Consensus/Types/Hash');
 const { Decimal } = require('decimal.js');
 const Bigi = require('bigi');
 const { fromPairs } = require('ramda');
-const logger = require('../../lib/logger')('votes');
+const logger = require('../../lib/logger')('votes.cgp');
 const cgpDAL = require('../../../server/components/api/cgp/cgpDAL');
 const {
   getAllocationBallotContent,
@@ -49,11 +49,11 @@ class CGPVotesAdder {
       // query for all commands with the voting contract id and that the command id is not in CGPVotes
       const commands = await cgpDAL.findAllUnprocessedCommands(this.contractIdVoting);
       if (commands.length) {
-        logger.info(`${commands.length} commands to add`);
+        logger.info(`${commands.length} contract executions to add votes from`);
         dbTransaction = await db.sequelize.transaction();
 
         // commands must be processed in ascending order, intervals must be processed in ascending order
-        // vallation of an interval depends on the previous interval
+        // validation of an interval depends on the previous interval
         for (let i = 0; i < commands.length; i++) {
           const votesToAdd = await this.getVotesFromCommand({
             command: commands[i],
@@ -108,7 +108,7 @@ class CGPVotesAdder {
     const interval = cgpUtils.getIntervalByBlockNumber(this.chain, commandBlockNumber);
     if (!this.verifyCommandInSnapshotRange({ interval, commandBlockNumber, command })) {
       logger.info(
-        `Command with id ${command.id} is not in the voting range or not in the right phase, commandBlockNumber=${commandBlockNumber}`
+        `Command with id ${command.id} is not in the voting range or not in the right phase, blockNumber=${commandBlockNumber}, type=${command.command}`
       );
     } else if (!this.validateMessageBody(command)) {
       logger.info(`MessageBody is not valid for command with id ${command.id}`);
@@ -121,7 +121,7 @@ class CGPVotesAdder {
       const verifyBallotResult = await this.verifyBallot({ ballot, type, interval, dbTransaction });
       if (verifyBallotResult.error) {
         logger.info(
-          `Ballot is not valid for command with id ${command.id}: ${verifyBallotResult.error}`
+          `Ballot is not valid for command with id ${command.id}: ${verifyBallotResult.error}, type=${type} blockNumber=${commandBlockNumber} ballot=${ballot}`
         );
       } else {
         const dict = ballotSignature.Signature.dict;
@@ -140,13 +140,22 @@ class CGPVotesAdder {
               });
             } else {
               logger.info(
-                `Signature did not pass verification: commandId:${command.id} interval:${interval} ballot:${ballot} publicKey:${publicKey}`
+                `Signature did not pass verification: commandId:${command.id} interval:${interval} ballot:${ballot} type=${type} publicKey:${publicKey} blockNumber=${commandBlockNumber}`
               );
               // do not enter any votes if any of the signatures is bad
               votesToAdd = [];
               break;
             }
           }
+        }
+        if (votesToAdd.length) {
+          logger.info(
+            `Added votes for valid command with id ${
+              command.id
+            } interval:${interval} blockNumber=${commandBlockNumber} type=${type} ballot:${ballot} ${
+              ballot === this.cgpFundPayoutBallot ? 'voted for cgp fund' : ''
+            }`
+          );
         }
       }
     }
