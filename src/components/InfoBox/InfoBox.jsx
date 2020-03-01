@@ -22,7 +22,7 @@ function ContentBox({ className, iconClass, title, content, children, ...props }
   );
 }
 ContentBox.propTypes = {
-  title: PropTypes.string,
+  title: PropTypes.any,
   content: PropTypes.oneOfType([PropTypes.string, PropTypes.element]),
   className: PropTypes.string,
   iconClass: PropTypes.string,

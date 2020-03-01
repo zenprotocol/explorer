@@ -18,7 +18,7 @@ import { getVoteStatus, voteStatus } from './modules/cgpVoteStatus';
 import VotesTab from './components/tabs/Votes';
 import ResultsTab from './components/tabs/Results';
 import IntervalsDropDown from './components/IntervalsDropDown';
-import { AfterVoteInfo, BeforeVoteInfo, DuringVoteInfo } from './components/InfoBoxes';
+import InfoBoxes from './components/InfoBoxes';
 import WinnerSummary from './components/WinnerSummary';
 import DuringSummary from './components/DuringSummary';
 import PageDescription from './components/PageDescription';
@@ -198,28 +198,20 @@ class CGPPage extends React.Component {
     if (this.cgpStore.loading.relevantInterval) return <Loading />;
     if (!this.relevantLoaded) return null;
 
-    const contractAddress = this.props.rootStore.infoStore.infos.cgpFundContractAddress;
+    const { infoStore } = this.props.rootStore;
+    const contractAddress = infoStore.infos.cgpFundContractAddress;
+    const cgpAllocation = infoStore.infos.cgpAllocation;
 
     return (
       <>
         <section>
-          {this.voteStatus === voteStatus.before && (
-            <BeforeVoteInfo
-              {...relevantInterval}
-              currentBlock={this.currentBlock}
-              contractAddress={contractAddress}
-            />
-          )}
-          {this.voteStatus === voteStatus.during && (
-            <DuringVoteInfo
-              {...relevantInterval}
-              currentBlock={this.currentBlock}
-              contractAddress={contractAddress}
-            />
-          )}
-          {this.voteStatus === voteStatus.after && (
-            <AfterVoteInfo {...relevantInterval} contractAddress={contractAddress} />
-          )}
+          <InfoBoxes
+            voteStatus={this.voteStatus}
+            {...relevantInterval}
+            currentBlock={this.currentBlock}
+            contractAddress={contractAddress}
+            cgpAllocation={cgpAllocation}
+          />
         </section>
 
         {this.voteStatus === voteStatus.during && (
