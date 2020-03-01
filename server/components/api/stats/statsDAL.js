@@ -1,8 +1,8 @@
 'use strict';
 
 const tags = require('common-tags');
+const { Decimal } = require('decimal.js');
 const transactionsDAL = require('../transactions/transactionsDAL');
-const blocksDAL = require('../blocks/blocksDAL');
 const inputsDAL = require('../inputs/inputsDAL');
 const addressAmountsDAL = require('../addressAmounts/addressAmountsDAL');
 const sqlQueries = require('../../../lib/sqlQueries');
@@ -12,11 +12,6 @@ const Op = db.Sequelize.Op;
 
 const statsDAL = {};
 const maximumChartInterval = '1 year';
-
-statsDAL.totalZp = async function() {
-  const blocksCount = await blocksDAL.count();
-  return 20000000 + (blocksCount - 1) * 50;
-};
 
 statsDAL.totalIssued = async function(asset) {
   return inputsDAL.sum('amount', {
@@ -85,9 +80,9 @@ statsDAL.networkHashRate = async function({ chartInterval = maximumChartInterval
   });
 };
 
-statsDAL.zpRichList = async function() {
-  return Promise.all([
-    addressAmountsDAL.findAll({
+statsDAL.zpRichList = async function({ totalZpK } = {}) {
+  return addressAmountsDAL
+    .findAll({
       where: {
         [Op.and]: {
           asset: '00',
@@ -96,25 +91,24 @@ statsDAL.zpRichList = async function() {
           },
         },
       },
-      attributes: {include: [[sequelize.literal('balance / 100000000'), 'balanceZp']]},
+      attributes: { include: [[sequelize.literal('balance / 100000000'), 'balanceZp']] },
       order: [['balance', 'DESC']],
-      limit: 100, offset: 0
-    }), 
-    this.totalZp()]).then(
-    ([chartData, totalZp]) => {
+      limit: 100,
+      offset: 0,
+    })
+    .then(chartData => {
       const restKalapas = chartData.reduce((restAmount, curItem) => {
-        return restAmount - Number(curItem.balance);
-      }, Number(totalZp) * 100000000);
-      const restZp = restKalapas / 100000000;
+        return restAmount.minus(curItem.balance);
+      }, new Decimal(totalZpK));
+      const restZp = restKalapas.div(100000000);
       chartData.push({
-        balance: String(restKalapas),
-        balanceZp: String(restZp),
+        balance: restKalapas.toString(),
+        balanceZp: restZp.toFixed(8),
         address: 'Rest',
       });
 
       return chartData;
-    }
-  );
+    });
 };
 
 statsDAL.assetDistributionMap = async function({ asset } = {}) {
@@ -122,23 +116,24 @@ statsDAL.assetDistributionMap = async function({ asset } = {}) {
     return [];
   }
 
-  return Promise.all([addressAmountsDAL.keyholders({asset, limit: 100}), this.totalIssued(asset)]).then(
-    ([chartData, total]) => {
-      const items = chartData.items;
-      let rest = items.reduce((restAmount, curItem) => {
-        return restAmount - Number(curItem.balance);
-      }, Number(total));
+  return Promise.all([
+    addressAmountsDAL.keyholders({ asset, limit: 100 }),
+    this.totalIssued(asset),
+  ]).then(([chartData, total]) => {
+    const items = chartData.items;
+    let rest = items.reduce((restAmount, curItem) => {
+      return restAmount - Number(curItem.balance);
+    }, Number(total));
 
-      if (rest > 0) {
-        items.push({
-          balance: String(rest),
-          address: 'Rest',
-        });
-      }
-
-      return items;
+    if (rest > 0) {
+      items.push({
+        balance: String(rest),
+        address: 'Rest',
+      });
     }
-  );
+
+    return items;
+  });
 };
 
 statsDAL.distributionMap = async function(asset = '00', divideBy = 1, limit = 100, offset = 0) {
