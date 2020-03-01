@@ -55,6 +55,7 @@ function SummaryNomination({
   zpParticipatedNomination,
   currentBlock,
   coinbaseMaturity,
+  thresholdPercentage,
   threshold,
 }) {
   return (
@@ -70,7 +71,7 @@ function SummaryNomination({
         <tbody>
           <UnconfirmedRow currentBlock={currentBlock} coinbaseMaturity={coinbaseMaturity} />
           <tr>
-            <td>THRESHOLD AT SNAPSHOT (3%)</td>
+            <td>THRESHOLD AT SNAPSHOT ({thresholdPercentage}%)</td>
             <td>{AssetUtils.getAmountString('00', threshold)}</td>
           </tr>
           <tr>
@@ -89,6 +90,7 @@ function SummaryNomination({
 SummaryNomination.propTypes = {
   winnersNomination: PropTypes.array,
   zpParticipatedNomination: PropTypes.string,
+  thresholdPercentage: PropTypes.number,
   threshold: PropTypes.string,
   currentBlock: PropTypes.number,
   coinbaseMaturity: PropTypes.number,

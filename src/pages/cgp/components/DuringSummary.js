@@ -40,8 +40,12 @@ SummaryVotePhase.propTypes = {
   winnerPayout: PropTypes.object,
 };
 
-function SummaryNomination({ winnersNomination = [], zpParticipatedNomination = 0, threshold }) {
-  console.log({threshold});
+function SummaryNomination({
+  winnersNomination = [],
+  zpParticipatedNomination = 0,
+  threshold,
+  thresholdPercentage,
+}) {
   return (
     <div className="col winner">
       <table className="table table-zen">
@@ -54,7 +58,7 @@ function SummaryNomination({ winnersNomination = [], zpParticipatedNomination = 
         </thead>
         <tbody>
           <tr>
-            <td>THRESHOLD AT SNAPSHOT (3%)</td>
+            <td>THRESHOLD AT SNAPSHOT ({thresholdPercentage}%)</td>
             <td>{AssetUtils.getAmountString('00', threshold)}</td>
           </tr>
           <tr>
@@ -74,6 +78,7 @@ SummaryNomination.propTypes = {
   winnersNomination: PropTypes.array,
   zpParticipatedNomination: PropTypes.string,
   threshold: PropTypes.string,
+  thresholdPercentage: PropTypes.number,
 };
 
 function SummaryVoting({
@@ -172,8 +177,8 @@ class SummaryParticipants extends React.Component {
               <tr>
                 <td colSpan="2">
                   <button type="button" className="btn py-0" onClick={this.toggleShowMore}>
-                    <i className={`fas fa-caret-${showMore ? 'up' : 'down'}`} />{' '}
-                    {rest.length} more {rest.length > 1 ? 'ballots' : 'ballot'}
+                    <i className={`fas fa-caret-${showMore ? 'up' : 'down'}`} /> {rest.length} more{' '}
+                    {rest.length > 1 ? 'ballots' : 'ballot'}
                   </button>
                 </td>
               </tr>

@@ -318,7 +318,11 @@ class CGPVotesAdder {
         cgpDAL.findAllNominees({
           snapshot,
           tally,
-          genesisTotal: this.genesisTotal,
+          threshold: cgpUtils.getThreshold({
+            height: snapshot,
+            chain: this.chain,
+            genesisTotal: this.genesisTotal,
+          }),
           dbTransaction,
         }),
       ]);

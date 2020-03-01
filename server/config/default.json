@@ -47,12 +47,14 @@
     "main": {
       "coinbaseMaturity": 100,
       "afterTallyBlocks": 1000,
-      "intervalLength": 10000
+      "intervalLength": 10000,
+      "thresholdPercentage": 3
     },
     "test": {
       "coinbaseMaturity": 10,
       "afterTallyBlocks": 10,
-      "intervalLength": 100
+      "intervalLength": 100,
+      "thresholdPercentage": 0.3
     }
   }
 }

@@ -1052,20 +1052,18 @@ test('cgpDAL.findAllBallots() (DB)', async function(t) {
 });
 
 test('cgpDAL.findAllNominees() + cgpDAL.countAllNominees() (DB)', async function(t) {
-  // in block 90, 3% of the total zp is 133.5 ZP
-
   await wrapTest('Given no votes', async given => {
     await createDemoData();
     const [nominees, count] = await Promise.all([
       cgpDAL.findAllNominees({
         snapshot: 90,
         tally: 100,
-        genesisTotal: '0.00000001',
+        threshold: '0',
       }),
       cgpDAL.countAllNominees({
         snapshot: 90,
         tally: 100,
-        genesisTotal: '0.00000001',
+        threshold: '0',
       })
     ]);
     t.equal(nominees.length, 0, `${given}: should return an empty array`);
@@ -1094,12 +1092,12 @@ test('cgpDAL.findAllNominees() + cgpDAL.countAllNominees() (DB)', async function
       cgpDAL.findAllNominees({
         snapshot: 90,
         tally: 100,
-        genesisTotal: '0.00000001',
+        threshold: '0',
       }),
       cgpDAL.countAllNominees({
         snapshot: 90,
         tally: 100,
-        genesisTotal: '0.00000001',
+        threshold: '0',
       })
     ]);
     t.equal(nominees.length, 2, `${given}: should return all nomination ballots`);
@@ -1110,7 +1108,9 @@ test('cgpDAL.findAllNominees() + cgpDAL.countAllNominees() (DB)', async function
     );
   });
 
-  await wrapTest('Given some valid votes and some with zp < 3%', async given => {
+  await wrapTest('Given some valid votes and some with zp < threshold', async given => {
+    // threshold 133.5
+
     await createDemoData({
       amountMultiplier: 100,
       extraAddressAmounts: { tzn14: 1, tzn15: 133500000, tzn16: 133499999 },
@@ -1156,12 +1156,12 @@ test('cgpDAL.findAllNominees() + cgpDAL.countAllNominees() (DB)', async function
       cgpDAL.findAllNominees({
         snapshot: 90,
         tally: 100,
-        genesisTotal: '0.00000001',
+        threshold: '133.5',
       }),
       cgpDAL.countAllNominees({
         snapshot: 90,
         tally: 100,
-        genesisTotal: '0.00000001',
+        threshold: '133.5',
       })
     ]);
     t.equal(nominees.length, 3, `${given}: should return only ballots which >= 3%`);

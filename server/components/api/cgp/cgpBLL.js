@@ -8,7 +8,6 @@ const cgpDAL = require('./cgpDAL');
 const blocksBLL = require('../blocks/blocksBLL');
 const addressesBLL = require('../addresses/addressesBLL');
 const createQueryObject = require('../../../lib/createQueryObject');
-const calcTotalZpByHeight = require('../../../lib/calcTotalZpByHeight');
 const cgpUtils = require('./cgpUtils');
 const {
   getAllocationBallotContent,
@@ -34,11 +33,11 @@ module.exports = {
       phase,
     });
 
-    const threshold = new Decimal(
-      calcTotalZpByHeight({ genesis: GENESIS_TOTAL_ZP, height: relevant.snapshot })
-    )
-      .times(3)
-      .div(100);
+    const threshold = cgpUtils.getThreshold({
+      chain,
+      height: relevant.snapshot,
+      genesisTotal: GENESIS_TOTAL_ZP,
+    });
     const cgpBalance = await this.findCgpBalance({ blockNumber: relevant.snapshot });
 
     if (relevant.phase === 'Nomination') {
@@ -47,7 +46,7 @@ module.exports = {
           .findAllNominees({
             snapshot: relevant.snapshot,
             tally: relevant.tally,
-            genesisTotal: GENESIS_TOTAL_ZP,
+            threshold,
           })
           .then(addBallotContentToResults({ type: 'nomination', chain })),
         cgpDAL.findZpParticipated({
@@ -58,7 +57,7 @@ module.exports = {
         cgpDAL.findAllNominees({
           snapshot: relevant.snapshot,
           tally: relevant.tally,
-          genesisTotal: GENESIS_TOTAL_ZP,
+          threshold,
         }),
       ]);
 
@@ -71,6 +70,7 @@ module.exports = {
         zpParticipatedAllocation: '0',
         zpParticipatedPayout: '0',
         cgpBalance,
+        thresholdPercentage: Number(cgpUtils.getThresholdPercentage(chain)),
         threshold,
         nominees,
       };
@@ -109,7 +109,7 @@ module.exports = {
         cgpDAL.findAllNominees({
           snapshot: relevant.snapshot,
           tally: relevant.tally,
-          genesisTotal: GENESIS_TOTAL_ZP,
+          threshold,
         }),
       ]);
 
@@ -150,6 +150,7 @@ module.exports = {
         zpParticipatedAllocation,
         zpParticipatedPayout,
         cgpBalance,
+        thresholdPercentage: Number(cgpUtils.getThresholdPercentage(chain)),
         threshold,
         nominees: participatingNominees,
       };
@@ -225,14 +226,16 @@ module.exports = {
       interval,
     });
 
+    const threshold = cgpUtils.getThreshold({
+      chain,
+      height: snapshot,
+      genesisTotal: GENESIS_TOTAL_ZP,
+    });
+
     return await Promise.all([
-      cgpDAL.countAllNominees({ snapshot, tally, chain }),
+      cgpDAL.countAllNominees({ snapshot, tally, threshold }),
       cgpDAL.findAllNominees(
-        Object.assign(
-          {},
-          { snapshot, tally, genesisTotal: GENESIS_TOTAL_ZP },
-          createQueryObject({ page, pageSize })
-        )
+        Object.assign({}, { snapshot, tally, threshold }, createQueryObject({ page, pageSize }))
       ),
     ]).then(cgpDAL.getItemsAndCountResult);
   },

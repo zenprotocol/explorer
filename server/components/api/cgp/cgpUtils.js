@@ -1,10 +1,16 @@
 'use strict';
 
 const { mergeAll } = require('ramda');
+const { Decimal } = require('decimal.js');
 const config = require('../../../config/Config');
+const calcTotalZpByHeight = require('../../../lib/calcTotalZpByHeight');
 
 function getIntervalLength(chain) {
   return config.get(`cgp:${chain}:intervalLength`);
+}
+
+function getThresholdPercentage(chain) {
+  return config.get(`cgp:${chain}:thresholdPercentage`);
 }
 
 function getCoinbaseMaturity(chain) {
@@ -67,10 +73,29 @@ function getRelevantIntervalBlocks({ chain, interval, phase, currentBlock } = {}
   return mergeAll([{ interval: chosenInterval }, chosenIntervalBlocks, { phase: chosenPhase }]);
 }
 
+/**
+ * Get the threshold in ZP Kalapas at the given height
+ *
+ * @param {Object} params
+ * @param {(number|string)} params.height - the height at which to calculate
+ * @param {(number|string)} params.genesisTotal - the genesis total in ZP
+ * @param {("main"|"test")} params.chain - the current chain
+ * @returns (string) the threshold at the given height
+ */
+function getThreshold({ height, genesisTotal = 0, chain = 'main' } = {}) {
+  const threshold = new Decimal(calcTotalZpByHeight({ genesis: genesisTotal, height }))
+    .times(config.get(`cgp:${chain}:thresholdPercentage`))
+    .div(100);
+
+  return threshold.toFixed(Math.min(threshold.decimalPlaces(), 8));
+}
+
 module.exports = {
   getIntervalLength,
   getCoinbaseMaturity,
   getIntervalByBlockNumber,
   getIntervalBlocks,
   getRelevantIntervalBlocks,
+  getThresholdPercentage,
+  getThreshold,
 };
