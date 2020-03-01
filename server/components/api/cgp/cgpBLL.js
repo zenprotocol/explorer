@@ -39,6 +39,11 @@ module.exports = {
       genesisTotal: GENESIS_TOTAL_ZP,
     });
     const cgpBalance = await this.findCgpBalance({ blockNumber: relevant.snapshot });
+    // current allocation (up to previous interval)
+    const currentAllocation =
+      relevant.interval === 1
+        ? 0
+        : await this.findWinnerAllocation({ chain, interval: relevant.interval - 1 });
 
     if (relevant.phase === 'Nomination') {
       const [winnersNomination, zpParticipatedNomination, nominees] = await Promise.all([
@@ -70,6 +75,7 @@ module.exports = {
         zpParticipatedAllocation: '0',
         zpParticipatedPayout: '0',
         cgpBalance,
+        currentAllocation,
         thresholdPercentage: Number(cgpUtils.getThresholdPercentage(chain)),
         threshold,
         nominees,
@@ -150,6 +156,7 @@ module.exports = {
         zpParticipatedAllocation,
         zpParticipatedPayout,
         cgpBalance,
+        currentAllocation,
         thresholdPercentage: Number(cgpUtils.getThresholdPercentage(chain)),
         threshold,
         nominees: participatingNominees,

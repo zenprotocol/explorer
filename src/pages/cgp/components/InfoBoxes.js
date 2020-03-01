@@ -170,17 +170,17 @@ CgpBalanceInfoBox.defaultProps = {
 /**
  * Displays the latest winner allocation
  */
-function CgpAllocationInfoBox({ cgpAllocation, addAtSnapshotText, currentBlock } = {}) {
+function CgpAllocationInfoBox({ currentAllocation, addAtSnapshotText, currentBlock } = {}) {
   return (
     <InfoBox
       title={addAtSnapshotText ? 'CGP allocation at snapshot' : 'CGP current allocation'}
-      content={`${percentageToZP({ percentage: cgpAllocation, height: currentBlock })} ZP`}
+      content={`${percentageToZP({ percentage: currentAllocation, height: currentBlock })} ZP`}
       iconClass="fal fa-coins fa-fw"
     />
   );
 }
 CgpAllocationInfoBox.propTypes = {
-  cgpAllocation: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  currentAllocation: PropTypes.number,
   addAtSnapshotText: PropTypes.bool,
   currentBlock: PropTypes.number,
 };

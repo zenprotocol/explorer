@@ -3,6 +3,10 @@
 .CGP {
   .table-zen {
     margin-bottom: 0;
+
+    .inner-header {
+      font-weight: 500;
+    }
   }
 
   %message-shared {

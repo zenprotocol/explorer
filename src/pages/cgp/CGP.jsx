@@ -200,7 +200,6 @@ class CGPPage extends React.Component {
 
     const { infoStore } = this.props.rootStore;
     const contractAddress = infoStore.infos.cgpFundContractAddress;
-    const cgpAllocation = infoStore.infos.cgpAllocation;
 
     return (
       <>
@@ -210,7 +209,6 @@ class CGPPage extends React.Component {
             {...relevantInterval}
             currentBlock={this.currentBlock}
             contractAddress={contractAddress}
-            cgpAllocation={cgpAllocation}
           />
         </section>
 

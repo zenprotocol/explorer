@@ -1,8 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { Decimal } from 'decimal.js';
 import AssetUtils from '../../../lib/AssetUtils';
 import HashLink from '../../../components/HashLink';
 import percentageToZP from '../../../lib/rewardPercentageToZP';
+import getAllocationBounce from '../modules/getAllocationBounce';
 
 export default function DuringSummary(props) {
   const { phase } = props;
@@ -82,36 +84,52 @@ SummaryNomination.propTypes = {
 };
 
 function SummaryVoting({
+  snapshot,
   winnerAllocation,
   zpParticipatedAllocation,
-  zpParticipatedPayout,
   currentBlock,
+  currentAllocation,
 }) {
+  const bounce = getAllocationBounce({ prevAllocation: currentAllocation });
+  const bounceZP = Object.keys(bounce).reduce((all, key) => {
+    const zp = percentageToZP({ percentage: bounce[key], height: snapshot });
+    const zpDecimal = new Decimal(zp);
+    // round it to steps of 0.5, always round up
+    all[key] = zpDecimal.modulo(0.5).gt(0)
+      ? zpDecimal
+          .floor()
+          .plus(0.5)
+          .toString()
+      : zpDecimal.toString();
+    return all;
+  }, {});
   return (
     <div className="col winner">
       <table className="table table-zen">
         <thead>
           <tr>
             <th scope="col" colSpan="2">
-              SUMMARY
+              ALLOCATION SUMMARY
             </th>
           </tr>
         </thead>
         <tbody>
           <tr>
-            <td>TOTAL ZP VOTED FOR CGP PAYOUT</td>
-            <td>{AssetUtils.getAmountString('00', zpParticipatedPayout)}</td>
-          </tr>
-          <tr>
             <td>TOTAL ZP VOTED FOR ALLOCATION</td>
             <td>{AssetUtils.getAmountString('00', zpParticipatedAllocation)}</td>
           </tr>
           <tr>
-            <td>CURRENT CGP ALLOCATION</td>
+            <td>ALLOCATION BOUNCE</td>
+            <td className="text-nowrap">
+              {bounceZP.minAllocation}-{bounceZP.maxAllocation} ZP
+            </td>
+          </tr>
+          <tr>
+            <td>PROPOSED CGP ALLOCATION</td>
             <td>{percentageToZP({ percentage: winnerAllocation, height: currentBlock })} ZP</td>
           </tr>
           <tr>
-            <td>CURRENT MINER ALLOCATION</td>
+            <td>PROPOSED MINER ALLOCATION</td>
             <td>
               {percentageToZP({ percentage: 100 - winnerAllocation, height: currentBlock })} ZP
             </td>
@@ -122,10 +140,12 @@ function SummaryVoting({
   );
 }
 SummaryVoting.propTypes = {
+  snapshot: PropTypes.number,
   winnerAllocation: PropTypes.number,
   zpParticipatedAllocation: PropTypes.string,
   zpParticipatedPayout: PropTypes.string,
   currentBlock: PropTypes.number,
+  currentAllocation: PropTypes.number,
 };
 
 class SummaryParticipants extends React.Component {
@@ -144,7 +164,7 @@ class SummaryParticipants extends React.Component {
   }
 
   render() {
-    const { nominees } = this.props;
+    const { nominees, zpParticipatedPayout } = this.props;
     const { showMore } = this.state;
 
     const first = (nominees || []).slice(0, 5);
@@ -159,12 +179,16 @@ class SummaryParticipants extends React.Component {
                 PAYOUT BALLOTS PARTICIPATING
               </th>
             </tr>
-            <tr>
-              <th scope="col">PAYOUT BALLOT</th>
-              <th scope="col">TOTAL ZP VOTED</th>
-            </tr>
           </thead>
           <tbody>
+            <tr>
+              <td>TOTAL ZP VOTED FOR CGP PAYOUT</td>
+              <td>{AssetUtils.getAmountString('00', zpParticipatedPayout)}</td>
+            </tr>
+            <tr className="inner-header">
+              <td>PAYOUT BALLOT</td>
+              <td>TOTAL ZP VOTED</td>
+            </tr>
             {first.map(nominee => (
               <tr key={nominee.ballot}>
                 <td>
@@ -202,4 +226,5 @@ class SummaryParticipants extends React.Component {
 }
 SummaryParticipants.propTypes = {
   nominees: PropTypes.array,
+  zpParticipatedPayout: PropTypes.string,
 };
