@@ -91,18 +91,14 @@ function SummaryVoting({
   currentAllocation,
 }) {
   const bounce = getAllocationBounce({ prevAllocation: currentAllocation });
-  const bounceZP = Object.keys(bounce).reduce((all, key) => {
-    const zp = percentageToZP({ percentage: bounce[key], height: snapshot });
-    const zpDecimal = new Decimal(zp);
-    // round it to steps of 0.5, always round up
-    all[key] = zpDecimal.modulo(0.5).gt(0)
-      ? zpDecimal
-          .floor()
-          .plus(0.5)
-          .toString()
-      : zpDecimal.toString();
-    return all;
-  }, {});
+  const bounceZP = {
+    min: new Decimal(percentageToZP({ percentage: bounce.min, height: snapshot }))
+      .toNearest(0.5, Decimal.ROUND_CEIL)
+      .toString(),
+    max: new Decimal(percentageToZP({ percentage: bounce.max, height: snapshot }))
+      .toNearest(0.5, Decimal.ROUND_FLOOR)
+      .toString(),
+  };
   return (
     <div className="col winner">
       <table className="table table-zen">
@@ -121,7 +117,7 @@ function SummaryVoting({
           <tr>
             <td>ALLOCATION BOUNCE</td>
             <td className="text-nowrap">
-              {bounceZP.minAllocation}-{bounceZP.maxAllocation} ZP
+              {bounceZP.min}-{bounceZP.max} ZP
             </td>
           </tr>
           <tr>

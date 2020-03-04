@@ -11,10 +11,10 @@ export default function getAllocationBounce({ prevAllocation = 0 } = {}) {
   const ratioMin = Math.max(globalRatioMin, localRatioMin);
   const ratioMax = Math.min(100, localRatioMax);
 
-  const minAllocation = 100 - ratioMax;
-  const maxAllocation = 100 - ratioMin;
+  const min = 100 - ratioMax;
+  const max = 100 - ratioMin;
   return {
-    minAllocation,
-    maxAllocation,
+    min,
+    max,
   };
 }
