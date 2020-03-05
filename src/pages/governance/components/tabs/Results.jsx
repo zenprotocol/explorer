@@ -20,7 +20,7 @@ class ResultsTab extends Component {
         this.props.rootStore.uiStore.setRepoVoteResultsTableData({
           force: true,
         }),
-      15000
+      30000
     );
   }
   render() {

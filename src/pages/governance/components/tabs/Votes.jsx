@@ -19,7 +19,7 @@ class VotesTab extends Component {
   poll() {
     this.fetchInterval = setInterval(
       () => this.props.rootStore.uiStore.setRepoVotesTableData({ force: true }),
-      15000
+      30000
     );
   }
   render() {
