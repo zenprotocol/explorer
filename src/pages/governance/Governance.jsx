@@ -297,6 +297,13 @@ function DuringVoteInfo({ currentBlock, relevantInterval, currentOrNextInterval 
           content={TextUtils.formatNumber(relevantInterval.endHeight)}
           iconClass="fal fa-money-check fa-fw"
         />
+        {relevantInterval.phase === 'Contestant' && (
+          <InfoBox
+            title="Threshold"
+            content={`${TextUtils.formatNumber(relevantInterval.thresholdZp)} ZP`}
+            iconClass="fal fa-coins fa-fw"
+          />
+        )}
       </div>
       <div className="row">
         <div
@@ -339,6 +346,13 @@ function AfterVoteInfo({ relevantInterval }) {
           content={TextUtils.formatNumber(endHeight)}
           iconClass="fal fa-money-check fa-fw"
         />
+        {relevantInterval.phase === 'Contestant' && (
+          <InfoBox
+            title="Threshold"
+            content={`${TextUtils.formatNumber(relevantInterval.thresholdZp)} ZP`}
+            iconClass="fal fa-coins fa-fw"
+          />
+        )}
       </div>
       <div className="row">
         <div className="col border border-dark text-center after-tally-message">
