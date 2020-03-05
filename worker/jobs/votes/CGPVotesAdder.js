@@ -275,6 +275,12 @@ class CGPVotesAdder {
           error: 'there are spends with amount 0',
         };
       }
+      const spendIsNotOrdered = (spend, index) => index > 0 ? spend.asset <= spends[index-1].asset : false;
+      if(spends.some(spendIsNotOrdered)) {
+        return {
+          error: 'spends are not ordered or not unique',
+        };
+      }
 
       // get the cgp balance at snapshot
       const { snapshot } = cgpUtils.getIntervalBlocks(this.chain, interval);

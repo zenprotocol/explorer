@@ -63,9 +63,19 @@ module.exports = async function part({ t, before, after }) {
       address: 'tzn1qx3xuxsls43ks682ade3c32wuf90lyv9k2pt9g40sgrz2h4t9c8fspj43mg',
       spends: [
         { asset: '00', amount: 0 },
-        { asset: '00', amount: 0 },
+        {
+          asset: '00000000d98d612ed6661219b80737c958fe036f88dd77d389e2aa3bf2daa33062cba723',
+          amount: 0,
+        },
       ],
     }),
+    cgpFundBalance: [
+      { asset: '00', amount: 100000000 },
+      {
+        asset: '00000000d98d612ed6661219b80737c958fe036f88dd77d389e2aa3bf2daa33062cba723',
+        amount: 100000000,
+      },
+    ],
   });
   await testBallot({
     given: 'a ballot with no spends',
@@ -91,6 +101,71 @@ module.exports = async function part({ t, before, after }) {
       }),
     }),
   });
+  await testBallot({
+    given: 'spends has same asset more than once',
+    should: 'add an empty vote',
+    ballot: getPayoutBallot({
+      address: 'tzn1qx3xuxsls43ks682ade3c32wuf90lyv9k2pt9g40sgrz2h4t9c8fspj43mg',
+      spends: [
+        { asset: '00', amount: 100 },
+        { asset: '00', amount: 1 },
+        {
+          asset: '00000000d98d612ed6661219b80737c958fe036f88dd77d389e2aa3bf2daa33062cba723',
+          amount: 100,
+        },
+      ],
+    }),
+    cgpFundBalance: [
+      { asset: '00', amount: 100000000 },
+      {
+        asset: '00000000d98d612ed6661219b80737c958fe036f88dd77d389e2aa3bf2daa33062cba723',
+        amount: 100000000,
+      },
+    ],
+  });
+  await testBallot({
+    given: 'spends are not ordered',
+    should: 'add an empty vote',
+    ballot: getPayoutBallot({
+      address: 'tzn1qx3xuxsls43ks682ade3c32wuf90lyv9k2pt9g40sgrz2h4t9c8fspj43mg',
+      spends: [
+        {
+          asset: '00000000d98d612ed6661219b80737c958fe036f88dd77d389e2aa3bf2daa33062cba723',
+          amount: 100,
+        },
+        { asset: '00', amount: 100 },
+      ],
+    }),
+    cgpFundBalance: [
+      { asset: '00', amount: 100000000 },
+      {
+        asset: '00000000d98d612ed6661219b80737c958fe036f88dd77d389e2aa3bf2daa33062cba723',
+        amount: 100000000,
+      },
+    ],
+  });
+  await testBallot({
+    given: 'spends has same asset more than once and are not ordered',
+    should: 'add an empty vote',
+    ballot: getPayoutBallot({
+      address: 'tzn1qx3xuxsls43ks682ade3c32wuf90lyv9k2pt9g40sgrz2h4t9c8fspj43mg',
+      spends: [
+        { asset: '00', amount: 100 },
+        {
+          asset: '00000000d98d612ed6661219b80737c958fe036f88dd77d389e2aa3bf2daa33062cba723',
+          amount: 100,
+        },
+        { asset: '00', amount: 1 },
+      ],
+    }),
+    cgpFundBalance: [
+      { asset: '00', amount: 100000000 },
+      {
+        asset: '00000000d98d612ed6661219b80737c958fe036f88dd77d389e2aa3bf2daa33062cba723',
+        amount: 100000000,
+      },
+    ],
+  });
 
   await testBallot({
     given: 'fund has ZERO ZP',
@@ -110,19 +185,7 @@ module.exports = async function part({ t, before, after }) {
     }),
     cgpFundBalance: [{ asset: '00', amount: 100000000 }],
   });
-  await testBallot({
-    given: 'when aggregating spends with same asset, fund has less ZP',
-    should: 'add an empty vote',
-    ballot: getPayoutBallot({
-      address: 'tzn1qx3xuxsls43ks682ade3c32wuf90lyv9k2pt9g40sgrz2h4t9c8fspj43mg',
-      spends: [
-        { asset: '00', amount: 50000000 },
-        { asset: '00', amount: 50000000 },
-        { asset: '00', amount: 1 },
-      ],
-    }),
-    cgpFundBalance: [{ asset: '00', amount: 100000000 }],
-  });
+
   await testBallot({
     given: 'fund does not have one of the assets',
     should: 'add an empty vote',
@@ -158,37 +221,7 @@ module.exports = async function part({ t, before, after }) {
       },
     ],
   });
-  await testBallot({
-    given: 'one of the assets in the fund has less amount across multiple spends',
-    should: 'add an empty vote',
-    ballot: getPayoutBallot({
-      address: 'tzn1qx3xuxsls43ks682ade3c32wuf90lyv9k2pt9g40sgrz2h4t9c8fspj43mg',
-      spends: [
-        {
-          asset: '00000000d98d612ed6661219b80737c958fe036f88dd77d389e2aa3bf2daa33062cba723',
-          amount: 50,
-        },
-        { asset: '00', amount: 10000 },
-        {
-          asset: '00000000d98d612ed6661219b80737c958fe036f88dd77d389e2aa3bf2daa33062cba723',
-          amount: 51,
-        },
-      ],
-    }),
-    cgpFundBalance: [
-      { asset: '00', amount: 10000 },
-      {
-        asset: '00000000d98d612ed6661219b80737c958fe036f88dd77d389e2aa3bf2daa33062cba723',
-        amount: 100,
-      },
-    ],
-  });
-  await testBallot({
-    given: 'vote for the cgp fund while it has no balance',
-    should: 'add an empty vote',
-    ballot: '020200eac6c58bed912ff310df9f6960e8ed5c28aac83b8a98964224bab1e06c779b9301000001',
-    cgpFundBalance: [],
-  });
+
   await testBallot({
     given: 'vote for the cgp fund while it has balance',
     should: 'add the vote',
@@ -204,19 +237,16 @@ module.exports = async function part({ t, before, after }) {
     const ballot = getPayoutBallot({
       address: 'tzn1qx3xuxsls43ks682ade3c32wuf90lyv9k2pt9g40sgrz2h4t9c8fspj43mg',
       spends: [
-        {
-          asset: '00000000d98d612ed6661219b80737c958fe036f88dd77d389e2aa3bf2daa33062cba723',
-          amount: 50,
-        },
         { asset: '00', amount: 10000 },
         {
           asset: '00000000d98d612ed6661219b80737c958fe036f88dd77d389e2aa3bf2daa33062cba723',
-          amount: 50,
+          amount: 100,
         },
+        
       ],
     });
     await testBallot({
-      given: 'all assets in the fund have enough amount',
+      given: 'all assets in the fund have enough amount and spends is ordered and unique',
       should: 'add the vote',
       ballot,
       cgpFundBalance: [
