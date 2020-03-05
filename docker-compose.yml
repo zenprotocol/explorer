@@ -13,14 +13,13 @@ services:
       - db
       - redis
   db:
-    image: postgres:10.4-alpine
+    image: postgres:12-alpine
     ports: 
       - 5432:5432
     environment:
       - POSTGRES_PASSWORD=${db__password}
   redis:
-    image: redis:4.0-alpine
-    # command: ["redis-server", "--appendonly", "yes"]
+    image: redis:5-alpine
     volumes:
       - './data/redis:/data'
     ports:
