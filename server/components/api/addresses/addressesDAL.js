@@ -73,19 +73,6 @@ addressesDAL.getAssetAmounts = function(address) {
         },
       },
       order: [['balance', 'DESC']],
-    })
-    .then(result => {
-      return result.length > 0
-        ? result
-        : [
-            {
-              address,
-              asset: '00',
-              balance: '0',
-              received: '0',
-              sent: '0',
-            },
-          ];
     });
 };
 
