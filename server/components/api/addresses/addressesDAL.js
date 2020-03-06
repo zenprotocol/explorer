@@ -232,7 +232,8 @@ addressesDAL.snapshotAddressBalancesByBlock = async function({
         INNER JOIN "Blocks" b ON t."BlockId" = b.id AND b."blockNumber" <= :blockNumber
       WHERE io.address = :address
       GROUP BY io.asset) AS isums
-      ON osums.asset = isums.asset) AS bothsums;
+      ON osums.asset = isums.asset) AS bothsums
+      WHERE output_sum > input_sum;
   `;
 
   return sequelize.query(sql, {
