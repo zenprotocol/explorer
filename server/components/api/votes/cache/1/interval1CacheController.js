@@ -18,11 +18,12 @@ module.exports = {
 
     if (interval == 1 && chain === 'main') {
       const sliceParams = getSliceParamsFromPageParams({ page, pageSize });
-      res
-        .status(httpStatus.OK)
-        .json(
-          jsonResponse.create(httpStatus.OK, votesData.slice(sliceParams.start, sliceParams.end))
-        );
+      res.status(httpStatus.OK).json(
+        jsonResponse.create(httpStatus.OK, {
+          items: votesData.slice(sliceParams.start, sliceParams.end),
+          count: votesData.length,
+        })
+      );
     } else {
       next();
     }
@@ -49,11 +50,12 @@ module.exports = {
 
     if (interval == 1 && chain === 'main') {
       const sliceParams = getSliceParamsFromPageParams({ page, pageSize });
-      res
-        .status(httpStatus.OK)
-        .json(
-          jsonResponse.create(httpStatus.OK, resultsData.slice(sliceParams.start, sliceParams.end))
-        );
+      res.status(httpStatus.OK).json(
+        jsonResponse.create(httpStatus.OK, {
+          items: resultsData.slice(sliceParams.start, sliceParams.end),
+          count: resultsData.length,
+        })
+      );
     } else {
       next();
     }
