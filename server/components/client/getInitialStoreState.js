@@ -6,7 +6,9 @@ const contractsDAL = require('../api/contracts/contractsDAL');
 const assetsBLL = require('../api/assets/assetsBLL');
 const infosBLL = require('../api/infos/infosBLL');
 const votesBLL = require('../api/votes/votesBLL');
+const interval1CacheBLL = require('../api/votes/cache/1/interval1CacheBLL');
 const cgpBLL = require('../api/cgp/cgpBLL');
+const getChain = require('../../lib/getChain');
 
 module.exports = async req => {
   const { routeName } = req;
@@ -155,14 +157,23 @@ async function getInfoStoreData() {
 }
 
 async function getRepoVoteStoreData(req) {
-  const [relevantInterval, currentInterval, nextInterval, recentIntervals] = await Promise.all([
+  const [
+    relevantInterval,
+    currentInterval,
+    nextInterval,
+    recentIntervals,
+    chain,
+  ] = await Promise.all([
     votesBLL.findIntervalAndTally(req.params),
     votesBLL.findIntervalAndTally(),
     votesBLL.findNextInterval(),
     votesBLL.findRecentIntervals(),
+    getChain(),
   ]);
+  const interval1Cache = interval1CacheBLL.relevantInterval();
+  const shouldUseCache = (relevantInterval || {}).interval == 1 && chain === 'main';
   return {
-    relevantInterval,
+    relevantInterval: shouldUseCache ? interval1Cache : relevantInterval,
     currentInterval,
     nextInterval,
     recentIntervals,

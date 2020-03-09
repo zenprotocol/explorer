@@ -2,10 +2,8 @@
 
 const httpStatus = require('http-status');
 const jsonResponse = require('../../../../../lib/jsonResponse');
-const relevantData = require('./relevant.json');
-const resultsData = require('./results.json');
-const votesData = require('./votes.json');
 const getChain = require('../../../../../lib/getChain');
+const bll = require('./interval1CacheBLL');
 
 /**
  * Loads the cached version of interval 1 (main net) which had a different structure
@@ -17,13 +15,9 @@ module.exports = {
     const chain = await getChain();
 
     if (interval == 1 && chain === 'main') {
-      const sliceParams = getSliceParamsFromPageParams({ page, pageSize });
-      res.status(httpStatus.OK).json(
-        jsonResponse.create(httpStatus.OK, {
-          items: votesData.slice(sliceParams.start, sliceParams.end),
-          count: votesData.length,
-        })
-      );
+      res
+        .status(httpStatus.OK)
+        .json(jsonResponse.create(httpStatus.OK, bll.votes({ page, pageSize })));
     } else {
       next();
     }
@@ -33,7 +27,7 @@ module.exports = {
     const chain = await getChain();
 
     if (interval == 1 && chain === 'main') {
-      res.status(httpStatus.OK).json(jsonResponse.create(httpStatus.OK, relevantData));
+      res.status(httpStatus.OK).json(jsonResponse.create(httpStatus.OK, bll.relevantInterval()));
     } else {
       next();
     }
@@ -49,13 +43,9 @@ module.exports = {
     const chain = await getChain();
 
     if (interval == 1 && chain === 'main') {
-      const sliceParams = getSliceParamsFromPageParams({ page, pageSize });
-      res.status(httpStatus.OK).json(
-        jsonResponse.create(httpStatus.OK, {
-          items: resultsData.slice(sliceParams.start, sliceParams.end),
-          count: resultsData.length,
-        })
-      );
+      res
+        .status(httpStatus.OK)
+        .json(jsonResponse.create(httpStatus.OK, bll.results({ page, pageSize })));
     } else {
       next();
     }
@@ -67,10 +57,3 @@ module.exports = {
     next();
   },
 };
-
-function getSliceParamsFromPageParams({ page, pageSize } = {}) {
-  return {
-    start: page * pageSize,
-    end: page * pageSize + Number(pageSize),
-  };
-}
