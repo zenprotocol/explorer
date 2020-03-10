@@ -60,7 +60,7 @@ function SummaryNomination({
         </thead>
         <tbody>
           <tr>
-            <td>THRESHOLD AT SNAPSHOT ({thresholdPercentage}%)</td>
+            <td>THRESHOLD ({thresholdPercentage}% of total ZP issuance at snapshot)</td>
             <td>{AssetUtils.getAmountString('00', threshold)}</td>
           </tr>
           <tr>

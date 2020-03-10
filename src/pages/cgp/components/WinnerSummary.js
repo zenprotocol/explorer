@@ -18,16 +18,18 @@ WinnerSummary.propTypes = {
 };
 
 function SummaryNominationPhase(props) {
-  return <div className="row">
-    {props.winnersNomination && props.winnersNomination.length ? (
+  return (
+    <div className="row">
+      {props.winnersNomination && props.winnersNomination.length ? (
         <SummaryNomination {...props} />
       ) : (
         <NoWinner {...props} type="nomination" />
       )}
-  </div>;
+    </div>
+  );
 }
 SummaryNominationPhase.propTypes = {
-  winnersNomination: PropTypes.array
+  winnersNomination: PropTypes.array,
 };
 function SummaryVotePhase(props) {
   return (
@@ -71,7 +73,7 @@ function SummaryNomination({
         <tbody>
           <UnconfirmedRow currentBlock={currentBlock} coinbaseMaturity={coinbaseMaturity} />
           <tr>
-            <td>THRESHOLD AT SNAPSHOT ({thresholdPercentage}%)</td>
+            <td>THRESHOLD ({thresholdPercentage}% of total ZP issuance at snapshot)</td>
             <td>{AssetUtils.getAmountString('00', threshold)}</td>
           </tr>
           <tr>
