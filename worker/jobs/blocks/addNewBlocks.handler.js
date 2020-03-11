@@ -4,5 +4,10 @@ const BlockchainParser = require('../../../server/lib/BlockchainParser');
 const blocksAdder = new BlocksAdder(new NetworkHelper(), new BlockchainParser());
 
 module.exports = async function (job) {
-  return await blocksAdder.addNewBlocks(job);
+  if(job.data.type === 'check-synced') {
+    return await blocksAdder.checkBlocksSynced(job);
+  }
+  else {
+    return await blocksAdder.addNewBlocks(job);
+  }
 };

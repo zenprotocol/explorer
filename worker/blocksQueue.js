@@ -32,11 +32,10 @@ addBlocksQueue.on('completed', function(job, result) {
     `A job has been completed. ID=${job.id} count=${result.count} latest block added=${result.latest}`
   );
   if (result.count > 0) {
-    addBlocksQueue.add({ limitBlocks: NUM_OF_BLOCKS_IN_CHUNK });
+    addBlocksQueue.add({ type: 'add-blocks', limitBlocks: NUM_OF_BLOCKS_IN_CHUNK });
     // notify snapshots that blocks were added
     snapshotsQueue.add();
   }
-  commandsQueue.add();
 });
 
 addBlocksQueue.on('failed', function(job, error) {
@@ -95,9 +94,14 @@ Promise.all([
   reorgsQueue.clean(0, 'failed'),
 ]).then(() => {
   // schedule ---
-  addBlocksQueue.add({ limitBlocks: NUM_OF_BLOCKS_IN_CHUNK }, { repeat: { cron: '* * * * *' } });
+  addBlocksQueue.add(
+    { type: 'add-blocks', limitBlocks: NUM_OF_BLOCKS_IN_CHUNK },
+    { repeat: { cron: '* * * * *' } }
+  );
+  addBlocksQueue.add({ type: 'check-synced' }, { repeat: { cron: '*/30 * * * *' } });
   // now
-  addBlocksQueue.add({ limitBlocks: NUM_OF_BLOCKS_IN_CHUNK });
+  addBlocksQueue.add({ type: 'add-blocks', limitBlocks: NUM_OF_BLOCKS_IN_CHUNK });
+  addBlocksQueue.add({ type: 'check-synced' });
   addBlocksQueue.resume();
 });
 

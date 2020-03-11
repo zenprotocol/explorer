@@ -11,17 +11,23 @@ const getJobData = require('../../lib/getJobData');
 const QueueError = require('../../lib/QueueError');
 const db = require('../../../server/db/sequelize/models');
 
+const TIME_TO_REPORT_UNSYNCED = 1800000; // 30 minutes
+
 class BlocksAdder {
   constructor(networkHelper, blockchainParser) {
     this.networkHelper = networkHelper;
     this.blockchainParser = blockchainParser;
   }
 
+  /**
+   * Entry point: add blocks
+   */
   async addNewBlocks(job) {
     const startTime = process.hrtime();
     let dbTransaction = null;
     try {
-      let latestBlockNumberInDB = await this.getLatestBlockNumberInDB();
+      const latestBlockInDB = await blocksDAL.findLatest();
+      const latestBlockNumberInDB = (latestBlockInDB || {}).blockNumber || 0;
       const latestBlockNumberInNode = await this.networkHelper.getLatestBlockNumberFromNode();
       const latestBlockNumberToAdd = getJobData(job, 'limitBlocks')
         ? Math.min(
@@ -88,13 +94,28 @@ class BlocksAdder {
     }
   }
 
-  async getLatestBlockNumberInDB() {
-    let blockNumber = 0;
-    const latestBlockInDB = await blocksDAL.findLatest();
-    if (latestBlockInDB) {
-      blockNumber = latestBlockInDB.blockNumber;
+  /**
+   * Entry point: check if the blocks are synced by the latest timestamp
+   * if not synced, an error is thrown for the queue to report it
+   */
+  async checkBlocksSynced() {
+    try {
+      const latestBlockInDB = await blocksDAL.findLatest();
+      if (latestBlockInDB) {
+        const latestTime = new Date(Number(latestBlockInDB.timestamp));
+        const now = new Date();
+        if (now - latestTime > TIME_TO_REPORT_UNSYNCED) {
+          throw new Error(
+            `Blocks are not synced for more than ${TIME_TO_REPORT_UNSYNCED / 1000 / 60} minutes`
+          );
+        }
+      }
+
+      return true;
+    } catch (error) {
+      logger.error(error.message);
+      throw new QueueError(error);
     }
-    return blockNumber;
   }
 
   async updateInfos() {
@@ -165,9 +186,7 @@ class BlocksAdder {
           dbTransaction,
         });
         logger.info(
-          `Transaction created and added to block #${block.blockNumber} blockHash=${
-            block.hash
-          }. txHash=${transaction.hash}, transactionId=${transaction.id}`
+          `Transaction created and added to block #${block.blockNumber} blockHash=${block.hash}. txHash=${transaction.hash}, transactionId=${transaction.id}`
         );
 
         await this.addContract({ transactionHash, nodeBlock, dbTransaction });
@@ -175,9 +194,7 @@ class BlocksAdder {
         try {
           // add outputs
           logger.info(
-            `Adding ${nodeTransaction.outputs.length} outputs to block #${
-              block.blockNumber
-            } txHash=${transaction.hash}`
+            `Adding ${nodeTransaction.outputs.length} outputs to block #${block.blockNumber} txHash=${transaction.hash}`
           );
           const outputsToInsert = this.getOutputsToInsert({
             nodeOutputs: nodeTransaction.outputs,
@@ -187,9 +204,7 @@ class BlocksAdder {
 
           // add inputs
           logger.info(
-            `Adding ${nodeTransaction.inputs.length} inputs to block #${block.blockNumber} txHash=${
-              transaction.hash
-            }`
+            `Adding ${nodeTransaction.inputs.length} inputs to block #${block.blockNumber} txHash=${transaction.hash}`
           );
           const inputsToInsert = this.getInputsToInsert({
             nodeInputs: nodeTransaction.inputs,
@@ -417,11 +432,7 @@ class BlocksAdder {
         transaction: dbTransaction,
       });
       const block = await blocksDAL.findById(transaction.BlockId, { transaction: dbTransaction });
-      const errorMsg = `Did not find an output for an outpoint input! outpointIndex=${
-        input.outpointIndex
-      } outpointTXHash=${input.outpointTXHash}, current txHash=${transaction.hash} inputIndex=${
-        input.index
-      } blockNumber=${block.blockNumber}`;
+      const errorMsg = `Did not find an output for an outpoint input! outpointIndex=${input.outpointIndex} outpointTXHash=${input.outpointTXHash}, current txHash=${transaction.hash} inputIndex=${input.index} blockNumber=${block.blockNumber}`;
       throw new Error(errorMsg);
     }
   }
