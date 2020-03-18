@@ -25,26 +25,30 @@ reorgsQueue.process(path.join(__dirname, 'jobs/blocks/reorgs.handler.js'));
 
 // events
 addBlocksQueue.on('active', function(job, jobPromise) {
-  loggerBlocks.info(`A job has started. ID=${job.id}`);
+  loggerBlocks.info(`A job has started. ID=${job.id} TYPE=${job.data.type}`);
 });
 
 addBlocksQueue.on('completed', function(job, result) {
-  loggerBlocks.info(
-    `A job has been completed. ID=${job.id} count=${result.count} latest block added=${result.latest}`
-  );
-  if (result.count > 0) {
-    addBlocksQueue.add({ type: 'add-blocks', limitBlocks: NUM_OF_BLOCKS_IN_CHUNK });
-    // notify snapshots that blocks were added
-    snapshotsQueue.add();
+  if (job.data.type === 'check-synced') {
+    loggerBlocks.info(`A job has been completed. ID=${job.id} TYPE=${job.data.type} result=${result}`);
+  } else {
+    loggerBlocks.info(
+      `A job has been completed. ID=${job.id} TYPE=${job.data.type} count=${result.count} latest block added=${result.latest}`
+    );
+    if (result.count > 0) {
+      addBlocksQueue.add({ type: 'add-blocks', limitBlocks: NUM_OF_BLOCKS_IN_CHUNK });
+      // notify snapshots that blocks were added
+      snapshotsQueue.add();
+    }
   }
 });
 
 addBlocksQueue.on('failed', function(job, error) {
-  loggerBlocks.error(`A job has failed. ID=${job.id}, error=${error.message}`);
+  loggerBlocks.error(`A job has failed. ID=${job.id} TYPE=${job.data.type} error=${error.message}`);
   taskTimeLimiter.executeTask(() => {
     getChain().then(chain => {
       slackLogger.error(
-        `A blocks job has failed, error=${error.message} app=${APP_NAME} chain=${chain} node=${NODE_URL}`
+        `A ${job.data.type} job has failed, error=${error.message} app=${APP_NAME} chain=${chain} node=${NODE_URL}`
       );
     });
   });
@@ -77,7 +81,9 @@ reorgsQueue.on('completed', function(job, result) {
 reorgsQueue.on('failed', function(job, error) {
   loggerReorg.error(`A job has failed. ID=${job.id}, error=${error.message}`);
   taskTimeLimiter.executeTask(() => {
-    slackLogger.error(`An reorgsQueue job has failed, error=${error.message} app=${APP_NAME} node=${NODE_URL}`);
+    slackLogger.error(
+      `An reorgsQueue job has failed, error=${error.message} app=${APP_NAME} node=${NODE_URL}`
+    );
   });
 });
 
