@@ -12,6 +12,7 @@ const getChain = require('../server/lib/getChain');
 const NUM_OF_BLOCKS_IN_CHUNK = Config.get('queues:addBlocks:limitBlocks');
 
 const NODE_URL = Config.get('zp:node');
+const APP_NAME = Config.get('APP_NAME');
 const addBlocksQueue = queue(Config.get('queues:addBlocks:name'));
 const reorgsQueue = queue(Config.get('queues:reorgs:name'));
 const snapshotsQueue = queue(Config.get('queues:snapshots:name'));
@@ -43,14 +44,14 @@ addBlocksQueue.on('failed', function(job, error) {
   taskTimeLimiter.executeTask(() => {
     getChain().then(chain => {
       slackLogger.error(
-        `An AddBlocks job has failed, error=${error.message} chain=${chain} node=${NODE_URL}`
+        `A blocks job has failed, error=${error.message} app=${APP_NAME} chain=${chain} node=${NODE_URL}`
       );
     });
   });
   if (error.message === 'Reorg') {
     const message = 'Found a reorg! starting the reorg processor...';
     loggerBlocks.info(message);
-    slackLogger.log(`${message} node=${NODE_URL}`);
+    slackLogger.log(`${message} app=${APP_NAME} node=${NODE_URL}`);
     addBlocksQueue.pause();
     reorgsQueue.add();
   }
@@ -64,19 +65,19 @@ reorgsQueue.on('completed', function(job, result) {
   if (result.deleted > 0) {
     const message = `A reorg was successfully handled: ${JSON.stringify(result)}`;
     loggerReorg.info(message);
-    slackLogger.log(`${message} node=${NODE_URL}`);
+    slackLogger.log(`${message} app=${APP_NAME} node=${NODE_URL}`);
     addBlocksQueue.resume();
   } else {
     const message = `Could not handle a reorg: ${JSON.stringify(result)}`;
     loggerReorg.error(message);
-    slackLogger.log(`${message} node=${NODE_URL}`);
+    slackLogger.log(`${message} app=${APP_NAME} node=${NODE_URL}`);
   }
 });
 
 reorgsQueue.on('failed', function(job, error) {
   loggerReorg.error(`A job has failed. ID=${job.id}, error=${error.message}`);
   taskTimeLimiter.executeTask(() => {
-    slackLogger.error(`An reorgsQueue job has failed, error=${error.message} node=${NODE_URL}`);
+    slackLogger.error(`An reorgsQueue job has failed, error=${error.message} app=${APP_NAME} node=${NODE_URL}`);
   });
 });
 

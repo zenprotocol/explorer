@@ -9,6 +9,7 @@ const slackLogger = require('../server/lib/slackLogger');
 const getChain = require('../server/lib/getChain');
 
 const NODE_URL = Config.get('zp:node');
+const APP_NAME = Config.get('APP_NAME');
 const votesQueue = queue(Config.get('queues:votes:name'));
 
 const taskTimeLimiter = new TaskTimeLimiter(Config.get('queues:slackTimeLimit') * 1000);
@@ -29,7 +30,7 @@ votesQueue.on('failed', function(job, error) {
   logger.error(`A job has failed. TYPE=${job.data.type}, error=${error.message}`);
   taskTimeLimiter.executeTask(() => {
     getChain().then(chain => {
-      slackLogger.error(`A Votes job has failed, error=${error.message} chain=${chain} node=${NODE_URL}`);
+      slackLogger.error(`A Votes job has failed, error=${error.message} app=${APP_NAME} chain=${chain} node=${NODE_URL}`);
     });
   });
 });

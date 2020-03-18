@@ -9,6 +9,7 @@ const slackLogger = require('../server/lib/slackLogger');
 const getChain = require('../server/lib/getChain');
 
 const NODE_URL = Config.get('zp:node');
+const APP_NAME = Config.get('APP_NAME');
 const commandsQueue = queue(Config.get('queues:commands:name'));
 // notify the votes queue whenever new commands were added
 const votesQueue = queue(Config.get('queues:votes:name'));
@@ -36,7 +37,7 @@ commandsQueue.on('failed', function(job, error) {
   taskTimeLimiter.executeTask(() => {
     getChain().then(chain => {
       slackLogger.error(
-        `A Commands job has failed, error=${error.message} chain=${chain} node=${NODE_URL}`
+        `A Commands job has failed, error=${error.message} app=${APP_NAME} chain=${chain} node=${NODE_URL}`
       );
     });
   });
