@@ -43,8 +43,9 @@ addBlocksQueue.on('completed', function(job, result) {
       addBlocksQueue.add({ type: 'add-blocks', limitBlocks: NUM_OF_BLOCKS_IN_CHUNK });
       // notify other queues that blocks were added
       snapshotsQueue.add();
-      commandsQueue.add();
     }
+    // start dependant queues
+    commandsQueue.add();
   }
 });
 
