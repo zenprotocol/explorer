@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.1.0](https://github.com/zenprotocol/explorer/compare/v2.0.0...v2.1.0) (2020-03-24)
+
+
+### Features
+
+* log app name to slack ([546dc34](https://github.com/zenprotocol/explorer/commit/546dc34e81665945d439c8c4b92698252655b509))
+* **worker:** add a job to check if blocks synced ([298d1ab](https://github.com/zenprotocol/explorer/commit/298d1ab74883d45e2d2af637bada5d7161a1d244))
+
 ## [2.0.0](https://github.com/zenprotocol/explorer/compare/v1.7.13...v2.0.0) (2020-03-09)
 
 
