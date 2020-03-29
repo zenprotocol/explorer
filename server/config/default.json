@@ -37,7 +37,8 @@
     }
   },
   "governance": {
-    "afterTallyBlocks": 1000
+    "afterTallyBlocks": 1000,
+    "defaultCommitId": "0000000000000000000000000000000000000000"
   },
   "cgp": {
     "main": {
