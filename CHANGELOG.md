@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.2.0](https://github.com/zenprotocol/explorer/compare/v2.1.0...v2.2.0) (2020-03-30)
+
+
+### Features
+
+* return default commit id in votes/candidates ([fd5b2de](https://github.com/zenprotocol/explorer/commit/fd5b2de479416bf9bf58b9f692da5989000d6461))
+* **governance:** allow vote for default commit ([e4fe787](https://github.com/zenprotocol/explorer/commit/e4fe787de2b0eee39eedfd11bbc8a59d39c35126))
+
 ## [2.1.0](https://github.com/zenprotocol/explorer/compare/v2.0.0...v2.1.0) (2020-03-24)
 
 
