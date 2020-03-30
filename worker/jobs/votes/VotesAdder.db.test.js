@@ -18,6 +18,7 @@ const VotesAdder = require('./VotesAdder');
 const commandsData = require('./test/data/commands.json');
 
 const CONTRACT_ID = 'test-contract-id';
+const DEFAULT_COMMIT_ID = '0000000000000000000000000000000000000000';
 const SNAPSHOT_BLOCK_CONTESTANT = 5;
 const TALLY_BLOCK_CONTESTANT = 10;
 const SNAPSHOT_BLOCK_CANDIDATE = 15;
@@ -37,7 +38,8 @@ test('VotesAdder.doJob() (DB)', async function(t) {
   await wrapTest('Given no contract executions', async given => {
     const votesAdder = new VotesAdder({
       blockchainParser: new BlockchainParser(),
-      contractId: CONTRACT_ID
+      contractId: CONTRACT_ID,
+      defaultCommitId: DEFAULT_COMMIT_ID,
     });
     before(votesAdder);
     const result = await votesAdder.doJob();
@@ -48,7 +50,8 @@ test('VotesAdder.doJob() (DB)', async function(t) {
   await wrapTest('Given contestant phase', async given => {
     const votesAdder = new VotesAdder({
       blockchainParser: new BlockchainParser(),
-      contractId: CONTRACT_ID
+      contractId: CONTRACT_ID,
+      defaultCommitId: DEFAULT_COMMIT_ID,
     });
     before(votesAdder);
     await createDemoData();
@@ -83,7 +86,8 @@ test('VotesAdder.doJob() (DB)', async function(t) {
   await wrapTest('Given contestant phase, some votes outside of range', async given => {
     const votesAdder = new VotesAdder({
       blockchainParser: new BlockchainParser(),
-      contractId: CONTRACT_ID
+      contractId: CONTRACT_ID,
+      defaultCommitId: DEFAULT_COMMIT_ID,
     });
     before(votesAdder);
     await createDemoData();
@@ -109,7 +113,8 @@ test('VotesAdder.doJob() (DB)', async function(t) {
   await wrapTest('Given candidate phase, no candidates', async given => {
     const votesAdder = new VotesAdder({
       blockchainParser: new BlockchainParser(),
-      contractId: CONTRACT_ID
+      contractId: CONTRACT_ID,
+      defaultCommitId: DEFAULT_COMMIT_ID,
     });
     before(votesAdder);
     await createDemoData();
@@ -133,7 +138,8 @@ test('VotesAdder.doJob() (DB)', async function(t) {
     async given => {
       const votesAdder = new VotesAdder({
         blockchainParser: new BlockchainParser(),
-        contractId: CONTRACT_ID
+        contractId: CONTRACT_ID,
+        defaultCommitId: DEFAULT_COMMIT_ID,
       });
       before(votesAdder);
       await createDemoData();
@@ -169,7 +175,8 @@ test('VotesAdder.doJob() (DB)', async function(t) {
     async given => {
       const votesAdder = new VotesAdder({
         blockchainParser: new BlockchainParser(),
-        contractId: CONTRACT_ID
+        contractId: CONTRACT_ID,
+        defaultCommitId: DEFAULT_COMMIT_ID,
       });
       before(votesAdder);
       await createDemoData();
@@ -186,6 +193,29 @@ test('VotesAdder.doJob() (DB)', async function(t) {
       await insertCommand({
         blockNumber: 16,
         commitId: '1'
+      });
+
+      const result = await votesAdder.doJob();
+      t.equal(result, 2, `${given}: should return 2 for a valid vote for 2 addresses`);
+      after();
+    }
+  );
+
+  await wrapTest(
+    'Given candidate phase, no candidates, votes for default commit id',
+    async given => {
+      const votesAdder = new VotesAdder({
+        blockchainParser: new BlockchainParser(),
+        contractId: CONTRACT_ID,
+        defaultCommitId: DEFAULT_COMMIT_ID,
+      });
+      before(votesAdder);
+      await createDemoData();
+
+      // add a command with a vote for the default
+      await insertCommand({
+        blockNumber: 16,
+        commitId: DEFAULT_COMMIT_ID
       });
 
       const result = await votesAdder.doJob();

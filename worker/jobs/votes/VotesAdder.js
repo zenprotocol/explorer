@@ -11,9 +11,10 @@ const QueueError = require('../../lib/QueueError');
 const db = require('../../../server/db/sequelize/models');
 
 class VotesAdder {
-  constructor({ blockchainParser, contractId } = {}) {
+  constructor({ blockchainParser, contractId, defaultCommitId } = {}) {
     this.blockchainParser = blockchainParser;
     this.contractId = contractId;
+    this.defaultCommitId = defaultCommitId;
   }
 
   async doJob() {
@@ -23,9 +24,7 @@ class VotesAdder {
       let result = 0;
 
       // query for all commands with the voting contract id and that the command id is not in RepoVotes
-      const commands = await votesDAL.findAllUnprocessedCommands(
-        this.contractId
-      );
+      const commands = await votesDAL.findAllUnprocessedCommands(this.contractId);
       if (commands.length) {
         logger.info(`${commands.length} commands to add`);
         dbTransaction = await db.sequelize.transaction();
@@ -37,9 +36,7 @@ class VotesAdder {
         }
 
         await dbTransaction.commit();
-        logger.info(
-          `Added ${votesToAdd.length} votes from ${commands.length} commands`
-        );
+        logger.info(`Added ${votesToAdd.length} votes from ${commands.length} commands`);
         result = votesToAdd.length;
       }
       return result;
@@ -57,9 +54,7 @@ class VotesAdder {
 
   async processCommands(commands) {
     // a command can contain more than 1 vote or none
-    const arrays = await Promise.all(
-      commands.map(command => this.getVotesFromCommand(command))
-    );
+    const arrays = await Promise.all(commands.map(command => this.getVotesFromCommand(command)));
     return arrays.reduce((all, arr) => {
       all.push.apply(all, arr);
       return all;
@@ -79,7 +74,7 @@ class VotesAdder {
         await this.validateIntervalAndCandidates({
           voteInterval,
           command,
-          commitId
+          commitId,
         })
       ) {
         // go over each element in the dict and verify it against the interval and commitId
@@ -90,14 +85,12 @@ class VotesAdder {
           if (this.validateDictElement(element)) {
             const publicKey = element[0];
             const signature = element[1].signature;
-            const address = this.blockchainParser.getAddressFromPublicKey(
-              publicKey
-            );
+            const address = this.blockchainParser.getAddressFromPublicKey(publicKey);
             if (this.verify({ voteInterval, commitId, publicKey, signature })) {
               votesToAdd.push({
                 CommandId: Number(command.id),
                 commitId,
-                address
+                address,
               });
             } else {
               logger.info(
@@ -114,7 +107,7 @@ class VotesAdder {
     // command does not contain any valid vote - insert an empty vote so this command is handled
     if (votesToAdd.length === 0) {
       votesToAdd.push({
-        CommandId: Number(command.id)
+        CommandId: Number(command.id),
       });
     }
 
@@ -154,12 +147,17 @@ class VotesAdder {
     // phase is Candidate, check candidates
     if (voteInterval.phase === 'Candidate') {
       const candidates = await votesDAL.findContestantWinners({
-        interval: voteInterval.interval
+        interval: voteInterval.interval,
       });
+      // add the default commit id if exists
+      if (this.defaultCommitId) {
+        candidates.push({
+          commitId: this.defaultCommitId,
+        });
+      }
       if (
         !candidates.length ||
-        candidates.findIndex(candidate => candidate.commitId === commitId) ===
-          -1
+        candidates.findIndex(candidate => candidate.commitId === commitId) === -1
       ) {
         return false;
       }
@@ -174,9 +172,7 @@ class VotesAdder {
     return PublicKey.fromString(publicKey).verify(
       Buffer.from(
         sha
-          .update(
-            sha(Data.serialize(new Data.UInt32(BigInteger.valueOf(voteInterval.interval))))
-          )
+          .update(sha(Data.serialize(new Data.UInt32(BigInteger.valueOf(voteInterval.interval)))))
           .update(sha(Data.serialize(new Data.String(voteInterval.phase))))
           .update(sha(Data.serialize(new Data.String(commitId))))
           .hex(),

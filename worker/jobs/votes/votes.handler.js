@@ -12,7 +12,7 @@ let cgpVotesAdder;
  * Handles both repo and cgp votes
  */
 module.exports = async function(job) {
-  if(job.data.type === 'repo') {
+  if (job.data.type === 'repo') {
     // instantiate with the current chain
     if (!repoVotesAdder) {
       const chain = await getChain();
@@ -21,15 +21,15 @@ module.exports = async function(job) {
         repoVotesAdder = new RepoVotesAdder({
           blockchainParser: new BlockchainParser(chain),
           contractId: config.get('GOVERNANCE_CONTRACT_ID'),
+          defaultCommitId: config.get('governance:defaultCommitId'),
         });
       }
     }
-  
+
     if (repoVotesAdder) {
       return await repoVotesAdder.doJob(job);
     }
-  }
-  else if(job.data.type === 'cgp') {
+  } else if (job.data.type === 'cgp') {
     // instantiate with the current chain
     if (!cgpVotesAdder) {
       const chain = await getChain();
@@ -43,7 +43,7 @@ module.exports = async function(job) {
         });
       }
     }
-  
+
     if (cgpVotesAdder) {
       return await cgpVotesAdder.doJob(job);
     }

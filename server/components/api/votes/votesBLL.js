@@ -7,6 +7,7 @@ const createQueryObject = require('../../../lib/createQueryObject');
 const config = require('../../../config/Config');
 
 const configAfterTallyBlocks = config.get('governance:afterTallyBlocks');
+const configDefaultCommitId = config.get('governance:defaultCommitId');
 // number of blocks to show tally results
 const AFTER_TALLY_BLOCKS = configAfterTallyBlocks ? Number(configAfterTallyBlocks) : 1000;
 
@@ -137,9 +138,16 @@ module.exports = {
       return null;
     }
 
-    return votesDAL.findContestantWinners({
-      interval: currentInterval.interval,
-    });
+    return votesDAL
+      .findContestantWinners({
+        interval: currentInterval.interval,
+      })
+      // add the default commit id to the list if it does not exist
+      .then(results =>
+        results.some(candidate => candidate.commitId === configDefaultCommitId)
+          ? results
+          : [{ commitId: configDefaultCommitId, zpAmount: '0' }, ...results]
+      );
   },
 };
 
