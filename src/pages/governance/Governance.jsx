@@ -91,12 +91,6 @@ class GovernancePage extends React.Component {
       this.loadRelevantInterval();
     }
   }
-  componentWillUnmount() {
-    this.stopReload();
-  }
-  stopReload() {
-    this.forceDisposer();
-  }
 
   loadRelevantInterval() {
     this.repoVoteStore.loadRelevantInterval({
