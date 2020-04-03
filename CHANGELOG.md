@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [2.2.1](https://github.com/zenprotocol/explorer/compare/v2.2.0...v2.2.1) (2020-04-03)
+
+
+### Bug Fixes
+
+* remove leftover forceDisposer ([79019f4](https://github.com/zenprotocol/explorer/commit/79019f4dcfd59cc20c2ba14936b121dacd6e581f))
+
 ## [2.2.0](https://github.com/zenprotocol/explorer/compare/v2.1.0...v2.2.0) (2020-03-30)
 
 
