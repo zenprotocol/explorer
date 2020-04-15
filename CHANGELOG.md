@@ -2,6 +2,47 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.0.0](https://github.com/zenprotocol/explorer/compare/v2.2.1...v3.0.0) (2020-04-15)
+
+
+### ⚠ BREAKING CHANGES
+
+* /api/cgp/relevant?interval= result change
+
+### Features
+
+* **cgp:** validate spends ordered and unique ([c12703d](https://github.com/zenprotocol/explorer/commit/c12703d0abecd99254396e169904f208b35c92ee))
+* add allocation info box ([4266662](https://github.com/zenprotocol/explorer/commit/4266662ecb697fc0ee41625f923fe9cb76bef556))
+* add cgp ballot to participants ([399d584](https://github.com/zenprotocol/explorer/commit/399d584744d8ab3938a84c1eacf66d087bac50ba))
+* calc allocation, fix fee display in blocks ([532c52b](https://github.com/zenprotocol/explorer/commit/532c52bfbf62d2e228c13377cb8f60095064ab7e))
+* change cgp UI to accept phases ([8dec8e3](https://github.com/zenprotocol/explorer/commit/8dec8e38b080648328fbf1e644397492f937e4ad))
+* extract genesis total to env var ([0132a2c](https://github.com/zenprotocol/explorer/commit/0132a2c7c770f6e8f364bbbcf20bdef382632087))
+* improve cgp worker logs ([5a37df5](https://github.com/zenprotocol/explorer/commit/5a37df5411cd1218dca4c8165cddae3dc1766dac))
+* match node in cgp winner calc ([077176c](https://github.com/zenprotocol/explorer/commit/077176c9d74ae3771ff97fedc57b6154c09d91fd))
+* move phases 1 block backwards ([bc4099d](https://github.com/zenprotocol/explorer/commit/bc4099d9744a7ccde0708653ffe4ea5de4bd7044))
+* return cgp balance at snapshot block ([610306a](https://github.com/zenprotocol/explorer/commit/610306ad43aa5246904642bdd01a176560eb411d))
+* return cgp contract id and address in infos ([45576d7](https://github.com/zenprotocol/explorer/commit/45576d762c3874f8eabec9ecd583d767b66acd0c))
+* show allocation  bounce during vote ([07a95b2](https://github.com/zenprotocol/explorer/commit/07a95b23d215f2b07b559b2d9d434d89b225def3))
+* show cgp balance and allocation info page ([31adc0f](https://github.com/zenprotocol/explorer/commit/31adc0fdb3d93572107e9b4b6258ea42f996154e))
+* show extra assets in cgp balance as link ([7fdeeee](https://github.com/zenprotocol/explorer/commit/7fdeeeecfa6c5d8dc008233222aeb1ca2bcacfd1))
+* switch to Vote phase in real time ([c8156ad](https://github.com/zenprotocol/explorer/commit/c8156ad7dd4b5a46e321bf9a31c99232aeff2069))
+* **cgp:** add phases to backend ([8d114b6](https://github.com/zenprotocol/explorer/commit/8d114b620f12b767c6e87a453b3ac3f34750191c))
+* **cgp:** aggregate same assets in payout spends ([a5b5f01](https://github.com/zenprotocol/explorer/commit/a5b5f01487f09e0dc5b5186b214c6b428c63f130))
+* **cgp:** change vote begins message ([0cba4be](https://github.com/zenprotocol/explorer/commit/0cba4be23d4802b318d30139642f73fe3403fa51))
+* **cgp:** show unconfirmed before maturity ([0921fe9](https://github.com/zenprotocol/explorer/commit/0921fe9ee2982e4b0ea776b6e55cc00637270ed6))
+
+
+### Bug Fixes
+
+* allocation bounce ([92826b5](https://github.com/zenprotocol/explorer/commit/92826b5b57d23e617747e2d88f6c967f1334df94))
+* allow contract ballot and check cgp ballot ([926c11f](https://github.com/zenprotocol/explorer/commit/926c11fca1997d319068f6c2fd0bf949bf21e8b3))
+* redirect to phase 0 on page load for SSR ([5d3f5d3](https://github.com/zenprotocol/explorer/commit/5d3f5d3d51b721a7038e783565871f7f7498553c))
+* replace cgp address with the fund in page ([19d0885](https://github.com/zenprotocol/explorer/commit/19d0885c530ee5ada56e25d68d817b8118b04f6f))
+* show next interval in dropdown only if past maturity ([3aa7674](https://github.com/zenprotocol/explorer/commit/3aa76742008daf4b76dba973fd6f89b3276fb48f))
+* ssr with interval 0 ([1a38b91](https://github.com/zenprotocol/explorer/commit/1a38b91a14ce6c9072e34df201959e28c89d73d0))
+* start commands queue after every blocks job ([27943ae](https://github.com/zenprotocol/explorer/commit/27943aea5a049b6bacfe23b6527b0e667716f474))
+* **cgp:** load data on pagination ([52d8127](https://github.com/zenprotocol/explorer/commit/52d8127d16bc5144e624aac9fb534a1473881d5d))
+
 ### [2.2.1](https://github.com/zenprotocol/explorer/compare/v2.2.0...v2.2.1) (2020-04-03)
 
 
