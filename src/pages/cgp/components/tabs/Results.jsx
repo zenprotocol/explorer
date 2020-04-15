@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
-import { reaction } from 'mobx';
 import { observer, inject } from 'mobx-react';
+import classNames from 'classnames';
+import {Decimal} from 'decimal.js';
 import config from '../../../../lib/Config';
 import WithSetIdsOnUiStore from '../../../../components/hoc/WithSetIdsOnUiStore';
 import TextUtils from '../../../../lib/TextUtils';
@@ -9,43 +10,69 @@ import { ItemsTable } from '../../../../components/ItemsTable';
 import HashLink from '../../../../components/HashLink';
 import AddressLink from '../../../../components/AddressLink';
 import getTableSubComponent from './getTableSubComponent';
-import percentageToZP from '../../modules/percentageToZP';
+import percentageToZP from '../../../../lib/rewardPercentageToZP';
 
 class ResultsTab extends Component {
+  constructor(props) {
+    super(props);
+    this.getTrProps = this.getTrProps.bind(this);
+  }
   get typeParam() {
-    return this.props.match.params.type;
+    return String(this.props.match.params.type).toLowerCase();
   }
   componentDidMount() {
-    this.reloadOnBlocksCountChange();
+    this.poll();
   }
   componentWillUnmount() {
-    this.stopReload();
+    clearInterval(this.fetchInterval);
   }
-  reloadOnBlocksCountChange() {
-    const uiStore = this.props.rootStore.uiStore;
-    this.forceDisposer = reaction(
-      () => this.props.rootStore.blockStore.blocksCount,
-      () => {
-        this.typeParam === 'payout'
+  poll() {
+    const { uiStore } = this.props.rootStore;
+    this.fetchInterval = setInterval(
+      () =>
+        this.typeParam === 'nomination'
+          ? uiStore.setCGPNominationResultsTableData({ force: true })
+          : this.typeParam === 'payout'
           ? uiStore.setCGPPayoutResultsTableData({ force: true })
-          : uiStore.setCGPAllocationResultsTableData({ force: true });
-      }
+          : uiStore.setCGPAllocationResultsTableData({ force: true }),
+      30000
     );
   }
-  stopReload() {
-    this.forceDisposer();
+  getTrProps(state, rowInfo, column, instance, trProps) {
+    if(!rowInfo || !rowInfo.original) return {};
+
+    const { cgpStore } = this.props.rootStore;
+
+    return {
+      ...trProps,
+      className: classNames(trProps.className, {
+        'above-threshold':
+          this.typeParam === 'nomination' &&
+          new Decimal(rowInfo.original.amount).gte(cgpStore.relevantInterval.threshold),
+      }),
+    };
   }
   render() {
-    const uiStore = this.props.rootStore.uiStore;
-    const cgpStore = this.props.rootStore.cgpStore;
+    const { uiStore, cgpStore, blockStore } = this.props.rootStore;
     const isPayout = this.typeParam === 'payout';
-    const cgpStoreObject = isPayout ? cgpStore.resultsPayout : cgpStore.resultsAllocation;
-    const uiStoreTable = isPayout
+    const isNomination = this.typeParam === 'nomination';
+    const isAllocation = this.typeParam === 'allocation';
+    const cgpStoreObject = isNomination
+      ? cgpStore.resultsNomination
+      : isPayout
+      ? cgpStore.resultsPayout
+      : cgpStore.resultsAllocation;
+    const uiStoreTable = isNomination
+      ? uiStore.state.cgpNominationResultsTable
+      : isPayout
       ? uiStore.state.cgpPayoutResultsTable
       : uiStore.state.cgpAllocationResultsTable;
-    const uiStoreTableSetter = isPayout
-      ? uiStore.setCGPPayoutVotesTableData.bind(uiStore)
-      : uiStore.setCGPAllocationVotesTableData.bind(uiStore);
+    const uiStoreTableSetter = isNomination
+      ? uiStore.setCGPNominationResultsTableData.bind(uiStore)
+      : isPayout
+      ? uiStore.setCGPPayoutResultsTableData.bind(uiStore)
+      : uiStore.setCGPAllocationResultsTableData.bind(uiStore);
+
     return (
       <TabPanel>
         <ItemsTable
@@ -60,14 +87,15 @@ class ResultsTab extends Component {
               Header: 'ALLOCATION',
               accessor: 'content.allocation',
               minWidth: config.ui.table.minCellWidth,
-              show: !isPayout,
-              Cell: data => `${percentageToZP(data.value)} ZP`,
+              show: isAllocation,
+              Cell: data =>
+                `${percentageToZP({ percentage: data.value, height: blockStore.blocksCount })} ZP`,
             },
             {
               Header: 'RECIPIENT',
               accessor: 'content.recipient.address',
               minWidth: config.ui.table.minCellWidth,
-              show: isPayout,
+              show: !isAllocation,
               Cell: data => <AddressLink address={data.value} hash={data.value} />,
             },
             {
@@ -75,6 +103,13 @@ class ResultsTab extends Component {
               accessor: 'zpAmount',
               minWidth: config.ui.table.minCellWidth,
               Cell: data => `${TextUtils.formatNumber(data.value)} ZP`,
+            },
+            {
+              Header: 'ABOVE THRESHOLD',
+              accessor: 'amount',
+              minWidth: config.ui.table.minCellWidth,
+              show: isNomination,
+              Cell: ({value}) => isNomination && new Decimal(value).gte(cgpStore.relevantInterval.threshold) ? 'YES' : 'NO',
             },
           ]}
           loading={cgpStore.loading.results}
@@ -85,6 +120,7 @@ class ResultsTab extends Component {
           tableDataSetter={uiStoreTableSetter}
           topContent={<div>Total Ballots: {cgpStoreObject.count}</div>}
           SubComponent={getTableSubComponent(this.typeParam)}
+          getTrProps={this.getTrProps}
         />
       </TabPanel>
     );
@@ -92,5 +128,11 @@ class ResultsTab extends Component {
 }
 
 export default inject('rootStore')(
-  observer(WithSetIdsOnUiStore(observer(ResultsTab), 'setCGPVoteResultsTablesData', ['interval']))
+  observer(
+    WithSetIdsOnUiStore(observer(ResultsTab), 'setCGPVoteResultsTablesData', [
+      'interval',
+      'phase',
+      'type',
+    ])
+  )
 );

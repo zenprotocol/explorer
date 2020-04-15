@@ -2,7 +2,7 @@ const wrapTest = require('../../../../../../test/lib/wrapTest');
 const BlockchainParser = require('../../../../../../server/lib/BlockchainParser');
 const cgpDAL = require('../../../../../../server/components/api/cgp/cgpDAL');
 const CGPVotesAdder = require('../../../CGPVotesAdder');
-const contractId = require('../modules/contractId');
+const cgpAdderParams = require('../modules/cgpAdderParams');
 const { addDemoData } = require('../modules/addDemoData');
 const getDemoCommand = require('../modules/getDemoCommand');
 
@@ -14,13 +14,13 @@ module.exports = async function part({ t, before, after }) {
       const cgpVotesAdder = new CGPVotesAdder({
         blockchainParser,
         chain: 'test',
-        ...contractId,
+        ...cgpAdderParams,
       });
-      
+
       before(cgpVotesAdder);
       await addDemoData({
         blockchainParser,
-        commands: [getDemoCommand({ command: 'Payout', messageBody })],
+        commands: [getDemoCommand({ command: 'Nomination', messageBody })],
       });
       const result = await cgpVotesAdder.doJob();
       const votes = await cgpDAL.findAll();
@@ -37,7 +37,7 @@ module.exports = async function part({ t, before, after }) {
     messageBody: {
       wrongKey: [
         [
-          'Payout',
+          'Nomination',
           {
             string: '02344dc343f0ac6d0d1d5d6e6388a9dc495ff230b650565455f040c4abd565c1d301000000',
           },
@@ -136,7 +136,7 @@ module.exports = async function part({ t, before, after }) {
     messageBody: {
       dict: [
         [
-          'Payout',
+          'Nomination',
           {
             string: '',
           },
@@ -171,9 +171,9 @@ module.exports = async function part({ t, before, after }) {
     messageBody: {
       dict: [
         [
-          'Payout',
+          'Nomination',
           {
-            string: '02344dc343f0ac6d0d1d5d6e6388a9dc495ff230b650565455f040c4abd565c1d301000000',
+            string: '02011cb4afc2a1dd2c4f857460a7abe3efc67c24881fd33978d8a5f9a4cb25c14ef101000004',
           },
         ],
       ],
@@ -185,9 +185,9 @@ module.exports = async function part({ t, before, after }) {
     messageBody: {
       dict: [
         [
-          'Payout',
+          'Nomination',
           {
-            string: '02344dc343f0ac6d0d1d5d6e6388a9dc495ff230b650565455f040c4abd565c1d301000000',
+            string: '02011cb4afc2a1dd2c4f857460a7abe3efc67c24881fd33978d8a5f9a4cb25c14ef101000004',
           },
         ],
         [

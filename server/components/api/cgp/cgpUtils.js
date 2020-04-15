@@ -1,10 +1,20 @@
 'use strict';
 
-const {mergeRight} = require('ramda');
+const { mergeAll } = require('ramda');
+const { Decimal } = require('decimal.js');
 const config = require('../../../config/Config');
+const calcTotalZpByHeight = require('../../../lib/calcTotalZpByHeight');
 
 function getIntervalLength(chain) {
   return config.get(`cgp:${chain}:intervalLength`);
+}
+
+function getThresholdPercentage(chain) {
+  return config.get(`cgp:${chain}:thresholdPercentage`);
+}
+
+function getCoinbaseMaturity(chain) {
+  return config.get(`cgp:${chain}:coinbaseMaturity`);
 }
 
 function getIntervalByBlockNumber(chain, blockNumber) {
@@ -19,17 +29,19 @@ function getIntervalBlocks(chain, interval) {
   return {
     snapshot,
     tally,
+    coinbaseMaturity: tally + getCoinbaseMaturity(chain),
   };
 }
 
 /**
  * Get interval snapshot and tally blocks by:
  * 1. if interval is supplied, by that interval
- * 2. previous interval if currentBlock - prev.endHeight < 10,000
+ * 2. previous interval if currentBlock - prev.endHeight < maturity
  * 3. on going interval
  */
-function getRelevantIntervalBlocks(chain, interval, currentBlock) {
+function getRelevantIntervalBlocks({ chain, interval, phase, currentBlock } = {}) {
   let chosenInterval = interval;
+  let chosenPhase = phase;
 
   if (!chosenInterval) {
     const afterTallyBlocks = config.get(`cgp:${chain}:afterTallyBlocks`);
@@ -41,13 +53,49 @@ function getRelevantIntervalBlocks(chain, interval, currentBlock) {
     chosenInterval =
       currentInterval === 1 ? 1 : shouldGetPrevInterval ? currentInterval - 1 : currentInterval;
   }
+  const chosenIntervalBlocks = getIntervalBlocks(chain, chosenInterval);
+  if (!chosenPhase) {
+    const { snapshot, tally } = chosenIntervalBlocks;
+    const middlePoint = snapshot + (tally - snapshot) / 2;
+    /**
+     * in case both interval and block was given, block should be ignored
+     * return phase = vote if currentBlock > tally (prev interval)
+     */
+    chosenPhase = interval
+      ? 'Nomination'
+      : currentBlock > 0
+      ? currentBlock < middlePoint
+        ? 'Nomination'
+        : 'Vote'
+      : 'Nomination';
+  }
 
-  return mergeRight({ interval: chosenInterval }, getIntervalBlocks(chain, chosenInterval));
+  return mergeAll([{ interval: chosenInterval }, chosenIntervalBlocks, { phase: chosenPhase }]);
+}
+
+/**
+ * Get the threshold in ZP Kalapas at the given height
+ *
+ * @param {Object} params
+ * @param {(number|string)} params.height - the height at which to calculate
+ * @param {(number|string)} params.genesisTotal - the genesis total in ZP
+ * @param {("main"|"test")} params.chain - the current chain
+ * @returns (string) the threshold at the given height
+ */
+function getThreshold({ height, genesisTotal = 0, chain = 'main' } = {}) {
+  const threshold = new Decimal(calcTotalZpByHeight({ genesis: genesisTotal, height }))
+    .times(config.get(`cgp:${chain}:thresholdPercentage`))
+    .div(100);
+
+  return threshold.toFixed(Math.min(threshold.decimalPlaces(), 8));
 }
 
 module.exports = {
   getIntervalLength,
+  getCoinbaseMaturity,
   getIntervalByBlockNumber,
   getIntervalBlocks,
   getRelevantIntervalBlocks,
+  getThresholdPercentage,
+  getThreshold,
 };

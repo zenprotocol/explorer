@@ -27,19 +27,17 @@ export default function WithSetIdsOnUiStore(
 
     componentDidUpdate(prevProps) {
       const prevParams = RouterUtils.getRouteParams(prevProps);
-      ids.forEach(id => {
-        const value = this.getIdValue(id);
-        if (value !== prevParams[id]) {
-          this.setIds();
-        }
-      });
+      const changed = ids.some(id => this.getIdValue(id) !== prevParams[id]);
+      if (changed) {
+        this.setIds();
+      }
     }
 
     setIds() {
       const payload = ids.reduce(
         (all, id) => ({
           ...all,
-          [id]: this.getIdValue(id)
+          [id]: this.getIdValue(id),
         }),
         { force: shouldForceOnMount }
       );

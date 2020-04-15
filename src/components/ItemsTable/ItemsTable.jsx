@@ -109,6 +109,7 @@ class ItemsTable extends Component {
       multiSort,
       defaultSorted,
       defaultSortDesc,
+      getTrProps,
     } = this.props;
     const numOfPages = Math.ceil(itemsCount / pageSize);
     const showPageSizes = itemsCount > config.ui.table.pageSizes[0];
@@ -152,7 +153,7 @@ class ItemsTable extends Component {
           expanded={this.state.expanded}
           getTrProps={(state, rowInfo, column, instance) => {
             const expanded = rowInfo && state.expanded[rowInfo.index] === true;
-            return {
+            const trProps = {
               className: classNames({ expandable: SubComponent, expanded }),
               onClick: (e, handleOriginal) => {
                 const tagName = e.target.tagName.toLowerCase();
@@ -172,6 +173,8 @@ class ItemsTable extends Component {
                 }
               },
             };
+            const finalTrProps = typeof getTrProps === 'function' ? getTrProps(state, rowInfo, column, instance, trProps) : trProps;
+            return finalTrProps;
           }}
         />
       </div>
@@ -198,6 +201,7 @@ ItemsTable.propTypes = {
   multiSort: PropTypes.bool,
   defaultSorted: PropTypes.array,
   defaultSortDesc: PropTypes.bool,
+  getTrProps: PropTypes.func,
 };
 
 export default observer(ItemsTable);

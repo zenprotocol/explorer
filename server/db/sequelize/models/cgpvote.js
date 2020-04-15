@@ -4,7 +4,7 @@ module.exports = (sequelize, DataTypes) => {
     'CGPVote',
     {
       CommandId: DataTypes.BIGINT,
-      type: DataTypes.ENUM('allocation', 'payout'),
+      type: DataTypes.ENUM('allocation', 'payout', 'nomination'),
       ballot: DataTypes.TEXT,
       address: DataTypes.STRING,
     },

@@ -36,6 +36,53 @@ cgpDAL.findAllUnprocessedCommands = async function(contractId) {
 };
 
 /**
+ * Find the highest block number with a valid vote
+ * @param {Object} params
+ * @param {number} params.startBlockNumber - the highest block number to look from
+ * @param {number} params.intervalLength
+ * @param {number} params.interval1Snapshot - the snapshot of interval 1
+ * @param {number} params.interval1Tally - the tally of interval 1
+ * @param {('allocation'|'payout')} params.type - vote type
+ * @returns {number} the highest block number with a vote or 0
+ */
+cgpDAL.findLastValidVoteBlockNumber = async function({
+  startBlockNumber,
+  intervalLength,
+  interval1Snapshot,
+  interval1Tally,
+  type,
+  dbTransaction,
+} = {}) {
+  const sql = tags.oneLine`
+  SELECT "Blocks"."blockNumber"
+  FROM "CGPVotes"
+  INNER JOIN "Commands" ON "Commands"."id" = "CGPVotes"."CommandId"
+  INNER JOIN "Transactions" ON "Transactions"."id" = "Commands"."TransactionId"
+  INNER JOIN "Blocks" ON "Blocks"."id" = "Transactions"."BlockId"
+    AND ("Blocks"."blockNumber" - 1) % :intervalLength > :interval1Snapshot - 1
+    AND ("Blocks"."blockNumber" - 1) % :intervalLength < :interval1Tally
+    AND "Blocks"."blockNumber" <= :startBlockNumber
+  WHERE "CGPVotes"."type" = :type
+  ORDER BY "Blocks"."blockNumber" DESC
+  LIMIT 1; 
+  `;
+
+  return sequelize
+    .query(sql, {
+      replacements: {
+        type,
+        startBlockNumber,
+        intervalLength,
+        interval1Snapshot,
+        interval1Tally,
+      },
+      type: sequelize.QueryTypes.SELECT,
+      transaction: dbTransaction,
+    })
+    .then(result => (result.length ? result[0].blockNumber : 0));
+};
+
+/**
  * Find all votes for an interval, grouped by command and filter double votes
  */
 cgpDAL.findAllVotesInInterval = async function({ snapshot, tally, type, limit, offset = 0 } = {}) {
@@ -43,7 +90,7 @@ cgpDAL.findAllVotesInInterval = async function({ snapshot, tally, type, limit, o
   ${WITH_FILTER_TABLES}
   ${FIND_ALL_BY_INTERVAL_BASE_SQL}
   ORDER BY "Blocks"."blockNumber" DESC
-  LIMIT :limit OFFSET :offset; 
+  ${limit ? 'LIMIT :limit' : ''} OFFSET :offset; 
   `;
 
   return sequelize.query(sql, {
@@ -85,12 +132,19 @@ cgpDAL.countVotesInInterval = async function({ snapshot, tally, type } = {}) {
  *
  * @param {number} interval
  */
-cgpDAL.findAllVoteResults = async function({ snapshot, tally, type, limit, offset = 0 } = {}) {
+cgpDAL.findAllVoteResults = async function({
+  snapshot,
+  tally,
+  type,
+  limit,
+  offset = 0,
+  dbTransaction = null,
+} = {}) {
   const sql = tags.oneLine`
   ${WITH_FILTER_TABLES}
   ${FIND_ALL_VOTE_RESULTS_BASE_SQL}
   ORDER BY "zpAmount" DESC
-  LIMIT :limit OFFSET :offset;
+  ${limit ? 'LIMIT :limit' : ''} OFFSET :offset;
   `;
 
   return sequelize.query(sql, {
@@ -102,6 +156,7 @@ cgpDAL.findAllVoteResults = async function({ snapshot, tally, type, limit, offse
       offset,
     },
     type: sequelize.QueryTypes.SELECT,
+    transaction: dbTransaction,
   });
 };
 
@@ -123,46 +178,28 @@ cgpDAL.countAllVoteResults = async function({ snapshot, tally, type } = {}) {
     .then(this.queryResultToCount);
 };
 
-cgpDAL.findWinner = async function({ snapshot, tally, type, dbTransaction = null } = {}) {
+cgpDAL.findAllBallots = async function({ type, snapshot, tally, limit, offset = 0 }) {
   const sql = tags.oneLine`
   ${WITH_FILTER_TABLES}
-  ${FIND_ALL_VOTE_RESULTS_BASE_SQL}
-  ORDER BY "zpAmount" DESC
-  LIMIT 1;
-  `;
-
-  return sequelize
-    .query(sql, {
-      replacements: {
-        snapshot,
-        tally,
-        type,
-      },
-      type: sequelize.QueryTypes.SELECT,
-      transaction: dbTransaction,
-    })
-    .then(results => (results.length ? results[0] : null));
-};
-
-cgpDAL.findAllBallots = async function({ type, intervalLength, limit, offset = 0 }) {
-  const sql = tags.oneLine`
   ${FIND_ALL_BALLOTS_BASE_SQL}
   ORDER BY "zpAmount" DESC
-  LIMIT :limit OFFSET :offset;
+  ${limit ? 'LIMIT :limit' : ''} OFFSET :offset;
   `;
 
   return sequelize.query(sql, {
     replacements: {
       type,
-      intervalLength,
+      snapshot,
+      tally,
       limit,
       offset,
     },
     type: sequelize.QueryTypes.SELECT,
   });
 };
-cgpDAL.countAllBallots = async function({ type, intervalLength }) {
+cgpDAL.countAllBallots = async function({ type, snapshot, tally }) {
   const sql = tags.oneLine`
+  ${WITH_FILTER_TABLES}
   SELECT count(*) FROM (${FIND_ALL_BALLOTS_BASE_SQL}) AS "Results"
   `;
 
@@ -170,7 +207,8 @@ cgpDAL.countAllBallots = async function({ type, intervalLength }) {
     .query(sql, {
       replacements: {
         type,
-        intervalLength,
+        snapshot,
+        tally,
       },
       type: sequelize.QueryTypes.SELECT,
     })
@@ -192,7 +230,67 @@ cgpDAL.findZpParticipated = async function({ snapshot, tally, type } = {}) {
       },
       type: sequelize.QueryTypes.SELECT,
     })
-    .then(result => (result.length && result[0].amount ? result[0].amount : 0));
+    .then(result => (result.length && result[0].amount ? result[0].amount : '0'));
+};
+
+cgpDAL.findAllNominees = async function({
+  snapshot,
+  tally,
+  threshold,
+  limit,
+  offset = 0,
+  dbTransaction = null,
+} = {}) {
+  const sql = tags.oneLine`
+  ${WITH_FILTER_TABLES}
+  SELECT "ballot", "amount", "zpAmount" FROM
+  (${FIND_ALL_BALLOTS_BASE_SQL}) AS Results
+  WHERE "amount" >= :threshold
+  ORDER BY "zpAmount" DESC
+  ${limit ? 'LIMIT :limit' : ''} OFFSET :offset;
+  `;
+
+  return sequelize.query(sql, {
+    replacements: {
+      type: 'nomination',
+      snapshot,
+      tally,
+      limit,
+      offset,
+      threshold,
+    },
+    type: sequelize.QueryTypes.SELECT,
+    transaction: dbTransaction,
+  });
+};
+
+cgpDAL.countAllNominees = async function({
+  snapshot,
+  tally,
+  threshold,
+  dbTransaction = null,
+} = {}) {
+  const sql = tags.oneLine`
+  ${WITH_FILTER_TABLES}
+  SELECT count(*) from (
+    SELECT "ballot", "amount" FROM
+    (${FIND_ALL_BALLOTS_BASE_SQL}) AS Results
+    WHERE "amount" >= :threshold
+  ) AS "CountResults"
+  `;
+
+  return sequelize
+    .query(sql, {
+      replacements: {
+        type: 'nomination',
+        snapshot,
+        tally,
+        threshold,
+      },
+      type: sequelize.QueryTypes.SELECT,
+      transaction: dbTransaction,
+    })
+    .then(this.queryResultToCount);
 };
 
 module.exports = cgpDAL;

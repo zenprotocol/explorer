@@ -13,10 +13,9 @@ function addBallotContentToResult({ type, chain } = {}) {
     return result && result.ballot
       ? {
           ...result,
-          content:
-            type === 'payout'
-              ? getPayoutBallotContent({ ballot: result.ballot, chain })
-              : getAllocationBallotContent({ ballot: result.ballot }),
+          content: ['payout', 'nomination'].includes(type)
+            ? getPayoutBallotContent({ ballot: result.ballot, chain })
+            : getAllocationBallotContent({ ballot: result.ballot }),
         }
       : result;
   };

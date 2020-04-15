@@ -7,8 +7,10 @@ export default class CGPStore {
     this.relevantInterval = initialState.relevantInterval || {};
     this.votesAllocation = initialState.votesAllocation || { items: [], count: 0 };
     this.votesPayout = initialState.votesPayout || { items: [], count: 0 };
+    this.votesNomination = initialState.votesNomination || { items: [], count: 0 };
     this.resultsAllocation = initialState.resultsAllocation || { items: [], count: 0 };
     this.resultsPayout = initialState.resultsPayout || { items: [], count: 0 };
+    this.resultsNomination = initialState.resultsNomination || { items: [], count: 0 };
     this.payoutBallots = initialState.payoutBallots || { items: [], count: 0 };
     this.loading = {
       relevantInterval: false,
@@ -16,18 +18,6 @@ export default class CGPStore {
       results: false,
       payoutBallots: false,
     };
-  }
-
-  get winnerAllocation() {
-    if (!(this.relevantInterval || {}).winnerAllocation) return '';
-
-    return this.relevantInterval.winner.ballot;
-  }
-
-  get winnerPayout() {
-    if (!(this.relevantInterval || {}).winnerPayout) return '';
-
-    return this.relevantInterval.winnerPayout.ballot;
   }
 
   get intervalLength() {
@@ -72,13 +62,16 @@ export default class CGPStore {
   }
 
   loadVotes(type, params = {}) {
+    if (!validateType(type)) return;
     this.loading.votes = true;
 
     return Service.cgp
       .findAllVotes(type, params)
       .then(({ data }) => {
         runInAction(() => {
-          if (type === 'payout') {
+          if (type === 'nomination') {
+            this.votesNomination = data;
+          } else if (type === 'payout') {
             this.votesPayout = data;
           } else {
             this.votesAllocation = data;
@@ -87,7 +80,9 @@ export default class CGPStore {
       })
       .catch(() => {
         runInAction(() => {
-          if (type === 'payout') {
+          if (type === 'nomination') {
+            this.votesNomination = { items: [], count: 0 };
+          } else if (type === 'payout') {
             this.votesPayout = { items: [], count: 0 };
           } else {
             this.votesAllocation = { items: [], count: 0 };
@@ -102,13 +97,16 @@ export default class CGPStore {
   }
 
   loadResults(type, params = {}) {
+    if (!validateType(type)) return;
     this.loading.results = true;
 
     return Service.cgp
       .findAllResults(type, params)
       .then(({ data }) => {
         runInAction(() => {
-          if (type === 'payout') {
+          if (type === 'nomination') {
+            this.resultsNomination = data;
+          } else if (type === 'payout') {
             this.resultsPayout = data;
           } else {
             this.resultsAllocation = data;
@@ -117,7 +115,9 @@ export default class CGPStore {
       })
       .catch(() => {
         runInAction(() => {
-          if (type === 'payout') {
+          if (type === 'nomination') {
+            this.resultsNomination = { items: [], count: 0 };
+          } else if (type === 'payout') {
             this.resultsPayout = { items: [], count: 0 };
           } else {
             this.resultsAllocation = { items: [], count: 0 };
@@ -127,28 +127,6 @@ export default class CGPStore {
       .then(() => {
         runInAction(() => {
           this.loading.results = false;
-        });
-      });
-  }
-
-  loadPayoutBallots(type, params = {}) {
-    this.loading.payoutBallots = true;
-
-    return Service.cgp
-      .findBallots('payout', params)
-      .then(({ data }) => {
-        runInAction(() => {
-          this.payoutBallots = data;
-        });
-      })
-      .catch(() => {
-        runInAction(() => {
-          this.payoutBallots = { items: [], count: 0 };
-        });
-      })
-      .then(() => {
-        runInAction(() => {
-          this.loading.payoutBallots = false;
         });
       });
   }
@@ -165,11 +143,12 @@ decorate(CGPStore, {
   loadRelevantInterval: action,
   loadVotes: action,
   loadResults: action,
-  loadPayoutBallots: action,
-  winnerAllocation: computed,
-  winnerPayout: computed,
   currentInterval: computed,
   intervalLength: computed,
   snapshotBlock: computed,
   tallyBlock: computed,
 });
+
+function validateType(type) {
+  return ['nomination', 'allocation', 'payout'].includes(type);
+}

@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { reaction } from 'mobx';
+import { Decimal } from 'decimal.js';
 import { observer, inject } from 'mobx-react';
 import { Link } from 'react-router-dom';
 import TextUtils from '../../../lib/TextUtils';
@@ -24,6 +25,7 @@ class BlocksTable extends Component {
       {
         Header: 'Block',
         accessor: 'blockNumber',
+        minWidth: 110,
         Cell: ({ value }) => <Link to={`/blocks/${value}`}>{TextUtils.formatNumber(value)}</Link>,
       },
       {
@@ -43,6 +45,7 @@ class BlocksTable extends Component {
       {
         Header: 'Difficulty',
         accessor: 'difficulty',
+        minWidth: 130,
         hideOnMobile: true,
         Cell: ({ value }) => TextUtils.formatNumber(value),
       },
@@ -53,14 +56,28 @@ class BlocksTable extends Component {
       },
       {
         Header: 'Fees',
-        accessor: 'coinbaseAmount',
+        accessor: '',
+        minWidth: config.ui.table.minCellWidth,
         Cell: data =>
-          AssetUtils.getAmountString('00', Number(data.value) - Number(data.original.reward)),
+          AssetUtils.getAmountString(
+            '00',
+            new Decimal(data.original.coinbaseAmount)
+              .plus(data.original.allocationAmount)
+              .minus(data.original.reward)
+              .toFixed(8)
+          ),
       },
+      // {
+      //   Header: 'Allocation',
+      //   accessor: 'allocationAmount',
+      //   minWidth: config.ui.table.minCellWidth,
+      //   Cell: ({ value }) => AssetUtils.getAmountString('00', value),
+      // },
       {
         Header: 'Reward',
         accessor: 'reward',
-        Cell: ({ value }) => AssetUtils.getAmountString('00', Number(value)),
+        minWidth: config.ui.table.minCellWidth,
+        Cell: ({ value }) => AssetUtils.getAmountString('00', value),
       },
     ];
   }

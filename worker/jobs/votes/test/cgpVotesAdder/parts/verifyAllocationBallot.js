@@ -2,7 +2,7 @@ const wrapTest = require('../../../../../../test/lib/wrapTest');
 const BlockchainParser = require('../../../../../../server/lib/BlockchainParser');
 const cgpDAL = require('../../../../../../server/components/api/cgp/cgpDAL');
 const CGPVotesAdder = require('../../../CGPVotesAdder');
-const contractId = require('../modules/contractId');
+const cgpAdderParams = require('../modules/cgpAdderParams');
 const { addDemoData, addCommands } = require('../modules/addDemoData');
 const getDemoCommand = require('../modules/getDemoCommand');
 const getValidMessageBody = require('../modules/getValidMessageBody');
@@ -17,7 +17,7 @@ module.exports = async function part({ t, before, after }) {
       const cgpVotesAdder = new CGPVotesAdder({
         blockchainParser,
         chain: 'test',
-        ...contractId,
+        ...cgpAdderParams,
       });
       before(cgpVotesAdder);
 
@@ -25,6 +25,7 @@ module.exports = async function part({ t, before, after }) {
       messageBody.dict[1][1].string = getAllocationBallot(allocation);
       await addDemoData({
         blockchainParser,
+        commandsBlockNumber: 96,
         commands: [
           getDemoCommand({
             command: 'Allocation',
@@ -61,7 +62,7 @@ module.exports = async function part({ t, before, after }) {
       const cgpVotesAdder = new CGPVotesAdder({
         blockchainParser,
         chain: 'test',
-        ...contractId,
+        ...cgpAdderParams,
       });
       before(cgpVotesAdder);
 
@@ -70,9 +71,9 @@ module.exports = async function part({ t, before, after }) {
       messageBodyPrevWinner.dict[1][1].string = getAllocationBallot(prevAllocation);
       messageBodyCurrent.dict[1][1].string = getAllocationBallot(allocation);
       await addDemoData({ blockchainParser, lastBlockNumber: 200 });
-      // add a command to block 91 (prev winner)
+      // add a command to block 96 (prev winner)
       await addCommands({
-        commandsBlockNumber: 91,
+        commandsBlockNumber: 96,
         commands: [
           getDemoCommand({
             command: 'Allocation',
@@ -80,9 +81,9 @@ module.exports = async function part({ t, before, after }) {
           }),
         ],
       });
-      // add a command to block 191 (current)
+      // add a command to block 196 (current)
       await addCommands({
-        commandsBlockNumber: 191,
+        commandsBlockNumber: 196,
         commands: [
           getDemoCommand({
             command: 'Allocation',
@@ -151,5 +152,84 @@ module.exports = async function part({ t, before, after }) {
     given: 'prev allocation=5% (max is 19.25%) and allocation is 20%',
     should: 'add an empty vote',
     assert: addsEmptyVoteAssert,
+  });
+
+  const getAllocationTestWithPrevWinnerAfterGap = ({
+    prevAllocation,
+    allocation,
+    given,
+    should,
+    assert,
+  }) =>
+    wrapTest(given, async () => {
+      const cgpVotesAdder = new CGPVotesAdder({
+        blockchainParser,
+        chain: 'test',
+        ...cgpAdderParams,
+      });
+      before(cgpVotesAdder);
+
+      const messageBodyPrevWinner = getValidMessageBody('Allocation');
+      const messageBodyCurrent = getValidMessageBody('Allocation');
+      messageBodyPrevWinner.dict[1][1].string = getAllocationBallot(prevAllocation);
+      messageBodyCurrent.dict[1][1].string = getAllocationBallot(allocation);
+      await addDemoData({ blockchainParser, lastBlockNumber: 300 });
+      // (prev winner)
+      await addCommands({
+        commandsBlockNumber: 96,
+        commands: [
+          getDemoCommand({
+            command: 'Allocation',
+            messageBody: messageBodyPrevWinner,
+          }),
+        ],
+      });
+      // (current)
+      await addCommands({
+        commandsBlockNumber: 296,
+        commands: [
+          getDemoCommand({
+            command: 'Allocation',
+            messageBody: messageBodyCurrent,
+          }),
+        ],
+      });
+
+      await cgpVotesAdder.doJob();
+      const votes = await cgpDAL.findAll({
+        include: [
+          {
+            model: cgpDAL.db.Command,
+            required: true,
+            include: [
+              {
+                model: cgpDAL.db.Transaction,
+                required: true,
+                include: [
+                  {
+                    model: cgpDAL.db.Block,
+                    required: true,
+                    where: {
+                      blockNumber: {
+                        [cgpDAL.db.Sequelize.Op.gt]: 290,
+                      },
+                    },
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+      });
+      t.assert(assert({ votes }), `Given ${given}: should ${should}`);
+      after();
+    });
+
+  await getAllocationTestWithPrevWinnerAfterGap({
+    prevAllocation: allocationValues['5%'].allocation,
+    allocation: allocationValues['18%'].allocation,
+    given: 'prev allocation=5% (max is 19.25%), a gap with no votes and allocation is 18%',
+    should: 'add the vote',
+    assert: addsTheVoteAssert('18%'),
   });
 };

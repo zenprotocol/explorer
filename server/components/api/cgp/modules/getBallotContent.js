@@ -7,7 +7,7 @@ const deserializeBallot = require('./deserializeBallot');
 function getPayoutBallotContent({ ballot, chain } = {}) {
   const deserialized = deserializeBallot(ballot);
   if (!deserialized) return null;
-  
+
   const blockchainParser = new BlockchainParser(chain);
   const address = R.has('contractId', deserialized.recipient)
     ? blockchainParser.getAddressFromContractId(deserialized.recipient.contractId)

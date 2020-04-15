@@ -1,6 +1,6 @@
 'use strict';
 
-const CONTRACT_ID = require('./contractId').contractIdVoting;
+const CONTRACT_ID = require('./cgpAdderParams').contractIdVoting;
 
 function getDemoCommand({ id = 1, command = 'Payout', messageBody } = {}) {
   return {

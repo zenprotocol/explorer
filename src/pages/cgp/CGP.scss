@@ -3,17 +3,26 @@
 .CGP {
   .table-zen {
     margin-bottom: 0;
+
+    .inner-header {
+      font-weight: 500;
+    }
   }
 
   %message-shared {
     padding: 40px 0;
     font-weight: $font-weight-bold;
     font-size: $h3-font-size;
+    text-transform: uppercase;
   }
 
   .before-snapshot-message {
     @extend %message-shared;
     color: $red;
+  }
+
+  .during-vote-message {
+    @extend %message-shared;
   }
 
   .after-tally-message {
@@ -58,6 +67,14 @@
         td.text-right {
           padding-right: $content-padding-x-lg - 11;
         }
+      }
+    }
+  }
+
+  .GenericTable .ReactTable .rt-tbody .rt-tr {
+    &.above-threshold {
+      .rt-td {
+        font-weight: 500;
       }
     }
   }

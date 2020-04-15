@@ -3,20 +3,107 @@ import PropTypes from 'prop-types';
 import AssetUtils from '../../../lib/AssetUtils';
 import HashLink from '../../../components/HashLink';
 import AddressLink from '../../../components/AddressLink';
-import percentageToZP from '../modules/percentageToZP';
+import percentageToZP from '../../../lib/rewardPercentageToZP';
 
 export default function WinnerSummary(props) {
+  const { phase } = props;
+  return phase === 'Nomination' ? (
+    <SummaryNominationPhase {...props} />
+  ) : (
+    <SummaryVotePhase {...props} />
+  );
+}
+WinnerSummary.propTypes = {
+  phase: PropTypes.string,
+};
+
+function SummaryNominationPhase(props) {
   return (
     <div className="row">
-      <SummaryAllocation {...props} />
-      <SummaryPayout {...props} />
+      {props.winnersNomination && props.winnersNomination.length ? (
+        <SummaryNomination {...props} />
+      ) : (
+        <NoWinner {...props} type="nomination" />
+      )}
     </div>
   );
 }
+SummaryNominationPhase.propTypes = {
+  winnersNomination: PropTypes.array,
+};
+function SummaryVotePhase(props) {
+  return (
+    <div className="row">
+      {props.winnerAllocation !== null ? (
+        <SummaryAllocation {...props} />
+      ) : (
+        <NoWinner {...props} type="allocation" />
+      )}
+      {props.winnerPayout !== null ? (
+        <SummaryPayout {...props} />
+      ) : (
+        <NoWinner {...props} type="payout" />
+      )}
+    </div>
+  );
+}
+SummaryVotePhase.propTypes = {
+  winnerAllocation: PropTypes.number,
+  winnerPayout: PropTypes.object,
+};
 
-function SummaryAllocation({ winnerAllocation }) {
-  if (!winnerAllocation) return null;
+function SummaryNomination({
+  winnersNomination,
+  zpParticipatedNomination,
+  currentBlock,
+  coinbaseMaturity,
+  thresholdPercentage,
+  threshold,
+}) {
+  return (
+    <div className="col winner">
+      <table className="table table-zen">
+        <thead>
+          <tr>
+            <th scope="col" colSpan="2">
+              NOMINATION SUMMARY
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <UnconfirmedRow currentBlock={currentBlock} coinbaseMaturity={coinbaseMaturity} />
+          <tr>
+            <td>THRESHOLD ({thresholdPercentage}% of total ZP issuance at snapshot)</td>
+            <td>{AssetUtils.getAmountString('00', threshold)}</td>
+          </tr>
+          <tr>
+            <td>TOTAL ZP VOTED</td>
+            <td>{AssetUtils.getAmountString('00', zpParticipatedNomination)}</td>
+          </tr>
+          <tr>
+            <td>TOTAL NOMINEES</td>
+            <td>{winnersNomination.length}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  );
+}
+SummaryNomination.propTypes = {
+  winnersNomination: PropTypes.array,
+  zpParticipatedNomination: PropTypes.string,
+  thresholdPercentage: PropTypes.number,
+  threshold: PropTypes.string,
+  currentBlock: PropTypes.number,
+  coinbaseMaturity: PropTypes.number,
+};
 
+function SummaryAllocation({
+  winnerAllocation,
+  zpParticipatedAllocation,
+  currentBlock,
+  coinbaseMaturity,
+}) {
   return (
     <div className="col winner">
       <table className="table table-zen">
@@ -28,19 +115,20 @@ function SummaryAllocation({ winnerAllocation }) {
           </tr>
         </thead>
         <tbody>
+          <UnconfirmedRow currentBlock={currentBlock} coinbaseMaturity={coinbaseMaturity} />
           <tr>
-            <td>ALLOCATION WINNER BALLOT ID</td>
+            <td>TOTAL ZP VOTED</td>
+            <td>{AssetUtils.getAmountString('00', zpParticipatedAllocation)}</td>
+          </tr>
+          <tr>
+            <td>CGP ALLOCATION</td>
+            <td>{percentageToZP({ percentage: winnerAllocation, height: currentBlock })} ZP</td>
+          </tr>
+          <tr>
+            <td>MINER ALLOCATION</td>
             <td>
-              <HashLink hash={winnerAllocation.ballot} />
+              {percentageToZP({ percentage: 100 - winnerAllocation, height: currentBlock })} ZP
             </td>
-          </tr>
-          <tr>
-            <td>ZP VOTED</td>
-            <td>{AssetUtils.getAmountString('00', winnerAllocation.amount)}</td>
-          </tr>
-          <tr>
-            <td>ALLOCATION RESULT</td>
-            <td>{percentageToZP(winnerAllocation.content.allocation)} ZP</td>
           </tr>
         </tbody>
       </table>
@@ -48,7 +136,10 @@ function SummaryAllocation({ winnerAllocation }) {
   );
 }
 SummaryAllocation.propTypes = {
-  winnerAllocation: PropTypes.object,
+  winnerAllocation: PropTypes.number,
+  zpParticipatedAllocation: PropTypes.string,
+  currentBlock: PropTypes.number,
+  coinbaseMaturity: PropTypes.number,
 };
 
 class SummaryPayout extends React.Component {
@@ -67,7 +158,7 @@ class SummaryPayout extends React.Component {
   }
 
   render() {
-    const { winnerPayout } = this.props;
+    const { winnerPayout, zpParticipatedPayout } = this.props;
     if (!winnerPayout) return null;
 
     const spendsZP = this.getSpendsZP();
@@ -86,15 +177,20 @@ class SummaryPayout extends React.Component {
             </tr>
           </thead>
           <tbody>
+            <UnconfirmedRow {...this.props} />
             <tr>
-              <td>PAYOUT WINNER BALLOT ID</td>
+              <td>TOTAL ZP VOTED</td>
+              <td>{AssetUtils.getAmountString('00', zpParticipatedPayout)}</td>
+            </tr>
+            <tr>
+              <td>ZP VOTED FOR WINNER</td>
+              <td>{AssetUtils.getAmountString('00', winnerPayout.amount)}</td>
+            </tr>
+            <tr>
+              <td>PAYOUT WINNER BALLOT</td>
               <td>
                 <HashLink hash={winnerPayout.ballot} />
               </td>
-            </tr>
-            <tr>
-              <td>ZP VOTED</td>
-              <td>{AssetUtils.getAmountString('00', winnerPayout.amount)}</td>
             </tr>
             <tr>
               <td>PAYOUT WINNER RECIPIENT</td>
@@ -130,9 +226,7 @@ class SummaryPayout extends React.Component {
                       url={`/assets/${spend.asset}`}
                     />
                   </td>
-                  <td>
-                    {AssetUtils.getAmountString(spend.asset, spend.amount)}
-                  </td>
+                  <td>{AssetUtils.getAmountString(spend.asset, spend.amount)}</td>
                 </tr>
               ))}
           </tbody>
@@ -150,4 +244,46 @@ class SummaryPayout extends React.Component {
 }
 SummaryPayout.propTypes = {
   winnerPayout: PropTypes.object,
+  zpParticipatedPayout: PropTypes.string,
+};
+
+function UnconfirmedRow({ currentBlock, coinbaseMaturity }) {
+  return currentBlock < coinbaseMaturity ? (
+    <tr className="text-danger">
+      <td colSpan="2">Unconfirmed until block {coinbaseMaturity}</td>
+    </tr>
+  ) : null;
+}
+UnconfirmedRow.propTypes = {
+  currentBlock: PropTypes.number,
+  coinbaseMaturity: PropTypes.number,
+};
+
+function NoWinner({ type, zpParticipatedPayout }) {
+  return (
+    <div className="col winner">
+      <table className="table table-zen">
+        <thead>
+          <tr>
+            <th scope="col" colSpan="2">
+              {type.toUpperCase()} SUMMARY
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td colSpan="2">
+              {/* payout - if no result but people voted it means tie */}
+              NO WINNER{type === 'payout' && zpParticipatedPayout > 0 && ' - TIE'}
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  );
+}
+
+NoWinner.propTypes = {
+  type: PropTypes.oneOf(['allocation', 'payout', 'nomination']),
+  zpParticipatedPayout: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
 };

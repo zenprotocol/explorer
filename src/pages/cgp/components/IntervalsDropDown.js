@@ -2,9 +2,18 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import TextUtils from '../../../lib/TextUtils';
 import Dropdown from '../../../components/Dropdown';
+import getPhaseName from '../modules/getPhaseName';
 
-export default function IntervalsDropDown({ relevantInterval, currentInterval, onIntervalChange }) {
+export default function IntervalsDropDown({
+  relevantInterval,
+  currentInterval,
+  currentBlock,
+  onIntervalChange,
+}) {
   if (!(relevantInterval || {}).interval) return null;
+
+  const maturityBlocks = relevantInterval.coinbaseMaturity - relevantInterval.tally;
+  const intervalLength = relevantInterval.tally / relevantInterval.interval;
 
   let intervals = [relevantInterval.interval];
   for (let i = 1; i < 5; i++) {
@@ -14,26 +23,44 @@ export default function IntervalsDropDown({ relevantInterval, currentInterval, o
     }
     // above
     if (relevantInterval.interval + i <= currentInterval) {
-      intervals = [relevantInterval.interval + i, ...intervals];
+      if ((relevantInterval.interval + i - 1) * intervalLength + maturityBlocks < currentBlock) {
+        intervals = [relevantInterval.interval + i, ...intervals];
+      }
     }
   }
 
-  const options = intervals.map(interval => {
-    return {
-      value: String(interval),
-      label: `${TextUtils.getOrdinal(interval)} Interval`,
-    };
-  });
+  // add the current interval on top
+  if (intervals.length && intervals[0] < currentInterval) {
+    intervals = [currentInterval, ...intervals];
+  }
+
+  // for each interval add the 2 phases
+  const options = intervals.reduce((all, interval) => {
+    all.push({
+      value: JSON.stringify({ interval, phase: 'Vote' }),
+      label: `${TextUtils.getOrdinal(interval)} Interval - ${getPhaseName('Vote')} phase`,
+    });
+    all.push({
+      value: JSON.stringify({ interval, phase: 'Nomination' }),
+      label: `${TextUtils.getOrdinal(interval)} Interval - ${getPhaseName('Nomination')} phase`,
+    });
+    return all;
+  }, []);
+
+  const handleChange = data => {
+    typeof onIntervalChange === 'function' && onIntervalChange(JSON.parse(data.value));
+  };
   return (
     <Dropdown
       options={options}
-      value={String(relevantInterval.interval)}
-      onChange={onIntervalChange}
+      value={JSON.stringify({ interval: relevantInterval.interval, phase: relevantInterval.phase })}
+      onChange={handleChange}
     />
   );
 }
 IntervalsDropDown.propTypes = {
   relevantInterval: PropTypes.object,
   currentInterval: PropTypes.number.isRequired,
+  currentBlock: PropTypes.number.isRequired,
   onIntervalChange: PropTypes.func,
 };
