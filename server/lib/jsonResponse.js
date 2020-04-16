@@ -3,6 +3,8 @@
 const util = require('util');
 const httpStatus = require('http-status');
 
+const isDev = process.env.NODE_ENV === 'development';
+
 /**
  * Create a nicely formatted json response
  *
@@ -17,7 +19,7 @@ const createJsonResponse = (statusCode, data = null, err = null) => {
     errorObj = {
       message: httpStatus[statusCode],
       customMessage: err.customMessage,
-      error: util.inspect(err, false, 1),
+      error: isDev ? util.inspect(err, false, 1) : `${err.name}: ${err.message}`,
     };
   }
 
