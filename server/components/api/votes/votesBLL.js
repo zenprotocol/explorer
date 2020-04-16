@@ -12,7 +12,7 @@ const configDefaultCommitId = config.get('governance:defaultCommitId');
 const AFTER_TALLY_BLOCKS = configAfterTallyBlocks ? Number(configAfterTallyBlocks) : 1000;
 
 module.exports = {
-  findIntervalAndTally: async function({ interval, phase } = {}) {
+  findIntervalAndTally: async function ({ interval, phase } = {}) {
     const currentBlock = await blocksBLL.getCurrentBlockNumber();
     const currentInterval = await getCurrentInterval({
       interval,
@@ -35,9 +35,11 @@ module.exports = {
             interval: currentInterval.interval,
           });
 
-    const candidatesPromise = votesDAL.findContestantWinners({
-      interval: currentInterval.interval,
-    });
+    const candidatesPromise = votesDAL
+      .findContestantWinners({
+        interval: currentInterval.interval,
+      })
+      .then(addDefaultCommitId);
 
     const [winner, candidates] = await Promise.all([winnerPromise, candidatesPromise]);
     return {
@@ -50,15 +52,15 @@ module.exports = {
       candidates,
     };
   },
-  findNextInterval: async function() {
+  findNextInterval: async function () {
     const currentBlock = await blocksBLL.getCurrentBlockNumber();
     return voteIntervalsDAL.findNext(currentBlock);
   },
-  findCurrentOrNextInterval: async function() {
+  findCurrentOrNextInterval: async function () {
     const currentBlock = await blocksBLL.getCurrentBlockNumber();
     return voteIntervalsDAL.findCurrentOrNext(currentBlock);
   },
-  findAllVotesByInterval: async function({
+  findAllVotesByInterval: async function ({
     interval,
     phase,
     page = 0,
@@ -95,7 +97,7 @@ module.exports = {
       votesDAL.findAllByInterval(query),
     ]).then(votesDAL.getItemsAndCountResult);
   },
-  findAllVoteResults: async function({ interval, phase, page = 0, pageSize = 10 } = {}) {
+  findAllVoteResults: async function ({ interval, phase, page = 0, pageSize = 10 } = {}) {
     const currentBlock = await blocksBLL.getCurrentBlockNumber();
     const currentInterval = await getCurrentInterval({
       interval,
@@ -123,11 +125,11 @@ module.exports = {
       ),
     ]).then(votesDAL.getItemsAndCountResult);
   },
-  findRecentIntervals: async function() {
+  findRecentIntervals: async function () {
     const currentBlock = await blocksBLL.getCurrentBlockNumber();
     return voteIntervalsDAL.findAllRecent(currentBlock);
   },
-  findContestantWinners: async function({ interval } = {}) {
+  findContestantWinners: async function ({ interval } = {}) {
     const currentBlock = await blocksBLL.getCurrentBlockNumber();
     const currentInterval = await getCurrentInterval({
       interval,
@@ -142,12 +144,7 @@ module.exports = {
       .findContestantWinners({
         interval: currentInterval.interval,
       })
-      // add the default commit id to the list if it does not exist
-      .then(results =>
-        results.some(candidate => candidate.commitId === configDefaultCommitId)
-          ? results
-          : [{ commitId: configDefaultCommitId, zpAmount: '0' }, ...results]
-      );
+      .then(addDefaultCommitId);
   },
 };
 
@@ -177,4 +174,13 @@ async function getCurrentInterval({ interval, phase, currentBlock } = {}) {
     : !next && prev
     ? prev
     : next;
+}
+
+/**
+ * Add the default commit id to the list if it does not exist
+ */
+function addDefaultCommitId(candidates = []) {
+  return candidates.some((candidate) => candidate.commitId === configDefaultCommitId)
+    ? candidates
+    : [{ commitId: configDefaultCommitId, zpAmount: '0' }, ...candidates];
 }
