@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.1.0](https://github.com/zenprotocol/explorer/compare/v3.0.0...v3.1.0) (2020-04-22)
+
+
+### Features
+
+* do not return stack error on production ([2b0f6cc](https://github.com/zenprotocol/explorer/commit/2b0f6cc717b5a4f2ca3bb22146ff103e1ff15d76))
+
+
+### Bug Fixes
+
+* change cgp threshold to 3% on testnet ([75f4d0a](https://github.com/zenprotocol/explorer/commit/75f4d0ab93b33578373851b7e46bc2bbfbbad7a9))
+* **governance:** return default commit in relevant ([19a501e](https://github.com/zenprotocol/explorer/commit/19a501e7b676b33e5e36fac2905fa24bfe4ef87d))
+
 ## [3.0.0](https://github.com/zenprotocol/explorer/compare/v2.2.1...v3.0.0) (2020-04-15)
 
 
