@@ -54,7 +54,7 @@
       "coinbaseMaturity": 10,
       "afterTallyBlocks": 10,
       "intervalLength": 100,
-      "thresholdPercentage": 0.3
+      "thresholdPercentage": 3
     }
   }
 }
