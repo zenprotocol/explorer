@@ -159,11 +159,11 @@ class Navbar extends Component {
                 </li>
                 <li className="nav-item">
                   <DropDown label="Voting" className="voting">
-                    <NavLink className="nav-link" to="/governance">
-                      Governance
-                    </NavLink>
                     <NavLink className="nav-link" to="/cgp">
                       CGP
+                    </NavLink>
+                    <NavLink className="nav-link" to="/governance">
+                      Governance
                     </NavLink>
                   </DropDown>
                 </li>
@@ -182,7 +182,7 @@ Navbar.propTypes = {
   location: PropTypes.object,
 };
 
-const isNavLinkActive = matchedRoutes => (match, location) => {
+const isNavLinkActive = (matchedRoutes) => (match, location) => {
   const pathname = location.pathname.startsWith('/') ? location.pathname : `/${location.pathname}`;
   const path = pathname.split('/')[1];
   return matchedRoutes.includes(path);
