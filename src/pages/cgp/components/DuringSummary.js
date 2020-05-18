@@ -5,6 +5,7 @@ import AssetUtils from '../../../lib/AssetUtils';
 import HashLink from '../../../components/HashLink';
 import percentageToZP from '../../../lib/rewardPercentageToZP';
 import getAllocationBounce from '../modules/getAllocationBounce';
+import ThresholdRow from './ThresholdRow';
 
 export default function DuringSummary(props) {
   const { phase } = props;
@@ -59,10 +60,7 @@ function SummaryNomination({
           </tr>
         </thead>
         <tbody>
-          <tr>
-            <td>THRESHOLD ({thresholdPercentage}% of total ZP issuance at snapshot)</td>
-            <td>{AssetUtils.getAmountString('00', threshold)}</td>
-          </tr>
+          <ThresholdRow threshold={threshold} thresholdPercentage={thresholdPercentage} />
           <tr>
             <td>TOTAL ZP VOTED</td>
             <td>{AssetUtils.getAmountString('00', zpParticipatedNomination)}</td>

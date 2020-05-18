@@ -4,6 +4,7 @@ import AssetUtils from '../../../lib/AssetUtils';
 import HashLink from '../../../components/HashLink';
 import AddressLink from '../../../components/AddressLink';
 import percentageToZP from '../../../lib/rewardPercentageToZP';
+import ThresholdRow from './ThresholdRow';
 
 export default function WinnerSummary(props) {
   const { phase } = props;
@@ -23,7 +24,7 @@ function SummaryNominationPhase(props) {
       {props.winnersNomination && props.winnersNomination.length ? (
         <SummaryNomination {...props} />
       ) : (
-        <NoWinner {...props} type="nomination" />
+        <NoWinner {...props} type="nomination" addRows={<ThresholdRow {...props} inOneColumn />} />
       )}
     </div>
   );
@@ -72,10 +73,7 @@ function SummaryNomination({
         </thead>
         <tbody>
           <UnconfirmedRow currentBlock={currentBlock} coinbaseMaturity={coinbaseMaturity} />
-          <tr>
-            <td>THRESHOLD ({thresholdPercentage}% of total ZP issuance at snapshot)</td>
-            <td>{AssetUtils.getAmountString('00', threshold)}</td>
-          </tr>
+          <ThresholdRow threshold={threshold} thresholdPercentage={thresholdPercentage} />
           <tr>
             <td>TOTAL ZP VOTED</td>
             <td>{AssetUtils.getAmountString('00', zpParticipatedNomination)}</td>
@@ -259,7 +257,7 @@ UnconfirmedRow.propTypes = {
   coinbaseMaturity: PropTypes.number,
 };
 
-function NoWinner({ type, zpParticipatedPayout }) {
+function NoWinner({ type, zpParticipatedPayout, addRows }) {
   return (
     <div className="col winner">
       <table className="table table-zen">
@@ -277,6 +275,7 @@ function NoWinner({ type, zpParticipatedPayout }) {
               NO WINNER{type === 'payout' && zpParticipatedPayout > 0 && ' - TIE'}
             </td>
           </tr>
+          {addRows}
         </tbody>
       </table>
     </div>
@@ -286,4 +285,5 @@ function NoWinner({ type, zpParticipatedPayout }) {
 NoWinner.propTypes = {
   type: PropTypes.oneOf(['allocation', 'payout', 'nomination']),
   zpParticipatedPayout: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  addRows: PropTypes.any,
 };
