@@ -12,7 +12,7 @@ export default class PageDescription extends Component {
   }
 
   toggleShowMore() {
-    this.setState(state => ({ showMore: !state.showMore }));
+    this.setState((state) => ({ showMore: !state.showMore }));
   }
 
   render() {
@@ -33,12 +33,11 @@ export default class PageDescription extends Component {
           token holders will be able to vote on what it should do with its funds, based on token
           weighted basis.
           <br />
-          <i>*The CGP fund can hold up to 100 different assets.</i>
+          <i>*The CGP fund can pay out up to 100 different assets on each interval.</i>
         </p>
         <p>
-          <strong>Each interval/voting round (10,000 blocks) consists of:</strong> Two phases:
-          Nomination and Voting phase, one Snapshot and Tally blocks (start and end blocks).{' '}
-          {!showMore && readButton}
+          <strong>Each voting round (1,000 blocks) consists of:</strong> Two phases: Nomination and
+          Voting phase (500 blocks each), one Snapshot and a Tally block. {!showMore && readButton}
         </p>
       </>
     );
@@ -53,8 +52,7 @@ export default class PageDescription extends Component {
           <br />
           <strong>Second phase: Voting phase:</strong> Token holders can vote both on their
           preferred eligible Ballot ID, to win from the CGP funds, and on the amount of ZP they
-          believe should be allocated to the CGP fund from Miner’s Reward.{' '}
-          {showMore && readButton}
+          believe should be allocated to the CGP fund from Miner’s Reward. {showMore && readButton}
         </p>
       </>
     );
