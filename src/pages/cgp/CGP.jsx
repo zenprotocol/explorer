@@ -163,7 +163,7 @@ class CGPPage extends React.Component {
 
         <div className="row">
           <div className="col-lg-8 mb-3 mb-lg-5">
-            <PageDescription />
+            <PageDescription intervalLength={cgpStore.intervalLength} />
           </div>
         </div>
 

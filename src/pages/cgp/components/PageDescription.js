@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import TextUtils from '../../../lib/TextUtils';
 
 export default class PageDescription extends Component {
   constructor(props) {
@@ -17,6 +19,10 @@ export default class PageDescription extends Component {
 
   render() {
     const { showMore } = this.state;
+    const { intervalLength } = this.props;
+
+    const votingRound = intervalLength * 0.1;
+    const phaseLength = votingRound / 2;
 
     const readButton = (
       <button type="button" className="btn py-0 px-0 btn-link" onClick={this.toggleShowMore}>
@@ -28,16 +34,19 @@ export default class PageDescription extends Component {
     const basicText = (
       <>
         <p>
-          Every 10,000 blocks, token holders can vote to determine what percentage of newly minted
-          coins will go to miners, and what percentage will go to the Common Goods Pool. In addition
-          token holders will be able to vote on what it should do with its funds, based on token
-          weighted basis.
+          Every {TextUtils.formatNumber(intervalLength)} blocks, token holders can vote to determine
+          what percentage of newly minted coins will go to miners, and what percentage will go to
+          the Common Goods Pool. In addition token holders will be able to vote on what it should do
+          with its funds, based on token weighted basis.
           <br />
           <i>*The CGP fund can pay out up to 100 different assets on each interval.</i>
         </p>
         <p>
-          <strong>Each voting round (1,000 blocks) consists of:</strong> Two phases: Nomination and
-          Voting phase (500 blocks each), one Snapshot and a Tally block. {!showMore && readButton}
+          <strong>
+            Each voting round ({TextUtils.formatNumber(votingRound)} blocks) consists of:
+          </strong>{' '}
+          Two phases: Nomination and Voting phase ({TextUtils.formatNumber(phaseLength)} blocks
+          each), one Snapshot and a Tally block. {!showMore && readButton}
         </p>
       </>
     );
@@ -65,3 +74,6 @@ export default class PageDescription extends Component {
     );
   }
 }
+PageDescription.propTypes = {
+  intervalLength: PropTypes.number,
+};
