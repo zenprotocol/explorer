@@ -13,6 +13,8 @@ const getFieldsForSelectQuery = require('../../../lib/getFieldsForSelectQuery');
 const sequelize = transactionsDAL.db.sequelize;
 const Op = transactionsDAL.db.Sequelize.Op;
 
+const LOCK_TYPE_FOR_BALANCE = '"lockType" = ANY(\'{"Coinbase","PK","Contract","Destroy"}\')';
+
 transactionsDAL.findByHash = async function(hash) {
   return transactionsDAL.findOne({
     where: {
@@ -63,7 +65,7 @@ transactionsDAL.findAllAssetsByAddress = async function(address, { limit = 10, o
           "Output"."asset",
           "Output"."TransactionId"
       FROM "Outputs" AS "Output"
-      WHERE "Output"."address" = :address
+      WHERE "Output"."address" = :address AND "Output".${LOCK_TYPE_FOR_BALANCE}
       GROUP BY "Output"."TransactionId", "Output"."asset") AS "OutputAsset"
 
       FULL OUTER JOIN
@@ -73,7 +75,7 @@ transactionsDAL.findAllAssetsByAddress = async function(address, { limit = 10, o
           "Input"."TransactionId"
       FROM "Inputs" AS "Input"
           INNER JOIN "Outputs" as "Output" ON "Input"."OutputId" = "Output"."id"
-      WHERE "address" = :address
+      WHERE "address" = :address AND "Output".${LOCK_TYPE_FOR_BALANCE}
       GROUP BY "Input"."TransactionId", "Output"."asset") AS "InputAsset"
 
       ON "OutputAsset"."TransactionId" = "InputAsset"."TransactionId"
@@ -178,12 +180,12 @@ transactionsDAL.findAllByAsset = async function(
     FROM
       (SELECT "TransactionId", SUM("Outputs"."amount") as "outputSum"
         FROM "Outputs" 
-        WHERE "Outputs"."asset" = :asset
+        WHERE "Outputs"."asset" = :asset AND "Outputs".${LOCK_TYPE_FOR_BALANCE}
         GROUP BY "TransactionId") AS "Outputs"
       FULL OUTER JOIN (SELECT "Inputs"."TransactionId", SUM("Outputs"."amount") AS "inputSum"
         FROM "Inputs" JOIN "Outputs" 
         ON "Inputs"."OutputId" = "Outputs"."id" 
-        AND "Outputs"."asset" = :asset
+        WHERE "Outputs"."asset" = :asset AND "Outputs".${LOCK_TYPE_FOR_BALANCE}
         GROUP BY "Inputs"."TransactionId" ) AS "Inputs"
       ON "Outputs"."TransactionId" = "Inputs"."TransactionId"
       INNER JOIN "Transactions" AS "Transaction" ON "Outputs"."TransactionId" = "Transaction"."id" OR "Inputs"."TransactionId" = "Transaction"."id"
@@ -224,6 +226,7 @@ transactionsDAL.findAllAssetsByBlock = async function(
       FROM "Outputs" AS "Output"
         JOIN "Transactions" ON "Output"."TransactionId" = "Transactions"."id"
         JOIN "Blocks" ON "Transactions"."BlockId" = "Blocks"."id" AND "Blocks"."${blockProp}" = :hashOrBlockNumber
+      WHERE "Output".${LOCK_TYPE_FOR_BALANCE}
       GROUP BY "Output"."TransactionId", "Output"."asset", "Output"."address") AS "OutputAsset"
   
       FULL OUTER JOIN
@@ -236,6 +239,7 @@ transactionsDAL.findAllAssetsByBlock = async function(
         INNER JOIN "Outputs" as "Output" ON "Input"."OutputId" = "Output"."id"
         JOIN "Transactions" ON "Input"."TransactionId" = "Transactions"."id"
         JOIN "Blocks" ON "Transactions"."BlockId" = "Blocks"."id" AND "Blocks"."${blockProp}" = :hashOrBlockNumber
+      WHERE "Output".${LOCK_TYPE_FOR_BALANCE}
       GROUP BY "Input"."TransactionId", "Output"."asset", "Output"."address") AS "InputAsset"
   
       ON "OutputAsset"."TransactionId" = "InputAsset"."TransactionId"

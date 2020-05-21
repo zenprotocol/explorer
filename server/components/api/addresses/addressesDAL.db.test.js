@@ -80,6 +80,74 @@ test('addressesDAL.snapshotAddressBalancesByBlock() (DB)', async function(t) {
     t.equal(balance.length, 2, `${given}: should return 1 item`);
   });
 
+  await wrapTest('Given different lock types', async given => {
+    await createDemoBlocksFromTo(1, 10);
+    const address= 'ctzn1234';
+
+    const block = await blocksDAL.findByBlockNumber(1);
+    const tx = await transactionsDAL.create({
+      index: 0,
+      version: 0,
+      inputCount: 0,
+      outputCount: 1,
+      hash: faker.random.uuid(),
+    });
+    await outputsDAL.create({
+      TransactionId: tx.id,
+      lockType: 'Coinbase',
+      address,
+      asset: '00',
+      amount: '1',
+      index: 0,
+    });
+    await outputsDAL.create({
+      TransactionId: tx.id,
+      lockType: 'PK',
+      address,
+      asset: '00',
+      amount: '1',
+      index: 1,
+    });
+    await outputsDAL.create({
+      TransactionId: tx.id,
+      lockType: 'Contract',
+      address,
+      asset: '00',
+      amount: '1',
+      index: 2,
+    });
+    await outputsDAL.create({
+      TransactionId: tx.id,
+      lockType: 'ActivationSacrifice',
+      address,
+      asset: '00',
+      amount: '1',
+      index: 3,
+    });
+    await outputsDAL.create({
+      TransactionId: tx.id,
+      lockType: 'ExtensionSacrifice',
+      address,
+      asset: '00',
+      amount: '1',
+      index: 4,
+    });
+    await outputsDAL.create({
+      TransactionId: tx.id,
+      lockType: 'Fee',
+      address,
+      asset: '00',
+      amount: '1',
+      index: 5,
+    });
+    await blocksDAL.addTransaction(block, tx);
+
+    const balance = await addressesDAL.snapshotAddressBalancesByBlock({address, blockNumber: 10});
+
+    t.equal(balance.length, 1, `${given}: should return 1 item`);
+    t.equal(balance[0].amount, '3', `${given}: should have the amount of only the wanted lock types`);
+  });
+
   await wrapTest('Given has an asset with balance 0', async given => {
     await createDemoBlocksFromTo(1, 10);
 

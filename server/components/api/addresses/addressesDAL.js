@@ -11,6 +11,8 @@ const addressesDAL = {};
 const sequelize = db.sequelize;
 const Op = db.Sequelize.Op;
 
+const LOCK_TYPE_FOR_BALANCE = '"lockType" = ANY(\'{"Coinbase","PK","Contract","Destroy"}\')';
+
 addressesDAL.findOne = function(address) {
   return outputsDAL
     .findAll({
@@ -102,7 +104,7 @@ addressesDAL.getZpSentReceived = function(address) {
         SUM(o.amount) AS output_sum
       FROM "Outputs" o
       WHERE o.address = :address
-        AND o.asset = '00'
+        AND o.asset = '00' AND o.${LOCK_TYPE_FOR_BALANCE}
       GROUP BY "TransactionId") AS osums
       FULL OUTER JOIN
       (SELECT
@@ -113,7 +115,7 @@ addressesDAL.getZpSentReceived = function(address) {
         JOIN "Inputs" i
         ON i."OutputId" = io.id
       WHERE io.address = :address
-        AND io.asset = '00'
+        AND io.asset = '00' AND io.${LOCK_TYPE_FOR_BALANCE}
       GROUP BY i."TransactionId") AS isums
       ON osums."TransactionId" = isums."TransactionId") AS bothsums;
   `;
@@ -159,7 +161,7 @@ addressesDAL.snapshotBalancesByBlock = async function(blockNumber) {
       FROM "Outputs" o
       INNER JOIN "Transactions" t ON o."TransactionId" = t.id
       INNER JOIN "Blocks" b ON t."BlockId" = b.id AND b."blockNumber" <= :blockNumber
-      WHERE o.address IS NOT NULL AND o.asset = '00'
+      WHERE o.address IS NOT NULL AND o.asset = '00' AND o.${LOCK_TYPE_FOR_BALANCE}
       GROUP BY address) AS osums
       FULL OUTER JOIN
       (SELECT
@@ -170,7 +172,7 @@ addressesDAL.snapshotBalancesByBlock = async function(blockNumber) {
         INNER JOIN "Inputs" i ON i."OutputId" = io.id
         INNER JOIN "Transactions" t ON i."TransactionId" = t.id
         INNER JOIN "Blocks" b ON t."BlockId" = b.id AND b."blockNumber" <= :blockNumber
-      WHERE io.address IS NOT NULL AND io.asset = '00'
+      WHERE io.address IS NOT NULL AND io.asset = '00' AND io.${LOCK_TYPE_FOR_BALANCE}
       GROUP BY io.address) AS isums
       ON osums.address = isums.address) AS bothsums;
   `;
@@ -210,7 +212,7 @@ addressesDAL.snapshotAddressBalancesByBlock = async function({
       FROM "Outputs" o
       INNER JOIN "Transactions" t ON o."TransactionId" = t.id
       INNER JOIN "Blocks" b ON t."BlockId" = b.id AND b."blockNumber" <= :blockNumber
-      WHERE o.address = :address
+      WHERE o.address = :address AND o.${LOCK_TYPE_FOR_BALANCE}
       GROUP BY o.asset) AS osums
       FULL OUTER JOIN
       (SELECT
@@ -221,7 +223,7 @@ addressesDAL.snapshotAddressBalancesByBlock = async function({
         INNER JOIN "Inputs" i ON i."OutputId" = io.id
         INNER JOIN "Transactions" t ON i."TransactionId" = t.id
         INNER JOIN "Blocks" b ON t."BlockId" = b.id AND b."blockNumber" <= :blockNumber
-      WHERE io.address = :address
+      WHERE io.address = :address AND io.${LOCK_TYPE_FOR_BALANCE}
       GROUP BY io.asset) AS isums
       ON osums.asset = isums.asset) AS bothsums
       WHERE output_sum > input_sum;
