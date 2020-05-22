@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [3.1.1](https://github.com/zenprotocol/explorer/compare/v3.1.0...v3.1.1) (2020-05-22)
+
+
+### Bug Fixes
+
+* count balance by specific lock types ([93faf2a](https://github.com/zenprotocol/explorer/commit/93faf2ae1747ecdf57f87f86377b12040bfaf615))
+
 ## [3.1.0](https://github.com/zenprotocol/explorer/compare/v3.0.0...v3.1.0) (2020-04-22)
 
 
