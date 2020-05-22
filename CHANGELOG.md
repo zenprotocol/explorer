@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [3.1.2](https://github.com/zenprotocol/explorer/compare/v3.1.1...v3.1.2) (2020-05-22)
+
+
+### Bug Fixes
+
+* format number ([d6355c7](https://github.com/zenprotocol/explorer/commit/d6355c7528a4bab555eb07ac5daba1ea29df4293))
+
 ### [3.1.1](https://github.com/zenprotocol/explorer/compare/v3.1.0...v3.1.1) (2020-05-22)
 
 
