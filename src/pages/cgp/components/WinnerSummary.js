@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import AssetUtils from '../../../lib/AssetUtils';
+import TextUtils from '../../../lib/TextUtils';
 import HashLink from '../../../components/HashLink';
 import AddressLink from '../../../components/AddressLink';
 import percentageToZP from '../../../lib/rewardPercentageToZP';
@@ -152,7 +153,7 @@ class SummaryPayout extends React.Component {
   }
 
   toggleShowMore() {
-    this.setState(state => ({ showMore: !state.showMore }));
+    this.setState((state) => ({ showMore: !state.showMore }));
   }
 
   render() {
@@ -237,7 +238,7 @@ class SummaryPayout extends React.Component {
     const { winnerPayout } = this.props;
     if (!winnerPayout) return null;
 
-    return winnerPayout.content.spends.find(item => AssetUtils.isZP(item.asset));
+    return winnerPayout.content.spends.find((item) => AssetUtils.isZP(item.asset));
   }
 }
 SummaryPayout.propTypes = {
@@ -248,7 +249,7 @@ SummaryPayout.propTypes = {
 function UnconfirmedRow({ currentBlock, coinbaseMaturity }) {
   return currentBlock < coinbaseMaturity ? (
     <tr className="text-danger">
-      <td colSpan="2">Unconfirmed until block {coinbaseMaturity}</td>
+      <td colSpan="2">Unconfirmed until block {TextUtils.formatNumber(coinbaseMaturity)}</td>
     </tr>
   ) : null;
 }
