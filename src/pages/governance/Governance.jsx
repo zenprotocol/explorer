@@ -15,8 +15,9 @@ import ResultsTab from './components/tabs/Results';
 import RouterUtils from '../../lib/RouterUtils';
 import ItemNotFound from '../../components/ItemNotFound';
 import Loading from '../../components/Loading';
-import CommitLink from './components/CommitLink';
 import Dropdown from '../../components/Dropdown';
+import CommitLink from './components/CommitLink';
+import PageDescription from './components/PageDescription';
 import './Governance.scss';
 
 class GovernancePage extends React.Component {
@@ -116,13 +117,22 @@ class GovernancePage extends React.Component {
 
         <div className="row">
           <div className="col-md-8">
-            <PageTitle
-              title="Community Votes"
-              subtitle={
-                !this.noIntervalsFound &&
-                `${isContestantsPhase ? 'Contestants' : 'Candidates'} phase`
-              }
-            />
+            <PageTitle title="Community Votes" />
+          </div>
+        </div>
+
+        <div className="row">
+          <div className="col-lg-8 mb-3 mb-lg-5">
+            <PageDescription />
+          </div>
+        </div>
+
+        <div className="row mb-3">
+          <div className="col-md-8">
+            <h4>
+              {!this.noIntervalsFound &&
+                `${isContestantsPhase ? 'Contestants' : 'Candidates'} phase`}
+            </h4>
           </div>
           <div className="col-md-4">
             <IntervalsDropDown
@@ -263,7 +273,7 @@ DuringVoteInfo.propTypes = {
 function AfterVoteInfo({ relevantInterval }) {
   const { winner, beginHeight, endHeight, interval } = relevantInterval;
   const winnerArr = Array.isArray(winner) ? winner : winner ? [winner] : [];
-  const winnerJsx = winnerArr.map(item =>
+  const winnerJsx = winnerArr.map((item) =>
     item && item.commitId ? <CommitLink commitId={item.commitId} key={item.commitId} /> : null
   );
 
@@ -336,13 +346,13 @@ VotingTabs.propTypes = {
 function IntervalsDropDown({ relevantInterval, intervals, onIntervalChange }) {
   if (!(relevantInterval || {}).interval) return null;
 
-  const options = intervals.map(item => ({
+  const options = intervals.map((item) => ({
     value: intervalsDDCreateValue(item),
     label: getDropDownSemesterText(item),
   }));
 
   let value = intervalsDDCreateValue(relevantInterval);
-  if (!options.find(option => option.value === value)) {
+  if (!options.find((option) => option.value === value)) {
     value = getDropDownSemesterText(relevantInterval);
   }
 
