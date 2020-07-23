@@ -32,7 +32,8 @@ module.exports = {
         },
       })
       .then(() =>
-        queryInterface.addConstraint('CGPVotes', ['CommandId'], {
+        queryInterface.addConstraint('CGPVotes', {
+          fields: ['CommandId'],
           type: 'foreign key',
           name: 'CGPVotes_CommandId_fkey',
           references: {

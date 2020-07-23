@@ -40,8 +40,8 @@ test('Network error when getting blocks info from node', async function(t) {
   const networkHelper = new NetworkHelper();
 
   // mute the service to get empty responses
-  Service.config.setBaseUrl('http://1.1.1.1:8080');
-  Service.config.setTimeout(500);
+  Service.config.setBaseUrl('http://wrong.address.io');
+  Service.config.setTimeout(1);
   try {
     await networkHelper.getLatestBlockNumberFromNode();
     t.fail('Should throw an error');

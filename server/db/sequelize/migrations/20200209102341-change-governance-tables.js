@@ -8,53 +8,49 @@ module.exports = {
   up: (queryInterface, Sequelize) => {
     return Promise.all([
       queryInterface.bulkDelete('VoteIntervals', {
-        id: { [Sequelize.Op.gt]: 0 }
+        id: { [Sequelize.Op.gt]: 0 },
       }),
       queryInterface.bulkDelete('RepoVotes', {
-        id: { [Sequelize.Op.gt]: 0 }
-      })
+        id: { [Sequelize.Op.gt]: 0 },
+      }),
     ]).then(() =>
       queryInterface
-        .removeConstraint(
-          'VoteIntervals',
-          'VoteIntervals_interval_unique_constraint'
-        )
+        .removeConstraint('VoteIntervals', 'VoteIntervals_interval_unique_constraint')
         .then(() =>
           Promise.all([
             queryInterface.addColumn('VoteIntervals', 'phase', {
-              type: Sequelize.STRING
+              type: Sequelize.STRING,
             }),
             queryInterface.addColumn('VoteIntervals', 'thresholdZp', {
-              type: Sequelize.BIGINT
+              type: Sequelize.BIGINT,
             }),
             queryInterface.addColumn('VoteIntervals', 'prevPhaseId', {
-              type: Sequelize.INTEGER
-            })
+              type: Sequelize.INTEGER,
+            }),
           ])
         )
-        .then(() =>
-          queryInterface.removeColumn('RepoVotes', 'interval')
-        )
+        .then(() => queryInterface.removeColumn('RepoVotes', 'interval'))
         .then(() =>
           Promise.all([
             queryInterface.addConstraint(
               'VoteIntervals',
-              ['interval', 'phase'],
               {
+                fields: ['interval', 'phase'],
                 type: 'unique',
-                name: 'VoteIntervals_interval_phase_unique_constraint'
+                name: 'VoteIntervals_interval_phase_unique_constraint',
               }
             ),
-            queryInterface.addConstraint('VoteIntervals', ['prevPhaseId'], {
+            queryInterface.addConstraint('VoteIntervals', {
+              fields: ['prevPhaseId'],
               type: 'foreign key',
               name: 'VoteIntervals_prevPhaseId_fkey',
               references: {
                 table: 'VoteIntervals',
-                field: 'id'
+                field: 'id',
               },
               onDelete: 'set null',
-              onUpdate: 'cascade'
-            })
+              onUpdate: 'cascade',
+            }),
           ])
         )
     );
@@ -66,36 +62,36 @@ module.exports = {
         'VoteIntervals',
         'VoteIntervals_interval_phase_unique_constraint'
       ),
-      queryInterface.removeConstraint(
-        'VoteIntervals',
-        'VoteIntervals_prevPhaseId_fkey'
-      )
+      queryInterface.removeConstraint('VoteIntervals', 'VoteIntervals_prevPhaseId_fkey'),
     ])
       .then(() =>
         Promise.all([
           queryInterface.bulkDelete('VoteIntervals', {
-            id: { [Sequelize.Op.gt]: 0 }
+            id: { [Sequelize.Op.gt]: 0 },
           }),
           queryInterface.bulkDelete('RepoVotes', {
-            id: { [Sequelize.Op.gt]: 0 }
-          })
+            id: { [Sequelize.Op.gt]: 0 },
+          }),
         ])
       )
       .then(() =>
         Promise.all([
           queryInterface.removeColumn('VoteIntervals', 'phase'),
           queryInterface.removeColumn('VoteIntervals', 'thresholdZp'),
-          queryInterface.removeColumn('VoteIntervals', 'prevPhaseId')
+          queryInterface.removeColumn('VoteIntervals', 'prevPhaseId'),
         ])
       )
-      .then(() => queryInterface.addColumn('RepoVotes', 'interval', {
-        type: Sequelize.INTEGER,
-      }))
       .then(() =>
-        queryInterface.addConstraint('VoteIntervals', ['interval'], {
+        queryInterface.addColumn('RepoVotes', 'interval', {
+          type: Sequelize.INTEGER,
+        })
+      )
+      .then(() =>
+        queryInterface.addConstraint('VoteIntervals', {
+          fields: ['interval'],
           type: 'unique',
-          name: 'VoteIntervals_interval_unique_constraint'
+          name: 'VoteIntervals_interval_unique_constraint',
         })
       );
-  }
+  },
 };

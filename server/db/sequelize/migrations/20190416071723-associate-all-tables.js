@@ -3,7 +3,8 @@
 module.exports = {
   up: (queryInterface, Sequelize) => {
     return Promise.all([
-      queryInterface.addConstraint('Transactions', ['BlockId'], {
+      queryInterface.addConstraint('Transactions', {
+        fields: ['BlockId'],
         type: 'foreign key',
         name: 'Transactions_BlockId_fkey',
         references: {
@@ -13,7 +14,8 @@ module.exports = {
         onDelete: 'cascade',
         onUpdate: 'cascade',
       }),
-      queryInterface.addConstraint('Outputs', ['TransactionId'], {
+      queryInterface.addConstraint('Outputs', {
+        fields: ['TransactionId'],
         type: 'foreign key',
         name: 'Outputs_TransactionId_fkey',
         references: {
@@ -23,7 +25,8 @@ module.exports = {
         onDelete: 'cascade',
         onUpdate: 'cascade',
       }),
-      queryInterface.addConstraint('Inputs', ['TransactionId'], {
+      queryInterface.addConstraint('Inputs', {
+        fields: ['TransactionId'],
         type: 'foreign key',
         name: 'Inputs_TransactionId_fkey',
         references: {
@@ -33,7 +36,8 @@ module.exports = {
         onDelete: 'cascade',
         onUpdate: 'cascade',
       }),
-      queryInterface.addConstraint('Inputs', ['OutputId'], {
+      queryInterface.addConstraint('Inputs', {
+        fields: ['OutputId'],
         type: 'foreign key',
         name: 'Inputs_OutputId_fkey',
         references: {
@@ -43,7 +47,8 @@ module.exports = {
         onDelete: 'set null',
         onUpdate: 'cascade',
       }),
-      queryInterface.addConstraint('Commands', ['TransactionId'], {
+      queryInterface.addConstraint('Commands', {
+        fields: ['TransactionId'],
         type: 'foreign key',
         name: 'Commands_TransactionId_fkey',
         references: {
@@ -53,7 +58,8 @@ module.exports = {
         onDelete: 'cascade',
         onUpdate: 'cascade',
       }),
-      queryInterface.addConstraint('Commands', ['ContractId'], {
+      queryInterface.addConstraint('Commands', {
+        fields: ['ContractId'],
         type: 'foreign key',
         name: 'Commands_ContractId_fkey',
         references: {
@@ -63,11 +69,13 @@ module.exports = {
         onDelete: 'set null',
         onUpdate: 'set null',
       }),
-      queryInterface.addConstraint('ContractActivations', ['ContractId', 'TransactionId'], {
+      queryInterface.addConstraint('ContractActivations', {
+        fields: ['ContractId', 'TransactionId'],
         type: 'primary key',
         name: 'ContractActivations_pkey',
       }),
-      queryInterface.addConstraint('ContractActivations', ['ContractId'], {
+      queryInterface.addConstraint('ContractActivations', {
+        fields: ['ContractId'],
         type: 'foreign key',
         name: 'ContractActivations_ContractId_fkey',
         references: {
@@ -77,7 +85,8 @@ module.exports = {
         onDelete: 'cascade',
         onUpdate: 'cascade',
       }),
-      queryInterface.addConstraint('ContractActivations', ['TransactionId'], {
+      queryInterface.addConstraint('ContractActivations', {
+        fields: ['TransactionId'],
         type: 'foreign key',
         name: 'ContractActivations_TransactionId_fkey',
         references: {

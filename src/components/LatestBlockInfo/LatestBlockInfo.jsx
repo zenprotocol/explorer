@@ -4,8 +4,8 @@ import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import TextUtils from '../../lib/TextUtils';
 
-function LatestBlockInfo() {
-  const { blockStore } = this.props.rootStore;
+function LatestBlockInfo(props) {
+  const { blockStore } = props.rootStore;
   const { blockNumber, timestamp } = blockStore.latestBlock;
   if (!Object.keys(blockStore.latestBlock).length) {
     return null;

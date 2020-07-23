@@ -53,7 +53,8 @@ module.exports = {
         unique: false,
         name: 'Inputs_TransactionId_index',
       }),
-      queryInterface.addConstraint('Commands', ['TransactionId', 'indexInTransaction'], {
+      queryInterface.addConstraint('Commands', {
+        fields: ['TransactionId', 'indexInTransaction'],
         type: 'unique',
         name: 'Commands_TransactionId_indexInTransaction_unique_constraint',
       }),
