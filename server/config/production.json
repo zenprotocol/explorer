@@ -2,7 +2,9 @@
   "db": {
     "dialect": "postgres",
     "dialectOptions": {
-      "ssl": true
+      "ssl": {
+        "rejectUnauthorized": false
+      }
     }
   },
   "encryption": {
