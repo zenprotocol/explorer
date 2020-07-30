@@ -1,10 +1,11 @@
 'use strict';
 
+const { Decimal } = require('decimal.js');
 const dal = require('../../../lib/dal');
 
 const outputsDAL = dal.createDAL('Output');
 
-outputsDAL.findOutpoint = function(txHash, index) {
+outputsDAL.findOutpoint = function (txHash, index) {
   return outputsDAL.findOne({
     where: {
       index,
@@ -21,7 +22,7 @@ outputsDAL.findOutpoint = function(txHash, index) {
   });
 };
 
-outputsDAL.findByTransaction = function(transactionId) {
+outputsDAL.findByTransaction = function (transactionId) {
   return this.findAll({
     where: {
       TransactionId: transactionId,
@@ -30,12 +31,10 @@ outputsDAL.findByTransaction = function(transactionId) {
   });
 };
 
-outputsDAL.findAllByAddress = function(address, asset) {
+outputsDAL.findAllByAddress = function (address, asset) {
   return this.findAll({
     attributes: {
-      include: [
-        [this.db.Sequelize.col('Transaction->Block.timestamp'), 'blockTimestamp'],
-      ],
+      include: [[this.db.Sequelize.col('Transaction->Block.timestamp'), 'blockTimestamp']],
     },
     where: {
       address,
@@ -44,36 +43,41 @@ outputsDAL.findAllByAddress = function(address, asset) {
     include: [
       {
         model: this.db.Transaction,
-        include: ['Block', {
-          model: this.db.Input,
-          include: [{
-            model: this.db.Output,
-            where: {
-              asset,
-            },
-          }]
-        }],
+        include: [
+          'Block',
+          {
+            model: this.db.Input,
+            include: [
+              {
+                model: this.db.Output,
+                where: {
+                  asset,
+                },
+              },
+            ],
+          },
+        ],
       },
     ],
     order: [[this.db.Sequelize.col('Transaction->Block.timestamp'), 'DESC']],
   });
 };
 
-outputsDAL.findAllAddressAssets = function(address) {
+outputsDAL.findAllAddressAssets = function (address) {
   return this.findAll({
     attributes: ['asset'],
     where: {
       address,
     },
-    group: ['asset']
+    group: ['asset'],
   });
 };
 
-outputsDAL.searchByAmount = function(amount, limit = 10) {
+outputsDAL.searchByAmount = function (amount, limit = 10) {
   if (
     isNaN(Number(amount)) ||
     Number(amount) < 0 ||
-    String(amount).length > 18 // reaching bigint limit
+    new Decimal(amount).abs().greaterThan('9223372036854775807') // reaching bigint limit
   ) {
     // above db integer
     return Promise.resolve([0, []]);
@@ -84,7 +88,7 @@ outputsDAL.searchByAmount = function(amount, limit = 10) {
   };
 
   return Promise.all([
-    this.count({where}),
+    this.count({ where }),
     this.findAll({
       where: {
         amount,
@@ -92,12 +96,12 @@ outputsDAL.searchByAmount = function(amount, limit = 10) {
       include: [
         {
           model: this.db.Transaction,
-          include: ['Block']
-        }
+          include: ['Block'],
+        },
       ],
       limit,
       order: [['id', 'DESC']],
-    })
+    }),
   ]);
 };
 

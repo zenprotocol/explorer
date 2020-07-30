@@ -1,12 +1,13 @@
 'use strict';
 
+const { Decimal } = require('decimal.js');
 const transactionsDAL = require('../transactions/transactionsDAL');
 const addressesDAL = require('./addressesDAL');
 const outputsDAL = require('../outputs/outputsDAL');
 const blocksBLL = require('../blocks/blocksBLL');
 
 module.exports = {
-  findOne: async function({ address } = {}) {
+  findOne: async function ({ address } = {}) {
     const addressExists = await addressesDAL.addressExists(address);
     if (!addressExists) {
       return null;
@@ -25,20 +26,20 @@ module.exports = {
       zpAmounts,
     };
   },
-  findAllAssets: async function({ address } = {}) {
+  findAllAssets: async function ({ address } = {}) {
     return await outputsDAL.findAllAddressAssets(address);
   },
-  balance: async function({ address, blockNumber: suppliedBlockNumber } = {}) {
+  balance: async function ({ address, blockNumber: suppliedBlockNumber } = {}) {
     const blockNumber = suppliedBlockNumber
       ? suppliedBlockNumber
       : await blocksBLL.getCurrentBlockNumber();
     return addressesDAL.snapshotAddressBalancesByBlock({ address, blockNumber });
   },
-  balanceZp: async function({ address } = {}) {
+  balanceZp: async function ({ address } = {}) {
     const zpAmounts = await addressesDAL.getZpBalance(address);
 
     if (zpAmounts) {
-      return Number(zpAmounts.balance) / 100000000;
+      return new Decimal(zpAmounts.balance || 0).dividedBy(100000000).toNumber();
     }
     return null;
   },

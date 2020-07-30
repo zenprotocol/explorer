@@ -1,5 +1,6 @@
 'use strict';
 
+const { Decimal } = require('decimal.js');
 const httpStatus = require('http-status');
 const blocksDAL = require('../blocks/blocksDAL');
 const transactionsDAL = require('../transactions/transactionsDAL');
@@ -47,7 +48,7 @@ function getSearchPromises(search, limit) {
     searchFor.assets ? assetsDAL.search(search, limit) : Promise.resolve([0, []]),
     searchFor.amount
       ? outputsDAL.searchByAmount(
-          shouldMultiplyAmount ? Math.floor(Number(search) * 100000000) : search,
+          shouldMultiplyAmount ? new Decimal(search || 0).times(100000000).floor().toNumber() : search,
           limit
         )
       : Promise.resolve([0, []]),
@@ -55,7 +56,7 @@ function getSearchPromises(search, limit) {
 }
 
 module.exports = {
-  index: async function(req, res) {
+  index: async function (req, res) {
     let search = req.params.search;
     if (!isSearchStringValid(search)) {
       throw new HttpError(httpStatus.BAD_REQUEST);
