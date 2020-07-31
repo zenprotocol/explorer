@@ -160,7 +160,7 @@ export default function UIStore(rootStore, initialState = {}) {
   const fetchSyncing = action(() => {
     return Service.infos
       .findByName('syncing')
-      .then(response => {
+      .then((response) => {
         runInAction(() => {
           state.syncing = response.success && response.data.value;
         });
@@ -287,14 +287,14 @@ export default function UIStore(rootStore, initialState = {}) {
     }
   });
 
-  const saveToStorage = action(state => {
+  const saveToStorage = action((state) => {
     localStore.set('ui-store', state);
   });
 
   const loadFromStorage = action(() => {
     const data = localStore.get('ui-store');
     if (data) {
-      Object.keys(data).forEach(key => {
+      Object.keys(data).forEach((key) => {
         if (data[key].pageSize && state[key]) {
           state[key].pageSize = data[key].pageSize;
         }
@@ -372,8 +372,7 @@ export default function UIStore(rootStore, initialState = {}) {
 
     autorun(function fetchContractsOnChange() {
       if (
-        state.contractsTable.curPage * state.contractsTable.pageSize <
-        contractStore.contractsCount
+        state.contractsTable.force > 1
       ) {
         contractStore.loadContracts({
           page: state.contractsTable.curPage,
@@ -625,7 +624,7 @@ function setTableData({ identifiers = [], objectToSet } = {}) {
     const sorted = params.sorted;
     const force = params.force; // a boolean to force an update
 
-    ids.forEach(id => {
+    ids.forEach((id) => {
       if (id.value !== objectToSet[id.key]) {
         const prevId = objectToSet[id.key];
         objectToSet[id.key] = id.value;
