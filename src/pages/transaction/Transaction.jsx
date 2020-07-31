@@ -78,6 +78,11 @@ class TransactionPage extends Component {
       return <NotFoundDisplay />;
     }
 
+    const confirmations = Math.max(
+      0,
+      Number(this.blockStore.blocksCount) - Number(transaction.Block.blockNumber) + 1
+    );
+
     return (
       <Page className="Transaction">
         <Helmet>
@@ -118,7 +123,7 @@ class TransactionPage extends Component {
                   <tr>
                     <td>Confirmations</td>
                     <td className="no-text-transform">
-                      {TextUtils.formatNumber(this.blockStore.confirmations(transaction.Block.blockNumber))}
+                      {TextUtils.formatNumber(confirmations)}
                     </td>
                   </tr>
                   {transaction.isCoinbaseTx && (
