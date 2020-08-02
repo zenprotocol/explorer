@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { observer, inject } from 'mobx-react';
+import { reaction } from 'mobx';
 import { Link, Redirect } from 'react-router-dom';
 import classNames from 'classnames';
 import { Helmet } from 'react-helmet';
@@ -29,35 +30,54 @@ class SearchResultsPage extends Component {
     return this.props.rootStore.searchStore;
   }
 
+  get searchParam() {
+    return RouterUtils.getRouteParams(this.props).search;
+  }
+
   componentDidMount() {
-    const { search } = RouterUtils.getRouteParams(this.props);
-    this.search(search);
+    this.search();
+    this.reloadOnBlocksCountChange();
   }
 
   componentDidUpdate(prevProps) {
-    const { search } = RouterUtils.getRouteParams(this.props);
+    const search = this.searchParam;
     const prevParams = RouterUtils.getRouteParams(prevProps);
     if (prevParams.search !== search) {
-      this.search(search);
+      this.search();
     }
   }
 
   componentWillUnmount() {
     this.searchStore.clearSearchString();
     this.blurSearchBar();
+    this.stopReload();
+  }
+
+  reloadOnBlocksCountChange() {
+    this.forceDisposer = reaction(
+      () => this.props.rootStore.blockStore.blocksCount,
+      () => {
+        this.search(false);
+      }
+    );
+  }
+  stopReload() {
+    this.forceDisposer();
   }
 
   blurSearchBar() {
     const el = document.querySelector(':focus');
     if (el) {
-      setTimeout(() => { el.blur(); }, 1);
+      setTimeout(() => {
+        el.blur();
+      }, 1);
     }
   }
 
-  search(value) {
-    const search = SearchUtils.formatSearchString(value);
+  search(reset = true) {
+    const search = SearchUtils.formatSearchString(this.searchParam);
     if (!this.redirectBeforeSearch(search)) {
-      this.searchStore.search(search);
+      this.searchStore.search(search, reset);
       this.setState({ initialSearchDone: true });
     }
   }
@@ -83,11 +103,11 @@ class SearchResultsPage extends Component {
     if (!this.state.initialSearchDone) {
       return null;
     }
-    if (this.searchStore.loading.searchResults) {
+    if (!this.searchStore.searchResults.total && this.searchStore.loading.searchResults) {
       return <Loading />;
     }
 
-    let { search } = RouterUtils.getRouteParams(this.props);
+    let search = this.searchParam;
     search = SearchUtils.formatSearchString(search);
 
     const results = this.searchStore.searchResults;
@@ -124,7 +144,9 @@ class SearchResultsPage extends Component {
           <div className="row">
             <div className="col-sm">
               <h1 className="d-block text-white mb-1 mb-lg-5">
-                {total ? `${TextUtils.formatNumber(total)} Search Results For:` : 'No search results found for:'}
+                {total
+                  ? `${TextUtils.formatNumber(total)} Search Results For:`
+                  : 'No search results found for:'}
                 <div
                   className={classNames('search-string text-light', {
                     'border-top border-dark mt-3': !total,
@@ -143,7 +165,7 @@ class SearchResultsPage extends Component {
                 columns={[
                   {
                     accessor: 'hash',
-                    cell: data => (
+                    cell: (data) => (
                       <HashLink
                         truncate={false}
                         url={`/tx/${data}`}
@@ -154,7 +176,7 @@ class SearchResultsPage extends Component {
                   },
                   {
                     accessor: 'Block.blockNumber',
-                    cell: data => (
+                    cell: (data) => (
                       <span>
                         Block <Link to={`/blocks/${data}`}>{TextUtils.formatNumber(data)}</Link>
                       </span>
@@ -162,7 +184,7 @@ class SearchResultsPage extends Component {
                   },
                   {
                     accessor: 'Block.timestamp',
-                    cell: data => TextUtils.getDateStringFromTimestamp(data),
+                    cell: (data) => TextUtils.getDateStringFromTimestamp(data),
                   },
                 ]}
               />
@@ -172,11 +194,11 @@ class SearchResultsPage extends Component {
                 columns={[
                   {
                     accessor: 'Transaction.hash',
-                    cell: data => <HashLink url={`/tx/${data}`} hash={data} />,
+                    cell: (data) => <HashLink url={`/tx/${data}`} hash={data} />,
                   },
                   {
                     accessor: 'Transaction.Block.blockNumber',
-                    cell: data => (
+                    cell: (data) => (
                       <span>
                         Block <Link to={`/blocks/${data}`}>{TextUtils.formatNumber(data)}</Link>
                       </span>
@@ -184,7 +206,7 @@ class SearchResultsPage extends Component {
                   },
                   {
                     accessor: 'Transaction.Block.timestamp',
-                    cell: data => TextUtils.getDateStringFromTimestamp(data),
+                    cell: (data) => TextUtils.getDateStringFromTimestamp(data),
                   },
                   {
                     accessor: 'amount',
@@ -203,15 +225,19 @@ class SearchResultsPage extends Component {
                 columns={[
                   {
                     accessor: 'blockNumber',
-                    cell: data => (
+                    cell: (data) => (
                       <Link to={`/blocks/${data}`}>
-                        {this.getHighlightedSearchResult(search, TextUtils.formatNumber(data), true)}
+                        {this.getHighlightedSearchResult(
+                          search,
+                          TextUtils.formatNumber(data),
+                          true
+                        )}
                       </Link>
                     ),
                   },
                   {
                     accessor: 'hash',
-                    cell: data => (
+                    cell: (data) => (
                       <HashLink
                         truncate={false}
                         url={`/blocks/${data}`}
@@ -222,9 +248,12 @@ class SearchResultsPage extends Component {
                   },
                   {
                     accessor: 'timestamp',
-                    cell: data => TextUtils.getDateStringFromTimestamp(data),
+                    cell: (data) => TextUtils.getDateStringFromTimestamp(data),
                   },
-                  { accessor: 'transactionCount', cell: data => <span>{TextUtils.formatNumber(data)} txns</span> },
+                  {
+                    accessor: 'transactionCount',
+                    cell: (data) => <span>{TextUtils.formatNumber(data)} txns</span>,
+                  },
                 ]}
               />
               <SearchResultsTable
@@ -233,7 +262,7 @@ class SearchResultsPage extends Component {
                 columns={[
                   {
                     accessor: 'address',
-                    cell: data => (
+                    cell: (data) => (
                       <AddressLink
                         address={data}
                         truncate={false}
@@ -250,7 +279,7 @@ class SearchResultsPage extends Component {
                 columns={[
                   {
                     accessor: 'address',
-                    cell: data => (
+                    cell: (data) => (
                       <AddressLink
                         address={data}
                         truncate={false}
@@ -267,7 +296,7 @@ class SearchResultsPage extends Component {
                 columns={[
                   {
                     accessor: 'asset',
-                    cell: data => (
+                    cell: (data) => (
                       <HashLink
                         truncate={false}
                         url={`/assets/${data}`}
