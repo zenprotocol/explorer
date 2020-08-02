@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
+import { reaction } from 'mobx';
 import { Route, Switch, Redirect } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { Helmet } from 'react-helmet';
@@ -20,8 +21,8 @@ class AssetPage extends Component {
     return this.props.rootStore.assetStore;
   }
 
-  componentDidMount() {
-    this.setAsset(this.assetProp);
+  get is1stTimeLoading() {
+    return !Object.keys(this.assetStore.asset).length && this.assetStore.loading.asset;
   }
 
   componentDidUpdate(prevProps) {
@@ -40,8 +41,30 @@ class AssetPage extends Component {
     return RouterUtils.getRouteParams(this.props).asset;
   }
 
+  componentDidMount() {
+    this.setAsset(this.assetProp);
+    this.reloadOnBlocksCountChange();
+  }
+
+  componentWillUnmount() {
+    this.stopReload();
+  }
+  reloadOnBlocksCountChange() {
+    this.forceDisposer = reaction(
+      () => this.props.rootStore.blockStore.blocksCount,
+      () => {
+        this.setAsset(this.assetProp);
+      }
+    );
+  }
+  stopReload() {
+    this.forceDisposer();
+  }
+
   render() {
-    if (this.assetStore.loading.asset) return <Loading />;
+    if (this.is1stTimeLoading) {
+      return <Loading />;
+    }
 
     const is404 = this.assetStore.asset.status === 404;
     const assetName = AssetUtils.getAssetNameFromCode(this.assetProp);
@@ -55,12 +78,7 @@ class AssetPage extends Component {
           <PageTitle
             title="Asset"
             subtitle={
-              <HashLink
-                hash={assetName}
-                value={this.assetProp}
-                truncate={false}
-                copy={true}
-              />
+              <HashLink hash={assetName} value={this.assetProp} truncate={false} copy={true} />
             }
           />
           {is404 ? <ItemNotFound item="asset" /> : this.renderTopTables()}
@@ -71,8 +89,8 @@ class AssetPage extends Component {
   }
 
   renderTopTables() {
-    if (this.assetStore.loading.asset) {
-      return <Loading />;
+    if (this.is1stTimeLoading) {
+      return null;
     }
     const asset = this.assetStore.asset;
     const contract = asset.contract || {};
@@ -154,7 +172,7 @@ class AssetPage extends Component {
   }
 
   renderTabs() {
-    if (!Object.keys(this.assetStore.asset)) {
+    if (this.is1stTimeLoading) {
       return null;
     }
     const currentPath = this.props.match.path;

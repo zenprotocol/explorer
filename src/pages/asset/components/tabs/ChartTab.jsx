@@ -6,7 +6,7 @@ import { ChartLoader } from '../../../../components/charts';
 
 const ChartTab = inject('rootStore')(observer(props => {
   const assetStore = props.rootStore.assetStore;
-  const { data, loading } = assetStore.assetDistributionData;
+  const { data } = assetStore.assetDistributionData;
   const { asset } = RouterUtils.getRouteParams(props);
   const count = data.length
     ? data[data.length - 1].address.toLowerCase() === 'rest'
@@ -21,7 +21,6 @@ const ChartTab = inject('rootStore')(observer(props => {
         showTitle={false}
         params={{ asset }}
         externalChartData={data}
-        externalChartLoading={loading}
       />
     </TabPanel>
   );

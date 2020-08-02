@@ -408,7 +408,7 @@ export default function UIStore(rootStore, initialState = {}) {
     });
 
     autorun(function fetchAssetTxsOnChange() {
-      if (state.assetTxsTable.asset) {
+      if (state.assetTxsTable.asset && state.assetTxsTable.force > 1) {
         assetStore.loadAssetTxs(state.assetTxsTable.asset, {
           page: state.assetTxsTable.curPage,
           pageSize: state.assetTxsTable.pageSize,
@@ -417,7 +417,7 @@ export default function UIStore(rootStore, initialState = {}) {
     });
 
     autorun(function fetchAssetKeyholdersOnChange() {
-      if (state.assetKeyholdersTable.asset) {
+      if (state.assetKeyholdersTable.asset && state.assetKeyholdersTable.force > 1) {
         assetStore.loadAssetKeyholders(state.assetKeyholdersTable.asset, {
           page: state.assetKeyholdersTable.curPage,
           pageSize: state.assetKeyholdersTable.pageSize,
