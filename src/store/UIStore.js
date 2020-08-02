@@ -347,13 +347,8 @@ export default function UIStore(rootStore, initialState = {}) {
       }
     });
 
-    autorun(function runOnAddressChange() {
-      addressStore.resetAddressTransactionAssets(state.addressTxAssetsTable.address);
-      addressStore.fetchAddress(state.addressTxAssetsTable.address);
-    });
-
     autorun(function fetchAddressTxAssetsOnChange() {
-      if (state.addressTxAssetsTable.address) {
+      if (state.addressTxAssetsTable.address && state.addressTxAssetsTable.force > 1) {
         addressStore.fetchAddressTransactionAssets(state.addressTxAssetsTable.address, {
           page: state.addressTxAssetsTable.curPage,
           pageSize: state.addressTxAssetsTable.pageSize,
