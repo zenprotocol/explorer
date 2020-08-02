@@ -7,11 +7,6 @@ import ContractsTable from './components/ContractsTable';
 import Page from '../../components/Page';
 
 class ContractsPage extends Component {
-  componentDidMount() {
-    // must have contracts count
-    this.props.rootStore.contractStore.loadContracts({ pageSize: 1 }, { setItems: false });
-  }
-
   render() {
     return (
       <Page className="Contract">

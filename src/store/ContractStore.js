@@ -24,7 +24,7 @@ export default class ContractStore {
 
     return Service.contracts
       .find(params)
-      .then(response => {
+      .then((response) => {
         runInAction(() => {
           if (setItems) {
             this.contracts = response.data.items;
@@ -50,7 +50,7 @@ export default class ContractStore {
   }
 
   loadContract(address) {
-    if (!address || (this.contract || {}).address === address) {
+    if (!address) {
       return Promise.resolve(this.contract);
     }
 
@@ -58,13 +58,13 @@ export default class ContractStore {
 
     return Service.contracts
       .findByAddress(address)
-      .then(response => {
+      .then((response) => {
         const contract = new Contract(response.data);
         runInAction(() => {
           this.contract = contract;
         });
       })
-      .catch(error => {
+      .catch((error) => {
         runInAction(() => {
           this.contract = {};
           if (error.status === 404) {
@@ -145,7 +145,13 @@ decorate(ContractStore, {
 });
 
 export class Contract {
-  constructor({ id = '', address = '', code = '', expiryBlock = null, lastActivationTransaction = null } = {}) {
+  constructor({
+    id = '',
+    address = '',
+    code = '',
+    expiryBlock = null,
+    lastActivationTransaction = null,
+  } = {}) {
     this.id = id;
     this.address = address;
     this.code = code;

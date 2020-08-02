@@ -1,6 +1,8 @@
+/* eslint-disable react/display-name */
 import React from 'react';
 import PropTypes from 'prop-types';
 import { observer, inject } from 'mobx-react';
+import {reaction} from 'mobx';
 import { Link } from 'react-router-dom';
 import config from '../../../../lib/Config';
 import WithSetIdsOnUiStore from '../../../../components/hoc/WithSetIdsOnUiStore';
@@ -9,58 +11,87 @@ import { TabPanel } from '../../../../components/tabs';
 import { ItemsTable } from '../../../../components/ItemsTable';
 import HashLink from '../../../../components/HashLink';
 
-const TransactionsTab = observer(props => {
-  const { addressStore, uiStore } = props.rootStore;
-  return (
-    <TabPanel>
-      <ItemsTable
-        columns={[
-          {
-            Header: 'TX HASH',
-            accessor: 'hash',
-            minWidth: config.ui.table.minCellWidth,
-            Cell: ({ value }) => <HashLink url={`/tx/${value}`} hash={value} />,
-          },
-          {
-            Header: 'Timestamp',
-            accessor: 'Block.timestamp',
-            minWidth: config.ui.table.minCellWidthDate,
-            Cell: ({ value }) => TextUtils.getDateStringFromTimestamp(value),
-          },
-          {
-            Header: 'Block',
-            accessor: 'Block.blockNumber',
-            Cell: ({ value }) => (
-              <Link to={`/blocks/${value}`}>{TextUtils.formatNumber(value)}</Link>
-            ),
-          },
-          {
-            Header: 'Command',
-            accessor: 'firstCommand',
-            className: 'text-uppercase',
-          },
-        ]}
-        loading={addressStore.loading.addressTransactions}
-        itemsCount={addressStore.addressTransactionsCount}
-        items={addressStore.addressTransactions}
-        pageSize={uiStore.state.addressTxsTable.pageSize}
-        curPage={uiStore.state.addressTxsTable.curPage}
-        tableDataSetter={uiStore.setAddressTxsTableData.bind(uiStore)}
-        topContent={
-          <div>
-            Total of {TextUtils.formatNumber(addressStore.addressTransactionsCount)} transactions
-            found
-          </div>
-        }
-      />
-    </TabPanel>
-  );
-});
+class TransactionsTab extends React.Component {
+  get tableDataSetter() {
+    const { uiStore } = this.props.rootStore;
+    return uiStore.setAddressTxsTableData.bind(uiStore);
+  }
+
+  forceReload() {
+    this.props.rootStore.uiStore.setAddressTxsTableData({ force: true });
+  }
+
+  componentDidMount() {
+    this.forceReload();
+    this.reloadOnBlocksCountChange();
+  }
+  componentWillUnmount() {
+    this.stopReload();
+  }
+  reloadOnBlocksCountChange() {
+    // autorun was reacting to unknown properties, use reaction instead
+    this.forceDisposer = reaction(
+      () => this.props.rootStore.blockStore.blocksCount,
+      () => this.forceReload()
+    );
+  }
+  stopReload() {
+    this.forceDisposer();
+  }
+
+  render() {
+    const { addressStore, uiStore } = this.props.rootStore;
+    return (
+      <TabPanel>
+        <ItemsTable
+          columns={columns}
+          loading={addressStore.loading.addressTransactions}
+          itemsCount={addressStore.addressTransactionsCount}
+          items={addressStore.addressTransactions}
+          pageSize={uiStore.state.addressTxsTable.pageSize}
+          curPage={uiStore.state.addressTxsTable.curPage}
+          tableDataSetter={this.tableDataSetter}
+          topContent={
+            <div>
+              Total of {TextUtils.formatNumber(addressStore.addressTransactionsCount)} transactions
+              found
+            </div>
+          }
+        />
+      </TabPanel>
+    );
+  }
+}
 
 TransactionsTab.propTypes = {
   rootStore: PropTypes.object,
 };
 
+const columns = [
+  {
+    Header: 'TX HASH',
+    accessor: 'hash',
+    minWidth: config.ui.table.minCellWidth,
+    Cell: ({ value }) => <HashLink url={`/tx/${value}`} hash={value} />,
+  },
+  {
+    Header: 'Timestamp',
+    accessor: 'Block.timestamp',
+    minWidth: config.ui.table.minCellWidthDate,
+    Cell: ({ value }) => TextUtils.getDateStringFromTimestamp(value),
+  },
+  {
+    Header: 'Block',
+    accessor: 'Block.blockNumber',
+    Cell: ({ value }) => <Link to={`/blocks/${value}`}>{TextUtils.formatNumber(value)}</Link>,
+  },
+  {
+    Header: 'Command',
+    accessor: 'firstCommand',
+    className: 'text-uppercase',
+  },
+];
+
 export default inject('rootStore')(
-  observer(WithSetIdsOnUiStore(TransactionsTab, 'setAddressTxsTableData', ['address']))
+  observer(WithSetIdsOnUiStore(observer(TransactionsTab), 'setAddressTxsTableData', ['address']))
 );

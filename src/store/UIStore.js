@@ -362,7 +362,7 @@ export default function UIStore(rootStore, initialState = {}) {
     });
 
     autorun(function fetchAddressTxsOnChange() {
-      if (state.addressTxsTable.address) {
+      if (state.addressTxsTable.address && state.addressTxsTable.force > 1) {
         addressStore.loadAddressTransactions(state.addressTxsTable.address, {
           page: state.addressTxsTable.curPage,
           pageSize: state.addressTxsTable.pageSize,
@@ -371,9 +371,7 @@ export default function UIStore(rootStore, initialState = {}) {
     });
 
     autorun(function fetchContractsOnChange() {
-      if (
-        state.contractsTable.force > 1
-      ) {
+      if (state.contractsTable.force > 1) {
         contractStore.loadContracts({
           page: state.contractsTable.curPage,
           pageSize: state.contractsTable.pageSize,
@@ -383,7 +381,7 @@ export default function UIStore(rootStore, initialState = {}) {
     });
 
     autorun(function fetchContractAssetsOnChange() {
-      if (state.contractAssetsTable.address) {
+      if (state.contractAssetsTable.address && state.contractAssetsTable.force > 1) {
         contractStore.loadAssets(state.contractAssetsTable.address, {
           page: state.contractAssetsTable.curPage,
           pageSize: state.contractAssetsTable.pageSize,
@@ -392,7 +390,7 @@ export default function UIStore(rootStore, initialState = {}) {
     });
 
     autorun(function fetchContractCommandsOnChange() {
-      if (state.contractCommandsTable.address) {
+      if (state.contractCommandsTable.address && state.contractCommandsTable.force > 1) {
         contractStore.loadCommands(state.contractCommandsTable.address, {
           page: state.contractCommandsTable.curPage,
           pageSize: state.contractCommandsTable.pageSize,

@@ -17,7 +17,7 @@ export default class AddressStore {
   }
 
   fetchAddress(address) {
-    if (address && this.address.address !== address) {
+    if (address) {
       this.loading.address = true;
 
       runInAction(() => {
