@@ -7,11 +7,6 @@ import AssetsTable from './components/AssetsTable';
 import Page from '../../components/Page';
 
 class AssetsPage extends Component {
-  componentDidMount() {
-    // must have assets count
-    this.props.rootStore.assetStore.loadAssets({ pageSize: 1 }, { setItems: false });
-  }
-
   render() {
     return (
       <Page className="Assets">

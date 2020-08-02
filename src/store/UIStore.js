@@ -399,7 +399,7 @@ export default function UIStore(rootStore, initialState = {}) {
     });
 
     autorun(function fetchAssetsOnChange() {
-      if (state.assetsTable.curPage * state.assetsTable.pageSize < assetStore.assetsCount) {
+      if (state.assetsTable.force > 1) {
         assetStore.loadAssets({
           page: state.assetsTable.curPage,
           pageSize: state.assetsTable.pageSize,

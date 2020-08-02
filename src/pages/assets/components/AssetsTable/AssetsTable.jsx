@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { observer, inject } from 'mobx-react';
+import { reaction } from 'mobx';
 import Config from '../../../../lib/Config';
 import AssetUtils from '../../../../lib/AssetUtils';
 import TextUtils from '../../../../lib/TextUtils';
@@ -26,27 +27,27 @@ class AssetsTable extends Component {
       {
         Header: 'tokens outstanding',
         accessor: 'outstanding',
-        Cell: data => AssetUtils.getAmountString(data.original.asset, data.value),
+        Cell: (data) => AssetUtils.getAmountString(data.original.asset, data.value),
       },
       {
         Header: 'total issued',
         accessor: 'issued',
-        Cell: data => AssetUtils.getAmountString(data.original.asset, data.value),
+        Cell: (data) => AssetUtils.getAmountString(data.original.asset, data.value),
       },
       {
         Header: 'destroyed',
         accessor: 'destroyed',
-        Cell: data => AssetUtils.getAmountString(data.original.asset, data.value),
+        Cell: (data) => AssetUtils.getAmountString(data.original.asset, data.value),
       },
       {
         Header: 'unique addresses',
         accessor: 'keyholders',
-        Cell: data => TextUtils.formatNumber(data.value),
+        Cell: (data) => TextUtils.formatNumber(data.value),
       },
       {
         Header: 'txs',
         accessor: 'transactionsCount',
-        Cell: data => TextUtils.formatNumber(data.value),
+        Cell: (data) => TextUtils.formatNumber(data.value),
       },
     ];
   }
@@ -56,11 +57,33 @@ class AssetsTable extends Component {
     return uiStore.setAssetsTableData.bind(uiStore);
   }
 
+  forceReload() {
+    this.props.rootStore.uiStore.setAssetsTableData({ force: true });
+  }
+
+  componentDidMount() {
+    this.forceReload();
+    this.reloadOnBlocksCountChange();
+  }
+  componentWillUnmount() {
+    this.stopReload();
+  }
+  reloadOnBlocksCountChange() {
+    // autorun was reacting to unknown properties, use reaction instead
+    this.forceDisposer = reaction(
+      () => this.props.rootStore.blockStore.blocksCount,
+      () => this.forceReload()
+    );
+  }
+  stopReload() {
+    this.forceDisposer();
+  }
+
   render() {
     const { assetStore, uiStore } = this.props.rootStore;
     return (
       <ItemsTableWithUrlPagination
-        location={this.props.location} 
+        location={this.props.location}
         history={this.props.history}
         columns={this.getTableColumns()}
         loading={assetStore.loading.assets}
