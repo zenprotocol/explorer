@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { observer, inject } from 'mobx-react';
+import { reaction } from 'mobx';
 import { Helmet } from 'react-helmet';
 import { Route, Switch, Redirect } from 'react-router-dom';
 import TextUtils from '../../lib/TextUtils';
@@ -76,6 +77,8 @@ class GovernancePage extends React.Component {
     if (!this.repoVoteStore.recentIntervals.length) {
       this.repoVoteStore.loadRecentIntervals();
     }
+
+    this.reloadOnBlocksCountChange();
   }
 
   componentDidUpdate(prevProps) {
@@ -91,6 +94,23 @@ class GovernancePage extends React.Component {
     ) {
       this.loadRelevantInterval();
     }
+  }
+
+  componentWillUnmount() {
+    this.stopReload();
+  }
+  /**
+   * Must reload interval to get winner
+   */
+  reloadOnBlocksCountChange() {
+    // autorun was reacting to unknown properties, use reaction instead
+    this.forceDisposer = reaction(
+      () => this.props.rootStore.blockStore.blocksCount,
+      () => this.loadRelevantInterval()
+    );
+  }
+  stopReload() {
+    this.forceDisposer();
   }
 
   loadRelevantInterval() {
