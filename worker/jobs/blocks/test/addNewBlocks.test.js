@@ -93,8 +93,9 @@ test('BlocksAdder.addNewBlocks()', async function(t) {
     const blocksAdder = new BlocksAdder(networkHelper, new BlockchainParser());
 
     // mute the service to get empty responses
-    Service.config.setBaseUrl('http://1.1.1.1:8080');
-    Service.config.setTimeout(10);
+    Service.config.setBaseUrl('http://wrong.address.io');
+    Service.config.setTimeout(1);
+    
     try {
       await blocksAdder.addNewBlocks({ data: { limitBlocks: 1 } });
       t.fail(`${given}: Should throw an error`);

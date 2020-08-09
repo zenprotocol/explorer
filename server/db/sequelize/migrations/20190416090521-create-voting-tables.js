@@ -27,7 +27,8 @@ module.exports = {
         },
       })
       .then(() =>
-        queryInterface.addConstraint('VoteIntervals', ['interval'], {
+        queryInterface.addConstraint('VoteIntervals', {
+          fields: ['interval'],
           type: 'UNIQUE',
           name: 'VoteIntervals_interval_unique_constraint',
         })
@@ -77,7 +78,8 @@ module.exports = {
         },
       })
       .then(() =>
-        queryInterface.addConstraint('RepoVotes', ['CommandId'], {
+        queryInterface.addConstraint('RepoVotes', {
+          fields: ['CommandId'],
           type: 'foreign key',
           name: 'RepoVotes_CommandId_fkey',
           references: {
