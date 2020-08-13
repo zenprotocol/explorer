@@ -2,6 +2,28 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.2.0](https://github.com/zenprotocol/explorer/compare/v3.1.2...v3.2.0) (2020-08-13)
+
+
+### Features
+
+* **governance:** reload interval on block change ([0ff6687](https://github.com/zenprotocol/explorer/commit/0ff6687b007df6d6257a37bee84b92daae7e2741))
+* add icons and splash screens ([03e8eb5](https://github.com/zenprotocol/explorer/commit/03e8eb5ef8726e4d370b4ff54cdf617b188726df))
+* refresh address page on blocks change ([f0453ba](https://github.com/zenprotocol/explorer/commit/f0453bab3bba6463f43e9e930a4f69557dceeeb1))
+* refresh asset page on blocks change ([477eea0](https://github.com/zenprotocol/explorer/commit/477eea0267b7d971fcf10aa2e380d582cf1a4c25))
+* refresh assets page on blocks change ([9a7bf07](https://github.com/zenprotocol/explorer/commit/9a7bf074242ef80db3a88fab5d68672cc29113a3))
+* refresh chart on blocks change ([10af3e8](https://github.com/zenprotocol/explorer/commit/10af3e868ee221cbd4dbe8049c14e453a5fbece1))
+* refresh chart on blocks change ([a886c3d](https://github.com/zenprotocol/explorer/commit/a886c3df774473f679bb1583057cf67c840e1389))
+* refresh contract page on blocks change ([48c07ec](https://github.com/zenprotocol/explorer/commit/48c07ec76bde676cf47d085e912743bd3df2750d))
+* refresh search page on blocks change ([8167875](https://github.com/zenprotocol/explorer/commit/816787597315d1c5eeec1af20a2abdb0ed997049))
+
+
+### Bug Fixes
+
+* allow info boxes to wrap ([1f4f170](https://github.com/zenprotocol/explorer/commit/1f4f170eca20d040b941cfda2ac9ac6c80113484))
+* make confirmations reactive ([80bd39f](https://github.com/zenprotocol/explorer/commit/80bd39fef62aacd641173cf6418efdf240f268df))
+* make stats btns a bit larger ([34e3cb6](https://github.com/zenprotocol/explorer/commit/34e3cb6f24456d28d96c51b60563a9b8a58cedfb))
+
 ### [3.1.2](https://github.com/zenprotocol/explorer/compare/v3.1.1...v3.1.2) (2020-05-22)
 
 
