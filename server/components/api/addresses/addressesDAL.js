@@ -27,12 +27,15 @@ addressesDAL.findOne = function(address) {
 };
 
 addressesDAL.addressExists = function(address) {
-  return outputsDAL
-    .findAll({
-      where: {
+  const sql = tags.oneLine`
+    SELECT 1 FROM "Outputs" WHERE "Outputs"."address" = :address LIMIT 1;
+  `;
+  return sequelize
+    .query(sql, {
+      replacements: {
         address,
       },
-      limit: 1,
+      type: sequelize.QueryTypes.SELECT,
     })
     .then(results => {
       return results.length > 0;
