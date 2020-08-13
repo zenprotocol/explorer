@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { observer, inject } from 'mobx-react';
+import { reaction } from 'mobx';
 import { Link } from 'react-router-dom';
 import config from '../../../../lib/Config';
 import TextUtils from '../../../../lib/TextUtils';
@@ -15,7 +16,7 @@ class ContractsTable extends Component {
         Header: 'Name',
         accessor: 'id',
         minWidth: config.ui.table.minCellWidth,
-        Cell: data => <HashLink url={`/contracts/${data.original.address}`} hash={data.value} />,
+        Cell: (data) => <HashLink url={`/contracts/${data.original.address}`} hash={data.value} />,
       },
       {
         Header: 'Address',
@@ -27,7 +28,8 @@ class ContractsTable extends Component {
         Header: 'Status',
         accessor: 'expiryBlock',
         sortable: true,
-        Cell: ({ value }) => (value ? `Active until block ${TextUtils.formatNumber(value)}` : 'Inactive'),
+        Cell: ({ value }) =>
+          value ? `Active until block ${TextUtils.formatNumber(value)}` : 'Inactive',
       },
       {
         Header: 'Txs',
@@ -50,6 +52,28 @@ class ContractsTable extends Component {
         Cell: ({ value }) => <Link to={`/blocks/${value}`}>{TextUtils.formatNumber(value)}</Link>,
       },
     ];
+  }
+
+  forceReload() {
+    this.props.rootStore.uiStore.setContractsTableData({ force: true });
+  }
+
+  componentDidMount() {
+    this.forceReload();
+    this.reloadOnBlocksCountChange();
+  }
+  componentWillUnmount() {
+    this.stopReload();
+  }
+  reloadOnBlocksCountChange() {
+    // autorun was reacting to unknown properties, use reaction instead
+    this.forceDisposer = reaction(
+      () => this.props.rootStore.blockStore.blocksCount,
+      () => this.forceReload()
+    );
+  }
+  stopReload() {
+    this.forceDisposer();
   }
 
   render() {

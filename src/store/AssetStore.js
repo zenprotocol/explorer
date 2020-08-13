@@ -57,7 +57,7 @@ export default class AssetStore {
   }
 
   loadAsset(hash) {
-    if (!hash || (this.asset || {}).asset === hash) {
+    if (!hash) {
       return Promise.resolve(this.asset);
     }
 

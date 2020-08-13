@@ -111,7 +111,7 @@ class CGPPage extends React.Component {
               pathname: getPageUrl({ interval: this.intervalRouteParam, phase: 'Vote' }),
             });
           } else {
-            this.loadRelevantInterval({ phase });
+            this.loadRelevantInterval();
           }
         }
       }

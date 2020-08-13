@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
-import { Link } from 'react-router-dom';
+import { reaction } from 'mobx';
+import { Link, withRouter } from 'react-router-dom';
 import PropTypes from 'prop-types';
+import WithSetIdsOnUiStore from '../../../components/hoc/WithSetIdsOnUiStore';
 import config from '../../../lib/Config';
 import AssetUtils from '../../../lib/AssetUtils';
 import TextUtils from '../../../lib/TextUtils';
@@ -36,14 +38,14 @@ class AddressTxsTable extends Component {
         Header: 'Timestamp',
         accessor: 'timestamp',
         minWidth: config.ui.table.minCellWidthDate,
-        Cell: function(data) {
+        Cell: function (data) {
           return TextUtils.getDateStringFromTimestamp(data.value);
         },
       },
       {
         Header: 'Block',
         accessor: 'blockNumber',
-        Cell: data => {
+        Cell: (data) => {
           return <Link to={`/blocks/${data.value}`}>{TextUtils.formatNumber(data.value)}</Link>;
         },
       },
@@ -51,7 +53,7 @@ class AddressTxsTable extends Component {
         Header: 'TX',
         accessor: 'txHash',
         minWidth: config.ui.table.minCellWidth,
-        Cell: data => {
+        Cell: (data) => {
           return <HashLink url={`/tx/${data.value}`} hash={data.value} />;
         },
       },
@@ -59,14 +61,14 @@ class AddressTxsTable extends Component {
         Header: '',
         accessor: 'isCoinbaseTx',
         hideOnMobile: true,
-        Cell: data => {
+        Cell: (data) => {
           return data.value ? 'Coinbase' : '';
         },
       },
       {
         Header: 'Amount',
         accessor: 'totalSum',
-        Cell: data => {
+        Cell: (data) => {
           const isNegative = Number(data.value) < 0;
           return (
             <span className={isNegative ? 'negative' : 'positive'}>
@@ -82,6 +84,28 @@ class AddressTxsTable extends Component {
     return this.uiStore.setAddressTxAssetsTableData.bind(this.uiStore);
   }
 
+  forceReload() {
+    this.props.rootStore.uiStore.setAddressTxAssetsTableData({ force: true });
+  }
+
+  componentDidMount() {
+    this.forceReload();
+    this.reloadOnBlocksCountChange();
+  }
+  componentWillUnmount() {
+    this.stopReload();
+  }
+  reloadOnBlocksCountChange() {
+    // autorun was reacting to unknown properties, use reaction instead
+    this.forceDisposer = reaction(
+      () => this.props.rootStore.blockStore.blocksCount,
+      () => this.forceReload()
+    );
+  }
+  stopReload() {
+    this.forceDisposer();
+  }
+
   render() {
     const address = this.props.address;
     return (
@@ -94,7 +118,7 @@ class AddressTxsTable extends Component {
         curPage={this.uiStore.state.addressTxAssetsTable.curPage}
         tableDataSetter={this.tableDataSetter}
         topContent={<PageTitle title="Transactions" margin={false} />}
-        SubComponent={row => {
+        SubComponent={(row) => {
           const addressFoundIn = [];
           if (address) {
             Number(row.original.outputSum) !== 0 && addressFoundIn.push('output');
@@ -120,4 +144,10 @@ AddressTxsTable.propTypes = {
   rootStore: PropTypes.object,
 };
 
-export default inject('rootStore')(observer(AddressTxsTable));
+export default withRouter(
+  inject('rootStore')(
+    observer(
+      WithSetIdsOnUiStore(observer(AddressTxsTable), 'setAddressTxAssetsTableData', ['address'])
+    )
+  )
+);

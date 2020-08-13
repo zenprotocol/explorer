@@ -45,7 +45,7 @@ class BlockPage extends Component {
   }
 
   fetchBlock() {
-    this.blockStore.fetchBlock(this.hashOrBlockNumber).then(block => {
+    this.blockStore.fetchBlock(this.hashOrBlockNumber).then((block) => {
       this.switchBlock(block.blockNumber);
       this.setBlockInUiBlockContractsTable(block.blockNumber);
     });
@@ -69,17 +69,24 @@ class BlockPage extends Component {
 
   render() {
     const block = this.blockStore.block;
-    const blockNumberStr = block.blockNumber ? `#${TextUtils.formatNumber(block.blockNumber)}` : this.hashOrBlockNumber;
+    const blockNumberStr = block.blockNumber
+      ? `#${TextUtils.formatNumber(block.blockNumber)}`
+      : this.hashOrBlockNumber;
     const is404 = block.status === 404;
     const renderContent = !is404 && block.blockNumber;
     const hasContracts = this.blockStore.blockContractsCount > 0;
 
     if (this.blockStore.loading.block) return <Loading />;
-    
+
     return (
       <Page className="Block">
         <Helmet>
-          <title>{TextUtils.getHtmlTitle('Block', block.blockNumber ? `${block.blockNumber} / ${block.hash}` : '')}</title>
+          <title>
+            {TextUtils.getHtmlTitle(
+              'Block',
+              block.blockNumber ? `${block.blockNumber} / ${block.hash}` : ''
+            )}
+          </title>
         </Helmet>
         <section>
           <div className="row">
@@ -120,7 +127,9 @@ class BlockPage extends Component {
             </Link>
           </li>
           <li className="page-item disabled">
-            <div className="page-link bg-transparent border-0">BLOCK {TextUtils.formatNumber(blockNumber)}</div>
+            <div className="page-link bg-transparent border-0">
+              BLOCK {TextUtils.formatNumber(blockNumber)}
+            </div>
           </li>
           <li className={classNames('page-item', { disabled: nextDisabled })}>
             <Link
@@ -143,6 +152,10 @@ class BlockPage extends Component {
     const blockDateStr = block.timestamp
       ? TextUtils.getDateStringFromTimestamp(block.timestamp)
       : '';
+    const confirmations = Math.max(
+      0,
+      Number(this.blockStore.blocksCount) - Number(block.blockNumber) + 1
+    );
 
     return (
       <div className="row">
@@ -178,14 +191,12 @@ class BlockPage extends Component {
               </tr>
               <tr>
                 <td>DIFFICULTY</td>
-                <td className="no-text-transform">
-                  {TextUtils.formatNumber(block.difficulty)}
-                </td>
+                <td className="no-text-transform">{TextUtils.formatNumber(block.difficulty)}</td>
               </tr>
               <tr>
                 <td>CONFIRMATIONS</td>
                 <td className="no-text-transform">
-                  {TextUtils.formatNumber(this.blockStore.confirmations(block.blockNumber))}
+                  {TextUtils.formatNumber(confirmations)}
                 </td>
               </tr>
               <tr>

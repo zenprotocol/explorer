@@ -1,5 +1,7 @@
-import React, { PureComponent } from 'react';
+import React, { Component } from 'react';
 import { Link, withRouter } from 'react-router-dom';
+import { observer, inject } from 'mobx-react';
+import { reaction } from 'mobx';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import Service from '../../lib/Service';
@@ -14,7 +16,7 @@ const PrivateConfigs = {
     type: 'pie',
     xAxisType: 'linear',
     tooltipHeaderFormat: '<span style="font-size: 10px;"><strong>{point.key}</strong></span><br/>',
-    dataLabelsFormatter: function() {
+    dataLabelsFormatter: function () {
       return this.point.x <= 20 || this.point.x === 100
         ? TextUtils.truncateHash(this.point.name)
         : null;
@@ -55,7 +57,7 @@ const ChartConfigs = {
 
 const Mappers = {
   transactionsPerDay(data) {
-    return data.map(item => {
+    return data.map((item) => {
       return {
         x: Date.parse(item.dt),
         y: Number(item.count),
@@ -63,7 +65,7 @@ const Mappers = {
     });
   },
   blockDifficulty(data) {
-    return data.map(item => {
+    return data.map((item) => {
       return {
         x: Date.parse(item.dt),
         y: Number(item.difficulty),
@@ -71,7 +73,7 @@ const Mappers = {
     });
   },
   networkHashRate(data) {
-    return data.map(item => {
+    return data.map((item) => {
       return {
         x: Date.parse(item.dt),
         y: Number(item.hashrate),
@@ -97,7 +99,7 @@ const Mappers = {
     });
   },
   zpSupply(data) {
-    return data.map(item => {
+    return data.map((item) => {
       return {
         x: Date.parse(item.dt),
         y: Number(item.supply),
@@ -106,12 +108,13 @@ const Mappers = {
   },
 };
 
-class ChartLoader extends PureComponent {
+class ChartLoader extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
       loading: false,
+      isFirstLoad: true,
       data: [],
     };
 
@@ -119,33 +122,50 @@ class ChartLoader extends PureComponent {
   }
 
   componentDidMount() {
-    const chartConfig = this.getChartConfig();
+    this.fetchChartData();
+    this.reloadOnBlocksCountChange();
+  }
+
+  fetchChartData() {
     const { externalChartData } = this.props;
     if (externalChartData) {
       return;
     }
+    const chartConfig = this.getChartConfig();
     if (chartConfig) {
-      this.setState({ loading: true });
+      this.setState((state) => ({ loading: state.isFirstLoad }));
       this.currentPromise = Service.stats.charts(chartConfig.name, chartConfig.params);
       this.currentPromise
-        .then(response => {
+        .then((response) => {
           if (response.success) {
             this.setState({ data: response.data });
           }
-          this.setState({ loading: false });
+          this.setState({ loading: false, isFirstLoad: false });
         })
-        .catch(err => {
+        .catch((err) => {
           if (!Service.utils.isCancel(err)) {
-            this.setState({ loading: false });
+            this.setState({ loading: false, isFirstLoad: false });
           }
         });
     }
   }
 
   componentWillUnmount() {
+    this.stopReload();
     if (this.currentPromise && typeof this.currentPromise.cancel === 'function') {
       this.currentPromise.cancel();
     }
+  }
+
+  reloadOnBlocksCountChange() {
+    // autorun was reacting to unknown properties, use reaction instead
+    this.forceDisposer = reaction(
+      () => this.props.rootStore.blockStore.blocksCount,
+      () => this.fetchChartData()
+    );
+  }
+  stopReload() {
+    this.forceDisposer();
   }
 
   /**
@@ -161,7 +181,7 @@ class ChartLoader extends PureComponent {
 
   handleChartClick() {
     const { titleLinkTo } = this.props;
-    if(titleLinkTo) {
+    if (titleLinkTo) {
       this.props.history.push(titleLinkTo);
     }
   }
@@ -219,4 +239,4 @@ ChartLoader.propTypes = {
   externalChartLoading: PropTypes.bool,
 };
 
-export default withRouter(ChartLoader);
+export default withRouter(inject('rootStore')(observer(ChartLoader)));

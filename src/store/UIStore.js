@@ -160,7 +160,7 @@ export default function UIStore(rootStore, initialState = {}) {
   const fetchSyncing = action(() => {
     return Service.infos
       .findByName('syncing')
-      .then(response => {
+      .then((response) => {
         runInAction(() => {
           state.syncing = response.success && response.data.value;
         });
@@ -287,14 +287,14 @@ export default function UIStore(rootStore, initialState = {}) {
     }
   });
 
-  const saveToStorage = action(state => {
+  const saveToStorage = action((state) => {
     localStore.set('ui-store', state);
   });
 
   const loadFromStorage = action(() => {
     const data = localStore.get('ui-store');
     if (data) {
-      Object.keys(data).forEach(key => {
+      Object.keys(data).forEach((key) => {
         if (data[key].pageSize && state[key]) {
           state[key].pageSize = data[key].pageSize;
         }
@@ -347,13 +347,8 @@ export default function UIStore(rootStore, initialState = {}) {
       }
     });
 
-    autorun(function runOnAddressChange() {
-      addressStore.resetAddressTransactionAssets(state.addressTxAssetsTable.address);
-      addressStore.fetchAddress(state.addressTxAssetsTable.address);
-    });
-
     autorun(function fetchAddressTxAssetsOnChange() {
-      if (state.addressTxAssetsTable.address) {
+      if (state.addressTxAssetsTable.address && state.addressTxAssetsTable.force > 1) {
         addressStore.fetchAddressTransactionAssets(state.addressTxAssetsTable.address, {
           page: state.addressTxAssetsTable.curPage,
           pageSize: state.addressTxAssetsTable.pageSize,
@@ -362,7 +357,7 @@ export default function UIStore(rootStore, initialState = {}) {
     });
 
     autorun(function fetchAddressTxsOnChange() {
-      if (state.addressTxsTable.address) {
+      if (state.addressTxsTable.address && state.addressTxsTable.force > 1) {
         addressStore.loadAddressTransactions(state.addressTxsTable.address, {
           page: state.addressTxsTable.curPage,
           pageSize: state.addressTxsTable.pageSize,
@@ -371,10 +366,7 @@ export default function UIStore(rootStore, initialState = {}) {
     });
 
     autorun(function fetchContractsOnChange() {
-      if (
-        state.contractsTable.curPage * state.contractsTable.pageSize <
-        contractStore.contractsCount
-      ) {
+      if (state.contractsTable.force > 1) {
         contractStore.loadContracts({
           page: state.contractsTable.curPage,
           pageSize: state.contractsTable.pageSize,
@@ -384,7 +376,7 @@ export default function UIStore(rootStore, initialState = {}) {
     });
 
     autorun(function fetchContractAssetsOnChange() {
-      if (state.contractAssetsTable.address) {
+      if (state.contractAssetsTable.address && state.contractAssetsTable.force > 1) {
         contractStore.loadAssets(state.contractAssetsTable.address, {
           page: state.contractAssetsTable.curPage,
           pageSize: state.contractAssetsTable.pageSize,
@@ -393,7 +385,7 @@ export default function UIStore(rootStore, initialState = {}) {
     });
 
     autorun(function fetchContractCommandsOnChange() {
-      if (state.contractCommandsTable.address) {
+      if (state.contractCommandsTable.address && state.contractCommandsTable.force > 1) {
         contractStore.loadCommands(state.contractCommandsTable.address, {
           page: state.contractCommandsTable.curPage,
           pageSize: state.contractCommandsTable.pageSize,
@@ -402,7 +394,7 @@ export default function UIStore(rootStore, initialState = {}) {
     });
 
     autorun(function fetchAssetsOnChange() {
-      if (state.assetsTable.curPage * state.assetsTable.pageSize < assetStore.assetsCount) {
+      if (state.assetsTable.force > 1) {
         assetStore.loadAssets({
           page: state.assetsTable.curPage,
           pageSize: state.assetsTable.pageSize,
@@ -411,7 +403,7 @@ export default function UIStore(rootStore, initialState = {}) {
     });
 
     autorun(function fetchAssetTxsOnChange() {
-      if (state.assetTxsTable.asset) {
+      if (state.assetTxsTable.asset && state.assetTxsTable.force > 1) {
         assetStore.loadAssetTxs(state.assetTxsTable.asset, {
           page: state.assetTxsTable.curPage,
           pageSize: state.assetTxsTable.pageSize,
@@ -420,7 +412,7 @@ export default function UIStore(rootStore, initialState = {}) {
     });
 
     autorun(function fetchAssetKeyholdersOnChange() {
-      if (state.assetKeyholdersTable.asset) {
+      if (state.assetKeyholdersTable.asset && state.assetKeyholdersTable.force > 1) {
         assetStore.loadAssetKeyholders(state.assetKeyholdersTable.asset, {
           page: state.assetKeyholdersTable.curPage,
           pageSize: state.assetKeyholdersTable.pageSize,
@@ -625,7 +617,7 @@ function setTableData({ identifiers = [], objectToSet } = {}) {
     const sorted = params.sorted;
     const force = params.force; // a boolean to force an update
 
-    ids.forEach(id => {
+    ids.forEach((id) => {
       if (id.value !== objectToSet[id.key]) {
         const prevId = objectToSet[id.key];
         objectToSet[id.key] = id.value;

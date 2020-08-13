@@ -24,12 +24,14 @@ export default class SearchStore {
     this.searchStringPrev = '';
   }
 
-  search(value) {
+  search(value, reset = true) {
     if (!SearchUtils.validateSearchString(value) || value === this.searchStringPrev) {
       return Promise.resolve();
     }
 
-    this.resetSearchResults();
+    if(reset) {
+      this.resetSearchResults();
+    }
     this.searchStringPrev = this.searchString;
     this.searchString = value;
     this.loading.searchResults = true;

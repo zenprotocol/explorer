@@ -185,14 +185,6 @@ export default class BlockStore {
   get numberOfTransactions() {
     return (this.block || {}).Transactions ? this.block.Transactions.length : 0;
   }
-
-  confirmations(blockNumber) {
-    if (!blockNumber) {
-      return 0;
-    }
-
-    return Math.max(0, Number(this.blocksCount) - Number(blockNumber) + 1);
-  }
 }
 
 decorate(BlockStore, {

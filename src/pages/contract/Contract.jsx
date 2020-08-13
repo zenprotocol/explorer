@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { observer, inject } from 'mobx-react';
+import { reaction } from 'mobx';
 import { Route, Switch, Redirect, Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
 import RouterUtils from '../../lib/RouterUtils';
@@ -29,8 +30,14 @@ class ContractPage extends Component {
     return RouterUtils.getRouteParams(this.props).address;
   }
 
+  setAddress(address) {
+    this.contractStore.loadContract(address);
+    this.addressStore.fetchAddress(address);
+  }
+
   componentDidMount() {
     this.setAddress(this.addressProp);
+    this.reloadOnBlocksCountChange();
   }
 
   componentDidUpdate(prevProps) {
@@ -40,9 +47,19 @@ class ContractPage extends Component {
     }
   }
 
-  setAddress(address) {
-    this.contractStore.loadContract(address);
-    this.addressStore.fetchAddress(address);
+  componentWillUnmount() {
+    this.stopReload();
+  }
+  reloadOnBlocksCountChange() {
+    this.forceDisposer = reaction(
+      () => this.props.rootStore.blockStore.blocksCount,
+      () => {
+        this.setAddress(this.addressProp);
+      }
+    );
+  }
+  stopReload() {
+    this.forceDisposer();
   }
 
   render() {
@@ -104,7 +121,9 @@ class ContractPage extends Component {
               <tr>
                 <td>STATUS</td>
                 <td>
-                  {contract.expiryBlock ? `Active until block ${TextUtils.formatNumber(contract.expiryBlock)}` : 'Inactive'}
+                  {contract.expiryBlock
+                    ? `Active until block ${TextUtils.formatNumber(contract.expiryBlock)}`
+                    : 'Inactive'}
                 </td>
               </tr>
               <tr>
@@ -126,7 +145,7 @@ class ContractPage extends Component {
         </div>
         <div className="col-lg-6">
           <AssetsBalancesTable
-            balance={(address.assetAmounts || []).map(assetAmount => ({
+            balance={(address.assetAmounts || []).map((assetAmount) => ({
               asset: assetAmount.asset,
               total: assetAmount.balance,
             }))}

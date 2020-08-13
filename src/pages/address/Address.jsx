@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { observer, inject } from 'mobx-react';
+import { reaction } from 'mobx';
 import { Helmet } from 'react-helmet';
 import RouterUtils from '../../lib/RouterUtils';
 import AssetUtils from '../../lib/AssetUtils';
@@ -15,22 +16,56 @@ import Page from '../../components/Page';
 import './Address.scss';
 
 class AddressPage extends Component {
-  componentDidMount() {
-    const params = RouterUtils.getRouteParams(this.props);
-    this.setAddress(params.address);
-  }
-
   componentDidUpdate(prevProps) {
     const params = RouterUtils.getRouteParams(this.props);
     const prevParams = RouterUtils.getRouteParams(prevProps);
 
     if (params.address !== prevParams.address) {
-      this.setAddress(params.address);
+      this.setAddress(true);
     }
   }
 
-  setAddress(address) {
-    this.uiStore.setAddressTxAssetsTableData({ address });
+  get uiStore() {
+    return this.props.rootStore.uiStore;
+  }
+
+  get addressStore() {
+    return this.props.rootStore.addressStore;
+  }
+
+  get addressProp() {
+    return RouterUtils.getRouteParams(this.props).address;
+  }
+
+  setAddress(addressChanged) {
+    if (addressChanged) {
+      this.addressStore.resetAddressTransactionAssets(this.addressProp);
+    }
+    this.addressStore.fetchAddress(this.addressProp);
+  }
+
+  componentDidMount() {
+    this.setAddress(true);
+    this.reloadOnBlocksCountChange();
+  }
+
+  componentWillUnmount() {
+    this.stopReload();
+  }
+  reloadOnBlocksCountChange() {
+    this.forceDisposer = reaction(
+      () => this.props.rootStore.blockStore.blocksCount,
+      () => {
+        this.setAddress();
+      }
+    );
+  }
+  stopReload() {
+    this.forceDisposer();
+  }
+
+  get is1stTimeLoading() {
+    return !Object.keys(this.addressStore.address).length && this.addressStore.loading.address;
   }
 
   render() {
@@ -53,7 +88,7 @@ class AddressPage extends Component {
             title="ADDRESS"
             subtitle={<HashLink hash={params.address} truncate={false} />}
           />
-          {this.addressStore.loading.address && <Loading />}
+          {this.is1stTimeLoading && <Loading />}
           {is404 && <ItemNotFound item="address" />}
           {renderContent && (
             <div className="row">
@@ -96,7 +131,7 @@ class AddressPage extends Component {
               </div>
               <div className="col-lg-6">
                 <AssetsBalancesTable
-                  balance={this.addressStore.address.assetAmounts.map(assetAmount => ({
+                  balance={this.addressStore.address.assetAmounts.map((assetAmount) => ({
                     asset: assetAmount.asset,
                     total: assetAmount.balance,
                   }))}
@@ -109,14 +144,6 @@ class AddressPage extends Component {
         <section>{renderContent && <AddressTxsTable address={params.address} />}</section>
       </Page>
     );
-  }
-
-  get uiStore() {
-    return this.props.rootStore.uiStore;
-  }
-
-  get addressStore() {
-    return this.props.rootStore.addressStore;
   }
 }
 
