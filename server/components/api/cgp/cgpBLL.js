@@ -21,7 +21,7 @@ const CGP_FUND_CONTRACT_ID = config.get('CGP_FUND_CONTRACT_ID');
 const GENESIS_TOTAL_ZP = config.get('GENESIS_TOTAL_ZP');
 
 module.exports = {
-  findIntervalAndTally: async function({ interval, phase } = {}) {
+  findIntervalAndTally: async function ({ interval, phase } = {}) {
     const [currentBlock, chain] = await Promise.all([
       blocksBLL.getCurrentBlockNumber(),
       getChain(),
@@ -122,9 +122,23 @@ module.exports = {
       const winnerAllocation = calculateWinnerAllocation(resultsAllocation);
       const winnerPayout = calculateWinnerPayout(resultsPayout.slice(0, 2));
 
+      // add the cgp fund ballot if does not exist
+      const cgpFundPayoutBallot = config.get('CGP_FUND_PAYOUT_BALLOT');
+      if (
+        cgpFundPayoutBallot &&
+        !nominees.find((nominee) => nominee.ballot === cgpFundPayoutBallot) &&
+        cgpBalance.length > 0
+      ) {
+        nominees.push({
+          ballot: cgpFundPayoutBallot,
+          amount: '0',
+          zpAmount: '0',
+        });
+      }
+
       // with the nominees list, find each current amount
-      const participatingNominees = nominees.map(nominee => {
-        const result = resultsPayout.find(result => result.ballot === nominee.ballot) || {};
+      const participatingNominees = nominees.map((nominee) => {
+        const result = resultsPayout.find((result) => result.ballot === nominee.ballot) || {};
         return {
           ...nominee,
           amount: result.amount || '0',
@@ -133,19 +147,6 @@ module.exports = {
       });
       // sort by the amount
       participatingNominees.sort((a, b) => new Decimal(a.amount).minus(b.amount).toNumber());
-      // add the cgp fund ballot if does not exist
-      const cgpFundPayoutBallot = config.get('CGP_FUND_PAYOUT_BALLOT');
-      if (
-        cgpFundPayoutBallot &&
-        !participatingNominees.find(nominee => nominee.ballot === cgpFundPayoutBallot) &&
-        cgpBalance.length > 0
-      ) {
-        participatingNominees.push({
-          ballot: cgpFundPayoutBallot,
-          amount: '0',
-          zpAmount: '0',
-        });
-      }
 
       return {
         ...relevant,
@@ -163,7 +164,7 @@ module.exports = {
       };
     }
   },
-  findAllVotesByInterval: async function({ interval, type, page = 0, pageSize = 10 } = {}) {
+  findAllVotesByInterval: async function ({ interval, type, page = 0, pageSize = 10 } = {}) {
     const [currentBlock, chain] = await Promise.all([
       blocksBLL.getCurrentBlockNumber(),
       getChain(),
@@ -184,7 +185,7 @@ module.exports = {
       cgpDAL.findAllVotesInInterval(query).then(addBallotContentToResults({ chain, type })),
     ]).then(cgpDAL.getItemsAndCountResult);
   },
-  findAllVoteResults: async function({ interval, type, page = 0, pageSize = 10 } = {}) {
+  findAllVoteResults: async function ({ interval, type, page = 0, pageSize = 10 } = {}) {
     const [currentBlock, chain] = await Promise.all([
       blocksBLL.getCurrentBlockNumber(),
       getChain(),
@@ -204,7 +205,7 @@ module.exports = {
         .then(addBallotContentToResults({ type, chain })),
     ]).then(cgpDAL.getItemsAndCountResult);
   },
-  findAllBallots: async function({ type, interval, page = 0, pageSize = 10 } = {}) {
+  findAllBallots: async function ({ type, interval, page = 0, pageSize = 10 } = {}) {
     const [currentBlock, chain] = await Promise.all([
       blocksBLL.getCurrentBlockNumber(),
       getChain(),
@@ -222,7 +223,7 @@ module.exports = {
       ),
     ]).then(cgpDAL.getItemsAndCountResult);
   },
-  findNomineesBallots: async function({ interval, page = 0, pageSize } = {}) {
+  findNomineesBallots: async function ({ interval, page = 0, pageSize } = {}) {
     const [currentBlock, chain] = await Promise.all([
       blocksBLL.getCurrentBlockNumber(),
       getChain(),
@@ -246,7 +247,7 @@ module.exports = {
       ),
     ]).then(cgpDAL.getItemsAndCountResult);
   },
-  findZpParticipated: async function({ interval, type } = {}) {
+  findZpParticipated: async function ({ interval, type } = {}) {
     const [currentBlock, chain] = await Promise.all([
       blocksBLL.getCurrentBlockNumber(),
       getChain(),
@@ -259,7 +260,7 @@ module.exports = {
 
     return cgpDAL.findZpParticipated({ snapshot, tally, type });
   },
-  findCgpBalance: async function({ blockNumber } = {}) {
+  findCgpBalance: async function ({ blockNumber } = {}) {
     const chain = await getChain();
     const blockchainParser = new BlockchainParser(chain);
 
@@ -267,7 +268,7 @@ module.exports = {
 
     return addressesBLL.balance({ address: contractAddress, blockNumber });
   },
-  findWinnerAllocation: async function({ interval, chain, dbTransaction = null } = {}) {
+  findWinnerAllocation: async function ({ interval, chain, dbTransaction = null } = {}) {
     if (!interval || !chain) return 0;
 
     const { tally } = cgpUtils.getIntervalBlocks(chain, interval);
@@ -299,11 +300,11 @@ module.exports = {
       .then(addBallotContentToResults({ chain, type: 'allocation' }));
     return calculateWinnerAllocation(voteResults);
   },
-  getPayoutBallotContent: async function({ ballot } = {}) {
+  getPayoutBallotContent: async function ({ ballot } = {}) {
     const chain = await getChain();
     return getPayoutBallotContent({ ballot, chain });
   },
-  getAllocationBallotContent: async function({ ballot } = {}) {
+  getAllocationBallotContent: async function ({ ballot } = {}) {
     return getAllocationBallotContent({ ballot });
   },
 };
