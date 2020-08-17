@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [3.2.1](https://github.com/zenprotocol/explorer/compare/v3.2.0...v3.2.1) (2020-08-17)
+
+
+### Bug Fixes
+
+* **cgp:** add payout ballot before amount calc ([a65a5d2](https://github.com/zenprotocol/explorer/commit/a65a5d269c98d06bf62bbd514a12d8ae64a3f9d4))
+
 ## [3.2.0](https://github.com/zenprotocol/explorer/compare/v3.1.2...v3.2.0) (2020-08-13)
 
 
