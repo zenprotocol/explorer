@@ -8,7 +8,6 @@
 require('./blocksQueue');
 require('./infosQueue');
 require('./contractsQueue');
-require('./commandsQueue');
-require('./viewsRefreshQueue');
+require('./executionsQueue');
 require('./snapshotsQueue');
 require('./votesQueue');

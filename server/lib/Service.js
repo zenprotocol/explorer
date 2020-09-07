@@ -15,7 +15,7 @@ const Endpoints = {
   },
   contracts: {
     active: '/contract/active',
-    commands: '/addressdb/contract/history',
+    executions: '/addressdb/contract/history',
   },
   oracle: 'http://oracle.zp.io',
 };
@@ -73,9 +73,9 @@ module.exports = {
         method: 'get',
       }).then(response => response.data);
     },
-    async getCommands(data) {
+    async getExecutions(data) {
       return sendHttpRequest({
-        url: Endpoints.contracts.commands,
+        url: Endpoints.contracts.executions,
         method: 'post',
         data,
       }).then(response => response.data);

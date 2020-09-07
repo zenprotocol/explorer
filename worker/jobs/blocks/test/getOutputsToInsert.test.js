@@ -4,10 +4,9 @@ const test = require('blue-tape');
 const BlocksAdder = require('../BlocksAdder');
 const BlockchainParser = require('../../../../server/lib/BlockchainParser');
 
-test('BlocksAdder.getOutputsToInsert()', async function(t) {
-  const blocksAdder = new BlocksAdder({}, new BlockchainParser());
-
+test('BlocksAdder.getOutputsToInsert()', async function (t) {
   await (async function shouldReturnAnEmptyArray() {
+    const blocksAdder = new BlocksAdder({}, new BlockchainParser());
     const given = 'Given an empty array';
     const result = blocksAdder.getOutputsToInsert({ nodeOutputs: [], transactionId: 1 });
     t.assert(Array.isArray(result), `${given}: Should return an array`);
@@ -15,6 +14,7 @@ test('BlocksAdder.getOutputsToInsert()', async function(t) {
   })();
 
   await (async function shouldReturnResults() {
+    const blocksAdder = new BlocksAdder({}, new BlockchainParser());
     const given = 'Given an outputs array';
     const result = blocksAdder.getOutputsToInsert({
       nodeOutputs: [
@@ -34,18 +34,18 @@ test('BlocksAdder.getOutputsToInsert()', async function(t) {
       transactionId: 1,
     });
     t.equal(result.length, 1, `${given}: Should return an array with same length`);
-    t.deepEqual(
-      Object.keys(result[0]),
+    t.equal(
       [
         'lockType',
         'lockValue',
         'address',
-        'contractLockVersion',
         'asset',
         'amount',
         'index',
-        'TransactionId',
-      ],
+        'txId',
+        'blockNumber'
+      ].reduce((hasAll, key) => hasAll && Object.keys(result[0]).includes(key)),
+      true,
       `${given}: Should contain all of the db keys`
     );
   })();

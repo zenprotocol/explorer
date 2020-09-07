@@ -4,10 +4,9 @@ const test = require('blue-tape');
 const BlocksAdder = require('../BlocksAdder');
 const BlockchainParser = require('../../../../server/lib/BlockchainParser');
 
-test('BlocksAdder.getInputsToInsert()', async function(t) {
-  const blocksAdder = new BlocksAdder({}, new BlockchainParser());
-
+test('BlocksAdder.getInputsToInsert()', async function (t) {
   await (async function shouldReturnAnEmptyArray() {
+    const blocksAdder = new BlocksAdder({}, new BlockchainParser());
     const given = 'Given an empty array';
     const result = blocksAdder.getInputsToInsert({ nodeInputs: [], transactionId: 1 });
     t.assert(Array.isArray(result), `${given}: Should return an array`);
@@ -15,6 +14,7 @@ test('BlocksAdder.getInputsToInsert()', async function(t) {
   })();
 
   await (async function shouldReturnResults() {
+    const blocksAdder = new BlocksAdder({}, new BlockchainParser());
     const given = 'Given an inputs array';
     const result = blocksAdder.getInputsToInsert({
       nodeInputs: [
@@ -34,27 +34,20 @@ test('BlocksAdder.getInputsToInsert()', async function(t) {
       transactionId: 1,
     });
     t.equal(result.length, 2, `${given}: Should return an array with same length`);
-    t.deepEqual(
-      Object.keys(result[0]),
-      [
-        'index',
-        'isMint',
-        'asset',
-        'amount',
-        'TransactionId',
-      ],
+    t.equal(
+      ['index', 'isMint', 'asset', 'amount', 'txId', 'blockNumber'].reduce(
+        (hasAll, key) => hasAll && Object.keys(result[0]).includes(key)
+      ),
+      true,
       `${given}: Should contain all of the db keys`
     );
+
     t.equal(result[0].isMint, true, 'Should be a mint input');
-    t.deepEqual(
-      Object.keys(result[1]),
-      [
-        'index',
-        'outpointTXHash',
-        'outpointIndex',
-        'isMint',
-        'TransactionId',
-      ],
+    t.equal(
+      ['index', 'outpointTxHash', 'outpointIndex', 'isMint', 'txId', 'blockNumber'].reduce(
+        (hasAll, key) => hasAll && Object.keys(result[1]).includes(key)
+      ),
+      true,
       `${given}: Should contain all of the db keys`
     );
     t.equal(result[1].isMint, false, 'Should not be a mint input');

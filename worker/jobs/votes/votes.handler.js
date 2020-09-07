@@ -3,7 +3,7 @@ const getChain = require('../../../server/lib/getChain');
 const QueueError = require('../../lib/QueueError');
 const config = require('../../../server/config/Config');
 const RepoVotesAdder = require('./VotesAdder');
-const CGPVotesAdder = require('./CGPVotesAdder');
+const CgpVotesAdder = require('./CgpVotesAdder');
 
 let repoVotesAdder;
 let cgpVotesAdder;
@@ -35,7 +35,7 @@ module.exports = async function(job) {
       const chain = await getChain();
       if (chain) {
         // instantiate only if we have a chain
-        cgpVotesAdder = new CGPVotesAdder({
+        cgpVotesAdder = new CgpVotesAdder({
           chain,
           blockchainParser: new BlockchainParser(chain),
           contractIdFund: config.get('CGP_FUND_CONTRACT_ID'),

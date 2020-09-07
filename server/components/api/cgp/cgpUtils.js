@@ -36,7 +36,7 @@ function getIntervalBlocks(chain, interval) {
 /**
  * Get interval snapshot and tally blocks by:
  * 1. if interval is supplied, by that interval
- * 2. previous interval if currentBlock - prev.endHeight < maturity
+ * 2. previous interval if currentBlock - prev.endBlock < maturity
  * 3. on going interval
  */
 function getRelevantIntervalBlocks({ chain, interval, phase, currentBlock } = {}) {

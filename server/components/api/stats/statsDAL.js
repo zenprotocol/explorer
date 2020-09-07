@@ -2,9 +2,9 @@
 
 const tags = require('common-tags');
 const { Decimal } = require('decimal.js');
-const transactionsDAL = require('../transactions/transactionsDAL');
+const transactionsDAL = require('../txs/txsDAL');
 const inputsDAL = require('../inputs/inputsDAL');
-const addressAmountsDAL = require('../addressAmounts/addressAmountsDAL');
+const addressesDAL = require('../addresses/addressesDAL');
 const sqlQueries = require('../../../lib/sqlQueries');
 const db = transactionsDAL.db;
 const sequelize = db.sequelize;
@@ -26,10 +26,10 @@ statsDAL.totalIssued = async function(asset) {
 
 statsDAL.transactionsPerDay = async function({ chartInterval = maximumChartInterval } = {}) {
   const sql = tags.oneLine`
-  SELECT COUNT("Transactions"."id"), "Blocks"."dt"
-  FROM "Transactions"
+  SELECT COUNT("Txs"."id"), "Blocks"."dt"
+  FROM "Txs"
     INNER JOIN (SELECT CAST(to_timestamp("Blocks"."timestamp" / 1000) AS DATE) AS dt, *
-    FROM "Blocks") AS "Blocks" ON "Transactions"."BlockId" = "Blocks"."id"
+    FROM "Blocks") AS "Blocks" ON "Txs"."blockNumber" = "Blocks"."blockNumber"
   WHERE "Blocks"."dt" < CURRENT_DATE AND "Blocks"."dt" > CURRENT_DATE - interval :chartInterval
   GROUP BY "Blocks"."dt"
   ORDER BY "Blocks"."dt"
@@ -45,9 +45,9 @@ statsDAL.transactionsPerDay = async function({ chartInterval = maximumChartInter
 statsDAL.blockDifficulty = async function({ chartInterval = maximumChartInterval } = {}) {
   const sql = tags.oneLine`
   with t_vals as
-  (select id, timestamp as tsp, "blockNumber" as block_number, least (greatest ((difficulty >> 24), 3), 32) as lnth, (difficulty & x'00FFFFFF' :: int) as mantissa from "Blocks")
+  (select timestamp as tsp, "blockNumber" as block_number, least (greatest ((difficulty >> 24), 3), 32) as lnth, (difficulty & x'00FFFFFF' :: int) as mantissa from "Blocks")
   , i_vals as
-  (select id, date_trunc('day',to_timestamp(0) + tsp * interval '1 millisecond') as block_date, ((x'1000000' :: int) :: real / (mantissa :: real)) * 256 ^ (32 - lnth) as expected_hashes, block_number from t_vals)
+  (select date_trunc('day',to_timestamp(0) + tsp * interval '1 millisecond') as block_date, ((x'1000000' :: int) :: real / (mantissa :: real)) * 256 ^ (32 - lnth) as expected_hashes, block_number from t_vals)
   select block_date as "dt", (sum(expected_hashes) / 86400.0) * 55000 / 1000000000000 as "difficulty" from i_vals
   where block_date < (select max(block_date) from i_vals) and now() - block_date < interval :chartInterval
   group by block_date
@@ -64,9 +64,9 @@ statsDAL.blockDifficulty = async function({ chartInterval = maximumChartInterval
 statsDAL.networkHashRate = async function({ chartInterval = maximumChartInterval } = {}) {
   const sql = tags.oneLine`
   with t_vals as
-  (select id, timestamp as tsp, "blockNumber" as block_number, least (greatest ((difficulty >> 24), 3), 32) as lnth, (difficulty & x'00FFFFFF' :: int) as mantissa from "Blocks")
+  (select timestamp as tsp, "blockNumber" as block_number, least (greatest ((difficulty >> 24), 3), 32) as lnth, (difficulty & x'00FFFFFF' :: int) as mantissa from "Blocks")
   , i_vals as
-  (select id, date_trunc('day',to_timestamp(0) + tsp * interval '1 millisecond') as block_date, ((x'1000000' :: int) :: real / (mantissa :: real)) * 256 ^ (32 - lnth) as expected_hashes, block_number from t_vals)
+  (select date_trunc('day',to_timestamp(0) + tsp * interval '1 millisecond') as block_date, ((x'1000000' :: int) :: real / (mantissa :: real)) * 256 ^ (32 - lnth) as expected_hashes, block_number from t_vals)
   select block_date as "dt", sum(expected_hashes) / 86400.0 as "hashrate" from i_vals
   where block_date < (select max(block_date) from i_vals) and now() - block_date < interval :chartInterval
   group by block_date
@@ -81,7 +81,7 @@ statsDAL.networkHashRate = async function({ chartInterval = maximumChartInterval
 };
 
 statsDAL.zpRichList = async function({ totalZpK } = {}) {
-  return addressAmountsDAL
+  return addressesDAL
     .findAll({
       where: {
         [Op.and]: {
@@ -117,7 +117,7 @@ statsDAL.assetDistributionMap = async function({ asset } = {}) {
   }
 
   return Promise.all([
-    addressAmountsDAL.keyholders({ asset, limit: 100 }),
+    addressesDAL.keyholders({ asset, limit: 100 }),
     this.totalIssued(asset),
   ]).then(([chartData, total]) => {
     const items = chartData.items;

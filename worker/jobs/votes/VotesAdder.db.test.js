@@ -4,18 +4,17 @@ const test = require('blue-tape');
 const td = require('testdouble');
 const truncate = require('../../../test/lib/truncate');
 const contractsDAL = require('../../../server/components/api/contracts/contractsDAL');
-const commandsDAL = require('../../../server/components/api/commands/commandsDAL');
-const transactionsDAL = require('../../../server/components/api/transactions/transactionsDAL');
-const blocksDAL = require('../../../server/components/api/blocks/blocksDAL');
+const executionsDAL = require('../../../server/components/api/executions/executionsDAL');
+const txsDAL = require('../../../server/components/api/txs/txsDAL');
 const outputsDAL = require('../../../server/components/api/outputs/outputsDAL');
-const voteIntervalsDAL = require('../../../server/components/api/voteIntervals/voteIntervalsDAL');
-const votesDAL = require('../../../server/components/api/votes/votesDAL');
+const voteIntervalsDAL = require('../../../server/components/api/repovote-intervals/voteIntervalsDAL');
+const votesDAL = require('../../../server/components/api/repovotes/votesDAL');
 const SnapshotsTaker = require('../snapshots/SnapshotsTaker');
 const createDemoBlocksFromTo = require('../../../test/lib/createDemoBlocksFromTo');
 const faker = require('faker');
 const BlockchainParser = require('../../../server/lib/BlockchainParser');
 const VotesAdder = require('./VotesAdder');
-const commandsData = require('./test/data/commands.json');
+const executionsData = require('./test/data/executions.json');
 
 const CONTRACT_ID = 'test-contract-id';
 const DEFAULT_COMMIT_ID = '0000000000000000000000000000000000000000';
@@ -24,18 +23,16 @@ const TALLY_BLOCK_CONTESTANT = 10;
 const SNAPSHOT_BLOCK_CANDIDATE = 15;
 const TALLY_BLOCK_CANDIDATE = 20;
 const ADDRESS_AMOUNTS = {
-  tzn1qnw2cxku67eaacdzupt58nwf6trg087g8snyc9gk62taaw8v8qz3sy7v0d9:
-    '100' + '00000000' + '000000',
-  tzn1qxp6ekp72q8903efylsnej34pa940cd2xae03l49pe7hkg3mrc26qyh2rgr:
-    '101' + '00000000' + '000000'
+  tzn1qnw2cxku67eaacdzupt58nwf6trg087g8snyc9gk62taaw8v8qz3sy7v0d9: '100' + '00000000' + '000000',
+  tzn1qxp6ekp72q8903efylsnej34pa940cd2xae03l49pe7hkg3mrc26qyh2rgr: '101' + '00000000' + '000000',
 };
 
 test.onFinish(() => {
-  commandsDAL.db.sequelize.close();
+  executionsDAL.db.sequelize.close();
 });
 
-test('VotesAdder.doJob() (DB)', async function(t) {
-  await wrapTest('Given no contract executions', async given => {
+test('VotesAdder.doJob() (DB)', async function (t) {
+  await wrapTest('Given no contract executions', async (given) => {
     const votesAdder = new VotesAdder({
       blockchainParser: new BlockchainParser(),
       contractId: CONTRACT_ID,
@@ -47,7 +44,7 @@ test('VotesAdder.doJob() (DB)', async function(t) {
     after();
   });
 
-  await wrapTest('Given contestant phase', async given => {
+  await wrapTest('Given contestant phase', async (given) => {
     const votesAdder = new VotesAdder({
       blockchainParser: new BlockchainParser(),
       contractId: CONTRACT_ID,
@@ -56,24 +53,24 @@ test('VotesAdder.doJob() (DB)', async function(t) {
     before(votesAdder);
     await createDemoData();
 
-    // add demo commands
+    // add demo executions
     await Promise.all(
-      commandsData.map(command => {
+      executionsData.map((execution) => {
         return (async () => {
-          const block = await blocksDAL.findByBlockNumber(6);
-          const tx = await transactionsDAL.create({
-            BlockId: block.id,
+          const tx = await txsDAL.create({
+            blockNumber: 6,
             index: 0,
             version: 0,
             inputCount: 1,
             outputCount: 1,
-            hash: faker.random.uuid()
+            hash: faker.random.uuid(),
           });
-          await commandsDAL.create({
+          await executionsDAL.create({
+            contractId: CONTRACT_ID,
+            blockNumber: 6,
+            txId: tx.id,
             command: '',
-            messageBody: JSON.stringify(command.messageBody),
-            TransactionId: tx.id,
-            ContractId: CONTRACT_ID
+            messageBody: JSON.stringify(execution.messageBody),
           });
         })();
       })
@@ -83,7 +80,7 @@ test('VotesAdder.doJob() (DB)', async function(t) {
     after();
   });
 
-  await wrapTest('Given contestant phase, some votes outside of range', async given => {
+  await wrapTest('Given contestant phase, some votes outside of range', async (given) => {
     const votesAdder = new VotesAdder({
       blockchainParser: new BlockchainParser(),
       contractId: CONTRACT_ID,
@@ -93,24 +90,24 @@ test('VotesAdder.doJob() (DB)', async function(t) {
     await createDemoData();
 
     await Promise.all([
-      insertCommand({
+      insertExecution({
         blockNumber: 2,
-        commitId: '1'
+        commitId: '1',
       }),
-      insertCommand({
+      insertExecution({
         blockNumber: 6,
-        commitId: '2'
+        commitId: '2',
       }),
     ]);
 
     const result = await votesAdder.doJob();
-    const votesOutsideRange = await votesDAL.findAll({where: {commitId: '1'}});
+    const votesOutsideRange = await votesDAL.findAll({ where: { commitId: '1' } });
     t.equal(result, 3, `${given}: should add only votes in range`);
     t.equal(votesOutsideRange.length, 0, `${given}: should not have outside range votes in db`);
     after();
   });
 
-  await wrapTest('Given candidate phase, no candidates', async given => {
+  await wrapTest('Given candidate phase, no candidates', async (given) => {
     const votesAdder = new VotesAdder({
       blockchainParser: new BlockchainParser(),
       contractId: CONTRACT_ID,
@@ -119,9 +116,9 @@ test('VotesAdder.doJob() (DB)', async function(t) {
     before(votesAdder);
     await createDemoData();
 
-    await insertCommand({
+    await insertExecution({
       blockNumber: 16,
-      commitId: '1'
+      commitId: '1',
     });
 
     const result = await votesAdder.doJob();
@@ -133,77 +130,65 @@ test('VotesAdder.doJob() (DB)', async function(t) {
     after();
   });
 
-  await wrapTest(
-    'Given candidate phase, with candidates, votes are for other',
-    async given => {
-      const votesAdder = new VotesAdder({
-        blockchainParser: new BlockchainParser(),
-        contractId: CONTRACT_ID,
-        defaultCommitId: DEFAULT_COMMIT_ID,
-      });
-      before(votesAdder);
-      await createDemoData();
+  await wrapTest('Given candidate phase, with candidates, votes are for other', async (given) => {
+    const votesAdder = new VotesAdder({
+      blockchainParser: new BlockchainParser(),
+      contractId: CONTRACT_ID,
+      defaultCommitId: DEFAULT_COMMIT_ID,
+    });
+    before(votesAdder);
+    await createDemoData();
 
-      // add a valid candidate
-      await addVote({
-        address:
-          'tzn1qnw2cxku67eaacdzupt58nwf6trg087g8snyc9gk62taaw8v8qz3sy7v0d9',
-        blockNumber: 6,
-        commitId: '2',
-      });
+    // add a valid candidate
+    await addVote({
+      address: 'tzn1qnw2cxku67eaacdzupt58nwf6trg087g8snyc9gk62taaw8v8qz3sy7v0d9',
+      blockNumber: 6,
+      commitId: '2',
+    });
 
-      // add a command with a vote for another commit id
-      await insertCommand({
-        blockNumber: 16,
-        commitId: '1'
-      });
+    // add a execution with a vote for another commit id
+    await insertExecution({
+      blockNumber: 16,
+      commitId: '1',
+    });
 
-      const result = await votesAdder.doJob();
-      const votes = await votesDAL.findAll({ where: { commitId: '1' } });
-      t.equal(result, 1, `${given}: should return 1`);
-      t.equal(
-        votes.length,
-        0,
-        `${given}: should not add a vote for a non candidate`
-      );
-      after();
-    }
-  );
+    const result = await votesAdder.doJob();
+    const votes = await votesDAL.findAll({ where: { commitId: '1' } });
+    t.equal(result, 1, `${given}: should return 1`);
+    t.equal(votes.length, 0, `${given}: should not add a vote for a non candidate`);
+    after();
+  });
 
-  await wrapTest(
-    'Given candidate phase, with candidates, votes for candidate',
-    async given => {
-      const votesAdder = new VotesAdder({
-        blockchainParser: new BlockchainParser(),
-        contractId: CONTRACT_ID,
-        defaultCommitId: DEFAULT_COMMIT_ID,
-      });
-      before(votesAdder);
-      await createDemoData();
+  await wrapTest('Given candidate phase, with candidates, votes for candidate', async (given) => {
+    const votesAdder = new VotesAdder({
+      blockchainParser: new BlockchainParser(),
+      contractId: CONTRACT_ID,
+      defaultCommitId: DEFAULT_COMMIT_ID,
+    });
+    before(votesAdder);
+    await createDemoData();
 
-      // add a valid candidate
-      await addVote({
-        address:
-          'tzn1qnw2cxku67eaacdzupt58nwf6trg087g8snyc9gk62taaw8v8qz3sy7v0d9',
-        blockNumber: 6,
-        commitId: '1',
-      });
+    // add a valid candidate
+    await addVote({
+      address: 'tzn1qnw2cxku67eaacdzupt58nwf6trg087g8snyc9gk62taaw8v8qz3sy7v0d9',
+      blockNumber: 6,
+      commitId: '1',
+    });
 
-      // add a command with a vote for another commit id
-      await insertCommand({
-        blockNumber: 16,
-        commitId: '1'
-      });
+    // add a execution with a vote for another commit id
+    await insertExecution({
+      blockNumber: 16,
+      commitId: '1',
+    });
 
-      const result = await votesAdder.doJob();
-      t.equal(result, 2, `${given}: should return 2 for a valid vote for 2 addresses`);
-      after();
-    }
-  );
+    const result = await votesAdder.doJob();
+    t.equal(result, 2, `${given}: should return 2 for a valid vote for 2 addresses`);
+    after();
+  });
 
   await wrapTest(
     'Given candidate phase, no candidates, votes for default commit id',
-    async given => {
+    async (given) => {
       const votesAdder = new VotesAdder({
         blockchainParser: new BlockchainParser(),
         contractId: CONTRACT_ID,
@@ -212,10 +197,10 @@ test('VotesAdder.doJob() (DB)', async function(t) {
       before(votesAdder);
       await createDemoData();
 
-      // add a command with a vote for the default
-      await insertCommand({
+      // add a execution with a vote for the default
+      await insertExecution({
         blockNumber: 16,
-        commitId: DEFAULT_COMMIT_ID
+        commitId: DEFAULT_COMMIT_ID,
       });
 
       const result = await votesAdder.doJob();
@@ -244,53 +229,51 @@ function after() {
 async function createDemoData() {
   // create a range of blocks
   await createDemoBlocksFromTo(1, TALLY_BLOCK_CANDIDATE);
-  const block1 = await blocksDAL.findByBlockNumber(1);
   // add amount to some addresses all in block 1
   for (let i = 0; i < Object.keys(ADDRESS_AMOUNTS).length; i++) {
     const address = Object.keys(ADDRESS_AMOUNTS)[i];
     const amount = ADDRESS_AMOUNTS[address];
-    const tx = await transactionsDAL.create({
+    const tx = await txsDAL.create({
+      blockNumber: 1,
       index: i,
       version: 0,
       inputCount: 0,
       outputCount: 1,
-      hash: faker.random.uuid()
+      hash: faker.random.uuid(),
     });
     await outputsDAL.create({
-      TransactionId: tx.id,
+      blockNumber: 1,
+      txId: tx.id,
       lockType: 'PK',
       address,
       asset: '00',
       amount,
-      index: 0
+      index: 0,
     });
-
-    await blocksDAL.addTransaction(block1, tx);
   }
 
   // add the voting contract
   await contractsDAL.create({
     id: CONTRACT_ID,
-    address:
-      'ctzn1qqqqqqq8rzylch7w03dmym9zad7vuvs4akp5azdaa6hm7gnc7wk287k9qgssqskgv',
+    address: 'ctzn1qqqqqqq8rzylch7w03dmym9zad7vuvs4akp5azdaa6hm7gnc7wk287k9qgssqskgv',
     code: '',
-    expiryBlock: 1000
+    expiryBlock: 1000,
   });
 
   // add the intervals
   const contestant = await voteIntervalsDAL.create({
     interval: 1,
     phase: 'Contestant',
-    beginHeight: SNAPSHOT_BLOCK_CONTESTANT,
-    endHeight: TALLY_BLOCK_CONTESTANT,
-    thresholdZp: 1000000
+    beginBlock: SNAPSHOT_BLOCK_CONTESTANT,
+    endBlock: TALLY_BLOCK_CONTESTANT,
+    thresholdZp: 1000000,
   });
   await voteIntervalsDAL.create({
     interval: 1,
     phase: 'Candidate',
-    beginHeight: SNAPSHOT_BLOCK_CANDIDATE,
-    endHeight: TALLY_BLOCK_CANDIDATE,
-    prevPhaseId: contestant.id
+    beginBlock: SNAPSHOT_BLOCK_CANDIDATE,
+    endBlock: TALLY_BLOCK_CANDIDATE,
+    prevPhaseId: contestant.id,
   });
 
   const snapshotsTaker = new SnapshotsTaker({ chain: 'test' });
@@ -298,26 +281,26 @@ async function createDemoData() {
 }
 
 /**
- * Insert a tx and a command to a specific block, containing a vote
+ * Insert a tx and an execution to a specific block, containing a vote
  *
  * @param {*} [{blockNumber, interval, phase, commitId}={}]
  */
-async function insertCommand({ blockNumber, commitId } = {}) {
+async function insertExecution({ blockNumber, commitId } = {}) {
   // add a tx
-  const block = await blocksDAL.findByBlockNumber(blockNumber);
-  const tx = await transactionsDAL.create({
-    BlockId: block.id,
+  const tx = await txsDAL.create({
+    blockNumber,
     index: 0,
     version: 0,
     inputCount: 1,
     outputCount: 1,
-    hash: faker.random.uuid()
+    hash: faker.random.uuid(),
   });
-  await commandsDAL.create({
+  await executionsDAL.create({
+    blockNumber,
+    txId: tx.id,
+    contractId: CONTRACT_ID,
     command: '',
     messageBody: JSON.stringify(getMessageBody({ commitId })),
-    TransactionId: tx.id,
-    ContractId: CONTRACT_ID
   });
 }
 
@@ -325,28 +308,30 @@ async function insertCommand({ blockNumber, commitId } = {}) {
  * Insert a vote to RepoVotes
  */
 async function addVote({ address, commitId, blockNumber } = {}) {
-  const block = await blocksDAL.findByBlockNumber(blockNumber);
   const contract = await contractsDAL.findById(CONTRACT_ID);
-  const tx = await transactionsDAL.create({
-    BlockId: block.id,
+  const tx = await txsDAL.create({
+    blockNumber,
     index: 0,
     version: 0,
     inputCount: 0,
     outputCount: 1,
-    hash: faker.random.uuid()
+    hash: faker.random.uuid(),
   });
-  const command = await commandsDAL.create({
-    TransactionId: tx.id,
-    ContractId: contract.id,
+  const execution = await executionsDAL.create({
+    blockNumber,
+    txId: tx.id,
+    contractId: contract.id,
     command: '',
     messageBody: JSON.stringify({}),
-    indexInTransaction: 0
+    indexInTx: 0,
   });
 
   await votesDAL.create({
-    CommandId: command.id,
+    blockNumber,
+    executionId: execution.id,
+    txHash: tx.hash,
     commitId,
-    address
+    address,
   });
 }
 
@@ -354,7 +339,7 @@ function getMessageBody({ commitId } = {}) {
   return {
     list: [
       {
-        string: commitId
+        string: commitId,
       },
       {
         dict: [
@@ -363,19 +348,19 @@ function getMessageBody({ commitId } = {}) {
             '029ae9b49e60259958302fab6c9be333775fd7ada72f11643218dcf23e5f37ec92',
             {
               signature:
-                '366a87c63e0aadedfb497b2a7dcb6d4841811e0e6b54b4dd6982207cc6f4a309ee862a0b0c80a15c8cec4f905bf7b03fb2959d38f92cf8a95af64af6f10f5668'
-            }
+                '366a87c63e0aadedfb497b2a7dcb6d4841811e0e6b54b4dd6982207cc6f4a309ee862a0b0c80a15c8cec4f905bf7b03fb2959d38f92cf8a95af64af6f10f5668',
+            },
           ],
           [
             // address: tzn1qxp6ekp72q8903efylsnej34pa940cd2xae03l49pe7hkg3mrc26qyh2rgr
             '02b43a1cb4cb6472e1fcd71b237eb9c1378335cd200dd07536594348d9e450967e',
             {
               signature:
-                '9bc1cb0b464ef334c9abfdaaea7808ba5145cf474e9ca0b6ecacd7687b92b1090a8fbee7066819c3f3ae8257902fffeb63b4cd4aa02d6a355db7bd87b99b7ce2'
-            }
-          ]
-        ]
-      }
-    ]
+                '9bc1cb0b464ef334c9abfdaaea7808ba5145cf474e9ca0b6ecacd7687b92b1090a8fbee7066819c3f3ae8257902fffeb63b4cd4aa02d6a355db7bd87b99b7ce2',
+            },
+          ],
+        ],
+      },
+    ],
   };
 }

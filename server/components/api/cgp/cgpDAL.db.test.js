@@ -5,11 +5,11 @@ const { Decimal } = require('decimal.js');
 const { Address } = require('@zen/zenjs');
 const { ContractId } = require('@zen/zenjs/build/src/Consensus/Types/ContractId');
 const truncate = require('../../../../test/lib/truncate');
-const transactionsDAL = require('../transactions/transactionsDAL');
+const txsDAL = require('../txs/txsDAL');
 const blocksDAL = require('../blocks/blocksDAL');
 const outputsDAL = require('../outputs/outputsDAL');
 const contractsDAL = require('../contracts/contractsDAL');
-const commandsDAL = require('../commands/commandsDAL');
+const executionsDAL = require('../executions/executionsDAL');
 const cgpDAL = require('./cgpDAL');
 const SnapshotsTaker = require('../../../../worker/jobs/snapshots/SnapshotsTaker');
 const createDemoBlocksFromTo = require('../../../../test/lib/createDemoBlocksFromTo');
@@ -1290,13 +1290,13 @@ async function createDemoData({
 } = {}) {
   // create a range of blocks
   await createDemoBlocksFromTo(1, toBlock);
-  const block1 = await blocksDAL.findByBlockNumber(1);
   // add amount to some addresses all in block 1
   const addressAmounts = Object.assign({}, ADDRESS_AMOUNTS, extraAddressAmounts);
   for (let i = 0; i < Object.keys(addressAmounts).length; i++) {
     const address = Object.keys(addressAmounts)[i];
     const amount = new Decimal(addressAmounts[address]).times(amountMultiplier).toString();
-    const tx = await transactionsDAL.create({
+    const tx = await txsDAL.create({
+      blockNumber: 1,
       index: i,
       version: 0,
       inputCount: 0,
@@ -1304,15 +1304,14 @@ async function createDemoData({
       hash: faker.random.uuid(),
     });
     await outputsDAL.create({
-      TransactionId: tx.id,
+      blockNumber: 1,
+      txId: tx.id,
       lockType: 'PK',
       address,
       asset: '00',
       amount,
       index: 0,
     });
-
-    await blocksDAL.addTransaction(block1, tx);
   }
 
   // add the voting contract
@@ -1328,29 +1327,31 @@ async function createDemoData({
 }
 
 async function addVote({ address, ballot, type, blockNumber, txIndex = 0 } = {}) {
-  const block = await blocksDAL.findByBlockNumber(blockNumber);
   const contract = await contractsDAL.findById(CONTRACT_ID);
-  const tx = await transactionsDAL.create({
-    BlockId: block.id,
+  const tx = await txsDAL.create({
+    blockNumber,
     index: txIndex,
     version: 0,
     inputCount: 0,
     outputCount: 1,
     hash: faker.random.uuid(),
   });
-  const command = await commandsDAL.create({
-    TransactionId: tx.id,
-    ContractId: contract.id,
+  const execution = await executionsDAL.create({
+    contractId: contract.id,
+    blockNumber,
+    txId: tx.id,
     command: type == 'payout' ? 'Payout' : 'Allocation',
     messageBody: JSON.stringify({}),
-    indexInTransaction: 0,
+    indexInTx: 0,
   });
 
   await cgpDAL.create({
-    CommandId: command.id,
-    address,
-    ballot,
+    executionId: execution.id,
+    blockNumber,
+    txHash: tx.hash,
     type,
+    ballot,
+    address,
   });
 }
 

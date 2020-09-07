@@ -183,7 +183,7 @@ export default class BlockStore {
   }
 
   get numberOfTransactions() {
-    return (this.block || {}).Transactions ? this.block.Transactions.length : 0;
+    return (this.block || {}).Txs ? this.block.Txs.length : 0;
   }
 }
 

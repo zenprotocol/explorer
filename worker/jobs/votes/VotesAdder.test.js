@@ -2,7 +2,7 @@
 
 const test = require('blue-tape');
 const td = require('testdouble');
-const commandsData = require('./test/data/commands.json');
+const executionsData = require('./test/data/executions.json');
 
 const CONTRACT_ID = 'test-contract-id';
 
@@ -11,7 +11,7 @@ let votesDAL;
 
 function before({ contractId = CONTRACT_ID } = {}) {
   votesDAL = td.replace('../../../server/components/api/votes/votesDAL.js', {
-    findAllUnprocessedCommands: td.func('findAllUnprocessedCommands'),
+    findAllUnprocessedExecutions: td.func('findAllUnprocessedExecutions'),
     bulkCreate: td.func('bulkCreate')
   });
 
@@ -204,10 +204,10 @@ test('VotesAdder.validateDictElement()', async function(t) {
 });
 
 test('VotesAdder.doJob()', async function(t) {
-  function stub({ commands = commandsData } = {}) {
+  function stub({ executions = executionsData } = {}) {
     td.when(
-      votesDAL.findAllUnprocessedCommands(td.matchers.anything())
-    ).thenResolve(commands);
+      votesDAL.findAllUnprocessedExecutions(td.matchers.anything())
+    ).thenResolve(executions);
     td.when(votesAdder.verify(td.matchers.anything())).thenResolve(true);
   }
 

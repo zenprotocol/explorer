@@ -20,13 +20,13 @@ test('BlocksAdder.isReorg()', async function(t) {
   });
 
   await wrapTest('Given block with parent equals to db prev hash', async given => {
-    td.when(blocksDAL.findByBlockNumber(1, td.matchers.anything())).thenResolve({hash: BLOCK1_HASH});
+    td.when(blocksDAL.findById(1, td.matchers.anything())).thenResolve({hash: BLOCK1_HASH});
     const result = await blocksAdder.isReorg({nodeBlock: getNodeBlock({blockNumber: 2, parent: BLOCK1_HASH})});
     t.equal(result, false, `${given}: Should return false`);
   });
 
   await wrapTest('Given block with parent not equals to db prev hash', async given => {
-    td.when(blocksDAL.findByBlockNumber(1, td.matchers.anything())).thenResolve({hash: BLOCK1_HASH});
+    td.when(blocksDAL.findById(1, td.matchers.anything())).thenResolve({hash: BLOCK1_HASH});
     const result = await blocksAdder.isReorg({nodeBlock: getNodeBlock({blockNumber: 2, parent: 'whatever'})});
     t.equal(result, true, `${given}: Should return true`);
   });
@@ -35,7 +35,7 @@ test('BlocksAdder.isReorg()', async function(t) {
 // HELPERS
 async function wrapTest(given, test) {
   blocksDAL = td.replace('../../../../server/components/api/blocks/blocksDAL', {
-    findByBlockNumber: td.func('findByBlockNumber'),
+    findById: td.func('findById'),
   });
   td.replace('../../../../server/components/api/transactions/transactionsDAL', {});
   td.replace('../../../../server/components/api/outputs/outputsDAL', {});

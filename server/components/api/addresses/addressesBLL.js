@@ -1,7 +1,7 @@
 'use strict';
 
 const { Decimal } = require('decimal.js');
-const transactionsDAL = require('../transactions/transactionsDAL');
+const transactionsDAL = require('../txs/txsDAL');
 const addressesDAL = require('./addressesDAL');
 const outputsDAL = require('../outputs/outputsDAL');
 const blocksBLL = require('../blocks/blocksBLL');

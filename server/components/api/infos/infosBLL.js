@@ -1,7 +1,7 @@
 'use strict';
 
 const infosDAL = require('./infosDAL');
-const transactionsDAL = require('../transactions/transactionsDAL');
+const transactionsDAL = require('../txs/txsDAL');
 const blocksBLL = require('../blocks/blocksBLL');
 const cgpBLL = require('../cgp/cgpBLL');
 const cgpUtils = require('../cgp/cgpUtils');

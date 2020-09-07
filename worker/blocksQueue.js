@@ -13,24 +13,24 @@ const NUM_OF_BLOCKS_IN_CHUNK = Config.get('queues:addBlocks:limitBlocks');
 
 const NODE_URL = Config.get('zp:node');
 const APP_NAME = Config.get('APP_NAME');
-const addBlocksQueue = queue(Config.get('queues:addBlocks:name'));
+const blocksQueue = queue(Config.get('queues:addBlocks:name'));
 const reorgsQueue = queue(Config.get('queues:reorgs:name'));
 const snapshotsQueue = queue(Config.get('queues:snapshots:name'));
-const commandsQueue = queue(Config.get('queues:commands:name'));
+const executionsQueue = queue(Config.get('queues:executions:name'));
 
 const taskTimeLimiter = new TaskTimeLimiter(Config.get('queues:slackTimeLimit') * 1000);
 
 // process ---
-addBlocksQueue.process(path.join(__dirname, 'jobs/blocks/addNewBlocks.handler.js'));
+blocksQueue.process(path.join(__dirname, 'jobs/blocks/blocks.handler.js'));
 reorgsQueue.process(path.join(__dirname, 'jobs/blocks/reorgs.handler.js'));
 
 
 // events
-addBlocksQueue.on('active', function(job, jobPromise) {
+blocksQueue.on('active', function(job, jobPromise) {
   loggerBlocks.info(`A job has started. ID=${job.id} TYPE=${job.data.type}`);
 });
 
-addBlocksQueue.on('completed', function(job, result) {
+blocksQueue.on('completed', function(job, result) {
   if (job.data.type === 'check-synced') {
     loggerBlocks.info(
       `A job has been completed. ID=${job.id} TYPE=${job.data.type} result=${result}`
@@ -40,16 +40,16 @@ addBlocksQueue.on('completed', function(job, result) {
       `A job has been completed. ID=${job.id} TYPE=${job.data.type} count=${result.count} latest block added=${result.latest}`
     );
     if (result.count > 0) {
-      addBlocksQueue.add({ type: 'add-blocks', limitBlocks: NUM_OF_BLOCKS_IN_CHUNK });
+      blocksQueue.add({ type: 'add-blocks', limitBlocks: NUM_OF_BLOCKS_IN_CHUNK });
       // notify other queues that blocks were added
       snapshotsQueue.add();
     }
     // start dependant queues
-    commandsQueue.add();
+    executionsQueue.add();
   }
 });
 
-addBlocksQueue.on('failed', function(job, error) {
+blocksQueue.on('failed', function(job, error) {
   loggerBlocks.error(`A job has failed. ID=${job.id} TYPE=${job.data.type} error=${error.message}`);
   taskTimeLimiter.executeTask(() => {
     getChain().then(chain => {
@@ -62,7 +62,7 @@ addBlocksQueue.on('failed', function(job, error) {
     const message = 'Found a reorg! starting the reorg processor...';
     loggerBlocks.info(message);
     slackLogger.log(`${message} app=${APP_NAME} node=${NODE_URL}`);
-    addBlocksQueue.pause();
+    blocksQueue.pause();
     reorgsQueue.add();
   }
 });
@@ -76,7 +76,7 @@ reorgsQueue.on('completed', function(job, result) {
     const message = `A reorg was successfully handled: ${JSON.stringify(result)}`;
     loggerReorg.info(message);
     slackLogger.log(`${message} app=${APP_NAME} node=${NODE_URL}`);
-    addBlocksQueue.resume();
+    blocksQueue.resume();
   } else {
     const message = `Could not handle a reorg: ${JSON.stringify(result)}`;
     loggerReorg.error(message);
@@ -95,11 +95,11 @@ reorgsQueue.on('failed', function(job, error) {
 
 // first clean the queue
 Promise.all([
-  addBlocksQueue.clean(0, 'active'),
-  addBlocksQueue.clean(0, 'delayed'),
-  addBlocksQueue.clean(0, 'wait'),
-  addBlocksQueue.clean(0, 'completed'),
-  addBlocksQueue.clean(0, 'failed'),
+  blocksQueue.clean(0, 'active'),
+  blocksQueue.clean(0, 'delayed'),
+  blocksQueue.clean(0, 'wait'),
+  blocksQueue.clean(0, 'completed'),
+  blocksQueue.clean(0, 'failed'),
   reorgsQueue.clean(0, 'active'),
   reorgsQueue.clean(0, 'delayed'),
   reorgsQueue.clean(0, 'wait'),
@@ -107,20 +107,20 @@ Promise.all([
   reorgsQueue.clean(0, 'failed'),
 ]).then(() => {
   // schedule ---
-  addBlocksQueue.add(
+  blocksQueue.add(
     { type: 'add-blocks', limitBlocks: NUM_OF_BLOCKS_IN_CHUNK },
     { repeat: { cron: '* * * * *' } }
   );
-  addBlocksQueue.add({ type: 'check-synced' }, { repeat: { cron: '*/30 * * * *' } });
+  blocksQueue.add({ type: 'check-synced' }, { repeat: { cron: '*/30 * * * *' } });
   // now
-  addBlocksQueue.add({ type: 'add-blocks', limitBlocks: NUM_OF_BLOCKS_IN_CHUNK });
-  addBlocksQueue.add({ type: 'check-synced' });
-  addBlocksQueue.resume();
+  blocksQueue.add({ type: 'add-blocks', limitBlocks: NUM_OF_BLOCKS_IN_CHUNK });
+  blocksQueue.add({ type: 'check-synced' });
+  blocksQueue.resume();
 });
 
 setInterval(() => {
-  addBlocksQueue.clean(Config.get('queues:cleanAfter') * 1000, 'completed');
-  addBlocksQueue.clean(Config.get('queues:cleanAfter') * 1000, 'failed');
+  blocksQueue.clean(Config.get('queues:cleanAfter') * 1000, 'completed');
+  blocksQueue.clean(Config.get('queues:cleanAfter') * 1000, 'failed');
   reorgsQueue.clean(Config.get('queues:cleanAfter') * 1000, 'completed');
   reorgsQueue.clean(Config.get('queues:cleanAfter') * 1000, 'failed');
 }, Config.get('queues:cleanInterval') * 1000);

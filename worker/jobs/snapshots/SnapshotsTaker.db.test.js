@@ -4,9 +4,9 @@ const test = require('blue-tape');
 const faker = require('faker');
 const truncate = require('../../../test/lib/truncate');
 const blocksDAL = require('../../../server/components/api/blocks/blocksDAL');
-const transactionsDAL = require('../../../server/components/api/transactions/transactionsDAL');
+const txsDAL = require('../../../server/components/api/txs/txsDAL');
 const outputsDAL = require('../../../server/components/api/outputs/outputsDAL');
-const voteIntervalsDAL = require('../../../server/components/api/voteIntervals/voteIntervalsDAL');
+const repoVoteIntervalsDAL = require('../../../server/components/api/repovote-intervals/voteIntervalsDAL');
 const snapshotsDAL = require('../../../server/components/api/snapshots/snapshotsDAL');
 const SnapshotTaker = require('./SnapshotsTaker');
 const BlocksAdder = require('../blocks/BlocksAdder');
@@ -32,10 +32,10 @@ test('SnapshotTaker.doJob() (DB)', async function(t) {
     const blocksAdder = new BlocksAdder({}, new BlockchainParser());
 
     // insert an interval
-    voteIntervalsDAL.create({
+    repoVoteIntervalsDAL.create({
       interval: 1,
-      beginHeight: 1,
-      endHeight: 100,
+      beginBlock: 1,
+      endBlock: 100,
     });
     // insert blocks
     await blocksAdder.addBlock({ job: {}, nodeBlock: JSON.parse(JSON.stringify(block1)) });
@@ -50,7 +50,7 @@ test('SnapshotTaker.doJob() (DB)', async function(t) {
 
     const block1SnapshotCount = await snapshotsDAL.count({
       where: {
-        height: 1,
+        blockNumber: 1,
       },
     });
     t.equal(
@@ -59,7 +59,7 @@ test('SnapshotTaker.doJob() (DB)', async function(t) {
       `${given}: should insert ${UNIQUE_ADDRESSES_IN_BLOCK_1} rows to snapshots`
     );
 
-    const theInterval = await voteIntervalsDAL.findOne({ where: { interval: 1 } });
+    const theInterval = await repoVoteIntervalsDAL.findOne({ where: { interval: 1 } });
     t.equal(
       theInterval.hasSnapshot,
       true,
@@ -125,8 +125,8 @@ test('SnapshotTaker.doJob() (DB)', async function(t) {
 
     // add a snapshot for the 2nd interval but leave the 1st and 3rd empty
     await snapshotsDAL.bulkCreate([
-      {height: 190, address: 'tzn1q123', amount: 50 * 100000000},
-      {height: 190, address: 'tzn1q124', amount: 100 * 100000000},
+      {blockNumber: 190, address: 'tzn1q123', amount: 50 * 100000000},
+      {blockNumber: 190, address: 'tzn1q124', amount: 100 * 100000000},
     ]);
     
     await createDemoData({
@@ -157,8 +157,8 @@ test('SnapshotTaker.doJob() (DB)', async function(t) {
       voteIntervals: [
         {
           interval: 1,
-          beginHeight: 80,
-          endHeight: 1000,
+          beginBlock: 80,
+          endBlock: 1000,
         },
       ],
     });
@@ -184,8 +184,8 @@ test('SnapshotTaker.doJob() (DB)', async function(t) {
       voteIntervals: [
         {
           interval: 1,
-          beginHeight: 90,
-          endHeight: 1000,
+          beginBlock: 90,
+          endBlock: 1000,
         },
       ],
     });
@@ -195,7 +195,7 @@ test('SnapshotTaker.doJob() (DB)', async function(t) {
     t.equal(
       await snapshotsDAL.count({
         where: {
-          height: 90,
+          blockNumber: 90,
         },
       }),
       2,
@@ -215,12 +215,12 @@ async function wrapTest(given, test) {
 async function createDemoData({ currentBlock, addressAmounts = {}, voteIntervals = [] } = {}) {
   // create a range of blocks
   await createDemoBlocksFromTo(1, currentBlock);
-  const block1 = await blocksDAL.findByBlockNumber(1);
   // add amount to some addresses all in block 1
   for (let i = 0; i < Object.keys(addressAmounts).length; i++) {
     const address = Object.keys(addressAmounts)[i];
     const amount = addressAmounts[address];
-    const tx = await transactionsDAL.create({
+    const tx = await txsDAL.create({
+      blockNumber: 1,
       index: i,
       version: 0,
       inputCount: 0,
@@ -228,7 +228,8 @@ async function createDemoData({ currentBlock, addressAmounts = {}, voteIntervals
       hash: faker.random.uuid(),
     });
     await outputsDAL.create({
-      TransactionId: tx.id,
+      blockNumber: 1,
+      txId: tx.id,
       lockType: 'PK',
       address,
       asset: '00',
@@ -236,15 +237,14 @@ async function createDemoData({ currentBlock, addressAmounts = {}, voteIntervals
       index: 0,
     });
 
-    await blocksDAL.addTransaction(block1, tx);
   }
   if (voteIntervals.length) {
     await Promise.all(
       voteIntervals.map(voteInterval => {
-        return voteIntervalsDAL.create({
+        return repoVoteIntervalsDAL.create({
           interval: voteInterval.interval,
-          beginHeight: voteInterval.beginHeight,
-          endHeight: voteInterval.endHeight,
+          beginBlock: voteInterval.beginBlock,
+          endBlock: voteInterval.endBlock,
         });
       })
     );

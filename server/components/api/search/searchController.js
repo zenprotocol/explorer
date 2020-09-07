@@ -3,7 +3,7 @@
 const { Decimal } = require('decimal.js');
 const httpStatus = require('http-status');
 const blocksDAL = require('../blocks/blocksDAL');
-const transactionsDAL = require('../transactions/transactionsDAL');
+const transactionsDAL = require('../txs/txsDAL');
 const addressesDAL = require('../addresses/addressesDAL');
 const contractsDAL = require('../contracts/contractsDAL');
 const assetsDAL = require('../assets/assetsDAL');

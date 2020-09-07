@@ -3,8 +3,8 @@
 const tags = require('common-tags');
 const dal = require('../../../lib/dal');
 const deepMerge = require('deepmerge');
-const commandsDAL = require('../commands/commandsDAL');
-const assetOutstandingsDAL = require('../assetOutstandings/assetOutstandingsDAL');
+const executionsDAL = require('../executions/executionsDAL');
+const assetsDAL = require('../assets/assetsDAL');
 const AddressUtils = require('../../../../src/common/utils/AddressUtils');
 
 const contractsDAL = dal.createDAL('Contract');
@@ -18,8 +18,8 @@ const nullsOrderMap = {
 // Control what happens when sorting by these parameters
 const orderMap = {
   expiryBlock: {
-    asc: `${nullsOrderMap.asc}, "createdAt" ASC`,
-    desc: `${nullsOrderMap.desc}, "createdAt" DESC`,
+    asc: `${nullsOrderMap.asc}`,
+    desc: `${nullsOrderMap.desc}`,
   },
   lastActivationBlockNumber: nullsOrderMap,
 };
@@ -49,23 +49,20 @@ contractsDAL.findAllWithAssetsCountTxCountAndCountOrderByNewest = function({
 
   const filterByBlockSql = `
   INNER JOIN (
-    SELECT "ContractActivations"."ContractId"
-    FROM "Blocks"
-    JOIN "Transactions" ON "Transactions"."BlockId" = "Blocks"."id"
-    JOIN "ContractActivations" ON "ContractActivations"."TransactionId" = "Transactions"."id"
-    WHERE "Blocks"."blockNumber" = :blockNumber
-    GROUP BY "ContractActivations"."ContractId"
+    SELECT "Activations"."contractId"
+    FROM "Activations"
+    JOIN "Txs" ON "Activations"."txId" = "Txs"."id"
+    WHERE "Txs"."blockNumber" = :blockNumber
+    GROUP BY "Activations"."contractId"
   ) AS "ActivationBlockContracts"
-  ON "ActivationBlockContracts"."ContractId" = "ContractsFinal"."id"
+  ON "ActivationBlockContracts"."contractId" = "ContractsFinal"."id"
   `;
 
   const sql = tags.oneLine`
   WITH "ContractsFinal" AS 
   (SELECT "Contracts".*, COUNT("Assets".asset) AS "assetsCount"
     FROM "Contracts" 
-    LEFT JOIN 
-      (SELECT asset
-      FROM "AssetOutstandings") AS "Assets"
+    LEFT JOIN "Assets"
     ON "Assets"."asset" LIKE CONCAT("Contracts"."id", '%')
     GROUP BY "Contracts"."id" 
     LIMIT (SELECT COUNT(*) FROM "Contracts"))
@@ -83,27 +80,27 @@ contractsDAL.findAllWithAssetsCountTxCountAndCountOrderByNewest = function({
     COUNT(*) AS "total",
     COALESCE("Outputs"."address", "Inputs"."address") AS "address"
     FROM
-      (SELECT "TransactionId", "address"
+      (SELECT "txId", "address"
         FROM "Outputs" 
         WHERE "Outputs"."address" IN (SELECT address FROM "ContractsFinal")
-        GROUP BY "TransactionId", "address") AS "Outputs"
-      FULL OUTER JOIN (SELECT "Inputs"."TransactionId", "Outputs"."address"
+        GROUP BY "txId", "address") AS "Outputs"
+      FULL OUTER JOIN (SELECT "Inputs"."txId", "Outputs"."address"
         FROM "Inputs" JOIN "Outputs" 
-        ON "Inputs"."OutputId" = "Outputs"."id" 
+        ON "Inputs"."outputId" = "Outputs"."id" 
         AND "Outputs"."address" IN (SELECT address FROM "ContractsFinal")
-        GROUP BY "Inputs"."TransactionId", "Outputs"."address" ) AS "Inputs"
-      ON "Outputs"."TransactionId" = "Inputs"."TransactionId" and "Outputs"."address" = "Inputs"."address"
+        GROUP BY "Inputs"."txId", "Outputs"."address" ) AS "Inputs"
+      ON "Outputs"."txId" = "Inputs"."txId" and "Outputs"."address" = "Inputs"."address"
     GROUP BY COALESCE("Outputs"."address", "Inputs"."address")) AS "Txs"
   ON "Txs"."address" = "ContractsFinal"."address"
   LEFT JOIN (
-    SELECT MAX("Blocks"."blockNumber") as "blockNumber", "ContractActivations"."ContractId"
+    SELECT MAX("Blocks"."blockNumber") as "blockNumber", "Activations"."contractId"
     FROM "Blocks"
-    JOIN "Transactions" ON "Transactions"."BlockId" = "Blocks"."id"
-    JOIN "ContractActivations" ON "ContractActivations"."TransactionId" = "Transactions"."id"
-    GROUP BY "ContractActivations"."ContractId"
-    ORDER BY "ContractActivations"."ContractId", MAX("Blocks"."blockNumber") DESC
+    JOIN "Txs" ON "Txs"."blockNumber" = "Blocks"."blockNumber"
+    JOIN "Activations" ON "Activations"."txId" = "Txs"."id"
+    GROUP BY "Activations"."contractId"
+    ORDER BY "Activations"."contractId", MAX("Blocks"."blockNumber") DESC
   ) AS "LastActivationTransactions"
-  ON "LastActivationTransactions"."ContractId" = "ContractsFinal"."id"
+  ON "LastActivationTransactions"."contractId" = "ContractsFinal"."id"
   ${hasBlockNumber ? filterByBlockSql : ''}
   ORDER BY ${orderBy}
   LIMIT :limit OFFSET :offset
@@ -114,8 +111,8 @@ contractsDAL.findAllWithAssetsCountTxCountAndCountOrderByNewest = function({
     countOptions = {
       include: [
         {
-          model: this.db.Transaction,
-          as: 'ActivationTransactions',
+          model: this.db.Tx,
+          as: 'ActivationTxs',
           required: true,
           include: [
             {
@@ -193,14 +190,14 @@ contractsDAL.findAllExpired = function() {
 
 contractsDAL.findAllOutstandingAssets = function(id, { limit = 10, offset = 0 } = {}) {
   return Promise.all([
-    assetOutstandingsDAL.count({
+    assetsDAL.count({
       where: {
         asset: {
           [Op.like]: `${id}%`,
         },
       },
     }),
-    assetOutstandingsDAL.findAll({
+    assetsDAL.findAll({
       where: {
         asset: {
           [Op.like]: `${id}%`,
@@ -231,20 +228,20 @@ contractsDAL.setExpired = function(ids = []) {
   );
 };
 
-contractsDAL.countCommands = function(id) {
-  return commandsDAL.count({
+contractsDAL.countExecutions = function(id) {
+  return executionsDAL.count({
     where: {
-      ContractId: id,
+      contractId: id,
     },
   });
 };
 
-contractsDAL.getCommands = function(id, options) {
-  return commandsDAL.findAll(
+contractsDAL.getExecutions = function(id, options) {
+  return executionsDAL.findAll(
     deepMerge(
       {
         where: {
-          ContractId: id,
+          contractId: id,
         },
       },
       options
@@ -252,22 +249,22 @@ contractsDAL.getCommands = function(id, options) {
   );
 };
 
-contractsDAL.getLastCommandOfTx = function(id, txHash) {
-  return commandsDAL
+contractsDAL.getLastExecutionOfTx = function(id, txHash) {
+  return executionsDAL
     .findAll({
       where: {
-        ContractId: id,
+        contractId: id,
       },
       include: [
         {
-          model: this.db.Transaction,
+          model: this.db.Tx,
           required: true,
           where: {
             hash: txHash,
           },
         },
       ],
-      order: [['createdAt', 'DESC']],
+      order: [['indexInTx', 'DESC']],
       limit: 1,
     })
     .then(results => {
@@ -275,16 +272,16 @@ contractsDAL.getLastCommandOfTx = function(id, txHash) {
     });
 };
 
-contractsDAL.findCommandsWithRelations = function(id, options) {
+contractsDAL.findExecutionsWithRelations = function(id, options) {
   return Promise.all([
-    this.countCommands(id),
-    this.getCommands(
+    this.countExecutions(id),
+    this.getExecutions(
       id,
       deepMerge(
         {
           include: [
             {
-              model: this.db.Transaction,
+              model: this.db.Tx,
               required: true,
               include: [
                 {
@@ -295,8 +292,8 @@ contractsDAL.findCommandsWithRelations = function(id, options) {
             },
           ],
           order: [
-            [{ model: this.db.Transaction }, { model: this.db.Block }, 'timestamp', 'DESC'],
-            ['indexInTransaction', 'ASC'],
+            [{ model: this.db.Tx }, { model: this.db.Block }, 'timestamp', 'DESC'],
+            ['indexInTx', 'ASC'],
           ],
         },
         options
@@ -305,16 +302,16 @@ contractsDAL.findCommandsWithRelations = function(id, options) {
   ]).then(this.getItemsAndCountResult);
 };
 
-contractsDAL.deleteCommands = function(id) {
-  return this.db.Command.destroy({
+contractsDAL.deleteExecutions = function(id) {
+  return this.db.Execution.destroy({
     where: {
-      ContractId: id,
+      contractId: id,
     },
   });
 };
 
-contractsDAL.getActivationTransactions = function(contract) {
-  return contract.getActivationTransactions({
+contractsDAL.getActivationTxs = function(contract) {
+  return contract.getActivationTxs({
     order: [[sequelize.col('Block.blockNumber'), 'DESC']],
     include: [
       {
@@ -324,9 +321,9 @@ contractsDAL.getActivationTransactions = function(contract) {
     ],
   });
 };
-contractsDAL.getLastActivationTransaction = function(contract) {
+contractsDAL.getLastActivationTx = function(contract) {
   return contract
-    .getActivationTransactions({
+    .getActivationTxs({
       order: [[sequelize.col('Block.blockNumber'), 'DESC']],
       limit: 1,
       include: [
@@ -339,9 +336,9 @@ contractsDAL.getLastActivationTransaction = function(contract) {
     .then(results => (results.length ? results[0] : null));
 };
 
-contractsDAL.addActivationTransaction = async function(contract, transaction, options) {
+contractsDAL.addActivationTx = async function(contract, transaction, options) {
   if (contract && transaction) {
-    return contract.addActivationTransaction(transaction, options);
+    return contract.addActivationTx(transaction, options);
   }
   return null;
 };

@@ -210,9 +210,9 @@ export default {
         params,
       });
     },
-    findCommands(address, params) {
+    findExecutions(address, params) {
       return cancelableHttpRequest({
-        url: `${Endpoints.contracts}/${address}/commands`,
+        url: `${Endpoints.contracts}/${address}/executions`,
         method: 'get',
         params,
       });

@@ -3,10 +3,10 @@
 const zen = require('@zen/zenjs');
 const sha3 = require('js-sha3');
 const BigInteger = require('bigi');
-const logger = require('../../lib/logger')('votes.governance');
-const votesDAL = require('../../../server/components/api/votes/votesDAL');
-const voteIntervalsDAL = require('../../../server/components/api/voteIntervals/voteIntervalsDAL');
-const commandsDAL = require('../../../server/components/api/commands/commandsDAL');
+const logger = require('../../lib/logger')('votes.repo');
+const votesDAL = require('../../../server/components/api/repovotes/votesDAL');
+const voteIntervalsDAL = require('../../../server/components/api/repovote-intervals/voteIntervalsDAL');
+const txsDAL = require('../../../server/components/api/txs/txsDAL');
 const QueueError = require('../../lib/QueueError');
 const db = require('../../../server/db/sequelize/models');
 
@@ -23,20 +23,20 @@ class VotesAdder {
       let dbTransaction = null;
       let result = 0;
 
-      // query for all commands with the voting contract id and that the command id is not in RepoVotes
-      const commands = await votesDAL.findAllUnprocessedCommands(this.contractId);
-      if (commands.length) {
-        logger.info(`${commands.length} commands to add`);
+      // query for all executions with the voting contract id and that the execution id is not in RepoVotes
+      const executions = await votesDAL.findAllUnprocessedExecutions(this.contractId);
+      if (executions.length) {
+        logger.info(`${executions.length} executions to add`);
         dbTransaction = await db.sequelize.transaction();
-        // for each of those commands - verify all signatures and add to RepoVotes
-        const votesToAdd = await this.processCommands(commands);
+        // for each of those executions - verify all signatures and add to RepoVotes
+        const votesToAdd = await this.processExecutions(executions);
 
         if (votesToAdd.length) {
           await votesDAL.bulkCreate(votesToAdd, { transaction: dbTransaction });
         }
 
         await dbTransaction.commit();
-        logger.info(`Added ${votesToAdd.length} votes from ${commands.length} commands`);
+        logger.info(`Added ${votesToAdd.length} votes from ${executions.length} executions`);
         result = votesToAdd.length;
       }
       return result;
@@ -52,34 +52,34 @@ class VotesAdder {
     }
   }
 
-  async processCommands(commands) {
-    // a command can contain more than 1 vote or none
-    const arrays = await Promise.all(commands.map(command => this.getVotesFromCommand(command)));
+  async processExecutions(executions) {
+    // a execution can contain more than 1 vote or none
+    const arrays = await Promise.all(executions.map(execution => this.getVotesFromExecution(execution)));
     return arrays.reduce((all, arr) => {
       all.push.apply(all, arr);
       return all;
     }, []);
   }
 
-  async getVotesFromCommand(command) {
+  async getVotesFromExecution(execution) {
     const votesToAdd = [];
 
     // make sure the message body is properly formatted with an interval, commitId and dict
-    if (this.validateMessageBody(command.messageBody)) {
-      const blockNumber = await commandsDAL.getCommandBlockNumber(command);
-      const voteInterval = await voteIntervalsDAL.findCurrent(blockNumber);
-      const commitId = command.messageBody.list[0].string;
+    if (this.validateMessageBody(execution.messageBody)) {
+      const tx = await txsDAL.findById(execution.txId);
+      const voteInterval = await voteIntervalsDAL.findCurrent(execution.blockNumber);
+      const commitId = execution.messageBody.list[0].string;
 
       if (
         await this.validateIntervalAndCandidates({
           voteInterval,
-          command,
+          execution,
           commitId,
         })
       ) {
         // go over each element in the dict and verify it against the interval and commitId
         // add only the verified votes
-        const dict = command.messageBody.list[1].dict;
+        const dict = execution.messageBody.list[1].dict;
         for (let i = 0; i < dict.length; i++) {
           const element = dict[i];
           if (this.validateDictElement(element)) {
@@ -88,26 +88,29 @@ class VotesAdder {
             const address = this.blockchainParser.getAddressFromPublicKey(publicKey);
             if (this.verify({ voteInterval, commitId, publicKey, signature })) {
               votesToAdd.push({
-                CommandId: Number(command.id),
+                blockNumber: execution.blockNumber,
+                executionId: execution.id,
+                txHash: tx.hash,
                 commitId,
                 address,
               });
             } else {
               logger.info(
-                `Signature did not pass verification: commandId:${command.id} interval:${voteInterval.interval} commitId:${commitId} publicKey:${publicKey}`
+                `Signature did not pass verification: executionId:${execution.id} interval:${voteInterval.interval} commitId:${commitId} publicKey:${publicKey}`
               );
             }
           }
         }
       }
     } else {
-      logger.info(`MessageBody is not valid for command with id ${command.id}`);
+      logger.info(`MessageBody is not valid for execution with id ${execution.id}`);
     }
 
-    // command does not contain any valid vote - insert an empty vote so this command is handled
+    // execution does not contain any valid vote - insert an empty vote so this execution is handled
     if (votesToAdd.length === 0) {
       votesToAdd.push({
-        CommandId: Number(command.id),
+        blockNumber: execution.blockNumber,
+        executionId: execution.id,
       });
     }
 

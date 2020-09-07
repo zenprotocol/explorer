@@ -3,7 +3,7 @@
 const logger = require('../../lib/logger')('snapshots');
 const blocksDAL = require('../../../server/components/api/blocks/blocksDAL');
 const addressesDAL = require('../../../server/components/api/addresses/addressesDAL');
-const voteIntervalsDAL = require('../../../server/components/api/voteIntervals/voteIntervalsDAL');
+const voteIntervalsDAL = require('../../../server/components/api/repovote-intervals/voteIntervalsDAL');
 const snapshotsDAL = require('../../../server/components/api/snapshots/snapshotsDAL');
 const QueueError = require('../../lib/QueueError');
 const db = require('../../../server/db/sequelize/models');
@@ -45,9 +45,9 @@ class SnapshotsTaker {
         for (let i = 0; i < voteIntervals.length; i++) {
           const voteInterval = voteIntervals[i];
           logger.info(
-            `Taking snapshot for vote intervals with beginHeight ${voteInterval.beginHeight}`
+            `Taking snapshot for vote intervals with beginBlock ${voteInterval.beginBlock}`
           );
-          const snapshotRows = await this.getAddressesAmountsForHeight(voteInterval.beginHeight);
+          const snapshotRows = await this.getAddressesAmountsForHeight(voteInterval.beginBlock);
           await snapshotsDAL.bulkCreate(snapshotRows, { transaction: dbTransaction });
           // mark this interval as has a snapshot
           await voteIntervalsDAL.setHasSnapshot(voteInterval.id);
@@ -57,7 +57,7 @@ class SnapshotsTaker {
           });
           logger.info(
             `Finished taking VoteIntervals snapshot for height ${
-              voteInterval.beginHeight
+              voteInterval.beginBlock
             }, snapshot has ${snapshotRows.length} addresses`
           );
         }
@@ -86,15 +86,15 @@ class SnapshotsTaker {
         dbTransaction = await db.sequelize.transaction();
         for (let i = 0; i < missingSnapshotHeights.length; i++) {
           const missingInterval = missingSnapshotHeights[i];
-          logger.info(`Taking snapshot for height ${missingInterval.height}`);
-          const snapshotRows = await this.getAddressesAmountsForHeight(missingInterval.height);
+          logger.info(`Taking snapshot for blockNumber ${missingInterval.blockNumber}`);
+          const snapshotRows = await this.getAddressesAmountsForHeight(missingInterval.blockNumber);
           await snapshotsDAL.bulkCreate(snapshotRows, { transaction: dbTransaction });
           result.push({
             interval: missingInterval.interval,
             snapshotCount: snapshotRows.length,
           });
           logger.info(
-            `Finished taking snapshot for height ${missingInterval.height}, snapshot has ${
+            `Finished taking snapshot for blockNumber ${missingInterval.blockNumber}, snapshot has ${
               snapshotRows.length
             } addresses`
           );
@@ -123,15 +123,15 @@ class SnapshotsTaker {
   /**
    * Get snapshot data ready for bulkCreate
    */
-  async getAddressesAmountsForHeight(height = 0) {
-    const addressesAmounts = await addressesDAL.snapshotBalancesByBlock(height);
-    // add height to the results so it will be easier to insert
-    return addressesAmounts.map(row => Object.assign({}, row, { height }));
+  async getAddressesAmountsForHeight(blockNumber = 0) {
+    const addressesAmounts = await addressesDAL.snapshotBalancesByBlock(blockNumber);
+    // add blockNumber to the results so it will be easier to insert
+    return addressesAmounts.map(row => Object.assign({}, row, { blockNumber }));
   }
 
   /**
-   * Get an array with {interval, height} that don't have a snapshot
-   * @param {number} height the maximum height to check
+   * Get an array with {interval, blockNumber} that don't have a snapshot
+   * @param {number} height - the maximum height to check
    */
   async findMissingCGPSnapshotHeights(height) {
     const existingSnapshotHeights = await snapshotsDAL.findAllHeights();
@@ -141,11 +141,11 @@ class SnapshotsTaker {
       .fill(1)
       .map((item, index) => ({
         interval: index + 1,
-        height: intervalLength * 0.9 + index * intervalLength,
+        blockNumber: intervalLength * 0.9 + index * intervalLength,
       }));
 
     return allNeededSnapshotHeights.filter(
-      item => existingSnapshotHeights.indexOf(item.height) < 0
+      item => existingSnapshotHeights.indexOf(item.blockNumber) < 0
     );
   }
 }

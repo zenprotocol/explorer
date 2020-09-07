@@ -12,19 +12,18 @@ const {
 } = require('./cgpSql');
 
 const sequelize = db.sequelize;
-const cgpDAL = dal.createDAL('CGPVote');
+const cgpDAL = dal.createDAL('CgpVote');
 
-cgpDAL.findAllUnprocessedCommands = async function(contractId) {
+cgpDAL.findAllUnprocessedExecutions = async function(contractId) {
   const sql = tags.oneLine`
-    SELECT "Commands".*
-    FROM "Commands"
-    INNER JOIN "Transactions" ON "Commands"."TransactionId" = "Transactions"."id"
-    INNER JOIN "Blocks" ON "Transactions"."BlockId" = "Blocks"."id"
-    WHERE "Commands"."ContractId" = :contractId
-    AND "Commands"."id" NOT IN 
-      (SELECT DISTINCT "CommandId"
-      FROM "CGPVotes")
-    ORDER BY "Blocks"."blockNumber" ASC, "Transactions"."index" ASC
+    SELECT "Executions".*
+    FROM "Executions"
+    INNER JOIN "Txs" ON "Executions"."txId" = "Txs"."id"
+    WHERE "Executions"."contractId" = :contractId
+    AND "Executions"."id" NOT IN 
+      (SELECT DISTINCT "executionId"
+      FROM "CgpVotes")
+    ORDER BY "Executions"."blockNumber" ASC, "Txs"."index" ASC
   `;
 
   return sequelize.query(sql, {
@@ -54,16 +53,13 @@ cgpDAL.findLastValidVoteBlockNumber = async function({
   dbTransaction,
 } = {}) {
   const sql = tags.oneLine`
-  SELECT "Blocks"."blockNumber"
-  FROM "CGPVotes"
-  INNER JOIN "Commands" ON "Commands"."id" = "CGPVotes"."CommandId"
-  INNER JOIN "Transactions" ON "Transactions"."id" = "Commands"."TransactionId"
-  INNER JOIN "Blocks" ON "Blocks"."id" = "Transactions"."BlockId"
-    AND ("Blocks"."blockNumber" - 1) % :intervalLength > :interval1Snapshot - 1
-    AND ("Blocks"."blockNumber" - 1) % :intervalLength < :interval1Tally
-    AND "Blocks"."blockNumber" <= :startBlockNumber
-  WHERE "CGPVotes"."type" = :type
-  ORDER BY "Blocks"."blockNumber" DESC
+  SELECT v."blockNumber"
+  FROM "CgpVotes" v
+  WHERE v."type" = :type
+    AND (v."blockNumber" - 1) % :intervalLength > :interval1Snapshot - 1
+    AND (v."blockNumber" - 1) % :intervalLength < :interval1Tally
+    AND v."blockNumber" <= :startBlockNumber
+  ORDER BY v."blockNumber" DESC
   LIMIT 1; 
   `;
 
@@ -83,7 +79,7 @@ cgpDAL.findLastValidVoteBlockNumber = async function({
 };
 
 /**
- * Find all votes for an interval, grouped by command and filter double votes
+ * Find all votes for an interval, grouped by execution and filter double votes
  */
 cgpDAL.findAllVotesInInterval = async function({ snapshot, tally, type, limit, offset = 0 } = {}) {
   const sql = tags.oneLine`
@@ -106,7 +102,7 @@ cgpDAL.findAllVotesInInterval = async function({ snapshot, tally, type, limit, o
 };
 
 /**
- * Count all votes in an interval, grouped by command and filter double votes
+ * Count all votes in an interval, grouped by execution and filter double votes
  */
 cgpDAL.countVotesInInterval = async function({ snapshot, tally, type } = {}) {
   const sql = tags.oneLine`

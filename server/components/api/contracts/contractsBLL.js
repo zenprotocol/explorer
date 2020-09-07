@@ -20,11 +20,11 @@ module.exports = {
 
     return await contractsDAL.findByAddress(address);
   },
-  findActivationTransactions: async function({ contract } = {}) {
-    return await contractsDAL.getActivationTransactions(contract);
+  findActivationTxs: async function({ contract } = {}) {
+    return await contractsDAL.getActivationTxs(contract);
   },
   findLastActivationTransaction: async function({ contract } = {}) {
-    return await contractsDAL.getLastActivationTransaction(contract);
+    return await contractsDAL.getLastActivationTx(contract);
   },
   assets: async function({ address, page = 0, pageSize = 10 } = {}) {
     if (!address) {
@@ -39,7 +39,7 @@ module.exports = {
       return [];
     }
   },
-  commands: async function({ address, page = 0, pageSize = 10 } = {}) {
+  executions: async function({ address, page = 0, pageSize = 10 } = {}) {
     if (!address) {
       return [];
     }
@@ -47,7 +47,7 @@ module.exports = {
     const contract = await contractsDAL.findByAddress(address);
     if (contract) {
       const query = createQueryObject({ page, pageSize, sorted: [] });
-      return await contractsDAL.findCommandsWithRelations(contract.id, query);
+      return await contractsDAL.findExecutionsWithRelations(contract.id, query);
     } else {
       return [];
     }

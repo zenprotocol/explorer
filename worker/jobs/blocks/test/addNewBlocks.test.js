@@ -4,7 +4,7 @@ const test = require('blue-tape');
 const Service = require('../../../../server/lib/Service');
 const truncate = require('../../../../test/lib/truncate');
 const blocksDAL = require('../../../../server/components/api/blocks/blocksDAL');
-const transactionsDAL = require('../../../../server/components/api/transactions/transactionsDAL');
+const txsDAL = require('../../../../server/components/api/txs/txsDAL');
 const inputsDAL = require('../../../../server/components/api/inputs/inputsDAL');
 const NetworkHelper = require('../../../lib/NetworkHelper');
 const BlockchainParser = require('../../../../server/lib/BlockchainParser');
@@ -22,21 +22,21 @@ async function wrapTest(given, test) {
   await test(given);
 }
 
-test('BlocksAdder.addNewBlocks()', async function(t) {
+test('BlocksAdder.doJob()', async function(t) {
   await wrapTest('Given nothing in db', async given => {
     const networkHelper = new NetworkHelper();
     mock.mockNetworkHelper(networkHelper);
     const blocksAdder = new BlocksAdder(networkHelper, new BlockchainParser());
 
     try {
-      const { count, latest } = await blocksAdder.addNewBlocks({
+      const { count, latest } = await blocksAdder.doJob({
         data: { limitBlocks: 2, skipTransactions: true },
       });
 
       t.assert(count > 0, `${given}: Should have added new blocks`);
       t.equal(latest, 2, `${given}: Should return the latest block added`);
 
-      const block1 = await blocksDAL.findByBlockNumber(1);
+      const block1 = await blocksDAL.findById(1);
       t.assert(block1 !== null, `${given}: Block 1 should be in the db`);
       t.equal(
         block1.reward,
@@ -44,7 +44,7 @@ test('BlocksAdder.addNewBlocks()', async function(t) {
         `${given}: Block 1 should have reward = 0`
       );
 
-      const block2 = await blocksDAL.findByBlockNumber(2);
+      const block2 = await blocksDAL.findById(2);
       t.assert(block2 !== null, `${given}: Block 2 should be in the db`);
       t.equal(
         block2.reward,
@@ -75,9 +75,10 @@ test('BlocksAdder.addNewBlocks()', async function(t) {
     });
 
     try {
-      const { count, latest } = await blocksAdder.addNewBlocks({
+      const { count, latest } = await blocksAdder.doJob({
         data: { limitBlocks: 1, skipTransactions: true },
       });
+
 
       t.assert(count > 0, `${given}: Should have added new blocks`);
       t.equal(latest, 2, `${given}: Should return the latest block added`);
@@ -97,7 +98,7 @@ test('BlocksAdder.addNewBlocks()', async function(t) {
     Service.config.setTimeout(1);
     
     try {
-      await blocksAdder.addNewBlocks({ data: { limitBlocks: 1 } });
+      await blocksAdder.doJob({ data: { limitBlocks: 1 } });
       t.fail(`${given}: Should throw an error`);
     } catch (error) {
       t.pass(`${given}: Should throw an error`);
@@ -112,7 +113,7 @@ test('BlocksAdder.addNewBlocks()', async function(t) {
     const blocksAdder = new BlocksAdder(networkHelper, new BlockchainParser());
 
     try {
-      const { count } = await blocksAdder.addNewBlocks({
+      const { count } = await blocksAdder.doJob({
         data: { limitBlocks: 2, limitTransactions: 2 },
       });
 
@@ -120,12 +121,12 @@ test('BlocksAdder.addNewBlocks()', async function(t) {
 
       const latestBlockAfterAdd = await blocksDAL.findLatest();
       t.assert(latestBlockAfterAdd !== null, `${given}: There should be new blocks in the db`);
-      const transactions = await transactionsDAL.findAll({
+      const txs = await txsDAL.findAll({
         where: {
-          BlockId: latestBlockAfterAdd.id,
+          blockNumber: latestBlockAfterAdd.blockNumber,
         },
       });
-      t.assert(transactions.length > 0, `${given}: There should be transactions for this block`);
+      t.assert(txs.length > 0, `${given}: There should be transactions for this block`);
     } catch (error) {
       t.fail(`${given}: Should not throw an error`);
     }
@@ -136,7 +137,7 @@ test('BlocksAdder.addNewBlocks()', async function(t) {
     const blocksAdder = new BlocksAdder(networkHelper, new BlockchainParser());
 
     try {
-      await blocksAdder.addNewBlocks({
+      await blocksAdder.doJob({
         data: { limitBlocks: 1, limitTransactions: 2 },
       });
       t.fail(`${given}: Should throw an error`);
@@ -151,7 +152,7 @@ test('BlocksAdder.addNewBlocks()', async function(t) {
     const blocksAdder = new BlocksAdder(networkHelper, new BlockchainParser());
 
     try {
-      await blocksAdder.addNewBlocks({
+      await blocksAdder.doJob({
         data: { limitBlocks: 1, limitTransactions: 2 },
       });
       t.fail(`${given}: Should throw an error`);
@@ -166,7 +167,7 @@ test('BlocksAdder.addNewBlocks()', async function(t) {
     const blocksAdder = new BlocksAdder(networkHelper, new BlockchainParser());
 
     try {
-      await blocksAdder.addNewBlocks({
+      await blocksAdder.doJob({
         data: { limitBlocks: 1, limitTransactions: 2 },
       });
       t.fail(`${given}: Should throw an error`);
@@ -184,7 +185,7 @@ test('BlocksAdder.addNewBlocks()', async function(t) {
 
     try {
       // add 1st block as the tested input references this
-      await blocksAdder.addNewBlocks({
+      await blocksAdder.doJob({
         data: { limitBlocks: 1 },
       });
       await createDemoBlocksFromTo(
@@ -193,7 +194,7 @@ test('BlocksAdder.addNewBlocks()', async function(t) {
         '0000000001286157818c62beede85613a0293c66abe795a2397b6487e72d29d0'
       );
       // this is the tested block with an outpoint input
-      await blocksAdder.addNewBlocks({
+      await blocksAdder.doJob({
         data: { limitBlocks: 1 },
       });
 
@@ -205,15 +206,14 @@ test('BlocksAdder.addNewBlocks()', async function(t) {
       });
       t.assert(inputs.length > 0, `${given}: There should be at least one outpoint input in db`);
       const input = inputs[0];
-      t.assert(input.OutputId > 0, `${given}: OutputId should be set on this input`);
-      const block = await (await (await input.getOutput()).getTransaction()).getBlock();
+      t.assert(input.outputId > 0, `${given}: outputId should be set on this input`);
+      const output = await input.getOutput();
       t.equals(
-        block.blockNumber,
+        output.blockNumber,
         OUTPOINT_BLOCK_NUMBER,
         `${given}: The input tested should have its outpoint pointing to block 1`
       );
     } catch (error) {
-      console.log(error);
       t.fail(`${given}: should not throw an error`);
     }
   });
@@ -229,7 +229,7 @@ test('BlocksAdder.addNewBlocks()', async function(t) {
         TEST_BLOCK_NUMBER - 1,
         '00000000000fad5999c26f7d37331082f6558ff8f809cdf0845c071af2bff7e2'
       );
-      await blocksAdder.addNewBlocks({
+      await blocksAdder.doJob({
         data: { limitBlocks: 1 },
       });
 
@@ -266,7 +266,7 @@ test('BlocksAdder.addNewBlocks()', async function(t) {
           TEST_BLOCK_NUMBER - 1,
           '12345' // last hash would be wrong! - reorg
         );
-        await blocksAdder.addNewBlocks({
+        await blocksAdder.doJob({
           data: { limitBlocks: 1 },
         });
 
@@ -285,7 +285,7 @@ if (Config.get('RUN_REAL_DATA_TESTS')) {
     const blocksAdder = new BlocksAdder(networkHelper, new BlockchainParser());
 
     try {
-      const { count } = await blocksAdder.addNewBlocks({ data: { limitBlocks: 200 } });
+      const { count } = await blocksAdder.doJob({ data: { limitBlocks: 200 } });
       t.assert(count > 0, 'Should have added new blocks');
 
       const latestBlockAfterAdd = await blocksDAL.findLatest();

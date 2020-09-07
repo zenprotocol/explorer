@@ -6,22 +6,24 @@ title Block Explorer
 
 package "Blockchain" {
   Table(Block, "Block") {
-    primary_key(id)
+    primary_key(blockNumber)
     version
     hash
     parent
-    blockNumber
     commitments
     timestamp
     difficulty
     nonce1
     nonce2
-    transactionCount
+    txsCount
+    reward
+    coinbaseAmount,
+    allocationAmount,
   }
 
-  Table(Transaction, "Transaction") {
+  Table(Tx, "Tx") {
     primary_key(id)
-    foreign_key(BlockId)
+    foreign_key(blockNumber)
     index field_comment(tx index in block)
     version
     hash
@@ -29,120 +31,159 @@ package "Blockchain" {
     outputCount
   }
 
-
   Table(Input, "Input") {
     primary_key(id)
-    foreign_key(TransactionId)
-    foreign_key(OutputId)
+    foreign_key(blockNumber)
+    foreign_key(txId)
+    foreign_key(outputId)
     index field_comment(input index in tx)
-    outpointTXHash
+    outpointTxHash
     outpointIndex
-    amount field_comment(output amount cached / mint)
+    isMint
+    lockType field_comment(from outpoint)
+    address field_comment(from outpoint)
+    asset field_comment(from mint or outpoint)
+    amount field_comment(from mint or outpoint)
   }
 
   Table(Output, "Output") {
     primary_key(id)
-    foreign_key(TransactionId)
+    foreign_key(blockNumber)
+    foreign_key(txId)
+    index field_comment(output index in tx)
     lockType
-    contractLockVersion
-    address field_comment(as appears in wallet)
-    addressBC field_comment(as appears in chain)
+    lockValue
+    address
     asset
     amount
-    index field_comment(output index in tx)
   }
 
   Table(Contract, "Contract") {
     primary_key(id)
     address
+    version
     code
     expiryBlock field_comment(null when expired)
+    txsCount
+    assetsIssued
+    lastActivationBlock
   }
 
-  Table(Command, "Command") {
+  Table(Execution, "Execution") {
     primary_key(id)
-    foreign_key(TransactionId)
-    foreign_key(ContractId)
+    foreign_key(contractId)
+    foreign_key(blockNumber)
+    foreign_key(txId)
     command
     messageBody
-    indexInTransaction
+    indexInTx
   }
 
+  Table(Address, "Address") {
+    primary_key(id)
+    address
+    asset
+    sent
+    received
+    balance
+    txsCount
+  }
+
+  Table(Asset, "Asset") {
+    primary_key(asset)
+    issued
+    destroyed
+    outstanding field_comment(issued - destroyed)
+    keyholders
+    txsCount
+  }
+
+  Table(AddressTxs, "AddressTxs") {
+    foreign_key(blockNumber)
+    foreign_key(txId)
+    address
+  }
+
+  Table(AssetTxs, "AssetTxs") {
+    foreign_key(blockNumber)
+    foreign_key(txId)
+    asset
+  }
+
+  Table(Info, "Info") {
+    name
+    value
+  }
+  note right of Info : gathers all up to date statistics
+
   ' relations
-  Block "1" <--> "*" Transaction
-  Transaction "1" <--> "*" Output
-  Transaction "1" <--> "*" Input
-  Input "1" <--> "1" Output
-  Contract "1" <--> "*" Command
-  Transaction "1" <--> "*" Command
-  Transaction "1" <--> "1" Contract : Via ContractActivations
+  Block "1" <--> "*" Tx
+  Tx "1" <--> "*" Output
+  Tx "1" <--> "*" Input
+  Contract "1" <--> "*" Execution
+  Tx "1" <--> "*" Execution
+  Tx "*" <--> "*" Contract : Via Activations
+  Tx "1" <--> "*" AddressTxs
+  Tx "1" <--> "*" AssetTxs
+
+  note "Each child of a Tx can also join by block number" as NoteChildrenBlock
 }
 
 package "Votes" {
-  Table(VoteInterval, "VoteInterval") {
+  Table(RepoVoteInterval, "RepoVoteInterval") {
     primary_key(id)
     interval field_type(number)
     phase field_comment(Contestant/Candidate)
-    beginHeight
-    endHeight
+    beginBlock
+    endBlock
     thresholdZp
     prevPhaseId
     hasSnapshot
   }
   Table(Snapshot, "Snapshot") {
-    primary_key(id)
-    height
+    blockNumber
     address
     amount
   }
   Table(RepoVote, "RepoVote") {
     primary_key(id)
-    foreign_key(CommandId)
-    interval
-    phase field_comment(Contestant/Candidate)
+    foreign_key(executionId)
+    foreign_key(blockNumber)
+    txHash
     commitId
     address
   }
   Table(CGPVote, "CGPVote") {
     primary_key(id)
-    foreign_key(CommandId)
-    type field_comment(allocation/payout)
+    foreign_key(executionId)
+    foreign_key(blockNumber)
+    txHash
+    type field_comment(allocation/payout/nomination)
     ballot
     address field_comment(the voter)
   }
 
-  RepoVote "1" <--> "*" Command
-  CGPVote "1" <--> "*" Command
+  RepoVote "1" <--> "*" Execution
+  CGPVote "1" <--> "*" Execution
 }
 
-package "Materialized Views" {
-  ' Materialized Views
-  Table(AddressAmounts, "AddressAmounts (MV)") {
-    asset
-    address
-    balance
-    received field_comment(outputs sum)
-    sent field_comment(inputs sum)
+package "Charts" {
+  Table(TxsPerDay, "TxsPerDay") {
+    primary_key(id)
+    date
+    value
   }
-
-  Table(AssetOutstandings, "AssetOutstandings (MV)") {
-    asset
-    issued
-    destroyed
-    outstanding field_comment(issued - destroyed)
-    keyholders
-    transactionsCount
+  Table(DifficultyPerDay, "DifficultyPerDay") {
+    primary_key(id)
+    date
+    value
   }
-
-  Table(ZpTransactions, "ZpTransactions (MV)") {
-    asset
-    outputSum
-    inputSum
-    totalSum
-    transactionId
-    hash field_comment(tx hash)
-    timestamp field_comment(block timestamp)
-    blockNumber
+  Table(ZpSupply, "ZpSupply") {
+    primary_key(id)
+    date
+    value
   }
+  
 }
+
 @enduml

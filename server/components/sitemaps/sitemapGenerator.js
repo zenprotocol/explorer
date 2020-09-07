@@ -2,9 +2,9 @@
 
 const sm = require('sitemap');
 const blocksDAL = require('../api/blocks/blocksDAL');
-const transactionsDAL = require('../api/transactions/transactionsDAL');
-const addressAmountsDAL = require('../api/addressAmounts/addressAmountsDAL');
-const assetOutstandingsDAL = require('../api/assetOutstandings/assetOutstandingsDAL');
+const transactionsDAL = require('../api/txs/txsDAL');
+const addressesDAL = require('../api/addresses/addressesDAL');
+const assetsDAL = require('../api/assets/assetsDAL');
 const contractsDAL = require('../api/contracts/contractsDAL');
 const getChain = require('../../lib/getChain');
 
@@ -18,11 +18,11 @@ module.exports = {
     const [blocks, transactions, addresses, assets, contracts] = await Promise.all([
       blocksDAL.count(),
       transactionsDAL.count(),
-      addressAmountsDAL.count({
+      addressesDAL.count({
         distinct: true,
         col: 'address',
       }),
-      assetOutstandingsDAL.count(),
+      assetsDAL.count(),
       contractsDAL.count(),
     ]);
 
@@ -96,7 +96,7 @@ module.exports = {
     return await createSitemap(urls);
   },
   address: async function() {
-    const addresses = await addressAmountsDAL.findAll({
+    const addresses = await addressesDAL.findAll({
       attributes: [[sequelize.literal('DISTINCT address'), 'address']],
     });
     const urls = addresses.map(({address}) => ({ url: `/address/${address}`, changefreq: 'monthly', priority: 0.3 }));
@@ -104,7 +104,7 @@ module.exports = {
     return await createSitemap(urls);
   },
   assets: async function() {
-    const itemsCount = await assetOutstandingsDAL.count();
+    const itemsCount = await assetsDAL.count();
     const urls = [];
     const numOfPages = getNumOfPages(itemsCount);
     for (let page = 1; page <= numOfPages; page++) {
@@ -113,7 +113,7 @@ module.exports = {
     return await createSitemap(urls);
   },
   asset: async function() {
-    const assets = await assetOutstandingsDAL.findAll({
+    const assets = await assetsDAL.findAll({
       attributes: ['asset']
     });
     const urls = assets.map(({asset}) => ({ url: `/assets/${asset}`, changefreq: 'monthly', priority: asset === '00' ? 0.8 : 0.3 }));

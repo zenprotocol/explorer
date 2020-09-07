@@ -24,7 +24,7 @@ module.exports = {
       from
         "Outputs" io
         join "Inputs" i
-        on i."OutputId" = io.id
+        on i."outputId" = io.id
       where io.asset = :asset and io.address is not null
       group by io.address) as isums
       on osums.address = isums.address) as bothsums

@@ -12,6 +12,7 @@ const register = app => {
   // error handler
   app.use(function(err, req, res, next) {
     const statusCode = err.status || 500;
+    console.log(err);
     res.status(statusCode).json(jsonResponse.create(statusCode, null, err));
   });
 };

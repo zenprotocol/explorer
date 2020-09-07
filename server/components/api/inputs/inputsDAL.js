@@ -8,13 +8,13 @@ inputsDAL.findAllByAddress = function(address, asset) {
   return this.findAll({
     attributes: {
       include: [
-        [this.db.Sequelize.col('Transaction.hash'), 'txHash'],
-        [this.db.Sequelize.col('Transaction->Block.timestamp'), 'blockTimestamp'],
+        [this.db.Sequelize.col('Tx.hash'), 'txHash'],
+        [this.db.Sequelize.col('Tx->Block.timestamp'), 'blockTimestamp'],
       ],
     },
     include: [
       {
-        model: this.db.Transaction,
+        model: this.db.Tx,
         include: ['Block', {
           model: this.db.Output,
         }],
@@ -28,8 +28,8 @@ inputsDAL.findAllByAddress = function(address, asset) {
       },
     ],
     order: [
-      [this.db.Sequelize.col('Transaction->Block.timestamp'), 'DESC'],
-      [this.db.Sequelize.col('Transaction->Outputs.index'), 'ASC'],
+      [this.db.Sequelize.col('Tx->Block.timestamp'), 'DESC'],
+      [this.db.Sequelize.col('Tx->Outputs.index'), 'ASC'],
     ],
   });
 };

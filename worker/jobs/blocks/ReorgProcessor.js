@@ -67,7 +67,7 @@ class ReorgProcessor extends EventEmitter {
       while (blockNumber >= lowestBlockNumber) {
         this.emit('scan-block', blockNumber);
         const [block, nodeBlock] = await Promise.all([
-          blocksDAL.findByBlockNumber(blockNumber),
+          blocksDAL.findById(blockNumber),
           this.networkHelper.getBlockFromNode(blockNumber),
         ]);
 

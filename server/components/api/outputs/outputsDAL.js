@@ -12,7 +12,7 @@ outputsDAL.findOutpoint = function (txHash, index) {
     },
     include: [
       {
-        model: outputsDAL.db.Transaction,
+        model: outputsDAL.db.Tx,
         attributes: [],
         where: {
           hash: txHash,
@@ -25,7 +25,7 @@ outputsDAL.findOutpoint = function (txHash, index) {
 outputsDAL.findByTransaction = function (transactionId) {
   return this.findAll({
     where: {
-      TransactionId: transactionId,
+      txId: transactionId,
     },
     order: [['asset']],
   });
@@ -34,7 +34,7 @@ outputsDAL.findByTransaction = function (transactionId) {
 outputsDAL.findAllByAddress = function (address, asset) {
   return this.findAll({
     attributes: {
-      include: [[this.db.Sequelize.col('Transaction->Block.timestamp'), 'blockTimestamp']],
+      include: [[this.db.Sequelize.col('Tx->Block.timestamp'), 'blockTimestamp']],
     },
     where: {
       address,
@@ -42,7 +42,7 @@ outputsDAL.findAllByAddress = function (address, asset) {
     },
     include: [
       {
-        model: this.db.Transaction,
+        model: this.db.Tx,
         include: [
           'Block',
           {
@@ -59,7 +59,7 @@ outputsDAL.findAllByAddress = function (address, asset) {
         ],
       },
     ],
-    order: [[this.db.Sequelize.col('Transaction->Block.timestamp'), 'DESC']],
+    order: [[this.db.Sequelize.col('Tx->Block.timestamp'), 'DESC']],
   });
 };
 
@@ -95,7 +95,7 @@ outputsDAL.searchByAmount = function (amount, limit = 10) {
       },
       include: [
         {
-          model: this.db.Transaction,
+          model: this.db.Tx,
           include: ['Block'],
         },
       ],

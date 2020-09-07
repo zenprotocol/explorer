@@ -65,11 +65,11 @@ export default function UIStore(rootStore, initialState = {}) {
       curPage: defaultValues.get('contractAssetsTable.curPage'),
     },
 
-    contractCommandsTable: {
+    contractExecutionsTable: {
       force: 1,
-      address: defaultValues.get('contractCommandsTable.address'),
-      pageSize: defaultValues.get('contractCommandsTable.pageSize'),
-      curPage: defaultValues.get('contractCommandsTable.curPage'),
+      address: defaultValues.get('contractExecutionsTable.address'),
+      pageSize: defaultValues.get('contractExecutionsTable.pageSize'),
+      curPage: defaultValues.get('contractExecutionsTable.curPage'),
     },
 
     assetsTable: {
@@ -200,10 +200,10 @@ export default function UIStore(rootStore, initialState = {}) {
       objectToSet: state.contractAssetsTable,
     })
   );
-  const setContractCommandsTableData = action(
+  const setContractExecutionsTableData = action(
     setTableData({
       identifiers: ['address'],
-      objectToSet: state.contractCommandsTable,
+      objectToSet: state.contractExecutionsTable,
     })
   );
   const setAssetsTableData = action(setTableData({ objectToSet: state.assetsTable }));
@@ -266,7 +266,7 @@ export default function UIStore(rootStore, initialState = {}) {
     })
   );
   // add also setters to control all types at the same time
-  const setCGPVotesTablesData = action((params = {}) => {
+  const setCgpVotesTablesData = action((params = {}) => {
     const { type, ...rest } = params;
     if (type === 'nomination') {
       setCGPNominationVotesTableData(rest);
@@ -384,11 +384,11 @@ export default function UIStore(rootStore, initialState = {}) {
       }
     });
 
-    autorun(function fetchContractCommandsOnChange() {
-      if (state.contractCommandsTable.address && state.contractCommandsTable.force > 1) {
-        contractStore.loadCommands(state.contractCommandsTable.address, {
-          page: state.contractCommandsTable.curPage,
-          pageSize: state.contractCommandsTable.pageSize,
+    autorun(function fetchContractExecutionsOnChange() {
+      if (state.contractExecutionsTable.address && state.contractExecutionsTable.force > 1) {
+        contractStore.loadExecutions(state.contractExecutionsTable.address, {
+          page: state.contractExecutionsTable.curPage,
+          pageSize: state.contractExecutionsTable.pageSize,
         });
       }
     });
@@ -574,7 +574,7 @@ export default function UIStore(rootStore, initialState = {}) {
     setBlockContractsTableData,
     setBlocksTableData,
     setContractAssetsTableData,
-    setContractCommandsTableData,
+    setContractExecutionsTableData,
     setContractsTableData,
     setRepoVotesTableData,
     setRepoVoteResultsTableData,
@@ -585,7 +585,7 @@ export default function UIStore(rootStore, initialState = {}) {
     setCGPNominationResultsTableData,
     setCGPNominationVotesTableData,
     setCGPVoteResultsTablesData,
-    setCGPVotesTablesData,
+    setCgpVotesTablesData,
     fetchSyncing,
     state,
   });

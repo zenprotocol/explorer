@@ -1,26 +1,26 @@
-const JOIN_COMMANDS_TXS_BLOCKS_TO_REPO_VOTES = `
-INNER JOIN "Commands" ON "Commands"."id" = "CGPVotes"."CommandId"
-INNER JOIN "Transactions" ON "Transactions"."id" = "Commands"."TransactionId"
-INNER JOIN "Blocks" ON "Blocks"."id" = "Transactions"."BlockId"
+const JOIN_EXECUTIONS_TXS_BLOCKS_TO_REPO_VOTES = `
+INNER JOIN "Executions" ON "Executions"."id" = "CgpVotes"."executionId"
+INNER JOIN "Txs" ON "Txs"."id" = "Executions"."txId"
+INNER JOIN "Blocks" ON "Blocks"."blockNumber" = "Txs"."blockNumber"
   AND "Blocks"."blockNumber" > CASE :type WHEN 'nomination' THEN :snapshot ELSE :snapshot + ((:tally - :snapshot) / 2) END
   AND "Blocks"."blockNumber" <= CASE :type WHEN 'nomination' THEN :snapshot + ((:tally - :snapshot) / 2) ELSE :tally END
 `;
 
 const JOIN_SNAPSHOTS_TO_CGP_VOTES = `
 INNER JOIN "Snapshots" 
-ON "Snapshots"."height" = :snapshot
-AND "CGPVotes"."address" = "Snapshots"."address"
+ON "Snapshots"."blockNumber" = :snapshot
+AND "CgpVotes"."address" = "Snapshots"."address"
 `;
 
 const JOIN_FILTERS_TO_CGP_VOTES_BLOCK_AND_TXS = `
 INNER JOIN "FilterByBlock"
-  ON "CGPVotes"."address" = "FilterByBlock"."address" 
-  AND "CGPVotes"."type" = "FilterByBlock"."type" 
+  ON "CgpVotes"."address" = "FilterByBlock"."address" 
+  AND "CgpVotes"."type" = "FilterByBlock"."type" 
   AND "Blocks"."blockNumber" = "FilterByBlock"."minBlock"
 INNER JOIN "FilterByTxIndex"
-  ON "CGPVotes"."address" = "FilterByTxIndex"."address" 
-  AND "CGPVotes"."type" = "FilterByTxIndex"."type" 
-  AND "Transactions"."index" = "FilterByTxIndex"."minTxIndex"
+  ON "CgpVotes"."address" = "FilterByTxIndex"."address" 
+  AND "CgpVotes"."type" = "FilterByTxIndex"."type" 
+  AND "Txs"."index" = "FilterByTxIndex"."minTxIndex"
   AND "FilterByBlock"."address" = "FilterByTxIndex"."address" 
   AND "FilterByBlock"."minBlock" = "FilterByTxIndex"."blockNumber"
 `;
@@ -28,87 +28,87 @@ INNER JOIN "FilterByTxIndex"
 const WITH_FILTER_TABLES = `
 WITH 
   "FilterByBlock" AS (
-    SELECT "CGPVotes"."address",
-      "CGPVotes"."type",
+    SELECT "CgpVotes"."address",
+      "CgpVotes"."type",
       min("Blocks"."blockNumber") AS "minBlock"
-    FROM "CGPVotes"
-    ${JOIN_COMMANDS_TXS_BLOCKS_TO_REPO_VOTES}
-    GROUP BY "CGPVotes"."address", "CGPVotes"."type"
+    FROM "CgpVotes"
+    ${JOIN_EXECUTIONS_TXS_BLOCKS_TO_REPO_VOTES}
+    GROUP BY "CgpVotes"."address", "CgpVotes"."type"
   ),
   "FilterByTxIndex" AS (
-    SELECT "CGPVotes"."address",
-      "CGPVotes"."type",
+    SELECT "CgpVotes"."address",
+      "CgpVotes"."type",
       "Blocks"."blockNumber",
-      min("Transactions"."index") AS "minTxIndex"
-    FROM "CGPVotes"
-    ${JOIN_COMMANDS_TXS_BLOCKS_TO_REPO_VOTES}
-    GROUP BY "CGPVotes"."address", "CGPVotes"."type", "Blocks"."blockNumber"
+      min("Txs"."index") AS "minTxIndex"
+    FROM "CgpVotes"
+    ${JOIN_EXECUTIONS_TXS_BLOCKS_TO_REPO_VOTES}
+    GROUP BY "CgpVotes"."address", "CgpVotes"."type", "Blocks"."blockNumber"
   )
 `;
 
 const FIND_ALL_BY_INTERVAL_BASE_SQL = `
-SELECT "CommandVotes"."ballot",
-  "CommandVotes"."amount",
-  "CommandVotes"."zpAmount",
-  "CommandVotes"."CommandId",
+SELECT "ExecutionVotes"."ballot",
+  "ExecutionVotes"."amount",
+  "ExecutionVotes"."zpAmount",
+  "ExecutionVotes"."executionId",
   "Blocks"."blockNumber",
   "Blocks"."timestamp",
-  "Transactions"."hash" AS "txHash"
-FROM "Commands"
-INNER JOIN "Transactions" ON "Commands"."TransactionId" = "Transactions"."id"
-INNER JOIN "Blocks" ON "Transactions"."BlockId" = "Blocks"."id"
+  "Txs"."hash" AS "txHash"
+FROM "Executions"
+INNER JOIN "Txs" ON "Executions"."txId" = "Txs"."id"
+INNER JOIN "Blocks" ON "Txs"."blockNumber" = "Blocks"."blockNumber"
 INNER JOIN (
-  SELECT "CGPVotes"."CommandId",
-    "CGPVotes"."ballot",
+  SELECT "CgpVotes"."executionId",
+    "CgpVotes"."ballot",
     sum("Snapshots"."amount") AS "amount",
     (sum("Snapshots"."amount") / 100000000) AS "zpAmount"
-  FROM "CGPVotes"
-  ${JOIN_COMMANDS_TXS_BLOCKS_TO_REPO_VOTES}
+  FROM "CgpVotes"
+  ${JOIN_EXECUTIONS_TXS_BLOCKS_TO_REPO_VOTES}
   ${JOIN_SNAPSHOTS_TO_CGP_VOTES}
   ${JOIN_FILTERS_TO_CGP_VOTES_BLOCK_AND_TXS}
-  WHERE "CGPVotes"."address" IS NOT NULL
-    AND "CGPVotes"."type" = :type
-  GROUP BY "CGPVotes"."CommandId", "CGPVotes"."ballot"
-) AS "CommandVotes"
-ON "Commands"."id" = "CommandVotes"."CommandId"
+  WHERE "CgpVotes"."address" IS NOT NULL
+    AND "CgpVotes"."type" = :type
+  GROUP BY "CgpVotes"."executionId", "CgpVotes"."ballot"
+) AS "ExecutionVotes"
+ON "Executions"."id" = "ExecutionVotes"."executionId"
 `;
 
 const FIND_ALL_VOTE_RESULTS_BASE_SQL = `
-SELECT "CGPVotes"."ballot", 
+SELECT "CgpVotes"."ballot", 
   sum("Snapshots"."amount") as "amount", 
   (sum("Snapshots"."amount") / 100000000) AS "zpAmount"
-FROM "CGPVotes"
-${JOIN_COMMANDS_TXS_BLOCKS_TO_REPO_VOTES}
+FROM "CgpVotes"
+${JOIN_EXECUTIONS_TXS_BLOCKS_TO_REPO_VOTES}
 ${JOIN_SNAPSHOTS_TO_CGP_VOTES}
 ${JOIN_FILTERS_TO_CGP_VOTES_BLOCK_AND_TXS}
-WHERE "CGPVotes"."type" = :type
-GROUP BY "CGPVotes"."ballot"
+WHERE "CgpVotes"."type" = :type
+GROUP BY "CgpVotes"."ballot"
 `;
 
 const FIND_ALL_ZP_PARTICIPATED_BASE_SQL = `
 SELECT sum("Snapshots"."amount") AS "amount",
   (sum("Snapshots"."amount") / 100000000) AS "zpAmount"
-FROM "CGPVotes"
-${JOIN_COMMANDS_TXS_BLOCKS_TO_REPO_VOTES}
+FROM "CgpVotes"
+${JOIN_EXECUTIONS_TXS_BLOCKS_TO_REPO_VOTES}
 ${JOIN_SNAPSHOTS_TO_CGP_VOTES}
 ${JOIN_FILTERS_TO_CGP_VOTES_BLOCK_AND_TXS}
-WHERE "CGPVotes"."type" = :type
+WHERE "CgpVotes"."type" = :type
 `;
 
 const FIND_ALL_BALLOTS_BASE_SQL = `
-SELECT "CGPVotes"."ballot", 
+SELECT "CgpVotes"."ballot", 
   sum("Snapshots"."amount") as "amount", 
   (sum("Snapshots"."amount") / 100000000) AS "zpAmount"
-FROM "CGPVotes"
-${JOIN_COMMANDS_TXS_BLOCKS_TO_REPO_VOTES}
+FROM "CgpVotes"
+${JOIN_EXECUTIONS_TXS_BLOCKS_TO_REPO_VOTES}
 ${JOIN_SNAPSHOTS_TO_CGP_VOTES}
 ${JOIN_FILTERS_TO_CGP_VOTES_BLOCK_AND_TXS}
-WHERE "CGPVotes"."type" = :type
-GROUP BY "CGPVotes"."ballot"
+WHERE "CgpVotes"."type" = :type
+GROUP BY "CgpVotes"."ballot"
 `;
 
 module.exports = {
-  JOIN_COMMANDS_TXS_BLOCKS_TO_REPO_VOTES,
+  JOIN_EXECUTIONS_TXS_BLOCKS_TO_REPO_VOTES,
   JOIN_SNAPSHOTS_TO_CGP_VOTES,
   JOIN_FILTERS_TO_CGP_VOTES_BLOCK_AND_TXS,
   WITH_FILTER_TABLES,

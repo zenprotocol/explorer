@@ -5,10 +5,10 @@ export const voteStatus = {
   after: 3,
 };
 
-export function getVoteStatus({ currentBlock, beginHeight, endHeight } = {}) {
-  return currentBlock < beginHeight
+export function getVoteStatus({ currentBlock, beginBlock, endBlock } = {}) {
+  return currentBlock < beginBlock
     ? voteStatus.before
-    : currentBlock >= beginHeight && currentBlock < endHeight
+    : currentBlock >= beginBlock && currentBlock < endBlock
     ? voteStatus.during
     : voteStatus.after;
 }

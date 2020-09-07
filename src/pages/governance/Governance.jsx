@@ -50,8 +50,8 @@ class GovernancePage extends React.Component {
   get voteStatus() {
     return getVoteStatus({
       currentBlock: this.currentBlock,
-      beginHeight: this.repoVoteStore.relevantInterval.beginHeight,
-      endHeight: this.repoVoteStore.relevantInterval.endHeight,
+      beginBlock: this.repoVoteStore.relevantInterval.beginBlock,
+      endBlock: this.repoVoteStore.relevantInterval.endBlock,
     });
   }
 
@@ -222,7 +222,7 @@ class GovernancePage extends React.Component {
 }
 
 function BeforeVoteInfo({ currentBlock, relevantInterval }) {
-  const blocksToStart = relevantInterval.beginHeight - currentBlock;
+  const blocksToStart = relevantInterval.beginBlock - currentBlock;
 
   return (
     <div className="container">
@@ -234,12 +234,12 @@ function BeforeVoteInfo({ currentBlock, relevantInterval }) {
         />
         <InfoBox
           title="Snapshot Block"
-          content={TextUtils.formatNumber(relevantInterval.beginHeight)}
+          content={TextUtils.formatNumber(relevantInterval.beginBlock)}
           iconClass="fal fa-cubes fa-fw"
         />
         <InfoBox
           title="Tally Block"
-          content={TextUtils.formatNumber(relevantInterval.endHeight)}
+          content={TextUtils.formatNumber(relevantInterval.endBlock)}
           iconClass="fal fa-cubes fa-fw"
         />
       </div>
@@ -268,7 +268,7 @@ function DuringVoteInfo({ currentBlock, relevantInterval }) {
         />
         <InfoBox
           title="Tally Block"
-          content={TextUtils.formatNumber(relevantInterval.endHeight)}
+          content={TextUtils.formatNumber(relevantInterval.endBlock)}
           iconClass="fal fa-money-check fa-fw"
         />
         {relevantInterval.phase === 'Contestant' && (
@@ -291,7 +291,7 @@ DuringVoteInfo.propTypes = {
 };
 
 function AfterVoteInfo({ relevantInterval }) {
-  const { winner, beginHeight, endHeight, interval } = relevantInterval;
+  const { winner, beginBlock, endBlock, interval } = relevantInterval;
   const winnerArr = Array.isArray(winner) ? winner : winner ? [winner] : [];
   const winnerJsx = winnerArr.map((item) =>
     item && item.commitId ? <CommitLink commitId={item.commitId} key={item.commitId} /> : null
@@ -302,12 +302,12 @@ function AfterVoteInfo({ relevantInterval }) {
       <div className="row">
         <InfoBox
           title="Snapshot Block"
-          content={TextUtils.formatNumber(beginHeight)}
+          content={TextUtils.formatNumber(beginBlock)}
           iconClass="fal fa-cube fa-fw"
         />
         <InfoBox
           title="Tally Block"
-          content={TextUtils.formatNumber(endHeight)}
+          content={TextUtils.formatNumber(endBlock)}
           iconClass="fal fa-money-check fa-fw"
         />
         {relevantInterval.phase === 'Contestant' && (
@@ -387,8 +387,8 @@ IntervalsDropDown.propTypes = {
 function getDropDownSemesterText(interval) {
   return `${TextUtils.getOrdinal(interval.interval)} Semester, ${
     interval.phase
-  }s - ${TextUtils.formatNumber(interval.beginHeight)}-${TextUtils.formatNumber(
-    interval.endHeight
+  }s - ${TextUtils.formatNumber(interval.beginBlock)}-${TextUtils.formatNumber(
+    interval.endBlock
   )}`;
 }
 

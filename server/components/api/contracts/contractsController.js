@@ -45,14 +45,14 @@ module.exports = {
     const assets = await contractsBLL.assets({ address, page, pageSize });
     res.status(httpStatus.OK).json(jsonResponse.create(httpStatus.OK, assets));
   },
-  commands: async function(req, res) {
+  executions: async function(req, res) {
     const { address } = req.params;
     const { page, pageSize } = req.query;
     if (!address) {
       throw new HttpError(httpStatus.BAD_REQUEST);
     }
-
-    const commands = await contractsBLL.commands({ address, page, pageSize });
-    res.status(httpStatus.OK).json(jsonResponse.create(httpStatus.OK, commands));
+    
+    const executions = await contractsBLL.executions({ address, page, pageSize });
+    res.status(httpStatus.OK).json(jsonResponse.create(httpStatus.OK, executions));
   },
 };

@@ -129,7 +129,7 @@ test('ReorgProcessor.doJob()', async function(t) {
 async function wrapTest(given, test) {
   blocksDAL = td.replace('../../../../server/components/api/blocks/blocksDAL', {
     findLatest: td.func('findLatest'),
-    findByBlockNumber: td.func('findByBlockNumber'),
+    findById: td.func('findById'),
     bulkDelete: td.func('bulkDelete'),
   });
 
@@ -141,7 +141,7 @@ async function wrapTest(given, test) {
   td.when(blocksDAL.findLatest()).thenResolve({ blockNumber: LATEST_DB_BLOCK });
 
   for (let blockNumber = LATEST_DB_BLOCK; blockNumber > 0; blockNumber--) {
-    td.when(blocksDAL.findByBlockNumber(blockNumber)).thenResolve({
+    td.when(blocksDAL.findById(blockNumber)).thenResolve({
       hash: String(blockNumber),
     });
   }

@@ -1,12 +1,12 @@
 const blocksBLL = require('../api/blocks/blocksBLL');
-const transactionsBLL = require('../api/transactions/transactionsBLL');
+const transactionsBLL = require('../api/txs/transactionsBLL');
 const addressesBLL = require('../api/addresses/addressesBLL');
 const contractsBLL = require('../api/contracts/contractsBLL');
 const contractsDAL = require('../api/contracts/contractsDAL');
 const assetsBLL = require('../api/assets/assetsBLL');
 const infosBLL = require('../api/infos/infosBLL');
-const votesBLL = require('../api/votes/votesBLL');
-const interval1CacheBLL = require('../api/votes/cache/1/interval1CacheBLL');
+const votesBLL = require('../api/repovotes/votesBLL');
+const interval1CacheBLL = require('../api/repovotes/cache/1/interval1CacheBLL');
 const cgpBLL = require('../api/cgp/cgpBLL');
 const getChain = require('../../lib/getChain');
 

@@ -22,7 +22,7 @@ module.exports = {
     }
     return isHash(hashOrBlockNumber)
       ? await blocksDAL.findByHash(hashOrBlockNumber)
-      : await blocksDAL.findByBlockNumber(hashOrBlockNumber);
+      : await blocksDAL.findById(hashOrBlockNumber);
   },
   count: async function() {
     return await blocksDAL.count();

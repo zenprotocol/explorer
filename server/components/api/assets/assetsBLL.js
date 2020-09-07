@@ -1,7 +1,6 @@
 'use strict';
 
 const assetsDAL = require('./assetsDAL');
-const assetOutstandingsDAL = require('../assetOutstandings/assetOutstandingsDAL');
 const contractsDAL = require('../contracts/contractsDAL');
 const createQueryObject = require('../../../lib/createQueryObject');
 
@@ -9,9 +8,9 @@ module.exports = {
   findAll: async function({ page = 0, pageSize = 10 } = {}) {
     const query = createQueryObject({ page, pageSize, sorted: [{ id: 'keyholders', desc: true }] });
     return await Promise.all([
-      assetOutstandingsDAL.count(),
-      assetOutstandingsDAL.findAll(query),
-    ]).then(assetOutstandingsDAL.getItemsAndCountResult);
+      assetsDAL.count(),
+      assetsDAL.findAll(query),
+    ]).then(assetsDAL.getItemsAndCountResult);
   },
   findOne: async function({ asset } = {}) {
     if (!asset) {

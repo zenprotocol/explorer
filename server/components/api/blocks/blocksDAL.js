@@ -8,7 +8,7 @@ const wrapORMErrors = require('../../../lib/wrapORMErrors');
 const blocksDAL = dal.createDAL('Block');
 const sequelize = blocksDAL.db.sequelize;
 
-blocksDAL.findAllWithCoinbase = function({ limit = 10, offset = 0 } = {}) {
+blocksDAL.findAllWithCoinbase = function ({ limit = 10, offset = 0 } = {}) {
   /**
    * Limit the amount of blocks processed for speed optimization
    * Calculate the coinbase by summing up all the coinbase lock outputs
@@ -33,48 +33,45 @@ blocksDAL.findAllWithCoinbase = function({ limit = 10, offset = 0 } = {}) {
   FROM "BlocksLimited"
   JOIN 
     (SELECT id,
-      "BlockId"
-    FROM "Transactions"
-    WHERE "Transactions"."BlockId" IN 
-      (SELECT id
+      "blockNumber"
+    FROM "Txs"
+    WHERE "Txs"."blockNumber" IN 
+      (SELECT "blockNumber"
       FROM "BlocksLimited")
-              AND "Transactions"."index" = 0 ) AS "CoinbaseTx"
-      ON "CoinbaseTx"."BlockId" = "BlocksLimited".id
+              AND "Txs"."index" = 0 ) AS "CoinbaseTx"
+      ON "CoinbaseTx"."blockNumber" = "BlocksLimited"."blockNumber"
   LEFT JOIN (
-    SELECT sum(amount) as amount, "TransactionId"
+    SELECT sum(amount) as amount, "txId"
     FROM "Outputs"
-    JOIN "Transactions" ON "Outputs"."TransactionId" = "Transactions"."id"
     WHERE "Outputs"."lockType" = 'Coinbase'
-    AND "Transactions"."BlockId" IN 
-      (SELECT id
+    AND "Outputs"."blockNumber" IN 
+      (SELECT "blockNumber"
       FROM "BlocksLimited")
-    GROUP BY "TransactionId") AS "CoinbaseOutputSum"
-  ON "CoinbaseOutputSum"."TransactionId" = "CoinbaseTx"."id"
+    GROUP BY "txId") AS "CoinbaseOutputSum"
+  ON "CoinbaseOutputSum"."txId" = "CoinbaseTx"."id"
 
   LEFT JOIN (
-    SELECT sum(amount) as amount, "TransactionId"
+    SELECT sum(amount) as amount, "txId"
     FROM "Outputs"
-    JOIN "Transactions" ON "Outputs"."TransactionId" = "Transactions"."id"
     WHERE "Outputs"."lockType" = 'Contract'
-    AND "Transactions"."BlockId" IN 
-      (SELECT id
+    AND "Outputs"."blockNumber" IN 
+      (SELECT "blockNumber"
       FROM "BlocksLimited")
-    GROUP BY "TransactionId") AS "ContractLockOutputSum"
-  ON "ContractLockOutputSum"."TransactionId" = "CoinbaseTx"."id"
+    GROUP BY "txId") AS "ContractLockOutputSum"
+  ON "ContractLockOutputSum"."txId" = "CoinbaseTx"."id"
 
   ORDER BY "BlocksLimited"."blockNumber" DESC
   `;
-  return sequelize
-    .query(sql, {
-      replacements: {
-        limit,
-        offset,
-      },
-      type: sequelize.QueryTypes.SELECT,
-    });
+  return sequelize.query(sql, {
+    replacements: {
+      limit,
+      offset,
+    },
+    type: sequelize.QueryTypes.SELECT,
+  });
 };
 
-blocksDAL.findLatest = function({ transaction } = {}) {
+blocksDAL.findLatest = function ({ transaction } = {}) {
   const options = {
     order: [['blockNumber', 'DESC']],
     limit: 1,
@@ -82,30 +79,10 @@ blocksDAL.findLatest = function({ transaction } = {}) {
   if (transaction) {
     options.transaction = transaction;
   }
-  return this.findAll(options).then(results => (results.length ? results[0] : null));
+  return this.findAll(options).then((results) => (results.length ? results[0] : null));
 };
 
-blocksDAL.findByBlockNumber = function(blockNumber, { transaction } = {}) {
-  if (
-    isNaN(Number(blockNumber)) ||
-    !Number.isInteger(Number(blockNumber)) ||
-    Number(blockNumber) < 1 ||
-    Number(blockNumber) >= 2147483647 // above db integer
-  ) {
-    return Promise.resolve(null);
-  }
-  const options = {
-    where: {
-      blockNumber,
-    },
-  };
-  if (transaction) {
-    options.transaction = transaction;
-  }
-  return this.findOne(options);
-};
-
-blocksDAL.findByHash = function(hash) {
+blocksDAL.findByHash = function (hash) {
   return this.findOne({
     where: {
       hash,
@@ -113,13 +90,21 @@ blocksDAL.findByHash = function(hash) {
   });
 };
 
-blocksDAL.search = function(search, limit = 10) {
+blocksDAL.search = function (search, limit = 10) {
   const Op = this.db.Sequelize.Op;
   const whereByHash = {
     hash: {
       [Op.like]: `%${search}%`,
     },
   };
+
+  const byBlockNumberPromise =
+    isNaN(Number(search)) ||
+    !Number.isInteger(Number(search)) ||
+    Number(search) < 1 ||
+    Number(search) >= 2147483647
+      ? Promise.resolve(null)
+      : this.findById(search);
 
   return Promise.all([
     this.count({ where: whereByHash }),
@@ -128,8 +113,8 @@ blocksDAL.search = function(search, limit = 10) {
       limit,
       order: [['blockNumber', 'DESC']],
     }),
-    this.findByBlockNumber(search),
-  ]).then(results => {
+    byBlockNumberPromise,
+  ]).then((results) => {
     let count = Number(results[0]);
     let items = results[1];
     if (results[2]) {
@@ -143,19 +128,19 @@ blocksDAL.search = function(search, limit = 10) {
   });
 };
 
-blocksDAL.addTransaction = async function(block, transaction, options = {}) {
+blocksDAL.addTransaction = async function (block, transaction, options = {}) {
   return block.addTransaction(transaction, options);
 };
 
-blocksDAL.updateByBlockNumber = async function(blockNumber, values = {}, options = {}) {
+blocksDAL.updateByBlockNumber = async function (blockNumber, values = {}, options = {}) {
   return new Promise((resolve, reject) => {
     this.db[this.model]
       .findOne({ where: { blockNumber } })
-      .then(model => {
+      .then((model) => {
         return model.update(values, deepMerge({ individualHooks: true }, options));
       })
       .then(resolve)
-      .catch(error => {
+      .catch((error) => {
         reject(wrapORMErrors(error));
       });
   });

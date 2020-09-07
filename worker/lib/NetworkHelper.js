@@ -26,8 +26,8 @@ class NetworkHelper {
     return await Service.contracts.getActiveContracts();
   }
 
-  async getContractCommandsFromNode(data) {
-    return await Service.contracts.getCommands(data);
+  async getContractExecutionsFromNode(data) {
+    return await Service.contracts.getExecutions(data);
   }
 
   async getZenNodeLatestTag() {

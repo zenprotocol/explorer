@@ -3,7 +3,7 @@
  */
 const cli = require('sywac');
 const logger = require('../lib/logger')('vote-intervals');
-const voteIntervalsDAL = require('../../server/components/api/voteIntervals/voteIntervalsDAL');
+const voteIntervalsDAL = require('../../server/components/api/repovote-intervals/voteIntervalsDAL');
 const db = require('../../server/db/sequelize/models');
 
 const run = async () => {
@@ -39,8 +39,8 @@ const run = async () => {
     prevPhase = await voteIntervalsDAL.create({
       interval: interval + Math.floor(i / 2) + 1,
       phase: i % 2 === 0 ? 'Contestant' : 'Candidate',
-      beginHeight: begin + i * (length + gap),
-      endHeight: begin + i * (length + gap) + length,
+      beginBlock: begin + i * (length + gap),
+      endBlock: begin + i * (length + gap) + length,
       thresholdZp: i % 2 === 0 ? threshold : null,
       prevPhaseId: i % 2 === 1 ? prevPhase.id : null,
     });

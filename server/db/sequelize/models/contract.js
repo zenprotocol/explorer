@@ -8,18 +8,24 @@ module.exports = (sequelize, DataTypes) => {
         primaryKey: true,
       },
       address: DataTypes.STRING,
+      version: DataTypes.INTEGER,
       code: DataTypes.TEXT,
       expiryBlock: DataTypes.INTEGER,
+      txsCount: DataTypes.BIGINT,
+      assetsIssued: DataTypes.BIGINT,
+      lastActivationBlock: DataTypes.INTEGER,
     },
-    {}
+    {
+      timestamps: false,
+    }
   );
   Contract.associate = function(models) {
-    Contract.hasMany(models.Command);
-    Contract.belongsToMany(models.Transaction, {
-      as: 'ActivationTransactions',
-      through: 'ContractActivation',
-      foreignKey: 'ContractId',
-      otherKey: 'TransactionId'
+    Contract.hasMany(models.Execution, { foreignKey: 'contractId'});
+    Contract.belongsToMany(models.Tx, {
+      as: 'ActivationTxs',
+      through: 'Activation',
+      foreignKey: 'contractId',
+      otherKey: 'txId'
     });
   };
   return Contract;

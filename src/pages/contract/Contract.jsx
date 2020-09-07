@@ -13,7 +13,7 @@ import AssetsBalancesTable from '../../components/AssetsBalancesTable';
 import PageTitle from '../../components/PageTitle';
 import Page from '../../components/Page';
 import { Tabs, TabHead, TabBody, Tab } from '../../components/tabs';
-import { AssetsTab, CodeTab, CommandsTab, TransactionsTab } from './components/tabs';
+import { AssetsTab, CodeTab, ExecutionsTab, TransactionsTab } from './components/tabs';
 import './Contract.scss';
 import ObjectUtils from '../../lib/ObjectUtils';
 
@@ -171,7 +171,7 @@ class ContractPage extends Component {
         <TabBody>
           <Switch>
             <Route path={`${currentPath}/txns`} component={TransactionsTab} />
-            <Route path={`${currentPath}/commands`} component={CommandsTab} />
+            <Route path={`${currentPath}/commands`} component={ExecutionsTab} />
             <Route path={`${currentPath}/code`} component={CodeTab} />
             <Route path={`${currentPath}/assets`} component={AssetsTab} />
             <Redirect from={`${currentPath}`} to={`${currentPath}/txns`} />

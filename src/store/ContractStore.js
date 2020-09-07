@@ -9,13 +9,13 @@ export default class ContractStore {
     this.contract = initialState.contract || {};
     this.assets = initialState.assets || [];
     this.assetsCount = initialState.assetsCount || 0;
-    this.commands = initialState.commands || [];
-    this.commandsCount = initialState.commandsCount || 0;
+    this.executions = initialState.executions || [];
+    this.executionsCount = initialState.executionsCount || 0;
     this.loading = {
       contracts: false,
       contract: false,
       assets: false,
-      commands: false,
+      executions: false,
     };
   }
 
@@ -104,26 +104,26 @@ export default class ContractStore {
       });
   }
 
-  loadCommands(address, params = {}) {
-    this.loading.commands = true;
+  loadExecutions(address, params = {}) {
+    this.loading.executions = true;
 
     return Service.contracts
-      .findCommands(address, params)
+      .findExecutions(address, params)
       .then(({ data }) => {
         runInAction(() => {
-          this.commands = data.items;
-          this.commandsCount = data.count;
+          this.executions = data.items;
+          this.executionsCount = data.count;
         });
       })
       .catch(() => {
         runInAction(() => {
-          this.commands = [];
-          this.commandsCount = 0;
+          this.executions = [];
+          this.executionsCount = 0;
         });
       })
       .then(() => {
         runInAction(() => {
-          this.loading.commands = false;
+          this.loading.executions = false;
         });
       });
   }
@@ -135,13 +135,13 @@ decorate(ContractStore, {
   contract: observable,
   assets: observable,
   assetsCount: observable,
-  commands: observable,
-  commandsCount: observable,
+  executions: observable,
+  executionsCount: observable,
   loading: observable,
   loadContracts: action,
   loadContract: action,
   loadAssets: action,
-  loadCommands: action,
+  loadExecutions: action,
 });
 
 export class Contract {
