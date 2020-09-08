@@ -6,6 +6,10 @@ const truncate = require('../../../../test/lib/truncate');
 const blocksDAL = require('../../../../server/components/api/blocks/blocksDAL');
 const txsDAL = require('../../../../server/components/api/txs/txsDAL');
 const inputsDAL = require('../../../../server/components/api/inputs/inputsDAL');
+const addressTxsDAL = require('../../../../server/components/api/address-txs/addressTxsDAL');
+const addressesDAL = require('../../../../server/components/api/addresses/addressesDAL');
+const assetTxsDAL = require('../../../../server/components/api/asset-txs/assetTxsDAL');
+const assetsDAL = require('../../../../server/components/api/assets/assetsDAL');
 const NetworkHelper = require('../../../lib/NetworkHelper');
 const BlockchainParser = require('../../../../server/lib/BlockchainParser');
 const mock = require('./mock');
@@ -22,11 +26,11 @@ async function wrapTest(given, test) {
   await test(given);
 }
 
-test('BlocksAdder.doJob()', async function(t) {
-  await wrapTest('Given nothing in db', async given => {
+test('BlocksAdder.doJob()', async function (t) {
+  await wrapTest('Given nothing in db', async (given) => {
     const networkHelper = new NetworkHelper();
     mock.mockNetworkHelper(networkHelper);
-    const blocksAdder = new BlocksAdder(networkHelper, new BlockchainParser());
+    const blocksAdder = new BlocksAdder(networkHelper, new BlockchainParser(), '20000000');
 
     try {
       const { count, latest } = await blocksAdder.doJob({
@@ -38,28 +42,20 @@ test('BlocksAdder.doJob()', async function(t) {
 
       const block1 = await blocksDAL.findById(1);
       t.assert(block1 !== null, `${given}: Block 1 should be in the db`);
-      t.equal(
-        block1.reward,
-        '0',
-        `${given}: Block 1 should have reward = 0`
-      );
+      t.equal(block1.reward, '2000000000000000', `${given}: Block 1 should have the genesis reward`);
 
       const block2 = await blocksDAL.findById(2);
       t.assert(block2 !== null, `${given}: Block 2 should be in the db`);
-      t.equal(
-        block2.reward,
-        '5000000000',
-        `${given}: Block 2 should have a reward`
-      );
+      t.equal(block2.reward, '5000000000', `${given}: Block 2 should have a reward`);
     } catch (error) {
       t.fail(`${given}: Should not throw an error`);
     }
   });
 
-  await wrapTest('Given some already in DB', async given => {
+  await wrapTest('Given some already in DB', async (given) => {
     const networkHelper = new NetworkHelper();
     mock.mockNetworkHelper(networkHelper);
-    const blocksAdder = new BlocksAdder(networkHelper, new BlockchainParser());
+    const blocksAdder = new BlocksAdder(networkHelper, new BlockchainParser(), '20000000');
 
     // add demo first block in DB
     await blocksDAL.create({
@@ -79,7 +75,6 @@ test('BlocksAdder.doJob()', async function(t) {
         data: { limitBlocks: 1, skipTransactions: true },
       });
 
-
       t.assert(count > 0, `${given}: Should have added new blocks`);
       t.equal(latest, 2, `${given}: Should return the latest block added`);
 
@@ -89,14 +84,14 @@ test('BlocksAdder.doJob()', async function(t) {
       t.fail(`${given}: Should not throw an error`);
     }
   });
-  await wrapTest('Given network error when getting blocks info from node', async given => {
+  await wrapTest('Given network error when getting blocks info from node', async (given) => {
     const networkHelper = new NetworkHelper();
-    const blocksAdder = new BlocksAdder(networkHelper, new BlockchainParser());
+    const blocksAdder = new BlocksAdder(networkHelper, new BlockchainParser(), '20000000');
 
     // mute the service to get empty responses
     Service.config.setBaseUrl('http://wrong.address.io');
     Service.config.setTimeout(1);
-    
+
     try {
       await blocksAdder.doJob({ data: { limitBlocks: 1 } });
       t.fail(`${given}: Should throw an error`);
@@ -107,10 +102,11 @@ test('BlocksAdder.doJob()', async function(t) {
     Service.config.setBaseUrl(Config.get('zp:node'));
     Service.config.setTimeout(0);
   });
-  await wrapTest('Given new blocks with transactions', async given => {
+  await wrapTest('Given new blocks with transactions', async (given) => {
+    const ADDRESS_IN_BLOCK_1 = 'zen1qmwpd6utdzqq4lg52c70f6ae5lpmvcqtm0gvaxqlrvxt79wquf38s9mrydf';
     const networkHelper = new NetworkHelper();
     mock.mockNetworkHelper(networkHelper);
-    const blocksAdder = new BlocksAdder(networkHelper, new BlockchainParser());
+    const blocksAdder = new BlocksAdder(networkHelper, new BlockchainParser(), '20000000');
 
     try {
       const { count } = await blocksAdder.doJob({
@@ -127,14 +123,63 @@ test('BlocksAdder.doJob()', async function(t) {
         },
       });
       t.assert(txs.length > 0, `${given}: There should be transactions for this block`);
+      t.assert(txs[0].blockNumber > 0, `${given}: A tx should contain the blockNumber`);
+
+      // check extra fields in block
+      t.assert(latestBlockAfterAdd.reward > 0, `${given}: block 2 should have a positive reward`);
+      t.assert(
+        latestBlockAfterAdd.coinbaseAmount > 0,
+        `${given}: block 2 should have a positive coinbaseAmount`
+      );
+      t.assert(
+        latestBlockAfterAdd.allocationAmount === '0',
+        `${given}: block 2 should have allocationAmount = 0`
+      );
+
+      // check Addresses, Assets, AddressTxs, AssetTxs
+      const addresses = await addressesDAL.findAll();
+      t.assert(addresses.length > 0, `${given}: There should be rows in the Addresses table`);
+      const address = addresses.find((a) => a.address === ADDRESS_IN_BLOCK_1);
+      t.assert(
+        address !== null,
+        `${given}: an specific address from block 1 should exist in Addresses`
+      );
+      t.equal(address.asset, '00', `${given}: The address should have asset 00`);
+      t.equal(address.sent, '0', `${given}: The address should have sent = 0`);
+      t.equal(address.received, '100000000000', `${given}: The address should have received 100000000000`);
+      t.equal(address.balance, '100000000000', `${given}: The address should have balance 100000000000`);
+      t.equal(address.txsCount, '1', `${given}: The address should have txsCount 1`);
+      const addressTxs = await addressTxsDAL.findAll();
+      t.assert(addressTxs.length > 0, `${given}: There should be rows in the AddressTxs table`);
+      t.equal(
+        addressTxs.some((a) => a.address === ADDRESS_IN_BLOCK_1),
+        true,
+        `${given}: an specific address from block 1 should exist in AddressTxs`
+      );
+      const assets = await assetsDAL.findAll();
+      t.equal(assets.length, 1, `${given}: There should be 1 row in the Assets table for 00`);
+      t.equal(assets[0].asset, '00', `${given}: The only asset in Assets should be 00`);
+      t.equal(assets[0].issued, '2000005000000000', `${given}: should have issued 50 ZP + GENESIS (2 blocks)`);
+      t.equal(assets[0].destroyed, '0', `${given}: should have destroyed 0 ZP`);
+      t.equal(assets[0].outstanding, '2000005000000000', `${given}: should have outstanding 50 ZP + GENESIS`);
+      t.equal(assets[0].keyholders, '50', `${given}: should have the right amount of keyholders`);
+      t.equal(assets[0].txsCount, '2', `${given}: should have 2 txsCount`);
+      const assetTxs = await assetTxsDAL.findAll();
+      t.assert(assetTxs.length > 0, `${given}: There should be rows in the AssetTxs table`);
+      t.equal(
+        assetTxs.every((a) => a.asset === '00'),
+        true,
+        `${given}: all rows in AssetTxs should have asset = 00`
+      );
     } catch (error) {
+      console.log(error);
       t.fail(`${given}: Should not throw an error`);
     }
   });
-  await wrapTest('Given new blocks with a falsy transaction', async given => {
+  await wrapTest('Given new blocks with a falsy transaction', async (given) => {
     const networkHelper = new NetworkHelper();
     mock.mockNetworkHelper(networkHelper, { falsyTransaction: true });
-    const blocksAdder = new BlocksAdder(networkHelper, new BlockchainParser());
+    const blocksAdder = new BlocksAdder(networkHelper, new BlockchainParser(), '20000000');
 
     try {
       await blocksAdder.doJob({
@@ -146,10 +191,10 @@ test('BlocksAdder.doJob()', async function(t) {
       t.assert(blocks.length === 0, `${given}: Should not have added the block to the db`);
     }
   });
-  await wrapTest('Given a transaction with a falsy output', async given => {
+  await wrapTest('Given a transaction with a falsy output', async (given) => {
     const networkHelper = new NetworkHelper();
     mock.mockNetworkHelper(networkHelper, { falsyOutput: true });
-    const blocksAdder = new BlocksAdder(networkHelper, new BlockchainParser());
+    const blocksAdder = new BlocksAdder(networkHelper, new BlockchainParser(), '20000000');
 
     try {
       await blocksAdder.doJob({
@@ -161,10 +206,10 @@ test('BlocksAdder.doJob()', async function(t) {
       t.assert(blocks.length === 0, `${given}: Should not have added the block to the db`);
     }
   });
-  await wrapTest('Given a transaction with a falsy input', async given => {
+  await wrapTest('Given a transaction with a falsy input', async (given) => {
     const networkHelper = new NetworkHelper();
     mock.mockNetworkHelper(networkHelper, { falsyInput: true });
-    const blocksAdder = new BlocksAdder(networkHelper, new BlockchainParser());
+    const blocksAdder = new BlocksAdder(networkHelper, new BlockchainParser(), '20000000');
 
     try {
       await blocksAdder.doJob({
@@ -176,12 +221,12 @@ test('BlocksAdder.doJob()', async function(t) {
       t.assert(blocks.length === 0, `${given}: Should not have added the block to the db`);
     }
   });
-  await wrapTest('Given a transaction with an outpoint input', async given => {
+  await wrapTest('Given a transaction with an outpoint input', async (given) => {
     const TEST_BLOCK_NUMBER = 86;
     const OUTPOINT_BLOCK_NUMBER = 1;
     const networkHelper = new NetworkHelper();
     mock.mockNetworkHelper(networkHelper, { latestBlockNumber: TEST_BLOCK_NUMBER });
-    const blocksAdder = new BlocksAdder(networkHelper, new BlockchainParser());
+    const blocksAdder = new BlocksAdder(networkHelper, new BlockchainParser(), '20000000');
 
     try {
       // add 1st block as the tested input references this
@@ -213,15 +258,19 @@ test('BlocksAdder.doJob()', async function(t) {
         OUTPOINT_BLOCK_NUMBER,
         `${given}: The input tested should have its outpoint pointing to block 1`
       );
+      t.equal(input.lockType, output.lockType, `${given}: input and outpoint should have same lockType`);
+      t.equal(input.address, output.address, `${given}: input and outpoint should have same address`);
+      t.equal(input.asset, output.asset, `${given}: input and outpoint should have same asset`);
+      t.equal(input.amount, output.amount, `${given}: input and outpoint should have same amount`);
     } catch (error) {
       t.fail(`${given}: should not throw an error`);
     }
   });
-  await wrapTest('Given a transaction with a mint input', async given => {
+  await wrapTest('Given a transaction with a mint input', async (given) => {
     const TEST_BLOCK_NUMBER = 176;
     const networkHelper = new NetworkHelper();
     mock.mockNetworkHelper(networkHelper, { latestBlockNumber: TEST_BLOCK_NUMBER });
-    const blocksAdder = new BlocksAdder(networkHelper, new BlockchainParser());
+    const blocksAdder = new BlocksAdder(networkHelper, new BlockchainParser(), '20000000');
 
     try {
       await createDemoBlocksFromTo(
@@ -254,11 +303,11 @@ test('BlocksAdder.doJob()', async function(t) {
   });
   await wrapTest(
     'Given a node block with parent not equal to last block hash in db',
-    async given => {
+    async (given) => {
       const TEST_BLOCK_NUMBER = 4;
       const networkHelper = new NetworkHelper();
       mock.mockNetworkHelper(networkHelper, { latestBlockNumber: TEST_BLOCK_NUMBER });
-      const blocksAdder = new BlocksAdder(networkHelper, new BlockchainParser());
+      const blocksAdder = new BlocksAdder(networkHelper, new BlockchainParser(), '20000000');
 
       try {
         await createDemoBlocksFromTo(
@@ -279,10 +328,10 @@ test('BlocksAdder.doJob()', async function(t) {
 });
 
 if (Config.get('RUN_REAL_DATA_TESTS')) {
-  test('Add New Blocks with real data from node (NO MOCK)', async function(t) {
+  test('Add New Blocks with real data from node (NO MOCK)', async function (t) {
     await truncate();
     const networkHelper = new NetworkHelper();
-    const blocksAdder = new BlocksAdder(networkHelper, new BlockchainParser());
+    const blocksAdder = new BlocksAdder(networkHelper, new BlockchainParser(), '20000000');
 
     try {
       const { count } = await blocksAdder.doJob({ data: { limitBlocks: 200 } });

@@ -29,7 +29,7 @@ test('SnapshotTaker.doJob() (DB)', async function(t) {
 
   await wrapTest('VoteIntervals: Given an interval', async given => {
     const snapshotTaker = new SnapshotTaker({ chain: 'test' });
-    const blocksAdder = new BlocksAdder({}, new BlockchainParser());
+    const blocksAdder = new BlocksAdder({}, new BlockchainParser(), '20000000');
 
     // insert an interval
     repoVoteIntervalsDAL.create({

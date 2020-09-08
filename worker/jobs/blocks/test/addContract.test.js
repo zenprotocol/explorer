@@ -5,6 +5,7 @@ const truncate = require('../../../../test/lib/truncate');
 const contractsDAL = require('../../../../server/components/api/contracts/contractsDAL');
 const transactionsDAL = require('../../../../server/components/api/txs/txsDAL');
 const blocksDAL = require('../../../../server/components/api/blocks/blocksDAL');
+const BlockchainParser = require('../../../../server/lib/BlockchainParser');
 const NetworkHelper = require('../../../lib/NetworkHelper');
 const BlocksAdder = require('../BlocksAdder');
 
@@ -12,11 +13,11 @@ test.onFinish(() => {
   contractsDAL.db.sequelize.close();
 });
 
-test('BlocksAdder.addContract()', async function(t) {
+test('BlocksAdder.addContract()', async function (t) {
   const demoBlock = require('./data/blockWithContract.json');
 
-  await wrapTest('Given a transaction with a contract', async given => {
-    const blocksAdder = new BlocksAdder(new NetworkHelper());
+  await wrapTest('Given a transaction with a contract', async (given) => {
+    const blocksAdder = new BlocksAdder(new NetworkHelper(), new BlockchainParser());
     const addedContract = await blocksAdder.addContract({
       nodeBlock: demoBlock,
       txHash: '33c1ba62d66a65c3f0bb829eb7b31fb5a6f1ea1b880f96617ca173fc184f02b3',
@@ -35,8 +36,8 @@ test('BlocksAdder.addContract()', async function(t) {
     );
   });
 
-  await wrapTest('Given a transaction with no contract', async given => {
-    const blocksAdder = new BlocksAdder(new NetworkHelper());
+  await wrapTest('Given a transaction with no contract', async (given) => {
+    const blocksAdder = new BlocksAdder(new NetworkHelper(), new BlockchainParser());
     const resultWhenTxHasNoContract = await blocksAdder.addContract({
       nodeBlock: demoBlock,
       txHash: '8e411b606462c3b141fbe8728479fe0482c61ed8b8cb1e80822c91dd7daa6ad0',
@@ -44,8 +45,8 @@ test('BlocksAdder.addContract()', async function(t) {
     t.equals(resultWhenTxHasNoContract, 0, `${given}: Should not add a new contract`);
   });
 
-  await wrapTest('Given a transaction with a contract (association)', async given => {
-    const blocksAdder = new BlocksAdder(new NetworkHelper());
+  await wrapTest('Given a transaction with a contract (association)', async (given) => {
+    const blocksAdder = new BlocksAdder(new NetworkHelper(), new BlockchainParser());
     // add a demo transaction and block with the hash of the contract tx
     const block = await blocksDAL.create({
       blockNumber: 1,

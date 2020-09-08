@@ -32,6 +32,10 @@ class BlockchainParser {
     return this.getPublicKeyHashAddress(ContractId.fromString(contractId));
   }
 
+  getContractVersion(contractId) {
+    return ContractId.fromString(contractId).version;
+  }
+
   getLockValuesFromOutput(output) {
     let lockType = null;
     let lockValue = null; // contains hash/id/pkHash

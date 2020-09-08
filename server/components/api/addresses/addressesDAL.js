@@ -13,6 +13,19 @@ const Op = db.Sequelize.Op;
 
 const LOCK_TYPE_FOR_BALANCE = '"lockType" = ANY(\'{"Coinbase","PK","Contract","Destroy"}\')';
 
+addressesDAL.findByAddressAsset = function ({ address, asset, ...options } = {}) {
+  return this.findAll({
+    where: {
+      address,
+      asset,
+    },
+    limit: 1,
+    ...options,
+  }).then((results) => {
+    return results.length ? results[0] : null;
+  });
+};
+
 addressesDAL.findOne = function (address) {
   return outputsDAL
     .findAll({
