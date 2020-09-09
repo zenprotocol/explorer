@@ -10,7 +10,7 @@ const assetsRouter = require('./assets/assetsRoutes');
 const infosRouter = require('./infos/infosRoutes');
 const statsRouter = require('./stats/statsRoutes');
 const searchRouter = require('./search/searchRoutes');
-const votesRoutes = require('./repovotes/votesRoutes');
+const votesRoutes = require('./repovotes/repoVotesRoutes');
 const cgpRoutes = require('./cgp/cgpRoutes');
 
 router.use('/blocks', blocksRouter);

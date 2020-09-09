@@ -3,7 +3,7 @@
 const test = require('blue-tape');
 const truncate = require('../../../../test/lib/truncate');
 const blocksDAL = require('../blocks/blocksDAL');
-const voteIntervalsDAL = require('./voteIntervalsDAL');
+const voteIntervalsDAL = require('./repoVoteIntervalsDAL');
 
 test('voteIntervalsDAL.findAllRecent() (DB)', async function(t) {
   await wrapTest('Given no intervals', async given => {

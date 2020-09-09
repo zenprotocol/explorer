@@ -1,8 +1,8 @@
 'use strict';
 
-const votesDAL = require('./votesDAL');
+const votesDAL = require('./repoVotesDAL');
 const blocksBLL = require('../blocks/blocksBLL');
-const voteIntervalsDAL = require('../repovote-intervals/voteIntervalsDAL');
+const voteIntervalsDAL = require('../repovote-intervals/repoVoteIntervalsDAL');
 const createQueryObject = require('../../../lib/createQueryObject');
 const config = require('../../../config/Config');
 

@@ -3,7 +3,7 @@
  */
 const cli = require('sywac');
 const logger = require('../lib/logger')('vote-intervals');
-const voteIntervalsDAL = require('../../server/components/api/repovote-intervals/voteIntervalsDAL');
+const voteIntervalsDAL = require('../../server/components/api/repovote-intervals/repoVoteIntervalsDAL');
 const db = require('../../server/db/sequelize/models');
 
 const run = async () => {

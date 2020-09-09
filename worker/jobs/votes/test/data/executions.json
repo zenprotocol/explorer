@@ -24,9 +24,7 @@
     },
     "txId": "100",
     "indexInTx": 0,
-    "contractId": "test-contract-id",
-    "createdAt": "2019-04-25T14:03:00.726Z",
-    "updatedAt": "2019-04-25T14:03:00.726Z"
+    "contractId": "test-contract-id"
   },
   {
     "id": "2",
@@ -59,9 +57,7 @@
     },
     "txId": "100",
     "indexInTx": 0,
-    "contractId": "test-contract-id",
-    "createdAt": "2019-04-25T14:03:00.726Z",
-    "updatedAt": "2019-04-25T14:03:00.726Z"
+    "contractId": "test-contract-id"
   },
   {
     "id": "3",
@@ -78,9 +74,7 @@
     },
     "txId": "200",
     "indexInTx": 0,
-    "contractId": "test-contract-id",
-    "createdAt": "2019-04-25T14:03:00.726Z",
-    "updatedAt": "2019-04-25T14:03:00.726Z"
+    "contractId": "test-contract-id"
   },
   {
     "id": "4",
@@ -110,9 +104,7 @@
     },
     "txId": "300",
     "indexInTx": 0,
-    "contractId": "test-contract-id",
-    "createdAt": "2019-04-25T14:03:00.726Z",
-    "updatedAt": "2019-04-25T14:03:00.726Z"
+    "contractId": "test-contract-id"
   },
   {
     "id": "5",
@@ -142,9 +134,7 @@
     },
     "txId": "400",
     "indexInTx": 0,
-    "contractId": "test-contract-id",
-    "createdAt": "2019-04-25T14:03:00.726Z",
-    "updatedAt": "2019-04-25T14:03:00.726Z"
+    "contractId": "test-contract-id"
   },
   {
     "id": "6",
@@ -174,9 +164,7 @@
     },
     "txId": "500",
     "indexInTx": 0,
-    "contractId": "test-contract-id",
-    "createdAt": "2019-04-25T14:03:00.726Z",
-    "updatedAt": "2019-04-25T14:03:00.726Z"
+    "contractId": "test-contract-id"
   },
   {
     "id": "7",
@@ -206,9 +194,7 @@
     },
     "txId": "600",
     "indexInTx": 0,
-    "contractId": "test-contract-id",
-    "createdAt": "2019-04-25T14:03:00.726Z",
-    "updatedAt": "2019-04-25T14:03:00.726Z"
+    "contractId": "test-contract-id"
   },
   {
     "id": "8",
@@ -238,9 +224,7 @@
     },
     "txId": "700",
     "indexInTx": 0,
-    "contractId": "test-contract-id",
-    "createdAt": "2019-04-25T14:03:00.726Z",
-    "updatedAt": "2019-04-25T14:03:00.726Z"
+    "contractId": "test-contract-id"
   },
   {
     "id": "9",
@@ -270,8 +254,6 @@
     },
     "txId": "800",
     "indexInTx": 0,
-    "contractId": "test-contract-id",
-    "createdAt": "2019-04-25T14:03:00.726Z",
-    "updatedAt": "2019-04-25T14:03:00.726Z"
+    "contractId": "test-contract-id"
   }
 ]

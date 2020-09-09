@@ -16,7 +16,7 @@ function before() {
   addressesDAL = td.replace('../../../server/components/api/addresses/addressesDAL', {
     snapshotBalancesByBlock: td.func('snapshotBalancesByBlock'),
   });
-  voteIntervalsDAL = td.replace('../../../server/components/api/repovote-intervals/voteIntervalsDAL.js', {
+  voteIntervalsDAL = td.replace('../../../server/components/api/repovote-intervals/repoVoteIntervalsDAL.js', {
     findAllWithoutSnapshot: td.func('findAllWithoutSnapshot'),
     setHasSnapshot: td.func('setHasSnapshot'),
   });

@@ -21,7 +21,7 @@ function before({ contractId = CONTRACT_ID } = {}) {
   });
   td.when(db.sequelize.transaction()).thenResolve({ commit() {} });
 
-  const VotesAdder = require('./VotesAdder');
+  const VotesAdder = require('./RepoVotesAdder');
   const BlockchainParser = require('../../../server/lib/BlockchainParser');
   votesAdder = new VotesAdder({
     blockchainParser: new BlockchainParser(),

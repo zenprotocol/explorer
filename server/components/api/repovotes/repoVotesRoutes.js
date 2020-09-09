@@ -1,6 +1,6 @@
 const router = require('express').Router();
-const controller = require('./votesController');
-const middleware = require('./votesMiddleware');
+const controller = require('./repoVotesController');
+const middleware = require('./repoVotesMiddleware');
 const interval1CacheController = require('./cache/1/interval1CacheController');
 const wrapAsync = require('../../../lib/wrapAsyncForExpressErrors');
 

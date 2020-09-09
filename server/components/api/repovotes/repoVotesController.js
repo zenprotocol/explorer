@@ -3,7 +3,7 @@
 const httpStatus = require('http-status');
 const jsonResponse = require('../../../lib/jsonResponse');
 const HttpError = require('../../../lib/HttpError');
-const votesBLL = require('./votesBLL');
+const votesBLL = require('./repoVotesBLL');
 
 module.exports = {
   index: async function(req, res) {
