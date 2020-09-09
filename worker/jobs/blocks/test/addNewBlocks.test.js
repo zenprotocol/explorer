@@ -42,7 +42,11 @@ test('BlocksAdder.doJob()', async function (t) {
 
       const block1 = await blocksDAL.findById(1);
       t.assert(block1 !== null, `${given}: Block 1 should be in the db`);
-      t.equal(block1.reward, '2000000000000000', `${given}: Block 1 should have the genesis reward`);
+      t.equal(
+        block1.reward,
+        '2000000000000000',
+        `${given}: Block 1 should have the genesis reward`
+      );
 
       const block2 = await blocksDAL.findById(2);
       t.assert(block2 !== null, `${given}: Block 2 should be in the db`);
@@ -146,8 +150,16 @@ test('BlocksAdder.doJob()', async function (t) {
       );
       t.equal(address.asset, '00', `${given}: The address should have asset 00`);
       t.equal(address.sent, '0', `${given}: The address should have sent = 0`);
-      t.equal(address.received, '100000000000', `${given}: The address should have received 100000000000`);
-      t.equal(address.balance, '100000000000', `${given}: The address should have balance 100000000000`);
+      t.equal(
+        address.received,
+        '100000000000',
+        `${given}: The address should have received 100000000000`
+      );
+      t.equal(
+        address.balance,
+        '100000000000',
+        `${given}: The address should have balance 100000000000`
+      );
       t.equal(address.txsCount, '1', `${given}: The address should have txsCount 1`);
       const addressTxs = await addressTxsDAL.findAll();
       t.assert(addressTxs.length > 0, `${given}: There should be rows in the AddressTxs table`);
@@ -159,9 +171,17 @@ test('BlocksAdder.doJob()', async function (t) {
       const assets = await assetsDAL.findAll();
       t.equal(assets.length, 1, `${given}: There should be 1 row in the Assets table for 00`);
       t.equal(assets[0].asset, '00', `${given}: The only asset in Assets should be 00`);
-      t.equal(assets[0].issued, '2000005000000000', `${given}: should have issued 50 ZP + GENESIS (2 blocks)`);
+      t.equal(
+        assets[0].issued,
+        '2000005000000000',
+        `${given}: should have issued 50 ZP + GENESIS (2 blocks)`
+      );
       t.equal(assets[0].destroyed, '0', `${given}: should have destroyed 0 ZP`);
-      t.equal(assets[0].outstanding, '2000005000000000', `${given}: should have outstanding 50 ZP + GENESIS`);
+      t.equal(
+        assets[0].outstanding,
+        '2000005000000000',
+        `${given}: should have outstanding 50 ZP + GENESIS`
+      );
       t.equal(assets[0].keyholders, '50', `${given}: should have the right amount of keyholders`);
       t.equal(assets[0].txsCount, '2', `${given}: should have 2 txsCount`);
       const assetTxs = await assetTxsDAL.findAll();
@@ -172,7 +192,6 @@ test('BlocksAdder.doJob()', async function (t) {
         `${given}: all rows in AssetTxs should have asset = 00`
       );
     } catch (error) {
-      console.log(error);
       t.fail(`${given}: Should not throw an error`);
     }
   });
@@ -258,8 +277,16 @@ test('BlocksAdder.doJob()', async function (t) {
         OUTPOINT_BLOCK_NUMBER,
         `${given}: The input tested should have its outpoint pointing to block 1`
       );
-      t.equal(input.lockType, output.lockType, `${given}: input and outpoint should have same lockType`);
-      t.equal(input.address, output.address, `${given}: input and outpoint should have same address`);
+      t.equal(
+        input.lockType,
+        output.lockType,
+        `${given}: input and outpoint should have same lockType`
+      );
+      t.equal(
+        input.address,
+        output.address,
+        `${given}: input and outpoint should have same address`
+      );
       t.equal(input.asset, output.asset, `${given}: input and outpoint should have same asset`);
       t.equal(input.amount, output.amount, `${given}: input and outpoint should have same amount`);
     } catch (error) {
@@ -268,6 +295,9 @@ test('BlocksAdder.doJob()', async function (t) {
   });
   await wrapTest('Given a transaction with a mint input', async (given) => {
     const TEST_BLOCK_NUMBER = 176;
+    // only 1 minted asset in all of the blocks
+    const MINTED_ASSET_ID =
+      '00000000f24db32aa1881956646d3ccbb647df71455de10cf98b635810e8870906a56b63';
     const networkHelper = new NetworkHelper();
     mock.mockNetworkHelper(networkHelper, { latestBlockNumber: TEST_BLOCK_NUMBER });
     const blocksAdder = new BlocksAdder(networkHelper, new BlockchainParser(), '20000000');
@@ -289,18 +319,432 @@ test('BlocksAdder.doJob()', async function (t) {
         limit: 1,
       });
       t.assert(inputs.length > 0, `${given}: There should be at least one mint input in db`);
-      t.assert(
-        typeof inputs[0].asset === 'string' && inputs[0].asset.length > 0,
-        `${given}: Asset should be set`
-      );
+      t.equal(inputs[0].asset, MINTED_ASSET_ID, `${given}: Asset should be set`);
       t.assert(
         typeof inputs[0].amount === 'string' && Number(inputs[0].amount) > 0,
         `${given}: Amount should be set`
       );
+
+      const asset = await assetsDAL.findById(MINTED_ASSET_ID);
+      t.equal(asset.issued, '120000000', `${given}: The asset should have the right issued amount`);
+      t.equal(asset.destroyed, '0', `${given}: The asset should have the right destroyed amount`);
+      t.equal(
+        asset.outstanding,
+        '120000000',
+        `${given}: The asset should have the right outstanding amount`
+      );
+      t.equal(asset.keyholders, '2', `${given}: The asset should have the right keyholders amount`);
+      t.equal(asset.txsCount, '2', `${given}: The asset should have the right txsCount amount`);
+      const assetTxs = await assetTxsDAL.findAllByAsset(MINTED_ASSET_ID);
+      t.equal(assetTxs.length, 2, `${given}: There should be 2 AssetTxs in the db`);
     } catch (error) {
       t.fail(`${given}: should not throw an error`);
     }
   });
+  await wrapTest('Given an address which received and sent', async (given) => {
+    /**
+     * zen11 receives coinbase in block 1
+     * zen13 receives coinbase in block 2
+     * zen11 sends 1 ZP to zen12 in block 2
+     */
+    const block1 = {
+      hash: '1',
+      header: {
+        version: 0,
+        parent: '0000000000000000000000000000000000000000000000000000000000000000',
+        blockNumber: 1,
+        commitments: '626a22feb6275762b45b8a5a329296343343efbd6ccea80d7f1ebf63d8b0efcf',
+        timestamp: 1530378044087,
+        difficulty: 471719622,
+        nonce: [8015528688734519415, 5802497780545032333],
+      },
+      transactions: {
+        1: {
+          version: 0,
+          inputs: [],
+          outputs: [
+            {
+              lock: {
+                Coinbase: {
+                  blockNumber: 1,
+                  address: 'zen11',
+                },
+              },
+              spend: {
+                asset: '00',
+                amount: 5000000000,
+              },
+            },
+          ],
+        },
+      },
+    };
+    const block2 = {
+      hash: '2',
+      header: {
+        version: 0,
+        parent: '1',
+        blockNumber: 2,
+        commitments: '626a22feb6275762c45b8a5a329296343343efbd6ccea80d7f1ebf63d8b0efcf',
+        timestamp: 1530378044088,
+        difficulty: 471719622,
+        nonce: [8015528688734519415, 5802497780545032333],
+      },
+      transactions: {
+        2: {
+          version: 0,
+          inputs: [],
+          outputs: [
+            {
+              lock: {
+                Coinbase: {
+                  blockNumber: 1,
+                  address: 'zen13',
+                },
+              },
+              spend: {
+                asset: '00',
+                amount: 5000000000,
+              },
+            },
+          ],
+        },
+        3: {
+          version: 0,
+          inputs: [
+            {
+              outpoint: {
+                txHash: '1',
+                index: 0,
+              },
+            },
+          ],
+          outputs: [
+            {
+              lock: {
+                PK: {
+                  hash: '7dbb8068630bed0ec68d0eccf19ab3a0e90895ada230e41072eb0dd8e2c4f190',
+                  address: 'zen12',
+                },
+              },
+              spend: {
+                asset: '00',
+                amount: 100000000,
+              },
+            },
+            {
+              lock: {
+                PK: {
+                  hash: 'fd517e12c3670db13143b0bd5d3115263c7c7874b9f5fa67bc59a850aafba5e5',
+                  address: 'zen11',
+                },
+              },
+              spend: {
+                asset: '00',
+                amount: 4900000000,
+              },
+            },
+          ],
+        },
+      },
+    };
+    const blockchain = [block1, block2];
+    const networkHelper = new NetworkHelper();
+    mock.mockNetworkHelper(networkHelper, { latestBlockNumber: 2 });
+    networkHelper.getBlockFromNode = (blockNumber) => {
+      return blockchain[blockNumber - 1];
+    };
+    const blocksAdder = new BlocksAdder(networkHelper, new BlockchainParser(), '20000000');
+
+    try {
+      const { count } = await blocksAdder.doJob();
+
+      t.assert(count === 2, `${given}: Should have added 2 new blocks`);
+
+      const addresses = await addressesDAL.findAll();
+      t.assert(addresses.length === 3, `${given}: There should be 3 rows in Addresses table`);
+      const filterFields = (a) => {
+        const { asset, sent, received, balance } = a;
+        return { asset, sent, received, balance };
+      };
+      const zen11 = addresses.find((a) => a.address === 'zen11');
+      const zen12 = addresses.find((a) => a.address === 'zen12');
+      const zen13 = addresses.find((a) => a.address === 'zen13');
+      t.deepEqual(
+        filterFields(zen11),
+        { asset: '00', sent: '5000000000', received: '9900000000', balance: '4900000000' },
+        `${given}: zen11 should have the right amounts`
+      );
+      t.deepEqual(
+        filterFields(zen12),
+        { asset: '00', sent: '0', received: '100000000', balance: '100000000' },
+        `${given}: zen12 should have the right amounts`
+      );
+      t.deepEqual(
+        filterFields(zen13),
+        { asset: '00', sent: '0', received: '5000000000', balance: '5000000000' },
+        `${given}: zen13 should have the right amounts`
+      );
+    } catch (error) {
+      t.fail(`${given}: Should not throw an error`);
+    }
+  });
+  await wrapTest('Given an asset which was minted and destroyed', async (given) => {
+    const ASSET_ID = '00000000f24db32aa1881956646d3ccbb647df71455de10cf98b635810e8870906a56b63';
+    /**
+     * block1 is genesis
+     * block 2 asset was minted
+     * block 3 asset was destroyed
+     */
+    const block1 = {
+      hash: '1',
+      header: {
+        version: 0,
+        parent: '0000000000000000000000000000000000000000000000000000000000000000',
+        blockNumber: 1,
+        commitments: '626a22feb6275762b45b8a5a329296343343efbd6ccea80d7f1ebf63d8b0efcf',
+        timestamp: 1530378044087,
+        difficulty: 471719622,
+        nonce: [8015528688734519415, 5802497780545032333],
+      },
+      transactions: {
+        1: {
+          version: 0,
+          inputs: [],
+          outputs: [
+            {
+              lock: {
+                Coinbase: {
+                  blockNumber: 1,
+                  address: 'zen11',
+                },
+              },
+              spend: {
+                asset: '00',
+                amount: 5000000000,
+              },
+            },
+          ],
+        },
+      },
+    };
+    const block2 = {
+      hash: '2',
+      header: {
+        version: 0,
+        parent: '1',
+        blockNumber: 2,
+        commitments: '626a22feb6275762c45b8a5a329296343343efbd6ccea80d7f1ebf63d8b0efcf',
+        timestamp: 1530378044088,
+        difficulty: 471719622,
+        nonce: [8015528688734519415, 5802497780545032333],
+      },
+      transactions: {
+        2: {
+          version: 0,
+          inputs: [
+            {
+              mint: {
+                asset: ASSET_ID,
+                amount: 100000000,
+              },
+            },
+          ],
+          outputs: [
+            {
+              lock: {
+                Coinbase: {
+                  blockNumber: 1,
+                  address: 'zen13',
+                },
+              },
+              spend: {
+                asset: '00',
+                amount: 5000000000,
+              },
+            },
+          ],
+        },
+      },
+    };
+    const block3 = {
+      hash: '3',
+      header: {
+        version: 0,
+        parent: '2',
+        blockNumber: 3,
+        commitments: '626a22feb6275762c45b8a5a329296343343efbd6ccea80d7f1ebf63d8b0efcf',
+        timestamp: 1530378044088,
+        difficulty: 471719622,
+        nonce: [8015528688734519415, 5802497780545032333],
+      },
+      transactions: {
+        3: {
+          version: 0,
+          inputs: [],
+          outputs: [
+            {
+              lock: {
+                Coinbase: {
+                  blockNumber: 3,
+                  address: 'zen13',
+                },
+              },
+              spend: {
+                asset: '00',
+                amount: 5000000000,
+              },
+            },
+            {
+              lock: 'Destroy',
+              spend: {
+                asset: ASSET_ID,
+                amount: 100000000,
+              },
+            },
+          ],
+        },
+      },
+    };
+    const blockchain = [block1, block2, block3];
+    const networkHelper = new NetworkHelper();
+    mock.mockNetworkHelper(networkHelper, { latestBlockNumber: 3 });
+    networkHelper.getBlockFromNode = (blockNumber) => {
+      return blockchain[blockNumber - 1];
+    };
+    const blocksAdder = new BlocksAdder(networkHelper, new BlockchainParser(), '20000000');
+
+    try {
+      const { count } = await blocksAdder.doJob();
+
+      t.assert(count === 3, `${given}: Should have added 3 new blocks`);
+
+      const asset = await assetsDAL.findById(ASSET_ID);
+      const filterFields = (a) => {
+        const { issued, destroyed, outstanding } = a;
+        return { issued, destroyed, outstanding };
+      };
+      t.deepEqual(
+        filterFields(asset),
+        { issued: '100000000', destroyed: '100000000', outstanding: '0' },
+        `${given}: the asset should have the right amounts`
+      );
+    } catch (error) {
+      t.fail(`${given}: Should not throw an error`);
+    }
+  });
+  await wrapTest(
+    'Given an asset which was minted and destroyed on the same block',
+    async (given) => {
+      const ASSET_ID = '00000000f24db32aa1881956646d3ccbb647df71455de10cf98b635810e8870906a56b63';
+      /**
+       * block1 is genesis
+       * block 2 asset was minted and destroyed
+       */
+      const block1 = {
+        hash: '1',
+        header: {
+          version: 0,
+          parent: '0000000000000000000000000000000000000000000000000000000000000000',
+          blockNumber: 1,
+          commitments: '626a22feb6275762b45b8a5a329296343343efbd6ccea80d7f1ebf63d8b0efcf',
+          timestamp: 1530378044087,
+          difficulty: 471719622,
+          nonce: [8015528688734519415, 5802497780545032333],
+        },
+        transactions: {
+          1: {
+            version: 0,
+            inputs: [],
+            outputs: [
+              {
+                lock: {
+                  Coinbase: {
+                    blockNumber: 1,
+                    address: 'zen11',
+                  },
+                },
+                spend: {
+                  asset: '00',
+                  amount: 5000000000,
+                },
+              },
+            ],
+          },
+        },
+      };
+      const block2 = {
+        hash: '2',
+        header: {
+          version: 0,
+          parent: '1',
+          blockNumber: 2,
+          commitments: '626a22feb6275762c45b8a5a329296343343efbd6ccea80d7f1ebf63d8b0efcf',
+          timestamp: 1530378044088,
+          difficulty: 471719622,
+          nonce: [8015528688734519415, 5802497780545032333],
+        },
+        transactions: {
+          2: {
+            version: 0,
+            inputs: [
+              {
+                mint: {
+                  asset: ASSET_ID,
+                  amount: 100000000,
+                },
+              },
+            ],
+            outputs: [
+              {
+                lock: {
+                  Coinbase: {
+                    blockNumber: 1,
+                    address: 'zen13',
+                  },
+                },
+                spend: {
+                  asset: '00',
+                  amount: 5000000000,
+                },
+              },
+              {
+                lock: 'Destroy',
+                spend: {
+                  asset: ASSET_ID,
+                  amount: 100000000,
+                },
+              },
+            ],
+          },
+        },
+      };
+      const blockchain = [block1, block2];
+      const networkHelper = new NetworkHelper();
+      mock.mockNetworkHelper(networkHelper, { latestBlockNumber: 2 });
+      networkHelper.getBlockFromNode = (blockNumber) => {
+        return blockchain[blockNumber - 1];
+      };
+      const blocksAdder = new BlocksAdder(networkHelper, new BlockchainParser(), '20000000');
+
+      try {
+        await blocksAdder.doJob();
+
+        const asset = await assetsDAL.findById(ASSET_ID);
+        const filterFields = (a) => {
+          const { issued, destroyed, outstanding } = a;
+          return { issued, destroyed, outstanding };
+        };
+        t.deepEqual(
+          filterFields(asset),
+          { issued: '100000000', destroyed: '100000000', outstanding: '0' },
+          `${given}: the asset should have the right amounts`
+        );
+      } catch (error) {
+        t.fail(`${given}: Should not throw an error`);
+      }
+    }
+  );
   await wrapTest(
     'Given a node block with parent not equal to last block hash in db',
     async (given) => {
