@@ -149,11 +149,11 @@ test('BlocksAdder.doJob()', async function (t) {
         `${given}: an specific address from block 1 should exist in Addresses`
       );
       t.equal(address.asset, '00', `${given}: The address should have asset 00`);
-      t.equal(address.sent, '0', `${given}: The address should have sent = 0`);
+      t.equal(address.inputSum, '0', `${given}: The address should have inputSum = 0`);
       t.equal(
-        address.received,
+        address.outputSum,
         '100000000000',
-        `${given}: The address should have received 100000000000`
+        `${given}: The address should have outputSum 100000000000`
       );
       t.equal(
         address.balance,
@@ -464,25 +464,25 @@ test('BlocksAdder.doJob()', async function (t) {
       const addresses = await addressesDAL.findAll();
       t.assert(addresses.length === 3, `${given}: There should be 3 rows in Addresses table`);
       const filterFields = (a) => {
-        const { asset, sent, received, balance } = a;
-        return { asset, sent, received, balance };
+        const { asset, inputSum, outputSum, balance } = a;
+        return { asset, inputSum, outputSum, balance };
       };
       const zen11 = addresses.find((a) => a.address === 'zen11');
       const zen12 = addresses.find((a) => a.address === 'zen12');
       const zen13 = addresses.find((a) => a.address === 'zen13');
       t.deepEqual(
         filterFields(zen11),
-        { asset: '00', sent: '5000000000', received: '9900000000', balance: '4900000000' },
+        { asset: '00', inputSum: '5000000000', outputSum: '9900000000', balance: '4900000000' },
         `${given}: zen11 should have the right amounts`
       );
       t.deepEqual(
         filterFields(zen12),
-        { asset: '00', sent: '0', received: '100000000', balance: '100000000' },
+        { asset: '00', inputSum: '0', outputSum: '100000000', balance: '100000000' },
         `${given}: zen12 should have the right amounts`
       );
       t.deepEqual(
         filterFields(zen13),
-        { asset: '00', sent: '0', received: '5000000000', balance: '5000000000' },
+        { asset: '00', inputSum: '0', outputSum: '5000000000', balance: '5000000000' },
         `${given}: zen13 should have the right amounts`
       );
     } catch (error) {

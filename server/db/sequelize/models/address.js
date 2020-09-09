@@ -5,8 +5,8 @@ module.exports = (sequelize, DataTypes) => {
     {
       address: DataTypes.STRING,
       asset: DataTypes.STRING,
-      sent: DataTypes.BIGINT,
-      received: DataTypes.BIGINT,
+      inputSum: DataTypes.BIGINT,
+      outputSum: DataTypes.BIGINT,
       balance: DataTypes.BIGINT,
       txsCount: DataTypes.BIGINT,
     },

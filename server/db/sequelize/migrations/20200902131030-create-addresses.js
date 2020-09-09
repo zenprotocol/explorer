@@ -17,10 +17,10 @@ module.exports = {
           allowNull: false,
           type: Sequelize.STRING,
         },
-        sent: {
+        inputSum: {
           type: Sequelize.BIGINT,
         },
-        received: {
+        outputSum: {
           type: Sequelize.BIGINT,
         },
         balance: {

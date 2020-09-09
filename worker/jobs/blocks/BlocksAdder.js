@@ -436,8 +436,8 @@ class BlocksAdder {
    */
   async calcAddressAssetsPerTx({ inputs, outputs, tx, block } = {}) {
     const initAddressAsset = () => ({
-      sent: new Decimal(0),
-      received: new Decimal(0),
+      inputSum: new Decimal(0),
+      outputSum: new Decimal(0),
     });
     const initAsset = () => ({
       issued: new Decimal(0),
@@ -460,9 +460,9 @@ class BlocksAdder {
           addresses.get(address)[asset] = initAddressAsset();
         }
 
-        // add to received for the asset
+        // add to outputSum for the asset
         const addressObj = addresses.get(address);
-        addressObj[asset].received = addressObj[asset].received.plus(output.amount);
+        addressObj[asset].outputSum = addressObj[asset].outputSum.plus(output.amount);
       }
 
       // asset
@@ -489,9 +489,9 @@ class BlocksAdder {
           addresses.get(address)[asset] = initAddressAsset();
         }
 
-        // add to sent for the asset
+        // add to inputSum for the asset
         const addressObj = addresses.get(address);
-        addressObj[asset].sent = addressObj[asset].sent.plus(input.amount);
+        addressObj[asset].inputSum = addressObj[asset].inputSum.plus(input.amount);
       }
 
       // asset
@@ -530,9 +530,9 @@ class BlocksAdder {
                 {
                   address,
                   asset,
-                  sent: assets[asset].sent.toString(),
-                  received: assets[asset].received.toString(),
-                  balance: assets[asset].received.minus(assets[asset].sent).toString(),
+                  inputSum: assets[asset].inputSum.toString(),
+                  outputSum: assets[asset].outputSum.toString(),
+                  balance: assets[asset].outputSum.minus(assets[asset].inputSum).toString(),
                   txsCount: 1,
                 },
                 { transaction: this.dbTransaction }
@@ -540,10 +540,10 @@ class BlocksAdder {
             } else {
               await dbAddress.update(
                 {
-                  sent: assets[asset].sent.plus(dbAddress.sent).toString(),
-                  received: assets[asset].received.plus(dbAddress.received).toString(),
-                  balance: assets[asset].received
-                    .minus(assets[asset].sent)
+                  inputSum: assets[asset].inputSum.plus(dbAddress.inputSum).toString(),
+                  outputSum: assets[asset].outputSum.plus(dbAddress.outputSum).toString(),
+                  balance: assets[asset].outputSum
+                    .minus(assets[asset].inputSum)
                     .plus(dbAddress.balance)
                     .toString(),
                   txsCount: new Decimal(dbAddress.txsCount).plus(1).toString(),

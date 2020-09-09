@@ -83,8 +83,8 @@ package "Blockchain" {
     primary_key(id)
     address
     asset
-    sent
-    received
+    inputSum
+    outputSum
     balance
     txsCount
   }
