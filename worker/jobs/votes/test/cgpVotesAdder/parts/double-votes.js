@@ -18,7 +18,7 @@ const BALLOTS = {
 };
 
 module.exports = async function part({ t, before, after }) {
-  await wrapTest('Given a Nomination double vote, 1st already in db', async (given) => {
+  await wrapTest('Given a Nomination double vote, 1st already in db, different blocks', async (given) => {
     const cgpVotesAdder = new CgpVotesAdder({
       blockchainParser,
       chain: 'test',
@@ -47,6 +47,76 @@ module.exports = async function part({ t, before, after }) {
     const votes = await cgpDAL.findAll();
     t.assert(
       result === 1 && votes.length === 3 && votes.every((v) => v.ballot !== BALLOTS.payout[1]),
+      `${given}: should add an empty vote`
+    );
+    after();
+  });
+  await wrapTest('Given a Nomination double vote, 1st already in db, same block', async (given) => {
+    const cgpVotesAdder = new CgpVotesAdder({
+      blockchainParser,
+      chain: 'test',
+      ...cgpAdderParams,
+    });
+    before(cgpVotesAdder);
+    const messageBody = getValidMessageBody('Nomination');
+    messageBody.dict[0][1].string = BALLOTS.payout[0];
+    await addDemoData({
+      blockchainParser,
+    });
+    await addExecution({
+      blockNumber: 92,
+      txIndex: 0,
+      execution: getDemoExecution({ command: 'Nomination', messageBody }),
+    });
+    // 1st job
+    await cgpVotesAdder.doJob();
+
+    // change ballot
+    messageBody.dict[0][1].string = BALLOTS.payout[1];
+    // add the double vote
+    await addExecution({
+      blockNumber: 92,
+      txIndex: 1,
+      execution: getDemoExecution({ command: 'Nomination', messageBody }),
+    });
+    const result = await cgpVotesAdder.doJob();
+    const votes = await cgpDAL.findAll();
+    t.assert(
+      result === 1 && votes.length === 3 && votes.every((v) => v.ballot !== BALLOTS.payout[1]),
+      `${given}: should add an empty vote`
+    );
+    after();
+  });
+  await wrapTest('Given a Nomination double vote, different executions, same batch, same block', async (given) => {
+    const cgpVotesAdder = new CgpVotesAdder({
+      blockchainParser,
+      chain: 'test',
+      ...cgpAdderParams,
+    });
+    before(cgpVotesAdder);
+    const messageBody = getValidMessageBody('Nomination');
+    messageBody.dict[0][1].string = BALLOTS.payout[0];
+    await addDemoData({
+      blockchainParser,
+    });
+    await addExecution({
+      blockNumber: 92,
+      txIndex: 0,
+      execution: getDemoExecution({ command: 'Nomination', messageBody }),
+    });
+
+    // change ballot
+    messageBody.dict[0][1].string = BALLOTS.payout[1];
+    // add the double vote
+    await addExecution({
+      blockNumber: 92,
+      txIndex: 1,
+      execution: getDemoExecution({ command: 'Nomination', messageBody }),
+    });
+    const result = await cgpVotesAdder.doJob();
+    const votes = await cgpDAL.findAll();
+    t.assert(
+      result === 3 && votes.length === 3 && votes.every((v) => v.ballot !== BALLOTS.payout[1]),
       `${given}: should add an empty vote`
     );
     after();
