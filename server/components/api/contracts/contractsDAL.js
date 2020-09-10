@@ -140,11 +140,12 @@ contractsDAL.findAllWithAssetsCountTxCountAndCountOrderByNewest = function({
   ]).then(this.getItemsAndCountResult);
 };
 
-contractsDAL.findByAddress = function(address) {
+contractsDAL.findByAddress = function(address, options) {
   return this.findOne({
     where: {
       address,
     },
+    ...options
   });
 };
 
@@ -195,6 +196,9 @@ contractsDAL.findAllOutstandingAssets = function(id, { limit = 10, offset = 0 } 
         asset: {
           [Op.like]: `${id}%`,
         },
+        outstanding: {
+          [Op.gt]: 0
+        }
       },
     }),
     assetsDAL.findAll({
@@ -202,6 +206,9 @@ contractsDAL.findAllOutstandingAssets = function(id, { limit = 10, offset = 0 } 
         asset: {
           [Op.like]: `${id}%`,
         },
+        outstanding: {
+          [Op.gt]: 0
+        }
       },
       limit,
       offset,

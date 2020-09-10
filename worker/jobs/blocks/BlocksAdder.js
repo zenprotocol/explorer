@@ -167,8 +167,6 @@ class BlocksAdder {
           `Transaction created and added to block #${block.blockNumber} blockHash=${block.hash}. txHash=${tx.hash}, transactionId=${tx.id}`
         );
 
-        await this.addContract({ txHash, nodeBlock });
-
         try {
           // add outputs
           logger.info(
@@ -208,6 +206,8 @@ class BlocksAdder {
             tx,
             block,
           });
+
+          await this.addContract({ txHash, nodeBlock });
         } catch (error) {
           throw new Error(`${error.message} txHash=${tx.hash}`);
         }
@@ -293,17 +293,25 @@ class BlocksAdder {
             version: this.blockchainParser.getContractVersion(nodeContract.contractId),
             code: nodeContract.code,
             expiryBlock: 0,
+            txsCount: '0',
+            assetsIssued: '0',
+            lastActivationBlock: nodeBlock.header.blockNumber,
           },
           { transaction: this.dbTransaction }
         );
         created = 1;
+      } else {
+        dbContract.update(
+          { lastActivationBlock: nodeBlock.header.blockNumber },
+          { transaction: this.dbTransaction }
+        );
       }
-      const transaction = await txsDAL.findOne({
+      const tx = await txsDAL.findOne({
         where: { hash: txHash },
         transaction: this.dbTransaction,
       });
 
-      await contractsDAL.addActivationTx(dbContract, transaction, {
+      await contractsDAL.addActivationTx(dbContract, tx, {
         transaction: this.dbTransaction,
       });
     }
@@ -619,7 +627,55 @@ class BlocksAdder {
     });
     promisesAsset.push(assetTxsDAL.bulkCreate(assetTxs, { transaction: this.dbTransaction }));
 
-    return Promise.all(promisesAsset);
+    await Promise.all(promisesAsset);
+
+    // add data to contracts
+    const promisesContract = [];
+    // addresses are unique
+    addresses.forEach((value, address) => {
+      if (address.startsWith('c')) {
+        promisesContract.push(
+          (async () => {
+            const contract = await contractsDAL.findByAddress(address, {
+              transaction: this.dbTransaction,
+            });
+            if (contract) {
+              await contract.update(
+                { txsCount: new Decimal(contract.txsCount).plus(1).toString() },
+                { transaction: this.dbTransaction }
+              );
+            }
+          })()
+        );
+      }
+    });
+    // assets are unique
+    assets.forEach((value, asset) => {
+      // check only is an asset was minted
+      if(value.issued.gt(0)) {
+        promisesContract.push(
+          (async () => {
+            const contractId = asset.substring(0, 72);
+            const contract = await contractsDAL.findById(contractId, {
+              transaction: this.dbTransaction,
+            });
+            if (contract) {
+              const assetsIssued = await assetsDAL.count({
+                where: {
+                  asset: {
+                    [Op.like]: `${contractId}%`,
+                  },
+                },
+                transaction: this.dbTransaction,
+              });
+              await contract.update({ assetsIssued }, { transaction: this.dbTransaction });
+            }
+          })()
+        );
+      }
+    });
+
+    await Promise.all(promisesContract);
   }
 }
 
