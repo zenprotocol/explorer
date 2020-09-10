@@ -5,8 +5,6 @@ const config = require('../../../server/config/Config');
 const RepoVotesAdder = require('./RepoVotesAdder');
 const CgpVotesAdder = require('./CgpVotesAdder');
 
-let cgpVotesAdder;
-
 /**
  * Handles both repo and cgp votes
  */
@@ -15,7 +13,6 @@ module.exports = async function(job) {
     // instantiate with the current chain
     const chain = await getChain();
     if (chain) {
-      // instantiate only if we have a chain
       const repoVotesAdder = new RepoVotesAdder({
         blockchainParser: new BlockchainParser(chain),
         contractId: config.get('GOVERNANCE_CONTRACT_ID'),
@@ -25,22 +22,16 @@ module.exports = async function(job) {
     }
   } else if (job.data.type === 'cgp') {
     // instantiate with the current chain
-    if (!cgpVotesAdder) {
-      const chain = await getChain();
-      if (chain) {
-        // instantiate only if we have a chain
-        cgpVotesAdder = new CgpVotesAdder({
-          chain,
-          blockchainParser: new BlockchainParser(chain),
-          contractIdFund: config.get('CGP_FUND_CONTRACT_ID'),
-          contractIdVoting: config.get('CGP_VOTING_CONTRACT_ID'),
-          cgpFundPayoutBallot: config.get('CGP_FUND_PAYOUT_BALLOT'),
-          genesisTotal: config.get('GENESIS_TOTAL_ZP'),
-        });
-      }
-    }
-
-    if (cgpVotesAdder) {
+    const chain = await getChain();
+    if (chain) {
+      const cgpVotesAdder = new CgpVotesAdder({
+        chain,
+        blockchainParser: new BlockchainParser(chain),
+        contractIdFund: config.get('CGP_FUND_CONTRACT_ID'),
+        contractIdVoting: config.get('CGP_VOTING_CONTRACT_ID'),
+        cgpFundPayoutBallot: config.get('CGP_FUND_PAYOUT_BALLOT'),
+        genesisTotal: config.get('GENESIS_TOTAL_ZP'),
+      });
       return await cgpVotesAdder.doJob(job);
     }
   }

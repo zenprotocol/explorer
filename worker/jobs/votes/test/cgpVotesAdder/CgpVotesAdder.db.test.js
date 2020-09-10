@@ -10,6 +10,7 @@ const testExecutions = require('./parts/executions');
 const testVerifySignature = require('./parts/verifySignature');
 const testVerifyAllocationBallot = require('./parts/verifyAllocationBallot');
 const testVerifyPayoutBallot = require('./parts/verifyPayoutBallot');
+const testDoubleVotes = require('./parts/double-votes');
 
 test.onFinish(() => {
   executionsDAL.db.sequelize.close();
@@ -22,6 +23,7 @@ test('CgpVotesAdder.doJob() (DB)', async function(t) {
   await testVerifySignature({ t, before: () => {}, after });
   await testVerifyAllocationBallot({ t, before, after });
   await testVerifyPayoutBallot({ t, before, after });
+  await testDoubleVotes({ t, before, after });
 });
 
 function before(votesAdder) {

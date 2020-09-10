@@ -195,8 +195,7 @@ module.exports = async function part({ t, before, after }) {
     t.assert(
       result === 2 &&
         votes.length === 2 &&
-        votes[0].ballot === ballot &&
-        votes[1].ballot === ballot,
+        votes.every(v => v.ballot === ballot && v.blockNumber === 91 && v.txHash.length > 0),
       `${given}: should add the vote`
     );
     after();
@@ -225,10 +224,7 @@ module.exports = async function part({ t, before, after }) {
     t.assert(
       result === 4 &&
         votes.length === 4 &&
-        votes[0].ballot === ballot &&
-        votes[1].ballot === ballot &&
-        votes[2].ballot === ballot &&
-        votes[3].ballot === ballot,
+        votes.every(v => v.ballot === ballot && v.blockNumber > 0 && v.txHash.length > 0),
       `${given}: should add the vote`
     );
     after();
@@ -253,8 +249,7 @@ module.exports = async function part({ t, before, after }) {
     t.assert(
       result === 2 &&
         votes.length === 2 &&
-        votes[0].ballot === '0106' &&
-        votes[1].ballot === '0106',
+        votes.every(v => v.ballot === '0106' && v.blockNumber > 0 && v.txHash.length > 0),
       `${given}: should add the vote`
     );
     after();
@@ -403,9 +398,13 @@ module.exports = async function part({ t, before, after }) {
       ],
     });
     const result1 = await cgpVotesAdder.doJob();
+    // change message body to have different pks so it is not double vote
+    const newMsgBody = getValidMessageBody('Payout');
+    newMsgBody.dict[1][1].dict[0][0] = '02a8ea49e091ebdab34694d79851edd1ae0042f02f45e8addeedd636eb1bc7f94c';
+    newMsgBody.dict[1][1].dict[1][0] = '038a20015c9309fb623ee2c9fee2cfb22d6a0fc89e437a8926733b15efd13b1556';
     await addExecutions({
       executionsBlockNumber: 97,
-      executions: [getDemoExecution({ command: 'Payout', messageBody: getValidMessageBody('Payout') })],
+      executions: [getDemoExecution({ command: 'Payout', messageBody: newMsgBody })],
     });
     const result2 = await cgpVotesAdder.doJob();
     const votes = await cgpDAL.findAll();

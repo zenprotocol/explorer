@@ -12,9 +12,10 @@ const {
 } = require('./cgpSql');
 
 const sequelize = db.sequelize;
+const Op = db.Sequelize.Op;
 const cgpDAL = dal.createDAL('CgpVote');
 
-cgpDAL.findAllUnprocessedExecutions = async function(contractId) {
+cgpDAL.findAllUnprocessedExecutions = async function (contractId) {
   const sql = tags.oneLine`
     SELECT "Executions".*
     FROM "Executions"
@@ -34,6 +35,26 @@ cgpDAL.findAllUnprocessedExecutions = async function(contractId) {
   });
 };
 
+cgpDAL.findAllVotesInPhaseByAddress = async function ({
+  address,
+  beginBlock,
+  endBlock,
+  type,
+  ...options
+} = {}) {
+  return this.findAll({
+    where: {
+      address,
+      type,
+      blockNumber: {
+        [Op.gt]: beginBlock,
+        [Op.lte]: endBlock,
+      },
+    },
+    ...options,
+  });
+};
+
 /**
  * Find the highest block number with a valid vote
  * @param {Object} params
@@ -44,7 +65,7 @@ cgpDAL.findAllUnprocessedExecutions = async function(contractId) {
  * @param {('allocation'|'payout')} params.type - vote type
  * @returns {number} the highest block number with a vote or 0
  */
-cgpDAL.findLastValidVoteBlockNumber = async function({
+cgpDAL.findLastValidVoteBlockNumber = async function ({
   startBlockNumber,
   intervalLength,
   interval1Snapshot,
@@ -75,13 +96,13 @@ cgpDAL.findLastValidVoteBlockNumber = async function({
       type: sequelize.QueryTypes.SELECT,
       transaction: dbTransaction,
     })
-    .then(result => (result.length ? result[0].blockNumber : 0));
+    .then((result) => (result.length ? result[0].blockNumber : 0));
 };
 
 /**
  * Find all votes for an interval, grouped by execution and filter double votes
  */
-cgpDAL.findAllVotesInInterval = async function({ snapshot, tally, type, limit, offset = 0 } = {}) {
+cgpDAL.findAllVotesInInterval = async function ({ snapshot, tally, type, limit, offset = 0 } = {}) {
   const sql = tags.oneLine`
   ${WITH_FILTER_TABLES}
   ${FIND_ALL_BY_INTERVAL_BASE_SQL}
@@ -104,7 +125,7 @@ cgpDAL.findAllVotesInInterval = async function({ snapshot, tally, type, limit, o
 /**
  * Count all votes in an interval, grouped by execution and filter double votes
  */
-cgpDAL.countVotesInInterval = async function({ snapshot, tally, type } = {}) {
+cgpDAL.countVotesInInterval = async function ({ snapshot, tally, type } = {}) {
   const sql = tags.oneLine`
   ${WITH_FILTER_TABLES}
   SELECT count(*) FROM (${FIND_ALL_BY_INTERVAL_BASE_SQL}) AS "Votes";
@@ -128,7 +149,7 @@ cgpDAL.countVotesInInterval = async function({ snapshot, tally, type } = {}) {
  *
  * @param {number} interval
  */
-cgpDAL.findAllVoteResults = async function({
+cgpDAL.findAllVoteResults = async function ({
   snapshot,
   tally,
   type,
@@ -156,7 +177,7 @@ cgpDAL.findAllVoteResults = async function({
   });
 };
 
-cgpDAL.countAllVoteResults = async function({ snapshot, tally, type } = {}) {
+cgpDAL.countAllVoteResults = async function ({ snapshot, tally, type } = {}) {
   const sql = tags.oneLine`
   ${WITH_FILTER_TABLES}
   SELECT count(*) FROM (${FIND_ALL_VOTE_RESULTS_BASE_SQL}) AS "Results"
@@ -174,7 +195,7 @@ cgpDAL.countAllVoteResults = async function({ snapshot, tally, type } = {}) {
     .then(this.queryResultToCount);
 };
 
-cgpDAL.findAllBallots = async function({ type, snapshot, tally, limit, offset = 0 }) {
+cgpDAL.findAllBallots = async function ({ type, snapshot, tally, limit, offset = 0 }) {
   const sql = tags.oneLine`
   ${WITH_FILTER_TABLES}
   ${FIND_ALL_BALLOTS_BASE_SQL}
@@ -193,7 +214,7 @@ cgpDAL.findAllBallots = async function({ type, snapshot, tally, limit, offset = 
     type: sequelize.QueryTypes.SELECT,
   });
 };
-cgpDAL.countAllBallots = async function({ type, snapshot, tally }) {
+cgpDAL.countAllBallots = async function ({ type, snapshot, tally }) {
   const sql = tags.oneLine`
   ${WITH_FILTER_TABLES}
   SELECT count(*) FROM (${FIND_ALL_BALLOTS_BASE_SQL}) AS "Results"
@@ -211,7 +232,7 @@ cgpDAL.countAllBallots = async function({ type, snapshot, tally }) {
     .then(this.queryResultToCount);
 };
 
-cgpDAL.findZpParticipated = async function({ snapshot, tally, type } = {}) {
+cgpDAL.findZpParticipated = async function ({ snapshot, tally, type } = {}) {
   const sql = tags.oneLine`
   ${WITH_FILTER_TABLES}
   ${FIND_ALL_ZP_PARTICIPATED_BASE_SQL}
@@ -226,10 +247,10 @@ cgpDAL.findZpParticipated = async function({ snapshot, tally, type } = {}) {
       },
       type: sequelize.QueryTypes.SELECT,
     })
-    .then(result => (result.length && result[0].amount ? result[0].amount : '0'));
+    .then((result) => (result.length && result[0].amount ? result[0].amount : '0'));
 };
 
-cgpDAL.findAllNominees = async function({
+cgpDAL.findAllNominees = async function ({
   snapshot,
   tally,
   threshold,
@@ -260,7 +281,7 @@ cgpDAL.findAllNominees = async function({
   });
 };
 
-cgpDAL.countAllNominees = async function({
+cgpDAL.countAllNominees = async function ({
   snapshot,
   tally,
   threshold,

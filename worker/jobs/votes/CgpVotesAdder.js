@@ -8,13 +8,14 @@ const Bigi = require('bigi');
 const { fromPairs } = require('ramda');
 const logger = require('../../lib/logger')('votes.cgp');
 const cgpDAL = require('../../../server/components/api/cgp/cgpDAL');
+const addressesDAL = require('../../../server/components/api/addresses/addressesDAL');
+const txsDAL = require('../../../server/components/api/txs/txsDAL');
+const cgpUtils = require('../../../server/components/api/cgp/cgpUtils');
+const cgpBLL = require('../../../server/components/api/cgp/cgpBLL');
 const {
   getAllocationBallotContent,
   getPayoutBallotContent,
 } = require('../../../server/components/api/cgp/modules/getBallotContent');
-const cgpUtils = require('../../../server/components/api/cgp/cgpUtils');
-const cgpBLL = require('../../../server/components/api/cgp/cgpBLL');
-const addressesDAL = require('../../../server/components/api/addresses/addressesDAL');
 const QueueError = require('../../lib/QueueError');
 const db = require('../../../server/db/sequelize/models');
 
@@ -34,10 +35,10 @@ class CgpVotesAdder {
     this.chain = chain;
     this.genesisTotal = genesisTotal;
     this.contractAddress = blockchainParser.getAddressFromContractId(contractIdFund);
+    this.dbTransaction = null;
   }
 
   async doJob() {
-    let dbTransaction = null;
     try {
       this.checkContractId();
       this.checkChain();
@@ -49,29 +50,29 @@ class CgpVotesAdder {
       const executions = await cgpDAL.findAllUnprocessedExecutions(this.contractIdVoting);
       if (executions.length) {
         logger.info(`${executions.length} contract executions to add votes from`);
-        dbTransaction = await db.sequelize.transaction();
+        this.dbTransaction = await db.sequelize.transaction();
 
         // executions must be processed in ascending order, intervals must be processed in ascending order
         // validation of an interval depends on the previous interval
         for (let i = 0; i < executions.length; i++) {
           const votesToAdd = await this.getVotesFromExecution({
             execution: executions[i],
-            dbTransaction,
           });
+
           if (votesToAdd.length) {
-            await cgpDAL.bulkCreate(votesToAdd, { transaction: dbTransaction });
+            await cgpDAL.bulkCreate(votesToAdd, { transaction: this.dbTransaction });
           }
           result += votesToAdd.length;
         }
 
-        await dbTransaction.commit();
+        await this.dbTransaction.commit();
         logger.info(`Added ${result} votes from ${executions.length} executions`);
       }
       return result;
     } catch (error) {
       logger.error(`An Error has occurred when adding votes: ${error.message}`);
-      if (dbTransaction) {
-        await dbTransaction.rollback();
+      if (this.dbTransaction) {
+        await this.dbTransaction.rollback();
       }
       throw new QueueError(error);
     }
@@ -101,8 +102,9 @@ class CgpVotesAdder {
     }
   }
 
-  async getVotesFromExecution({ execution, dbTransaction } = {}) {
+  async getVotesFromExecution({ execution } = {}) {
     let votesToAdd = [];
+    const tx = await txsDAL.findById(execution.txId);
     const executionBlockNumber = execution.blockNumber;
     const interval = cgpUtils.getIntervalByBlockNumber(this.chain, executionBlockNumber);
     if (!this.verifyExecutionInSnapshotRange({ interval, executionBlockNumber, execution })) {
@@ -117,7 +119,7 @@ class CgpVotesAdder {
       const phase = type === 'Nomination' ? 'Nomination' : 'Vote';
       const ballot = ballotSignature[type].string;
 
-      const verifyBallotResult = await this.verifyBallot({ ballot, type, interval, dbTransaction });
+      const verifyBallotResult = await this.verifyBallot({ ballot, type, interval });
       if (verifyBallotResult.error) {
         logger.info(
           `Ballot is not valid for execution with id ${execution.id}: ${verifyBallotResult.error}, type=${type} blockNumber=${executionBlockNumber} ballot=${ballot}`
@@ -130,21 +132,37 @@ class CgpVotesAdder {
             const publicKey = element[0];
             const signature = element[1].signature;
             const address = this.blockchainParser.getAddressFromPublicKey(publicKey);
-            if (this.verifySignature({ interval, ballot, phase, publicKey, signature })) {
-              votesToAdd.push({
-                blockNumber: execution.blockNumber,
-                executionId: new Decimal(execution.id).toNumber(),
-                type: type.toLowerCase(),
-                ballot,
-                address,
-              });
-            } else {
+
+            if (
+              !(await this.validateDoubleVotesInDb({ interval, phase, type, address, votesToAdd }))
+            ) {
+              logger.info(
+                `Double vote: executionId:${execution.id} interval:${interval} ballot:${ballot} type=${type} publicKey:${publicKey} blockNumber=${executionBlockNumber}`
+              );
+              // do not break, other votes in this execution might be valid
+            } else if (!this.verifySignature({ interval, ballot, phase, publicKey, signature })) {
               logger.info(
                 `Signature did not pass verification: executionId:${execution.id} interval:${interval} ballot:${ballot} type=${type} publicKey:${publicKey} blockNumber=${executionBlockNumber}`
               );
               // do not enter any votes if any of the signatures is bad
               votesToAdd = [];
               break;
+            } else {
+              const voteToAdd = {
+                blockNumber: execution.blockNumber,
+                executionId: execution.id,
+                txHash: tx.hash,
+                type: type.toLowerCase(),
+                ballot,
+                address,
+              };
+              Object.defineProperty(voteToAdd, 'check', {
+                value: {
+                  type,
+                  interval,
+                },
+              });
+              votesToAdd.push(voteToAdd);
             }
           }
         }
@@ -164,6 +182,7 @@ class CgpVotesAdder {
       votesToAdd.push({
         blockNumber: execution.blockNumber,
         executionId: execution.id,
+        txHash: tx.hash,
       });
     }
 
@@ -224,15 +243,15 @@ class CgpVotesAdder {
    *
    * @returns {{error: string}} an object with the validation error
    */
-  async verifyBallot({ ballot, type, interval, dbTransaction } = {}) {
+  async verifyBallot({ ballot, type, interval } = {}) {
     return type === 'Nomination'
-      ? await this.verifyNominationBallot({ ballot, dbTransaction, interval })
+      ? await this.verifyNominationBallot({ ballot, interval })
       : type === 'Payout'
-      ? await this.verifyPayoutBallot({ ballot, interval, dbTransaction })
-      : await this.verifyAllocationBallot({ ballot, interval, dbTransaction });
+      ? await this.verifyPayoutBallot({ ballot, interval })
+      : await this.verifyAllocationBallot({ ballot, interval });
   }
 
-  async verifyAllocationBallot({ ballot, interval, dbTransaction } = {}) {
+  async verifyAllocationBallot({ ballot, interval } = {}) {
     try {
       const allocationBallot = getAllocationBallotContent({ ballot });
       if (!allocationBallot || !R.has('allocation', allocationBallot)) {
@@ -249,7 +268,7 @@ class CgpVotesAdder {
           ? await cgpBLL.findWinnerAllocation({
               interval: interval - 1,
               chain: this.chain,
-              dbTransaction,
+              dbTransaction: this.dbTransaction,
             })
           : 0;
       const { maxAllocation, minAllocation } = getAllocationMinMax({ prevAllocation });
@@ -263,7 +282,7 @@ class CgpVotesAdder {
     }
   }
 
-  async verifyNominationBallot({ ballot, interval, dbTransaction } = {}) {
+  async verifyNominationBallot({ ballot, interval } = {}) {
     try {
       const { spends } = getPayoutBallotContent({ ballot, chain: this.chain });
       if (spends.length <= 0 || spends.length > 100) {
@@ -271,13 +290,14 @@ class CgpVotesAdder {
           error: `there are ${spends.length <= 0 ? 'no' : 'to many'} spends`,
         };
       }
-      if (spends.some(spend => spend.amount == 0)) {
+      if (spends.some((spend) => spend.amount == 0)) {
         return {
           error: 'there are spends with amount 0',
         };
       }
-      const spendIsNotOrdered = (spend, index) => index > 0 ? spend.asset <= spends[index-1].asset : false;
-      if(spends.some(spendIsNotOrdered)) {
+      const spendIsNotOrdered = (spend, index) =>
+        index > 0 ? spend.asset <= spends[index - 1].asset : false;
+      if (spends.some(spendIsNotOrdered)) {
         return {
           error: 'spends are not ordered or not unique',
         };
@@ -288,7 +308,7 @@ class CgpVotesAdder {
       const balance = await addressesDAL.snapshotAddressBalancesByBlock({
         address: this.contractAddress,
         blockNumber: snapshot,
-        dbTransaction,
+        dbTransaction: this.dbTransaction,
       });
 
       if (someSpendsAreInvalidAgainstFund({ balance, spends })) {
@@ -303,14 +323,13 @@ class CgpVotesAdder {
     }
   }
 
-  async verifyPayoutBallot({ ballot, interval, dbTransaction } = {}) {
+  async verifyPayoutBallot({ ballot, interval } = {}) {
     try {
       const { snapshot, tally } = cgpUtils.getIntervalBlocks(this.chain, interval);
 
       // first check that the ballot passes the normal nomination rules
       const nominationResult = await this.verifyNominationBallot({
         ballot,
-        dbTransaction,
         interval,
       });
       if (nominationResult.error) return nominationResult;
@@ -320,7 +339,7 @@ class CgpVotesAdder {
         addressesDAL.snapshotAddressBalancesByBlock({
           address: this.contractAddress,
           blockNumber: snapshot,
-          dbTransaction,
+          dbTransaction: this.dbTransaction,
         }),
         cgpDAL.findAllNominees({
           snapshot,
@@ -330,7 +349,7 @@ class CgpVotesAdder {
             chain: this.chain,
             genesisTotal: this.genesisTotal,
           }),
-          dbTransaction,
+          dbTransaction: this.dbTransaction,
         }),
       ]);
       if (cgpBalance.length > 0) {
@@ -340,7 +359,7 @@ class CgpVotesAdder {
           zpAmount: '0',
         });
       }
-      if (!nominees.find(nominee => nominee.ballot === ballot)) {
+      if (!nominees.find((nominee) => nominee.ballot === ballot)) {
         return { error: 'payout ballot is not in nominees' };
       }
 
@@ -348,6 +367,34 @@ class CgpVotesAdder {
     } catch (error) {
       return { error: error.message };
     }
+  }
+
+  /**
+   * Validate that this address have not voted already in this phase
+   */
+  async validateDoubleVotesInDb({ interval, type, address, votesToAdd } = {}) {
+    const { snapshot, tally } = cgpUtils.getIntervalBlocks(this.chain, interval);
+    const votes = await cgpDAL.findAllVotesInPhaseByAddress({
+      address,
+      type: type.toLowerCase(),
+      beginBlock: snapshot,
+      endBlock: tally,
+      transaction: this.dbTransaction,
+    });
+
+    if (votes.length) return false;
+
+    // check double votes in same execution (votes are added to db per execution)
+    if (
+      votesToAdd.some(
+        (vote) =>
+          vote.address === address && vote.check.interval === interval && vote.check.type === type
+      )
+    ) {
+      return false;
+    }
+
+    return true;
   }
 }
 
@@ -380,14 +427,14 @@ function getSpendsAggregated(spends) {
     return aggregated;
   }, {});
 
-  return Object.keys(aggregated).map(key => ({ asset: key, amount: aggregated[key] }));
+  return Object.keys(aggregated).map((key) => ({ asset: key, amount: aggregated[key] }));
 }
 
 function someSpendsAreInvalidAgainstFund({ spends, balance }) {
-  const fundAssets = balance.map(item => item.asset);
+  const fundAssets = balance.map((item) => item.asset);
   return getSpendsAggregated(spends).some(
-    spend =>
+    (spend) =>
       !fundAssets.includes(spend.asset) ||
-      balance.find(item => item.asset === spend.asset).amount < spend.amount
+      balance.find((item) => item.asset === spend.asset).amount < spend.amount
   );
 }

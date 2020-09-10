@@ -3,7 +3,6 @@
 const faker = require('faker');
 const { Decimal } = require('decimal.js');
 const createDemoBlocksFromTo = require('../../../../../../test/lib/createDemoBlocksFromTo');
-const blocksDAL = require('../../../../../../server/components/api/blocks/blocksDAL');
 const txsDAL = require('../../../../../../server/components/api/txs/txsDAL');
 const outputsDAL = require('../../../../../../server/components/api/outputs/outputsDAL');
 const contractsDAL = require('../../../../../../server/components/api/contracts/contractsDAL');
@@ -110,6 +109,30 @@ async function addExecutions({ executionsBlockNumber = 91, executions = [] }) {
   }
 }
 
+/**
+ * Adds one execution, returns [tx, execution]
+ */
+async function addExecution({ blockNumber = 91, txIndex = 0, execution } = {}) {
+  const tx = await txsDAL.create({
+    blockNumber: blockNumber,
+    version: 0,
+    index: txIndex,
+    hash: faker.random.uuid(),
+    inputCount: 0,
+    outputCount: 0,
+  });
+  // add demo executions
+  const e = await executionsDAL.create({
+    contractId: execution.contractId,
+    blockNumber: blockNumber,
+    txId: tx.id,
+    command: execution.command,
+    messageBody: JSON.stringify(execution.messageBody),
+  });
+
+  return [tx, e];
+}
+
 async function addFundBalance({ blockchainParser, asset, amount }) {
   const contractAddressFund = blockchainParser.getAddressFromContractId(
     cgpAdderParams.contractIdFund
@@ -134,4 +157,4 @@ async function addFundBalance({ blockchainParser, asset, amount }) {
   });
 }
 
-module.exports = { addDemoData, addExecutions, addFundBalance };
+module.exports = { addDemoData, addExecutions, addExecution, addFundBalance };
