@@ -22,7 +22,7 @@ const run = async () => {
       required: true
     })
     .number('-t, --threshold', {
-      desc: 'The threshold in zp for a valid candidate',
+      desc: 'The threshold in Kalapas for a valid candidate',
       required: true
     })
     .help('-h, --help')
@@ -41,7 +41,7 @@ const run = async () => {
       phase: i % 2 === 0 ? 'Contestant' : 'Candidate',
       beginBlock: begin + i * (length + gap),
       endBlock: begin + i * (length + gap) + length,
-      thresholdZp: i % 2 === 0 ? threshold : null,
+      threshold: i % 2 === 0 ? threshold : null,
       prevPhaseId: i % 2 === 1 ? prevPhase.id : null,
     });
   }

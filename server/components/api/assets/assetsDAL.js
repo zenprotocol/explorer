@@ -6,14 +6,6 @@ const addressesDAL = require('../addresses/addressesDAL');
 const assetsDAL = dal.createDAL('Asset');
 const Op = assetsDAL.db.Sequelize.Op;
 
-assetsDAL.findOutstanding = function(asset) {
-  return this.findOne({
-    where: {
-      asset,
-    },
-  }).then(assetOutstanding => assetOutstanding ? this.toJSON(assetOutstanding) : null);
-};
-
 assetsDAL.keyholders = function({ asset, limit, offset } = {}) {
   if (!asset) {
     return this.getItemsAndCountResult([0, []]);

@@ -32,6 +32,7 @@ module.exports = {
       interval,
       phase,
     });
+    const middle = relevant.snapshot + (relevant.tally - relevant.snapshot) / 2;
 
     const threshold = cgpUtils.getThreshold({
       chain,
@@ -46,17 +47,11 @@ module.exports = {
         : await this.findWinnerAllocation({ chain, interval: relevant.interval - 1 });
 
     if (relevant.phase === 'Nomination') {
-      const [winnersNomination, zpParticipatedNomination, nominees] = await Promise.all([
-        cgpDAL
-          .findAllNominees({
-            snapshot: relevant.snapshot,
-            tally: relevant.tally,
-            threshold,
-          })
-          .then(addBallotContentToResults({ type: 'nomination', chain })),
+      const [zpParticipatedNomination, nominees] = await Promise.all([
         cgpDAL.findZpParticipated({
           snapshot: relevant.snapshot,
-          tally: relevant.tally,
+          beginBlock: relevant.snapshot,
+          endBlock: middle,
           type: 'nomination',
         }),
         cgpDAL.findAllNominees({
@@ -68,7 +63,7 @@ module.exports = {
 
       return {
         ...relevant,
-        winnersNomination,
+        winnersNomination: addBallotContentToResults({ type: 'nomination', chain })(nominees),
         winnerAllocation: null,
         winnerPayout: null,
         zpParticipatedNomination,
@@ -91,25 +86,29 @@ module.exports = {
         cgpDAL
           .findAllVoteResults({
             snapshot: relevant.snapshot,
-            tally: relevant.tally,
+            beginBlock: middle,
+            endBlock: relevant.tally,
             type: 'allocation',
           })
           .then(addBallotContentToResults({ type: 'allocation', chain })),
         cgpDAL
           .findAllVoteResults({
             snapshot: relevant.snapshot,
-            tally: relevant.tally,
+            beginBlock: middle,
+            endBlock: relevant.tally,
             type: 'payout',
           })
           .then(addBallotContentToResults({ type: 'payout', chain })),
         cgpDAL.findZpParticipated({
           snapshot: relevant.snapshot,
-          tally: relevant.tally,
+          beginBlock: middle,
+          endBlock: relevant.tally,
           type: 'allocation',
         }),
         cgpDAL.findZpParticipated({
           snapshot: relevant.snapshot,
-          tally: relevant.tally,
+          beginBlock: middle,
+          endBlock: relevant.tally,
           type: 'payout',
         }),
         cgpDAL.findAllNominees({
@@ -174,14 +173,15 @@ module.exports = {
       currentBlock,
       interval,
     });
+    const { beginBlock, endBlock } = cgpUtils.getPhaseBlocks({ chain, interval, type });
 
     const query = Object.assign(
       {},
-      { snapshot, tally, type },
+      { snapshot, beginBlock, endBlock, type },
       createQueryObject({ page, pageSize })
     );
     return await Promise.all([
-      cgpDAL.countVotesInInterval({ snapshot, tally, type }),
+      cgpDAL.countVotesInInterval(query),
       cgpDAL.findAllVotesInInterval(query).then(addBallotContentToResults({ chain, type })),
     ]).then(cgpDAL.getItemsAndCountResult);
   },
@@ -190,17 +190,26 @@ module.exports = {
       blocksBLL.getCurrentBlockNumber(),
       getChain(),
     ]);
-    const { snapshot, tally } = cgpUtils.getRelevantIntervalBlocks({
+    const relevant = cgpUtils.getRelevantIntervalBlocks({
       chain,
       currentBlock,
       interval,
     });
+    const { beginBlock, endBlock } = cgpUtils.getPhaseBlocks({
+      chain,
+      interval: relevant.interval,
+      type,
+    });
 
     return await Promise.all([
-      cgpDAL.countAllVoteResults({ snapshot, tally, type }),
+      cgpDAL.countAllVoteResults({ snapshot: relevant.snapshot, beginBlock, endBlock, type }),
       cgpDAL
         .findAllVoteResults(
-          Object.assign({}, { snapshot, tally, type }, createQueryObject({ page, pageSize }))
+          Object.assign(
+            {},
+            { snapshot: relevant.snapshot, beginBlock, endBlock, type },
+            createQueryObject({ page, pageSize })
+          )
         )
         .then(addBallotContentToResults({ type, chain })),
     ]).then(cgpDAL.getItemsAndCountResult);
@@ -210,16 +219,21 @@ module.exports = {
       blocksBLL.getCurrentBlockNumber(),
       getChain(),
     ]);
-    const { snapshot, tally } = cgpUtils.getRelevantIntervalBlocks({
+    const { snapshot } = cgpUtils.getRelevantIntervalBlocks({
       chain,
       currentBlock,
       interval,
     });
+    const { beginBlock, endBlock } = cgpUtils.getPhaseBlocks({ chain, interval, type });
 
     return await Promise.all([
-      cgpDAL.countAllBallots({ type, snapshot, tally }),
+      cgpDAL.countAllBallots({ type, snapshot, beginBlock, endBlock }),
       cgpDAL.findAllBallots(
-        Object.assign({}, { type, snapshot, tally }, createQueryObject({ page, pageSize }))
+        Object.assign(
+          {},
+          { type, snapshot, beginBlock, endBlock },
+          createQueryObject({ page, pageSize })
+        )
       ),
     ]).then(cgpDAL.getItemsAndCountResult);
   },
@@ -233,6 +247,7 @@ module.exports = {
       currentBlock,
       interval,
     });
+    const middle = snapshot + (tally - snapshot) / 2;
 
     const threshold = cgpUtils.getThreshold({
       chain,
@@ -257,8 +272,9 @@ module.exports = {
       currentBlock,
       interval,
     });
+    const { beginBlock, endBlock } = cgpUtils.getPhaseBlocks({ chain, interval, type });
 
-    return cgpDAL.findZpParticipated({ snapshot, tally, type });
+    return cgpDAL.findZpParticipated({ snapshot, beginBlock, endBlock, type });
   },
   findCgpBalance: async function ({ blockNumber } = {}) {
     const chain = await getChain();
@@ -272,15 +288,10 @@ module.exports = {
     if (!interval || !chain) return 0;
 
     const { tally } = cgpUtils.getIntervalBlocks(chain, interval);
-    const interval1 = cgpUtils.getIntervalBlocks(chain, 1);
-    const intervalLength = cgpUtils.getIntervalLength(chain);
     const highestBlockNumberWithVote = await cgpDAL.findLastValidVoteBlockNumber({
       startBlockNumber: tally,
-      intervalLength,
-      interval1Snapshot: interval1.snapshot,
-      interval1Tally: interval1.tally,
       type: 'allocation',
-      dbTransaction,
+      transaction: dbTransaction,
     });
 
     if (!highestBlockNumberWithVote) return 0;
@@ -290,12 +301,19 @@ module.exports = {
       highestBlockNumberWithVote
     );
     const latestWinnerIntervalBlocks = cgpUtils.getIntervalBlocks(chain, latestWinnerInterval);
+    const { beginBlock, endBlock } = cgpUtils.getPhaseBlocks({
+      chain,
+      interval: latestWinnerInterval,
+      type: 'allocation',
+    });
+
     const voteResults = await cgpDAL
       .findAllVoteResults({
         snapshot: latestWinnerIntervalBlocks.snapshot,
-        tally: latestWinnerIntervalBlocks.tally,
+        beginBlock,
+        endBlock,
         type: 'allocation',
-        dbTransaction,
+        transaction: dbTransaction,
       })
       .then(addBallotContentToResults({ chain, type: 'allocation' }));
     return calculateWinnerAllocation(voteResults);

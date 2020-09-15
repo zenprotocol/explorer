@@ -24,7 +24,7 @@ module.exports = {
         endBlock: {
           type: Sequelize.INTEGER,
         },
-        thresholdZp: {
+        threshold: {
           type: Sequelize.BIGINT,
         },
         prevPhaseId: {

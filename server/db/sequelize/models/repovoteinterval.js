@@ -7,7 +7,7 @@ module.exports = (sequelize, DataTypes) => {
       phase: DataTypes.STRING,
       beginBlock: DataTypes.INTEGER,
       endBlock: DataTypes.INTEGER,
-      thresholdZp: DataTypes.BIGINT,
+      threshold: DataTypes.BIGINT,
       hasSnapshot: DataTypes.BOOLEAN,
       prevPhaseId: DataTypes.INTEGER,
     },

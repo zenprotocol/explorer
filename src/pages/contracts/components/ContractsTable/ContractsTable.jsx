@@ -33,20 +33,20 @@ class ContractsTable extends Component {
       },
       {
         Header: 'Txs',
-        accessor: 'transactionsCount',
+        accessor: 'txsCount',
         sortable: true,
         hideOnMobile: true,
         Cell: ({ value }) => TextUtils.formatNumber(value),
       },
       {
         Header: 'Assets Issued',
-        accessor: 'assetsCount',
+        accessor: 'assetsIssued',
         hideOnMobile: true,
         Cell: ({ value }) => TextUtils.formatNumber(value),
       },
       {
         Header: 'Activation',
-        accessor: 'lastActivationBlockNumber',
+        accessor: 'lastActivationBlock',
         sortable: true,
         hideOnMobile: true,
         Cell: ({ value }) => <Link to={`/blocks/${value}`}>{TextUtils.formatNumber(value)}</Link>,

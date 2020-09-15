@@ -1,6 +1,6 @@
 const router = require('express').Router();
 const controller = require('./addressesController');
-const transactionsController = require('../txs/transactionsController');
+const transactionsController = require('../txs/txsController');
 const wrapAsync = require('../../../lib/wrapAsyncForExpressErrors');
 
 router.route('/:address').get(wrapAsync(controller.show));

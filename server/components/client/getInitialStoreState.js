@@ -1,11 +1,11 @@
 const blocksBLL = require('../api/blocks/blocksBLL');
-const transactionsBLL = require('../api/txs/transactionsBLL');
+const txsBLL = require('../api/txs/txsBLL');
 const addressesBLL = require('../api/addresses/addressesBLL');
 const contractsBLL = require('../api/contracts/contractsBLL');
 const contractsDAL = require('../api/contracts/contractsDAL');
 const assetsBLL = require('../api/assets/assetsBLL');
 const infosBLL = require('../api/infos/infosBLL');
-const votesBLL = require('../api/repovotes/repoVotesBLL');
+const repoVotesBLL = require('../api/repovotes/repoVotesBLL');
 const interval1CacheBLL = require('../api/repovotes/cache/1/interval1CacheBLL');
 const cgpBLL = require('../api/cgp/cgpBLL');
 const getChain = require('../../lib/getChain');
@@ -95,7 +95,7 @@ async function getBlockStoreData(req) {
 }
 
 async function getTransactionStoreData(req) {
-  const transaction = await transactionsBLL.findOne({ hash: req.params.hash });
+  const transaction = await txsBLL.findOne({ hash: req.params.hash });
   return {
     transaction,
   };
@@ -164,10 +164,10 @@ async function getRepoVoteStoreData(req) {
     recentIntervals,
     chain,
   ] = await Promise.all([
-    votesBLL.findIntervalAndTally(req.params),
-    votesBLL.findIntervalAndTally(),
-    votesBLL.findNextInterval(),
-    votesBLL.findRecentIntervals(),
+    repoVotesBLL.findIntervalAndTally(req.params),
+    repoVotesBLL.findIntervalAndTally(),
+    repoVotesBLL.findNextInterval(),
+    repoVotesBLL.findRecentIntervals(),
     getChain(),
   ]);
   const interval1Cache = interval1CacheBLL.relevantInterval();

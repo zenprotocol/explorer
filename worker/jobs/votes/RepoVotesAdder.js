@@ -33,7 +33,7 @@ class VotesAdder {
         const votesToAdd = await this.processExecutions(executions);
 
         // filter out double votes in the new list
-        this.resetDoubleVotes({votesToAdd});
+        this.resetDoubleVotes({ votesToAdd });
 
         if (votesToAdd.length) {
           await repoVotesDAL.bulkCreate(votesToAdd, { transaction: this.dbTransaction });
@@ -172,8 +172,19 @@ class VotesAdder {
 
     // phase is Candidate, check candidates
     if (voteInterval.phase === 'Candidate') {
+      const intervalContestant = await repoVoteIntervalsDAL.findByIntervalAndPhase(
+        voteInterval.interval,
+        'Contestant'
+      );
+      if (!intervalContestant) {
+        throw new Error(
+          `Could not find the Contestant phase for interval ${voteInterval.interval}`
+        );
+      }
       const candidates = await repoVotesDAL.findContestantWinners({
-        interval: voteInterval.interval,
+        beginBlock: intervalContestant.beginBlock,
+        endBlock: intervalContestant.endBlock,
+        threshold: intervalContestant.threshold,
       });
       // add the default commit id if exists
       if (this.defaultCommitId) {
@@ -218,15 +229,18 @@ class VotesAdder {
       const vote = votesToAdd[i];
 
       // skip empty votes
-      if(!vote.address) continue;
+      if (!vote.address) continue;
 
       // go over rest and reset in case they are double
       for (let j = i + 1; j < votesToAdd.length; j++) {
         const vote1 = votesToAdd[j];
 
-        if(!vote1.address) continue;
-        
-        if(vote.address === vote1.address && vote.interval.beginBlock === vote1.interval.beginBlock) {
+        if (!vote1.address) continue;
+
+        if (
+          vote.address === vote1.address &&
+          vote.interval.beginBlock === vote1.interval.beginBlock
+        ) {
           // double vote, reset it
           vote1.address = null;
           vote1.commitId = null;

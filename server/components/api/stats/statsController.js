@@ -4,6 +4,7 @@ const httpStatus = require('http-status');
 const { Decimal } = require('decimal.js');
 const jsonResponse = require('../../../lib/jsonResponse');
 const HttpError = require('../../../lib/HttpError');
+const config = require('../../../config/Config');
 const blocksBLL = require('../blocks/blocksBLL');
 const statsDAL = require('./statsDAL');
 
@@ -66,6 +67,9 @@ module.exports = {
     const params = req.query;
     if(name === 'zpRichList') {
       params.totalZpK = await StatsFunctions.totalKalapa();
+    }
+    else if(name === 'zpSupply') {
+      params.genesis = config.get('GENESIS_TOTAL_ZP');
     }
     const data = await statsDAL[name](params);
 

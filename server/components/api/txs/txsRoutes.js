@@ -1,5 +1,5 @@
 const router = require('express').Router();
-const controller = require('./transactionsController');
+const controller = require('./txsController');
 const wrapAsync = require('../../../lib/wrapAsyncForExpressErrors');
 
 router.route('/')

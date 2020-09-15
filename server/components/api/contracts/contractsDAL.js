@@ -55,52 +55,13 @@ contractsDAL.findAllWithAssetsCountTxCountAndCountOrderByNewest = function({
     WHERE "Txs"."blockNumber" = :blockNumber
     GROUP BY "Activations"."contractId"
   ) AS "ActivationBlockContracts"
-  ON "ActivationBlockContracts"."contractId" = "ContractsFinal"."id"
+  ON "ActivationBlockContracts"."contractId" = c.id
   `;
 
   const sql = tags.oneLine`
-  WITH "ContractsFinal" AS 
-  (SELECT "Contracts".*, COUNT("Assets".asset) AS "assetsCount"
-    FROM "Contracts" 
-    LEFT JOIN "Assets"
-    ON "Assets"."asset" LIKE CONCAT("Contracts"."id", '%')
-    GROUP BY "Contracts"."id" 
-    LIMIT (SELECT COUNT(*) FROM "Contracts"))
-
   SELECT 
-    "ContractsFinal"."id",
-    "ContractsFinal"."address",
-    "ContractsFinal"."expiryBlock",
-    "ContractsFinal"."assetsCount",
-    COALESCE("Txs"."total", 0) AS "transactionsCount",
-    "LastActivationTransactions"."blockNumber" AS "lastActivationBlockNumber"
-  FROM "ContractsFinal"
-  LEFT JOIN
-  (SELECT 
-    COUNT(*) AS "total",
-    COALESCE("Outputs"."address", "Inputs"."address") AS "address"
-    FROM
-      (SELECT "txId", "address"
-        FROM "Outputs" 
-        WHERE "Outputs"."address" IN (SELECT address FROM "ContractsFinal")
-        GROUP BY "txId", "address") AS "Outputs"
-      FULL OUTER JOIN (SELECT "Inputs"."txId", "Outputs"."address"
-        FROM "Inputs" JOIN "Outputs" 
-        ON "Inputs"."outputId" = "Outputs"."id" 
-        AND "Outputs"."address" IN (SELECT address FROM "ContractsFinal")
-        GROUP BY "Inputs"."txId", "Outputs"."address" ) AS "Inputs"
-      ON "Outputs"."txId" = "Inputs"."txId" and "Outputs"."address" = "Inputs"."address"
-    GROUP BY COALESCE("Outputs"."address", "Inputs"."address")) AS "Txs"
-  ON "Txs"."address" = "ContractsFinal"."address"
-  LEFT JOIN (
-    SELECT MAX("Blocks"."blockNumber") as "blockNumber", "Activations"."contractId"
-    FROM "Blocks"
-    JOIN "Txs" ON "Txs"."blockNumber" = "Blocks"."blockNumber"
-    JOIN "Activations" ON "Activations"."txId" = "Txs"."id"
-    GROUP BY "Activations"."contractId"
-    ORDER BY "Activations"."contractId", MAX("Blocks"."blockNumber") DESC
-  ) AS "LastActivationTransactions"
-  ON "LastActivationTransactions"."contractId" = "ContractsFinal"."id"
+    c.*
+  FROM "Contracts" c
   ${hasBlockNumber ? filterByBlockSql : ''}
   ORDER BY ${orderBy}
   LIMIT :limit OFFSET :offset
@@ -114,15 +75,9 @@ contractsDAL.findAllWithAssetsCountTxCountAndCountOrderByNewest = function({
           model: this.db.Tx,
           as: 'ActivationTxs',
           required: true,
-          include: [
-            {
-              model: this.db.Block,
-              required: true,
-              where: {
-                blockNumber,
-              },
-            },
-          ],
+          where: {
+            blockNumber,
+          },
         },
       ],
     };

@@ -273,7 +273,7 @@ class CgpVotesAdder {
           : 0;
       const { maxAllocation, minAllocation } = getAllocationMinMax({ prevAllocation });
       if (allocation < minAllocation || allocation > maxAllocation) {
-        return { error: 'allocation is not in the range of the prev allocation min and max' };
+        return { error: `allocation is not in the range of the prev allocation min and max (min=${minAllocation}, max=${maxAllocation})` };
       }
 
       return { error: '' };
@@ -349,7 +349,7 @@ class CgpVotesAdder {
             chain: this.chain,
             genesisTotal: this.genesisTotal,
           }),
-          dbTransaction: this.dbTransaction,
+          transaction: this.dbTransaction,
         }),
       ]);
       if (cgpBalance.length > 0) {

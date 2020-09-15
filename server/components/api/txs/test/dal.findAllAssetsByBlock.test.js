@@ -3,7 +3,7 @@
 const test = require('blue-tape');
 const faker = require('faker');
 const truncate = require('../../../../../test/lib/truncate');
-const transactionsDAL = require('../txsDAL');
+const txsDAL = require('../txsDAL');
 const blocksDAL = require('../../blocks/blocksDAL');
 const inputsDAL = require('../../inputs/inputsDAL');
 const outputsDAL = require('../../outputs/outputsDAL');
@@ -11,10 +11,10 @@ const outputsDAL = require('../../outputs/outputsDAL');
 const CURRENT_BLOCK_NUMBER = 1000;
 
 test.onFinish(() => {
-  transactionsDAL.db.sequelize.close();
+  txsDAL.db.sequelize.close();
 });
 
-test('TransactionsDAL.findAllAssetsByBlock()', async function(t) {
+test('txsDAL.findAllAssetsByBlock()', async function(t) {
   await wrapTest('Given Address A sends 50 to Address B', async given => {
     await insertDemoDbTxData({
       from: [
@@ -30,7 +30,7 @@ test('TransactionsDAL.findAllAssetsByBlock()', async function(t) {
         },
       ],
     });
-    const result = await transactionsDAL.findAllAssetsByBlock(CURRENT_BLOCK_NUMBER);
+    const result = await txsDAL.findAllAssetsByBlock(CURRENT_BLOCK_NUMBER);
     t.equal(result.length, 1, `${given}: should get one db row`);
     t.equal(Number(result[0].totalMoved), 50, `${given}: totalMoved should be 50`);
   });
@@ -54,7 +54,7 @@ test('TransactionsDAL.findAllAssetsByBlock()', async function(t) {
         },
       ],
     });
-    const result = await transactionsDAL.findAllAssetsByBlock(CURRENT_BLOCK_NUMBER);
+    const result = await txsDAL.findAllAssetsByBlock(CURRENT_BLOCK_NUMBER);
     t.equal(Number(result[0].totalMoved), 50, `${given}: totalMoved should be 50`);
   });
 
@@ -77,7 +77,7 @@ test('TransactionsDAL.findAllAssetsByBlock()', async function(t) {
         },
       ],
     });
-    const result = await transactionsDAL.findAllAssetsByBlock(CURRENT_BLOCK_NUMBER);
+    const result = await txsDAL.findAllAssetsByBlock(CURRENT_BLOCK_NUMBER);
     t.equal(Number(result[0].totalMoved), 50, `${given}: totalMoved should be 50`);
   });
 
@@ -104,7 +104,7 @@ test('TransactionsDAL.findAllAssetsByBlock()', async function(t) {
         },
       ],
     });
-    const result = await transactionsDAL.findAllAssetsByBlock(CURRENT_BLOCK_NUMBER);
+    const result = await txsDAL.findAllAssetsByBlock(CURRENT_BLOCK_NUMBER);
     t.equal(Number(result[0].totalMoved), 50, `${given}: totalMoved should be 50`);
   });
 
@@ -135,7 +135,7 @@ test('TransactionsDAL.findAllAssetsByBlock()', async function(t) {
         },
       ],
     });
-    const result = await transactionsDAL.findAllAssetsByBlock(CURRENT_BLOCK_NUMBER);
+    const result = await txsDAL.findAllAssetsByBlock(CURRENT_BLOCK_NUMBER);
     t.equal(Number(result[0].totalMoved), 50, `${given}: totalMoved should be 50`);
   });
 
@@ -162,7 +162,7 @@ test('TransactionsDAL.findAllAssetsByBlock()', async function(t) {
         },
       ],
     });
-    const result = await transactionsDAL.findAllAssetsByBlock(CURRENT_BLOCK_NUMBER);
+    const result = await txsDAL.findAllAssetsByBlock(CURRENT_BLOCK_NUMBER);
     t.equal(Number(result[0].totalMoved), 100, `${given}: totalMoved should be 100`);
   });
 });
@@ -191,7 +191,7 @@ async function insertDemoDbTxData({ from = [], to = [] } = {}) {
     blockNumber: CURRENT_BLOCK_NUMBER - 1,
     timestamp: Date.now(),
   });
-  const currentTx = await transactionsDAL.create({
+  const currentTx = await txsDAL.create({
     version: 0,
     hash: faker.random.uuid(),
     index: 0, // not relevant
@@ -204,7 +204,7 @@ async function insertDemoDbTxData({ from = [], to = [] } = {}) {
   // then create an input that points to this output
   for (let i = 0; i < from.length; i++) {
     const element = from[i];
-    const tx = await transactionsDAL.create({
+    const tx = await txsDAL.create({
       version: 0,
       hash: faker.random.uuid(),
       index: 0, // not relevant

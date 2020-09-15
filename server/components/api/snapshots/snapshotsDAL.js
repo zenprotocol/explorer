@@ -1,7 +1,6 @@
 'use strict';
 
 const dal = require('../../../lib/dal');
-const db = require('../../../../server/db/sequelize/models');
 
 const snapshotsDAL = dal.createDAL('Snapshot');
 

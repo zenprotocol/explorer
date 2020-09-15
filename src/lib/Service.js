@@ -6,7 +6,7 @@ const CancelToken = axios.CancelToken;
 
 const Endpoints = {
   blocks: '/api/blocks',
-  transactions: '/api/tx',
+  transactions: '/api/txs',
   addresses: '/api/addresses',
   info: '/api/infos',
   search: '/api/search',

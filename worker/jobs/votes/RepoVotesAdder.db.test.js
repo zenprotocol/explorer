@@ -460,7 +460,7 @@ async function createDemoData() {
     phase: 'Contestant',
     beginBlock: SNAPSHOT_BLOCK_CONTESTANT,
     endBlock: TALLY_BLOCK_CONTESTANT,
-    thresholdZp: 1000000,
+    threshold: '100000000000000',
   });
   await voteIntervalsDAL.create({
     interval: 1,

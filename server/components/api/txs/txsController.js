@@ -3,20 +3,20 @@
 const { Decimal } = require('decimal.js');
 const httpStatus = require('http-status');
 const zen = require('@zen/zenjs');
-const transactionsDAL = require('./txsDAL');
+const txsDAL = require('./txsDAL');
 const outputsDAL = require('../outputs/outputsDAL');
 const jsonResponse = require('../../../lib/jsonResponse');
 const HttpError = require('../../../lib/HttpError');
 const createQueryObject = require('../../../lib/createQueryObject');
-const getTransactionAssets = require('./getTransactionAssets');
+const getTxAssets = require('./getTxAssets');
 const Service = require('../../../lib/Service');
 const BlockchainParser = require('../../../lib/BlockchainParser');
 const isHash = require('../../../lib/isHash');
-const transactionsBLL = require('./transactionsBLL');
+const txsBLL = require('./txsBLL');
 
 module.exports = {
   index: async function (req, res) {
-    const itemsAndCount = await transactionsBLL.findAll({
+    const itemsAndCount = await txsBLL.findAll({
       address: req.query.address,
       asset: req.query.asset,
       blockNumber: req.query.blockNumber,
@@ -28,7 +28,7 @@ module.exports = {
     res.status(httpStatus.OK).json(jsonResponse.create(httpStatus.OK, itemsAndCount));
   },
   show: async function (req, res) {
-    const transaction = await transactionsBLL.findOne({ hash: req.params.hash });
+    const transaction = await txsBLL.findOne({ hash: req.params.hash });
     if (transaction) {
       res.status(httpStatus.OK).json(jsonResponse.create(httpStatus.OK, transaction));
     } else {
@@ -57,18 +57,18 @@ module.exports = {
       ) {
         throw new HttpError(httpStatus.BAD_REQUEST);
       }
-      findPromise = transactionsDAL.findAllAssetsByBlock(hashOrBlockNumber, query);
-      countPromise = transactionsDAL.countAssetsByBlock(hashOrBlockNumber);
+      findPromise = txsDAL.findAllAssetsByBlock(hashOrBlockNumber, query);
+      countPromise = txsDAL.countAssetsByBlock(hashOrBlockNumber);
     } else if (txHash) {
-      findPromise = transactionsDAL.findAllAssetsByTxHash(txHash, query);
-      countPromise = transactionsDAL.countAssetsByTxHash(txHash);
+      findPromise = txsDAL.findAllAssetsByTxHash(txHash, query);
+      countPromise = txsDAL.countAssetsByTxHash(txHash);
     } else if (address) {
-      findPromise = transactionsDAL.findAllAssetsByAddress(address, query);
-      countPromise = transactionsDAL.countAssetsByAddress(address, firstTransactionId, ascending);
+      findPromise = txsDAL.findAllAssetsByAddress(address, query);
+      countPromise = txsDAL.countAssetsByAddress(address, firstTransactionId, ascending);
     } else {
       // TODO - find all transaction assets !!!
-      findPromise = transactionsDAL.findAll(query);
-      countPromise = transactionsDAL.count();
+      findPromise = txsDAL.findAll(query);
+      countPromise = txsDAL.count();
     }
 
     const [count, transactionAssets] = await Promise.all([countPromise, findPromise]);
@@ -88,12 +88,12 @@ module.exports = {
       throw new HttpError(httpStatus.NOT_FOUND);
     }
 
-    const transactionAsset = await transactionsDAL.findTransactionAssetInputsOutputs(id, asset);
+    const transactionAsset = await txsDAL.findTransactionAssetInputsOutputs(id, asset);
 
     res.status(httpStatus.OK).json(jsonResponse.create(httpStatus.OK, transactionAsset));
   },
   getById: async function (req, res) {
-    const transaction = await transactionsDAL.findById(req.params.id);
+    const transaction = await txsDAL.findById(req.params.id);
     if (transaction) {
       res.status(httpStatus.OK).json(jsonResponse.create(httpStatus.OK, transaction));
     } else {
@@ -159,22 +159,22 @@ module.exports = {
         });
       }
 
-      const assets = getTransactionAssets(txCustom);
+      const assets = getTxAssets(txCustom);
       res.status(httpStatus.OK).json(jsonResponse.create(httpStatus.OK, assets));
     } catch (error) {
       throw new HttpError(error.status || httpStatus.INTERNAL_SERVER_ERROR, error.customMessage);
     }
   },
   create: async function (req, res) {
-    const transaction = await transactionsDAL.create(req.body);
+    const transaction = await txsDAL.create(req.body);
     res.status(httpStatus.CREATED).json(jsonResponse.create(httpStatus.CREATED, transaction));
   },
   update: async function (req, res) {
-    const transaction = await transactionsDAL.update(req.params.id, req.body);
+    const transaction = await txsDAL.update(req.params.id, req.body);
     res.status(httpStatus.OK).json(jsonResponse.create(httpStatus.OK, transaction));
   },
   delete: async function (req, res) {
-    await transactionsDAL.delete(req.params.id);
+    await txsDAL.delete(req.params.id);
     res.status(httpStatus.OK).json(jsonResponse.create(httpStatus.OK));
   },
 };

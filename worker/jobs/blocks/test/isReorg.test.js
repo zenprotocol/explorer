@@ -37,7 +37,7 @@ async function wrapTest(given, test) {
   blocksDAL = td.replace('../../../../server/components/api/blocks/blocksDAL', {
     findById: td.func('findById'),
   });
-  td.replace('../../../../server/components/api/transactions/transactionsDAL', {});
+  td.replace('../../../../server/components/api/transactions/txsDAL', {});
   td.replace('../../../../server/components/api/outputs/outputsDAL', {});
   td.replace('../../../../server/components/api/inputs/inputsDAL', {});
   td.replace('../../../../server/components/api/infos/infosDAL', {});

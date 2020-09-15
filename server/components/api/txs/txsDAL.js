@@ -3,20 +3,20 @@
 const tags = require('common-tags');
 const deepMerge = require('deepmerge');
 const dal = require('../../../lib/dal');
-const transactionsDAL = dal.createDAL('Tx');
+const txsDAL = dal.createDAL('Tx');
 const blocksDAL = require('../blocks/blocksDAL');
 const inputsDAL = require('../inputs/inputsDAL');
 const outputsDAL = require('../outputs/outputsDAL');
 const isHash = require('../../../lib/isHash');
 const getFieldsForSelectQuery = require('../../../lib/getFieldsForSelectQuery');
 
-const sequelize = transactionsDAL.db.sequelize;
-const Op = transactionsDAL.db.Sequelize.Op;
+const sequelize = txsDAL.db.sequelize;
+const Op = txsDAL.db.Sequelize.Op;
 
-const LOCK_TYPE_FOR_BALANCE = '"lockType" = ANY(\'{"Coinbase","PK","Contract","Destroy"}\')';
+const LOCK_TYPE_FOR_BALANCE = '"lockType" IN (\'Coinbase\',\'PK\',\'Contract\',\'Destroy\')';
 
-transactionsDAL.findByHash = async function(hash) {
-  return transactionsDAL.findOne({
+txsDAL.findByHash = async function(hash) {
+  return txsDAL.findOne({
     where: {
       hash,
     },
@@ -28,7 +28,7 @@ transactionsDAL.findByHash = async function(hash) {
   });
 };
 
-transactionsDAL.search = function(search, limit = 10) {
+txsDAL.search = function(search, limit = 10) {
   const where = {
     hash: {
       [Op.like]: `%${search}%`,
@@ -45,7 +45,7 @@ transactionsDAL.search = function(search, limit = 10) {
   ]);
 };
 
-transactionsDAL.findAllAssetsByAddress = async function(address, { limit = 10, offset = 0 }) {
+txsDAL.findAllAssetsByAddress = async function(address, { limit = 10, offset = 0 }) {
   const sql = tags.oneLine`
   SELECT
       COALESCE("OutputAsset"."asset", "InputAsset"."asset") AS "asset",
@@ -95,7 +95,7 @@ transactionsDAL.findAllAssetsByAddress = async function(address, { limit = 10, o
   });
 };
 
-transactionsDAL.findAllByBlockNumber = async function(blockNumber, options = { limit: 10 }) {
+txsDAL.findAllByBlockNumber = async function(blockNumber, options = { limit: 10 }) {
   const blockDB = await blocksDAL.findById(blockNumber);
   return blockDB.getTransactions(
     deepMerge.all([
@@ -119,16 +119,16 @@ transactionsDAL.findAllByBlockNumber = async function(blockNumber, options = { l
   );
 };
 
-transactionsDAL.findAllByAddress = async function(
+txsDAL.findAllByAddress = async function(
   address,
   options = { limit: 10, offset: 0, ascending: false }
 ) {
   const transactionsSelectFields = getFieldsForSelectQuery(
-    transactionsDAL.db.Tx,
+    txsDAL.db.Tx,
     'Tx',
     true
   );
-  const blocksSelectFields = getFieldsForSelectQuery(transactionsDAL.db.Block, 'Block', false);
+  const blocksSelectFields = getFieldsForSelectQuery(txsDAL.db.Block, 'Block', false);
   const order = options.ascending ? 'ASC' : 'DESC';
   const sql = tags.oneLine`
   SELECT ${transactionsSelectFields}, ${blocksSelectFields}, COALESCE("Executions"."command", '') AS "firstExecution"
@@ -162,50 +162,7 @@ transactionsDAL.findAllByAddress = async function(
   });
 };
 
-transactionsDAL.findAllByAsset = async function(
-  asset,
-  options = { limit: 10, offset: 0, ascending: false }
-) {
-  const order = options.ascending ? 'ASC' : 'DESC';
-  const sql = tags.oneLine`
-  SELECT 
-    :asset AS "asset",
-    COALESCE("Outputs"."outputSum", 0) AS "outputSum",
-    COALESCE("Inputs"."inputSum", 0) AS "inputSum",
-    COALESCE("outputSum", 0) -  COALESCE("inputSum", 0) AS "totalSum",
-    "Tx"."id" as "transactionId",
-    "Tx"."hash",
-    "Block"."timestamp",
-    "Block"."blockNumber"
-    FROM
-      (SELECT "txId", SUM("Outputs"."amount") as "outputSum"
-        FROM "Outputs" 
-        WHERE "Outputs"."asset" = :asset AND "Outputs".${LOCK_TYPE_FOR_BALANCE}
-        GROUP BY "txId") AS "Outputs"
-      FULL OUTER JOIN (SELECT "Inputs"."txId", SUM("Outputs"."amount") AS "inputSum"
-        FROM "Inputs" JOIN "Outputs" 
-        ON "Inputs"."outputId" = "Outputs"."id" 
-        WHERE "Outputs"."asset" = :asset AND "Outputs".${LOCK_TYPE_FOR_BALANCE}
-        GROUP BY "Inputs"."txId" ) AS "Inputs"
-      ON "Outputs"."txId" = "Inputs"."txId"
-      INNER JOIN "Txs" AS "Tx" ON "Outputs"."txId" = "Tx"."id" OR "Inputs"."txId" = "Tx"."id"
-      INNER JOIN "Blocks" AS "Block" ON "Tx"."blockNumber" = "Block"."blockNumber"
-      ORDER BY "Block"."timestamp" ${order}
-      LIMIT :limit OFFSET :offset`;
-
-  return sequelize.query(sql, {
-    replacements: {
-      asset,
-      limit: options.limit,
-      offset: options.offset,
-    },
-    type: sequelize.QueryTypes.SELECT,
-    raw: false,
-    nest: true,
-  });
-};
-
-transactionsDAL.findAllAssetsByBlock = async function(
+txsDAL.findAllAssetsByBlock = async function(
   hashOrBlockNumber,
   { limit = 10, offset = 0 } = {}
 ) {
@@ -300,7 +257,7 @@ transactionsDAL.findAllAssetsByBlock = async function(
   });
 };
 
-transactionsDAL.countByAddress = async function(address) {
+txsDAL.countByAddress = async function(address) {
   const sql = tags.oneLine`
   SELECT COUNT(*)
     FROM
@@ -327,7 +284,7 @@ transactionsDAL.countByAddress = async function(address) {
     });
 };
 
-transactionsDAL.countAssetsByAddress = async function(address) {
+txsDAL.countAssetsByAddress = async function(address) {
   const sql = tags.oneLine`
   SELECT COUNT(*)
     FROM
@@ -358,7 +315,7 @@ transactionsDAL.countAssetsByAddress = async function(address) {
     });
 };
 
-transactionsDAL.countAssetsByBlock = async function(hashOrBlockNumber) {
+txsDAL.countAssetsByBlock = async function(hashOrBlockNumber) {
   const blockProp = isHash(hashOrBlockNumber) ? 'hash' : 'blockNumber';
   const sql = tags.oneLine`
   SELECT COUNT(*)
@@ -397,7 +354,7 @@ transactionsDAL.countAssetsByBlock = async function(hashOrBlockNumber) {
     });
 };
 
-transactionsDAL.countByBlockNumber = async function(blockNumber) {
+txsDAL.countByBlockNumber = async function(blockNumber) {
   return this.count({
     include: [
       {
@@ -410,34 +367,7 @@ transactionsDAL.countByBlockNumber = async function(blockNumber) {
   });
 };
 
-transactionsDAL.countByAsset = async function(asset) {
-  const sql = tags.oneLine`
-  SELECT COUNT(*)
-    FROM
-      (SELECT "txId" 
-        FROM "Outputs" 
-        WHERE "Outputs"."asset" = :asset
-        GROUP BY "txId") AS "Outputs"
-      FULL OUTER JOIN (SELECT "Inputs"."txId" 
-        FROM "Inputs" JOIN "Outputs" 
-        ON "Inputs"."outputId" = "Outputs"."id" 
-        AND "Outputs"."asset" = :asset
-        GROUP BY "Inputs"."txId" ) AS "Inputs"
-      ON "Outputs"."txId" = "Inputs"."txId"`;
-
-  return sequelize
-    .query(sql, {
-      replacements: {
-        asset,
-      },
-      type: sequelize.QueryTypes.SELECT,
-    })
-    .then(result => {
-      return result.length ? result[0].count : 0;
-    });
-};
-
-transactionsDAL.findTransactionAssetInputsOutputs = function(id, asset) {
+txsDAL.findTransactionAssetInputsOutputs = function(id, asset) {
   const inputsPromise = inputsDAL.findAll({
     attributes: [
       [sequelize.col('Output.address'), 'address'],
@@ -487,7 +417,7 @@ transactionsDAL.findTransactionAssetInputsOutputs = function(id, asset) {
   });
 };
 
-transactionsDAL.findAllTransactionAssetsInputsOutputs = function(id) {
+txsDAL.findAllTransactionAssetsInputsOutputs = function(id) {
   const inputsPromise = inputsDAL.findAll({
     attributes: [
       [sequelize.col('Output.asset'), 'asset'],
@@ -536,27 +466,4 @@ transactionsDAL.findAllTransactionAssetsInputsOutputs = function(id) {
   });
 };
 
-transactionsDAL.addInput = async function(transaction, input, options = {}) {
-  return transaction.addInput(input, options);
-};
-transactionsDAL.addInput = transactionsDAL.addInput.bind(transactionsDAL);
-
-transactionsDAL.addOutput = async function(transaction, output, options = {}) {
-  return transaction.addOutput(output, options);
-};
-transactionsDAL.addOutput = transactionsDAL.addOutput.bind(transactionsDAL);
-
-function getFirstTransactionIdWhereOption(firstTransactionId, ascending) {
-  const operator = ascending
-    ? Op.gte
-    : Op.lte;
-  return firstTransactionId && Number(firstTransactionId) > 0
-    ? {
-        id: {
-          [operator]: Number(firstTransactionId),
-        },
-      }
-    : {};
-}
-
-module.exports = transactionsDAL;
+module.exports = txsDAL;

@@ -2,11 +2,10 @@
 
 const tags = require('common-tags');
 const { Decimal } = require('decimal.js');
-const transactionsDAL = require('../txs/txsDAL');
+const txsDAL = require('../txs/txsDAL');
 const inputsDAL = require('../inputs/inputsDAL');
 const addressesDAL = require('../addresses/addressesDAL');
-const sqlQueries = require('../../../lib/sqlQueries');
-const db = transactionsDAL.db;
+const db = txsDAL.db;
 const sequelize = db.sequelize;
 const Op = db.Sequelize.Op;
 
@@ -84,11 +83,9 @@ statsDAL.zpRichList = async function({ totalZpK } = {}) {
   return addressesDAL
     .findAll({
       where: {
-        [Op.and]: {
-          asset: '00',
-          balance: {
-            [Op.gt]: 0,
-          },
+        asset: '00',
+        balance: {
+          [Op.gt]: 0,
         },
       },
       attributes: { include: [[sequelize.literal('balance / 100000000'), 'balanceZp']] },
@@ -136,47 +133,10 @@ statsDAL.assetDistributionMap = async function({ asset } = {}) {
   });
 };
 
-statsDAL.distributionMap = async function(asset = '00', divideBy = 1, limit = 100, offset = 0) {
+// TODO: support halving
+statsDAL.zpSupply = async function({ chartInterval = maximumChartInterval, genesis = 20000000 } = {}) {
   const sql = tags.oneLine`
-  select
-    (output_sum - input_sum) / :divideBy as balance,
-    bothsums.address as address
-  from
-    ${sqlQueries.distributionMapFrom}
-  order by balance desc
-  limit :limit offset :offset
-  `;
-  return sequelize.query(sql, {
-    replacements: {
-      asset,
-      divideBy,
-      limit,
-      offset,
-    },
-    type: sequelize.QueryTypes.SELECT,
-  });
-};
-
-statsDAL.distributionMapCount = async function(asset) {
-  const sql = tags.oneLine`
-  select
-    count(bothsums.address)
-  from
-    ${sqlQueries.distributionMapFrom}
-  `;
-  return sequelize
-    .query(sql, {
-      replacements: {
-        asset,
-      },
-      type: sequelize.QueryTypes.SELECT,
-    })
-    .then(result => (result.length ? result[0].count : 0));
-};
-
-statsDAL.zpSupply = async function({ chartInterval = maximumChartInterval } = {}) {
-  const sql = tags.oneLine`
-  SELECT (MAX("Blocks"."blockNumber") * 50 + 20000000) AS supply, "dt"
+  SELECT (MAX("Blocks"."blockNumber") * 50 + ${genesis}) AS supply, "dt"
   FROM
     (SELECT CAST(to_timestamp("Blocks"."timestamp" / 1000) AS DATE) AS dt, *
     FROM "Blocks") AS "Blocks"

@@ -1,28 +1,28 @@
 'use strict';
 
 const test = require('tape');
-const getTransactionAssets = require('./getTransactionAssets');
+const getTxAssets = require('./getTxAssets');
 
 test('getTransactionAssets ----------------------------------------------------------------------', function(t) {t.end();});
 
 test('Test assets array length', function(t) {
-  const assets = getTransactionAssets(testTX);
+  const assets = getTxAssets(testTX);
   t.equals(assets.length, 2, 'There should be 2 assets');
   t.end();
 });
 test('Test assets array length - address with asset 00', function(t) {
-  const assets = getTransactionAssets(testTX, testAddressInOutput);
+  const assets = getTxAssets(testTX, testAddressInOutput);
   t.equals(assets.length, 1, 'Only the asset that this address is in should appear');
   t.end();
 });
 
 test('Test assets order', function(t) {
-  const assets = getTransactionAssets(testTX);
+  const assets = getTxAssets(testTX);
   t.equals(assets[0].asset, '00', 'The assets array should be ordered');
   t.end();
 });
 test('Test input output lengths', function(t) {
-  const assets = getTransactionAssets(testTX);
+  const assets = getTxAssets(testTX);
   t.equals(
     assets[0].Inputs.length,
     testTX.Inputs.length - 1,
@@ -39,7 +39,7 @@ test('Test input output lengths', function(t) {
 });
 
 test('Test input output lengths with address supplied', function(t) {
-  const assets = getTransactionAssets(testTX, testAddressInInputAndOutput);
+  const assets = getTxAssets(testTX, testAddressInInputAndOutput);
   t.equals(
     assets[0].Inputs.length,
     testTX.Inputs.length - 1,
@@ -54,19 +54,19 @@ test('Test input output lengths with address supplied', function(t) {
 });
 
 test('Test addressFoundIn attribute with no address supplied', function(t) {
-  const assets = getTransactionAssets(testTX);
+  const assets = getTxAssets(testTX);
   t.deepEquals(assets[0].addressFoundIn, [], 'addressFoundIn array should be empty');
   t.end();
 });
 
 test('Test addressFoundIn attribute for address in input', function(t) {
-  const assets = getTransactionAssets(testTX, testAddressInInput);
+  const assets = getTxAssets(testTX, testAddressInInput);
   t.deepEquals(assets[0].addressFoundIn, ['input'], 'addressFoundIn array should have "inputs" for asset 0');
   t.end();
 });
 
 test('Test addressFoundIn attribute for address in output', function(t) {
-  const assets = getTransactionAssets(testTX, testAddressInOutput);
+  const assets = getTxAssets(testTX, testAddressInOutput);
   t.deepEquals(
     assets[0].addressFoundIn,
     ['output'],
@@ -76,7 +76,7 @@ test('Test addressFoundIn attribute for address in output', function(t) {
 });
 
 test('Test addressFoundIn attribute for address in input and output', function(t) {
-  const assets = getTransactionAssets(testTX, testAddressInInputAndOutput);
+  const assets = getTxAssets(testTX, testAddressInInputAndOutput);
   t.deepEquals(
     assets[0].addressFoundIn,
     ['input', 'output'],
@@ -86,7 +86,7 @@ test('Test addressFoundIn attribute for address in input and output', function(t
 });
 
 test('Test total - no address supplied', function(t) {
-  const assets = getTransactionAssets(testTX);
+  const assets = getTxAssets(testTX);
   const total0 = testTX.Outputs.reduce((total, cur) => {
     if (cur.asset == '00') {
       total += Number(cur.amount);
@@ -101,7 +101,7 @@ test('Test total - no address supplied', function(t) {
 
 test('Test total - with address', function(t) {
   const address = testAddressInOutput;
-  const assets = getTransactionAssets(testTX, address);
+  const assets = getTxAssets(testTX, address);
   const total0 = testTX.Outputs.reduce((total, cur) => {
     if (cur.asset == '00' && cur.address !== address) {
       total += Number(cur.amount);
@@ -120,7 +120,7 @@ test('Test total - with address', function(t) {
 
 test('Test addressTotal - address in inputs only', function(t) {
   const address = testAddressInInput;
-  const assets = getTransactionAssets(testTX, address);
+  const assets = getTxAssets(testTX, address);
   const totalInputs = testTX.Inputs.reduce((total, cur) => {
     if (cur.Output.asset === '00' && cur.Output.address === address) {
       total += Number(cur.amount);
@@ -140,7 +140,7 @@ test('Test addressTotal - address in inputs only', function(t) {
 
 test('Test addressTotal - address in outputs only', function(t) {
   const address = testAddressInOutput;
-  const assets = getTransactionAssets(testTX, address);
+  const assets = getTxAssets(testTX, address);
   const totalInputs = testTX.Inputs.reduce((total, cur) => {
     if (cur.Output.asset === '00' && cur.Output.address === address) {
       total += Number(cur.amount);
@@ -164,7 +164,7 @@ test('Test addressTotal - address in outputs only', function(t) {
 
 test('Test addressTotal - address in inputs and outputs', function(t) {
   const address = testAddressInInputAndOutput;
-  const assets = getTransactionAssets(testTX, address);
+  const assets = getTxAssets(testTX, address);
   const totalInputs = testTX.Inputs.reduce((total, cur) => {
     if (cur.Output.asset === '00' && cur.Output.address === address) {
       total += Number(cur.amount);

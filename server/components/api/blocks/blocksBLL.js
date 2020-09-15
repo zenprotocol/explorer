@@ -12,7 +12,7 @@ module.exports = {
       sorted && sorted != '[]' ? JSON.parse(sorted) : [{ id: 'blockNumber', desc: true }];
 
     const query = createQueryObject({ page, pageSize, sorted: sortBy });
-    return await Promise.all([blocksDAL.count(), blocksDAL.findAllWithCoinbase(query)]).then(
+    return await Promise.all([blocksDAL.count(), blocksDAL.findAll(query)]).then(
       blocksDAL.getItemsAndCountResult
     );
   },

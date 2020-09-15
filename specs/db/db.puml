@@ -136,7 +136,7 @@ package "Votes" {
     phase field_comment(Contestant/Candidate)
     beginBlock
     endBlock
-    thresholdZp
+    threshold field_comment(in Kalapas)
     prevPhaseId
     hasSnapshot
   }

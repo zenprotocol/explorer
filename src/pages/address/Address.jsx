@@ -70,7 +70,7 @@ class AddressPage extends Component {
 
   render() {
     const params = RouterUtils.getRouteParams(this.props);
-    let zpBalance = this.addressStore.address.zpAmounts || {
+    let zpBalance = (this.addressStore.address.assetAmounts || []).find((x) => x.asset === '00') || {
       balance: 0,
       received: 0,
       sent: 0,
@@ -112,11 +112,11 @@ class AddressPage extends Component {
                     </tr>
                     <tr>
                       <td>TOTAL RECEIVED</td>
-                      <td>{AssetUtils.getAmountString('00', zpBalance.received)}</td>
+                      <td>{AssetUtils.getAmountString('00', zpBalance.outputSum)}</td>
                     </tr>
                     <tr>
                       <td>TOTAL SENT</td>
-                      <td>{AssetUtils.getAmountString('00', zpBalance.sent)}</td>
+                      <td>{AssetUtils.getAmountString('00', zpBalance.inputSum)}</td>
                     </tr>
                     <tr>
                       <td>NO. ASSET TYPES</td>

@@ -2,7 +2,7 @@
 
 const sm = require('sitemap');
 const blocksDAL = require('../api/blocks/blocksDAL');
-const transactionsDAL = require('../api/txs/txsDAL');
+const txsDAL = require('../api/txs/txsDAL');
 const addressesDAL = require('../api/addresses/addressesDAL');
 const assetsDAL = require('../api/assets/assetsDAL');
 const contractsDAL = require('../api/contracts/contractsDAL');
@@ -17,7 +17,7 @@ module.exports = {
     // count all object to know how many sitemap parts there are
     const [blocks, transactions, addresses, assets, contracts] = await Promise.all([
       blocksDAL.count(),
-      transactionsDAL.count(),
+      txsDAL.count(),
       addressesDAL.count({
         distinct: true,
         col: 'address',
@@ -88,7 +88,7 @@ module.exports = {
     return await createSitemap(urls);
   },
   transaction: async function() {
-    const txs = await transactionsDAL.findAll({
+    const txs = await txsDAL.findAll({
       attributes: ['hash']
     });
     const urls = txs.map(tx => ({ url: `/tx/${tx.hash}`, changefreq: 'never', priority: 0.7 }));

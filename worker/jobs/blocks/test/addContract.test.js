@@ -3,7 +3,7 @@
 const test = require('blue-tape');
 const truncate = require('../../../../test/lib/truncate');
 const contractsDAL = require('../../../../server/components/api/contracts/contractsDAL');
-const transactionsDAL = require('../../../../server/components/api/txs/txsDAL');
+const txsDAL = require('../../../../server/components/api/txs/txsDAL');
 const blocksDAL = require('../../../../server/components/api/blocks/blocksDAL');
 const BlockchainParser = require('../../../../server/lib/BlockchainParser');
 const NetworkHelper = require('../../../lib/NetworkHelper');
@@ -53,7 +53,7 @@ test('BlocksAdder.addContract()', async function (t) {
       createdAt: new Date(),
       updatedAt: new Date(),
     });
-    await transactionsDAL.create({
+    await txsDAL.create({
       hash: '33c1ba62d66a65c3f0bb829eb7b31fb5a6f1ea1b880f96617ca173fc184f02b3',
       index: 0,
       version: 0,

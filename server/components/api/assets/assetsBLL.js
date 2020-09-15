@@ -18,7 +18,7 @@ module.exports = {
     }
 
     const [assetOutstanding, contract] = await Promise.all([
-      assetsDAL.findOutstanding(asset),
+      assetsDAL.findById(asset).then(assetsDAL.toJSON),
       contractsDAL.findById(asset.substring(0, 72)),
     ]);
     if (assetOutstanding) {

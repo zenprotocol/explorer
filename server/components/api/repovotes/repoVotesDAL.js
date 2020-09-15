@@ -3,18 +3,12 @@
 const tags = require('common-tags');
 const dal = require('../../../lib/dal');
 const db = require('../../../db/sequelize/models');
-const {
-  WITH_FILTER_TABLES,
-  FIND_ALL_BY_INTERVAL_BASE_SQL,
-  FIND_ALL_VOTE_RESULTS_BASE_SQL,
-  FIND_ALL_CANDIDATES,
-} = require('./repoVotesSql');
 
 const sequelize = db.sequelize;
 const Op = db.Sequelize.Op;
 const votesDAL = dal.createDAL('RepoVote');
 
-/** 
+/**
  * Get all executions which are not yet added to repo votes
  * order then by block number and transaction
  */
@@ -58,18 +52,34 @@ votesDAL.findAllInIntervalByAddress = async function ({
 /**
  * Find all votes for an interval, grouped by execution and filter double votes
  */
-votesDAL.findAllByInterval = async function ({ interval, phase, limit, offset = 0 } = {}) {
+votesDAL.findAllByInterval = async function ({ beginBlock, endBlock, limit, offset = 0 } = {}) {
   const sql = tags.oneLine`
-  ${WITH_FILTER_TABLES}
-  ${FIND_ALL_BY_INTERVAL_BASE_SQL}
-  ORDER BY "Blocks"."blockNumber" DESC
+  SELECT "RepoVotes"."commitId",
+    (sum("Snapshots"."amount") / 100000000) AS "zpAmount",
+    "RepoVotes"."blockNumber",
+    "RepoVotes"."txHash",
+    "Blocks"."timestamp"
+  FROM "RepoVotes"
+  INNER JOIN "Blocks" ON "Blocks"."blockNumber" = "RepoVotes"."blockNumber"
+  INNER JOIN "Snapshots" 
+    ON "Snapshots"."blockNumber"  = :beginBlock
+    AND "Snapshots"."address" = "RepoVotes"."address"
+  WHERE "RepoVotes"."address" IS NOT NULL
+    AND "RepoVotes"."blockNumber" >= :beginBlock
+    AND "RepoVotes"."blockNumber" < :endBlock
+  GROUP BY "RepoVotes"."executionId", 
+    "RepoVotes"."commitId", 
+    "RepoVotes"."blockNumber", 
+    "RepoVotes"."txHash", 
+    "Blocks"."timestamp"
+  ORDER BY "RepoVotes"."blockNumber" DESC
   LIMIT :limit OFFSET :offset; 
   `;
 
   return sequelize.query(sql, {
     replacements: {
-      interval,
-      phase,
+      beginBlock,
+      endBlock,
       limit,
       offset,
     },
@@ -80,17 +90,26 @@ votesDAL.findAllByInterval = async function ({ interval, phase, limit, offset = 
 /**
  * Count all votes for an interval, grouped by execution and filter double votes
  */
-votesDAL.countByInterval = async function ({ interval, phase } = {}) {
+votesDAL.countByInterval = async function ({ beginBlock, endBlock } = {}) {
   const sql = tags.oneLine`
-  ${WITH_FILTER_TABLES}
-  SELECT count(*) FROM (${FIND_ALL_BY_INTERVAL_BASE_SQL}) AS "Votes";
+  SELECT count(*) FROM (
+    SELECT "RepoVotes"."commitId"
+    FROM "RepoVotes"
+    INNER JOIN "Snapshots" 
+      ON "Snapshots"."blockNumber"  = :beginBlock
+      AND "Snapshots"."address" = "RepoVotes"."address"
+    WHERE "RepoVotes"."address" IS NOT NULL
+      AND "RepoVotes"."blockNumber" >= :beginBlock
+      AND "RepoVotes"."blockNumber" < :endBlock
+    GROUP BY "RepoVotes"."executionId", "RepoVotes"."commitId"
+  ) AS "Votes";
   `;
 
   return sequelize
     .query(sql, {
       replacements: {
-        interval,
-        phase,
+        beginBlock,
+        endBlock,
       },
       type: sequelize.QueryTypes.SELECT,
     })
@@ -103,18 +122,24 @@ votesDAL.countByInterval = async function ({ interval, phase } = {}) {
  *
  * @param {number} interval
  */
-votesDAL.findAllVoteResults = async function ({ interval, phase, limit, offset = 0 } = {}) {
+votesDAL.findAllVoteResults = async function ({ beginBlock, endBlock, limit, offset = 0 } = {}) {
   const sql = tags.oneLine`
-  ${WITH_FILTER_TABLES}
-  ${FIND_ALL_VOTE_RESULTS_BASE_SQL}
+  SELECT "RepoVotes"."commitId", (sum("Snapshots"."amount") / 100000000) AS "zpAmount"
+  FROM "RepoVotes"
+  INNER JOIN "Snapshots" 
+    ON "Snapshots"."blockNumber" = :beginBlock
+    AND "Snapshots"."address" = "RepoVotes"."address"
+  WHERE "RepoVotes"."blockNumber" >= :beginBlock
+    AND "RepoVotes"."blockNumber" < :endBlock
+  GROUP BY "RepoVotes"."commitId"
   ORDER BY "zpAmount" DESC
   LIMIT :limit OFFSET :offset;
   `;
 
   return sequelize.query(sql, {
     replacements: {
-      interval,
-      phase,
+      beginBlock,
+      endBlock,
       limit,
       offset,
     },
@@ -122,43 +147,79 @@ votesDAL.findAllVoteResults = async function ({ interval, phase, limit, offset =
   });
 };
 
-votesDAL.countAllVoteResults = async function ({ interval, phase } = {}) {
+votesDAL.countAllVoteResults = async function ({ beginBlock, endBlock } = {}) {
   const sql = tags.oneLine`
-  ${WITH_FILTER_TABLES}
-  SELECT count(*) FROM (${FIND_ALL_VOTE_RESULTS_BASE_SQL}) AS "Results"
+  SELECT count(*) FROM (
+    SELECT "RepoVotes"."commitId"
+    FROM "RepoVotes"
+    INNER JOIN "Snapshots" 
+      ON "Snapshots"."blockNumber" = :beginBlock
+      AND "Snapshots"."address" = "RepoVotes"."address"
+    WHERE "RepoVotes"."blockNumber" >= :beginBlock
+      AND "RepoVotes"."blockNumber" < :endBlock
+    GROUP BY "RepoVotes"."commitId"
+  ) AS "Results"
   `;
 
   return sequelize
     .query(sql, {
       replacements: {
-        interval,
-        phase,
+        beginBlock,
+        endBlock,
       },
       type: sequelize.QueryTypes.SELECT,
     })
     .then(this.queryResultToCount);
 };
 
-votesDAL.findContestantWinners = async function ({ interval } = {}) {
+/**
+ * Find the vote results which passed the threshold
+ * @param {Object} params
+ * @param {number} beginBlock - the begin block of the contestant phase
+ * @param {number} endBlock - the end block of the contestant phase
+ * @param {string} threshold - the threshold in kalapas
+ */
+votesDAL.findContestantWinners = async function ({ beginBlock, endBlock, threshold } = {}) {
   const sql = tags.oneLine`
-  ${WITH_FILTER_TABLES}
-  ${FIND_ALL_CANDIDATES}
+  SELECT "commitId", "amount", "zpAmount" FROM (
+    SELECT "RepoVotes"."commitId", 
+      sum("Snapshots"."amount") AS "amount", 
+      (sum("Snapshots"."amount") / 100000000) AS "zpAmount"
+    FROM "RepoVotes"
+    INNER JOIN "Snapshots" 
+      ON "Snapshots"."blockNumber" = :beginBlock
+      AND "Snapshots"."address" = "RepoVotes"."address"
+    WHERE "RepoVotes"."blockNumber" >= :beginBlock
+      AND "RepoVotes"."blockNumber" < :endBlock
+    GROUP BY "RepoVotes"."commitId"
+  ) AS "Results"
+  WHERE "amount" >= :threshold
   ORDER BY "zpAmount" DESC
   `;
 
   return sequelize.query(sql, {
     replacements: {
-      interval,
-      phase: 'Contestant',
+      beginBlock,
+      endBlock,
+      threshold,
     },
     type: sequelize.QueryTypes.SELECT,
   });
 };
 
-votesDAL.findCandidateWinner = async function ({ interval } = {}) {
+/**
+ * The winner is the vote result with the highest amount, no need to use the threshold
+ */
+votesDAL.findCandidateWinner = async function ({ beginBlock, endBlock } = {}) {
   const sql = tags.oneLine`
-  ${WITH_FILTER_TABLES}
-  ${FIND_ALL_VOTE_RESULTS_BASE_SQL}
+  SELECT "RepoVotes"."commitId", (sum("Snapshots"."amount") / 100000000) AS "zpAmount"
+  FROM "RepoVotes"
+  INNER JOIN "Snapshots" 
+    ON "Snapshots"."blockNumber" = :beginBlock
+    AND "Snapshots"."address" = "RepoVotes"."address"
+  WHERE "RepoVotes"."blockNumber" >= :beginBlock
+    AND "RepoVotes"."blockNumber" < :endBlock
+  GROUP BY "RepoVotes"."commitId"
   ORDER BY "zpAmount" DESC
   LIMIT 1; 
   `;
@@ -166,8 +227,8 @@ votesDAL.findCandidateWinner = async function ({ interval } = {}) {
   return sequelize
     .query(sql, {
       replacements: {
-        interval,
-        phase: 'Candidate',
+        beginBlock,
+        endBlock,
       },
       type: sequelize.QueryTypes.SELECT,
     })

@@ -17,7 +17,7 @@ class TransactionsTab extends React.Component {
     return [
       {
         Header: 'TX HASH',
-        accessor: 'hash',
+        accessor: 'txHash',
         minWidth: config.ui.table.minCellWidth,
         Cell: (data) => <HashLink url={`/tx/${data.value}`} hash={data.value} />,
       },

@@ -1,7 +1,7 @@
 'use strict';
 
 const infosDAL = require('./infosDAL');
-const transactionsDAL = require('../txs/txsDAL');
+const txsDAL = require('../txs/txsDAL');
 const blocksBLL = require('../blocks/blocksBLL');
 const cgpBLL = require('../cgp/cgpBLL');
 const cgpUtils = require('../cgp/cgpUtils');
@@ -19,7 +19,7 @@ module.exports = {
 
     const [allItems, transactionsCount, cgpBalance, cgpAllocation] = await Promise.all([
       infosDAL.findAll({ attributes: ['name', 'value'] }),
-      transactionsDAL.count(),
+      txsDAL.count(),
       cgpBLL.findCgpBalance(),
       cgpBLL.findWinnerAllocation({ interval: currentInterval - 1, chain }),
     ]);

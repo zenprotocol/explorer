@@ -5,6 +5,7 @@ import { reaction } from 'mobx';
 import { Helmet } from 'react-helmet';
 import { Route, Switch, Redirect } from 'react-router-dom';
 import TextUtils from '../../lib/TextUtils';
+import AssetUtils from '../../lib/AssetUtils';
 import ObjectUtils from '../../lib/ObjectUtils';
 import Page from '../../components/Page';
 import PageTitle from '../../components/PageTitle';
@@ -274,7 +275,7 @@ function DuringVoteInfo({ currentBlock, relevantInterval }) {
         {relevantInterval.phase === 'Contestant' && (
           <InfoBox
             title="Threshold"
-            content={`${TextUtils.formatNumber(relevantInterval.thresholdZp)} ZP`}
+            content={`${TextUtils.formatNumber(relevantInterval.threshold)} ZP`}
             iconClass="fal fa-coins fa-fw"
           />
         )}
@@ -313,7 +314,7 @@ function AfterVoteInfo({ relevantInterval }) {
         {relevantInterval.phase === 'Contestant' && (
           <InfoBox
             title="Threshold"
-            content={`${TextUtils.formatNumber(relevantInterval.thresholdZp)} ZP`}
+            content={AssetUtils.getAmountString('00', relevantInterval.threshold)}
             iconClass="fal fa-coins fa-fw"
           />
         )}
@@ -387,9 +388,7 @@ IntervalsDropDown.propTypes = {
 function getDropDownSemesterText(interval) {
   return `${TextUtils.getOrdinal(interval.interval)} Semester, ${
     interval.phase
-  }s - ${TextUtils.formatNumber(interval.beginBlock)}-${TextUtils.formatNumber(
-    interval.endBlock
-  )}`;
+  }s - ${TextUtils.formatNumber(interval.beginBlock)}-${TextUtils.formatNumber(interval.endBlock)}`;
 }
 
 function getPageUrl(interval, phase) {
