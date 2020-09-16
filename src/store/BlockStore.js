@@ -1,5 +1,5 @@
 import { observable, decorate, action, runInAction, computed, autorun } from 'mobx';
-import Service from '../lib/Service';
+import Service from '../lib/ApiService';
 import TextUtils from '../lib/TextUtils';
 
 export default class BlockStore {
@@ -10,8 +10,8 @@ export default class BlockStore {
     this.hashOrBlockNumber = initialState.hashOrBlockNumber || 0;
     this.latestBlock = initialState.latestBlock || {};
     this.block = initialState.block || {};
-    this.blockTransactionAssets = initialState.blockTransactionAssets || [];
-    this.blockTransactionAssetsCount = initialState.blockTransactionAssetsCount || 0;
+    this.blockTxs = initialState.blockTxs || [];
+    this.blockTxsCount = initialState.blockTxsCount || 0;
     this.blockContracts = initialState.blockContracts || [];
     this.blockContractsCount = initialState.blockContractsCount || 0;
     this.medianTime = initialState.medianTime || null;
@@ -20,7 +20,7 @@ export default class BlockStore {
       blocks: false,
       latestBlock: false,
       block: false,
-      blockTransactionAssets: false,
+      blockTxs: false,
       blockContracts: false,
     };
 
@@ -70,7 +70,7 @@ export default class BlockStore {
     this.loading.latestBlock = true;
 
     return Service.blocks
-      .findById(this.blocksCount)
+      .findOne(this.blocksCount)
       .then(response => {
         runInAction(() => {
           this.latestBlock = response.data;
@@ -92,15 +92,15 @@ export default class BlockStore {
       });
   }
 
-  fetchBlock(id) {
-    if(id === this.hashOrBlockNumber) {
+  fetchBlock(hashOrBlockNumber) {
+    if(hashOrBlockNumber === this.hashOrBlockNumber) {
       return Promise.resolve(this.block);
     }
-    this.hashOrBlockNumber = id;
+    this.hashOrBlockNumber = hashOrBlockNumber;
     this.loading.block = true;
 
     return Service.blocks
-      .findById(id)
+      .findOne(hashOrBlockNumber)
       .then(response => {
         runInAction(() => {
           this.block = response.data;
@@ -122,20 +122,20 @@ export default class BlockStore {
       });
   }
 
-  fetchBlockTransactionAssets(blockNumber, params = {}) {
-    this.loading.blockTransactionAssets = true;
+  fetchBlockTxs(blockNumber, params = {}) {
+    this.loading.blockTxs = true;
     return Service.blocks
-      .findTransactionsAssets(blockNumber, params)
+      .findTxs(blockNumber, params)
       .then(response => {
         runInAction(() => {
-          this.blockTransactionAssets = response.data.items;
-          this.blockTransactionAssetsCount = Number(response.data.total);
+          this.blockTxs = response.data.items;
+          this.blockTxsCount = Number(response.data.count);
         });
       })
       .catch(() => {})
       .then(() => {
         runInAction(() => {
-          this.loading.blockTransactionAssets = false;
+          this.loading.blockTxs = false;
         });
       });
   }
@@ -158,9 +158,9 @@ export default class BlockStore {
       });
   }
 
-  resetBlockTransactionAssets() {
-    this.blockTransactionAssets = [];
-    this.blockTransactionAssetsCount = 0;
+  resetBlockTxs() {
+    this.blockTxs = [];
+    this.blockTxsCount = 0;
   }
 
   fetchMedianTime() {
@@ -193,8 +193,8 @@ decorate(BlockStore, {
   hashOrBlockNumber: observable,
   latestBlock: observable,
   block: observable,
-  blockTransactionAssets: observable,
-  blockTransactionAssetsCount: observable,
+  blockTxs: observable,
+  blockTxsCount: observable,
   blockContracts: observable,
   blockContractsCount: observable,
   loading: observable,
@@ -204,7 +204,7 @@ decorate(BlockStore, {
   fetchBlocksCount: action,
   fetchBlocks: action,
   fetchBlock: action,
-  fetchBlockTransactionAssets: action,
+  fetchBlockTxs: action,
   fetchMedianTime: action,
-  resetBlockTransactionAssets: action,
+  resetBlockTxs: action,
 });

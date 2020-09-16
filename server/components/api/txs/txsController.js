@@ -1,29 +1,24 @@
 'use strict';
 
-const { Decimal } = require('decimal.js');
 const httpStatus = require('http-status');
 const zen = require('@zen/zenjs');
-const txsDAL = require('./txsDAL');
 const outputsDAL = require('../outputs/outputsDAL');
 const jsonResponse = require('../../../lib/jsonResponse');
 const HttpError = require('../../../lib/HttpError');
-const createQueryObject = require('../../../lib/createQueryObject');
 const getTxAssets = require('./getTxAssets');
 const Service = require('../../../lib/Service');
 const BlockchainParser = require('../../../lib/BlockchainParser');
-const isHash = require('../../../lib/isHash');
 const txsBLL = require('./txsBLL');
 
 module.exports = {
   index: async function (req, res) {
     const itemsAndCount = await txsBLL.findAll({
       address: req.query.address,
+      contractAddress: req.query.contractAddress,
       asset: req.query.asset,
-      blockNumber: req.query.blockNumber,
-      order: req.query.order,
+      hashOrBlockNumber: req.query.hashOrBlockNumber,
       page: req.query.page,
       pageSize: req.query.pageSize,
-      sorted: req.query.sorted,
     });
     res.status(httpStatus.OK).json(jsonResponse.create(httpStatus.OK, itemsAndCount));
   },
@@ -35,70 +30,22 @@ module.exports = {
       throw new HttpError(httpStatus.NOT_FOUND);
     }
   },
+  /**
+   * Get a list of assets, for each asset a list of inputs and outputs
+   */
   assets: async function (req, res) {
-    // find by blockNumber or address
-    const { hashOrBlockNumber, txHash, address } = req.params;
-    const page = req.query.page || 0;
-    const pageSize = req.query.pageSize || 10;
-    const firstTransactionId = req.query.firstTransactionId || 0;
-    const ascending = req.query.order === 'asc'; // descending by default
-    const sorted =
-      req.query.sorted && req.query.sorted != '[]'
-        ? JSON.parse(req.query.sorted)
-        : [{ id: 'createdAt', desc: !ascending }];
-
-    const query = createQueryObject({ page, pageSize, sorted });
-
-    let countPromise, findPromise;
-    if (hashOrBlockNumber) {
-      if (
-        !isHash(hashOrBlockNumber) &&
-        (isNaN(hashOrBlockNumber) || new Decimal(hashOrBlockNumber).greaterThan('2147483647'))
-      ) {
-        throw new HttpError(httpStatus.BAD_REQUEST);
-      }
-      findPromise = txsDAL.findAllAssetsByBlock(hashOrBlockNumber, query);
-      countPromise = txsDAL.countAssetsByBlock(hashOrBlockNumber);
-    } else if (txHash) {
-      findPromise = txsDAL.findAllAssetsByTxHash(txHash, query);
-      countPromise = txsDAL.countAssetsByTxHash(txHash);
-    } else if (address) {
-      findPromise = txsDAL.findAllAssetsByAddress(address, query);
-      countPromise = txsDAL.countAssetsByAddress(address, firstTransactionId, ascending);
-    } else {
-      // TODO - find all transaction assets !!!
-      findPromise = txsDAL.findAll(query);
-      countPromise = txsDAL.count();
-    }
-
-    const [count, transactionAssets] = await Promise.all([countPromise, findPromise]);
+    const assets = await txsBLL.findAssets({
+      hash: req.params.hash,
+      address: req.query.address,
+      asset: req.query.asset,
+    });
 
     res.status(httpStatus.OK).json(
       jsonResponse.create(httpStatus.OK, {
-        total: count,
-        items: transactionAssets,
+        count: assets.length,
+        items: assets,
       })
     );
-  },
-  asset: async function (req, res) {
-    // get a specific asset from a tx. /tx/:hash/:assetName
-    const { id, asset } = req.params;
-
-    if (!id || !asset) {
-      throw new HttpError(httpStatus.NOT_FOUND);
-    }
-
-    const transactionAsset = await txsDAL.findTransactionAssetInputsOutputs(id, asset);
-
-    res.status(httpStatus.OK).json(jsonResponse.create(httpStatus.OK, transactionAsset));
-  },
-  getById: async function (req, res) {
-    const transaction = await txsDAL.findById(req.params.id);
-    if (transaction) {
-      res.status(httpStatus.OK).json(jsonResponse.create(httpStatus.OK, transaction));
-    } else {
-      throw new HttpError(httpStatus.NOT_FOUND);
-    }
   },
   broadcast: async function (req, res) {
     const tx = req.body.tx || '';
@@ -119,16 +66,16 @@ module.exports = {
       const tx = zen.Transaction.fromHex(hex);
       const blockchainParser = new BlockchainParser();
       const txCustom = {
-        Inputs: [],
-        Outputs: [],
+        inputs: [],
+        outputs: [],
       };
 
-      txCustom.Outputs = tx.outputs.map((output, index) => {
+      txCustom.outputs = tx.outputs.map((output, index) => {
         const { lockType, lockValue, address } = blockchainParser.getLockValuesFromOutput(output);
         const asset = output.spend.asset.asset;
         const amount = output.spend.amount['0'];
         return {
-          id: index + 1, // fake id
+          id: index + 1, // fake id needed in UI
           lockType,
           address,
           lockValue,
@@ -153,9 +100,12 @@ module.exports = {
           );
         }
 
-        txCustom.Inputs.push({
+        txCustom.inputs.push({
           id: i + 1, // fake id
-          Output: output,
+          lockType: output.lockType,
+          address: output.address,
+          asset: output.asset,
+          amount: output.amount,
         });
       }
 
@@ -164,17 +114,5 @@ module.exports = {
     } catch (error) {
       throw new HttpError(error.status || httpStatus.INTERNAL_SERVER_ERROR, error.customMessage);
     }
-  },
-  create: async function (req, res) {
-    const transaction = await txsDAL.create(req.body);
-    res.status(httpStatus.CREATED).json(jsonResponse.create(httpStatus.CREATED, transaction));
-  },
-  update: async function (req, res) {
-    const transaction = await txsDAL.update(req.params.id, req.body);
-    res.status(httpStatus.OK).json(jsonResponse.create(httpStatus.OK, transaction));
-  },
-  delete: async function (req, res) {
-    await txsDAL.delete(req.params.id);
-    res.status(httpStatus.OK).json(jsonResponse.create(httpStatus.OK));
   },
 };

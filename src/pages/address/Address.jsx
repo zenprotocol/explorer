@@ -39,7 +39,7 @@ class AddressPage extends Component {
 
   setAddress(addressChanged) {
     if (addressChanged) {
-      this.addressStore.resetAddressTransactionAssets(this.addressProp);
+      this.addressStore.resetAddressTxs(this.addressProp);
     }
     this.addressStore.fetchAddress(this.addressProp);
   }

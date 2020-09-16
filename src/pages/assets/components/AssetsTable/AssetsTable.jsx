@@ -46,7 +46,7 @@ class AssetsTable extends Component {
       },
       {
         Header: 'txs',
-        accessor: 'transactionsCount',
+        accessor: 'txsCount',
         Cell: (data) => TextUtils.formatNumber(data.value),
       },
     ];

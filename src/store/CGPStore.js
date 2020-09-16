@@ -1,5 +1,5 @@
 import { observable, decorate, action, runInAction, computed } from 'mobx';
-import Service from '../lib/Service';
+import Service from '../lib/ApiService';
 
 export default class CGPStore {
   constructor(rootStore, initialState = {}) {

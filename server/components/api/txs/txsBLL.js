@@ -1,69 +1,71 @@
 'use strict';
 
 const txsDAL = require('./txsDAL');
-const assetTxsDAL = require('../asset-txs/assetTxsDAL');
 const createQueryObject = require('../../../lib/createQueryObject');
 const getTxAssets = require('./getTxAssets');
 const isCoinbaseTX = require('./isCoinbaseTx');
 
 module.exports = {
-  findAll: async function ({
-    blockNumber,
-    address,
-    asset,
-    page = 0,
-    pageSize = 10,
-    order,
-    sorted,
-  } = {}) {
-    // find by blockNumber, address or asset
-    const ascending = order === 'asc'; // descending by default
-    const sortBy =
-      sorted && sorted != '[]' ? JSON.parse(sorted) : [{ id: 'createdAt', desc: !ascending }];
-
-    const query = createQueryObject({ page, pageSize, sorted: sortBy });
+  /**
+   * find all txs by blockNumber, address or asset
+   */
+  findAll: async function ({ hashOrBlockNumber, address, asset, page = 0, pageSize = 10 } = {}) {
+    const query = createQueryObject({ page, pageSize });
 
     let countPromise;
     let findPromise;
-    if (blockNumber && !isNaN(blockNumber)) {
-      findPromise = txsDAL.findAllByBlockNumber(Number(blockNumber), query);
-      countPromise = txsDAL.countByBlockNumber(Number(blockNumber));
+    if (hashOrBlockNumber) {
+      findPromise = txsDAL.findAllByBlock(Object.assign({}, query, { hashOrBlockNumber }));
+      countPromise = txsDAL.countByBlock({ hashOrBlockNumber });
     } else if (address) {
-      findPromise = txsDAL.findAllByAddress(address, {
+      findPromise = txsDAL.findAllByAddress({
+        address,
         limit: query.limit,
         offset: query.offset,
-        ascending,
       });
-      countPromise = txsDAL.countByAddress(address);
+      countPromise = txsDAL.countByAddress({ address });
     } else if (asset) {
-      findPromise = assetTxsDAL.findAllByAssetWithRelations({
+      findPromise = txsDAL.findAllByAsset({
         asset,
         limit: query.limit,
         offset: query.offset,
       });
-      countPromise = assetTxsDAL.count({ where: { asset } });
+      countPromise = txsDAL.countByAsset({ asset });
     } else {
       findPromise = txsDAL.findAll(query);
       countPromise = txsDAL.count();
     }
 
-    return await Promise.all([countPromise, findPromise]).then(
-      txsDAL.getItemsAndCountResult
-    );
+    return await Promise.all([countPromise, findPromise]).then(txsDAL.getItemsAndCountResult);
   },
   findOne: async function ({ hash } = {}) {
-    const transaction = await txsDAL.findByHash(hash);
-    if (transaction) {
-      const customTX = txsDAL.toJSON(transaction);
-      customTX.isCoinbaseTx = isCoinbaseTX(transaction);
-      const insOuts = await txsDAL.findAllTransactionAssetsInputsOutputs(transaction.id);
-      customTX.Inputs = insOuts.Inputs;
-      customTX.Outputs = insOuts.Outputs;
+    const tx = await txsDAL.findByHash(hash);
+    if (tx) {
+      const customTX = txsDAL.toJSON(tx);
+      customTX.isCoinbase = isCoinbaseTX(tx);
+      const insOuts = await txsDAL.findAllTxInputsOutputsAggregated({ txId: tx.id });
+      customTX.inputs = insOuts.inputs;
+      customTX.outputs = insOuts.outputs;
       customTX['assets'] = getTxAssets(customTX);
-      delete customTX.Inputs;
-      delete customTX.Outputs;
+      delete customTX.inputs;
+      delete customTX.outputs;
       return customTX;
     }
     return null;
+  },
+  /**
+   * Get a list of assets, for each asset a list of inputs and outputs
+   * 
+   * @param {Object} params
+   * @param {string} params.hash - the tx hash
+   * @param {string} params.address - an address to change the results for
+   * @param {string} params.asset - return only results for this asset
+   */
+  findAssets: async function ({ hash, address, asset } = {}) {
+    const tx = await txsDAL.findOne({ where: { hash } });
+    if (!tx) return null;
+
+    const insOuts = await txsDAL.findAllTxInputsOutputsAggregated({ txId: tx.id, asset });
+    return getTxAssets(insOuts, address);
   },
 };

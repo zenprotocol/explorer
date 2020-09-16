@@ -1,46 +1,55 @@
-module.exports = function(transaction, address) {
-  const assets = transformInputsOutputs(transaction, address);
-  const filteredAssets = getFilteredAssetsArray(transaction ,assets, address);
+const { Decimal } = require('decimal.js');
+
+/**
+ * Get an array with each asset in the tx, each containing inputs and outputs arrays
+ */
+module.exports = function (tx, address) {
+  const assets = groupInputsOutputsByAsset(tx, address);
+  const filteredAssets = getFilteredAssetsArray(tx, assets, address);
   return filteredAssets.sort((a, b) => b.asset < a.asset);
 };
 
-function transformInputsOutputs(transaction, address) {
+function groupInputsOutputsByAsset(tx, address) {
   const assets = {};
-  if (transaction.Inputs && transaction.Inputs.length) {
+  if (tx.inputs && tx.inputs.length) {
     const addedInputAddresses = [];
-    transaction.Inputs.forEach(input => {
-      if (input.Output) {
-        if (!assets[input.Output.asset]) {
-          assets[input.Output.asset] = getEmptyAsset();
-        }
-        if (!addedInputAddresses.includes(input.Output.address)) {
-          assets[input.Output.asset].inputs.push(input);
-          if (input.Output.address) {
-            addedInputAddresses.push(input.Output.address);
-            if (address && address === input.Output.address) {
-              assets[input.Output.asset].addressInInputs = true;
-            }
+    tx.inputs.forEach((input) => {
+      if (!assets[input.asset]) {
+        assets[input.asset] = getEmptyAsset();
+      }
+      if (!addedInputAddresses.includes(input.address)) {
+        assets[input.asset].inputs.push(input);
+        if (input.address) {
+          addedInputAddresses.push(input.address);
+          if (address && address === input.address) {
+            assets[input.asset].addressInInputs = true;
           }
         }
-        if (address && address === input.Output.address) {
-          assets[input.Output.asset].addressTotal += -1 * Number(input.Output.amount);
-        }
+      }
+      if (address && address === input.address) {
+        assets[input.asset].addressTotal = new Decimal(assets[input.asset].addressTotal)
+          .minus(input.amount)
+          .toString();
       }
     });
   }
 
-  if (transaction.Outputs && transaction.Outputs.length) {
-    transaction.Outputs.forEach(output => {
+  if (tx.outputs && tx.outputs.length) {
+    tx.outputs.forEach((output) => {
       if (!assets[output.asset]) {
         assets[output.asset] = getEmptyAsset();
       }
 
       if (address && address === output.address) {
         assets[output.asset].addressInOutputs = true;
-        assets[output.asset].addressTotal += Number(output.amount);
+        assets[output.asset].addressTotal = new Decimal(assets[output.asset].addressTotal)
+          .plus(output.amount)
+          .toString();
       }
 
-      assets[output.asset].total += getOutputAmountForTotal(output, address);
+      assets[output.asset].total = new Decimal(assets[output.asset].total)
+        .plus(getOutputAmountForTotal(output, address))
+        .toString();
 
       assets[output.asset].outputs.push(output);
     });
@@ -57,13 +66,13 @@ function getEmptyAsset() {
   };
 }
 
-// TODO - is this right? always? or only when the address was in the inputs?
+// TODO: - is this right? always? or only when the address was in the inputs?
 function getOutputAmountForTotal(output, address) {
-  if(!address || address !== output.address) {
-    return Number(output.amount);
+  if (!address || address !== output.address) {
+    return output.amount;
   }
 
-  return 0;
+  return '0';
 }
 
 function getFilteredAssetsArray(transaction, assets, address) {
@@ -76,11 +85,8 @@ function getFilteredAssetsArray(transaction, assets, address) {
         addressFoundIn,
         total: assets[asset].total,
         addressTotal: assets[asset].addressTotal,
-        blockHash: (transaction.Block || {}).hash,
-        txHash: transaction.hash,
-        timestamp: (transaction.Block || {}).timestamp,
-        Inputs: assets[asset].inputs,
-        Outputs: assets[asset].outputs,
+        inputs: assets[asset].inputs,
+        outputs: assets[asset].outputs,
       });
     }
 

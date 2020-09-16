@@ -1,6 +1,6 @@
 import { observable, action, autorun, toJS, runInAction } from 'mobx';
 import localStore from '../lib/localStore';
-import Service from '../lib/Service';
+import Service from '../lib/ApiService';
 import config from '../lib/Config';
 import ObjectUtils from '../lib/ObjectUtils';
 
@@ -35,13 +35,6 @@ export default function UIStore(rootStore, initialState = {}) {
       pageSize: defaultValues.get('blockContractsTable.pageSize'),
       curPage: defaultValues.get('blockContractsTable.curPage'),
       sorted: defaultValues.get('blockContractsTable.sorted'),
-    },
-
-    addressTxAssetsTable: {
-      force: 1,
-      address: defaultValues.get('addressTxAssetsTable.address'),
-      pageSize: defaultValues.get('addressTxAssetsTable.pageSize'),
-      curPage: defaultValues.get('addressTxAssetsTable.curPage'),
     },
 
     addressTxsTable: {
@@ -181,12 +174,6 @@ export default function UIStore(rootStore, initialState = {}) {
       objectToSet: state.blockContractsTable,
     })
   );
-  const setAddressTxAssetsTableData = action(
-    setTableData({
-      identifiers: ['address'],
-      objectToSet: state.addressTxAssetsTable,
-    })
-  );
   const setAddressTxsTableData = action(
     setTableData({
       identifiers: ['address'],
@@ -322,12 +309,12 @@ export default function UIStore(rootStore, initialState = {}) {
     });
 
     autorun(function runOnBlockChange() {
-      blockStore.resetBlockTransactionAssets(state.blockTxTable.hashOrBlockNumber);
+      blockStore.resetBlockTxs();
     });
 
     autorun(function fetchBlockTransactionAssetsOnChange() {
       if (hashOrBlockNumberNotEmpty(state.blockTxTable.hashOrBlockNumber)) {
-        blockStore.fetchBlockTransactionAssets(state.blockTxTable.hashOrBlockNumber, {
+        blockStore.fetchBlockTxs(state.blockTxTable.hashOrBlockNumber, {
           page: state.blockTxTable.curPage,
           pageSize: state.blockTxTable.pageSize,
         });
@@ -347,18 +334,9 @@ export default function UIStore(rootStore, initialState = {}) {
       }
     });
 
-    autorun(function fetchAddressTxAssetsOnChange() {
-      if (state.addressTxAssetsTable.address && state.addressTxAssetsTable.force > 1) {
-        addressStore.fetchAddressTransactionAssets(state.addressTxAssetsTable.address, {
-          page: state.addressTxAssetsTable.curPage,
-          pageSize: state.addressTxAssetsTable.pageSize,
-        });
-      }
-    });
-
     autorun(function fetchAddressTxsOnChange() {
       if (state.addressTxsTable.address && state.addressTxsTable.force > 1) {
-        addressStore.loadAddressTransactions(state.addressTxsTable.address, {
+        addressStore.fetchAddressTxs(state.addressTxsTable.address, {
           page: state.addressTxsTable.curPage,
           pageSize: state.addressTxsTable.pageSize,
         });
@@ -565,7 +543,6 @@ export default function UIStore(rootStore, initialState = {}) {
   })();
 
   return Object.freeze({
-    setAddressTxAssetsTableData,
     setAddressTxsTableData,
     setAssetKeyholdersTableData,
     setAssetTxsTableData,

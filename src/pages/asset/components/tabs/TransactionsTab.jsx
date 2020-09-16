@@ -17,7 +17,7 @@ class TransactionsTab extends React.Component {
     return [
       {
         Header: 'TX HASH',
-        accessor: 'txHash',
+        accessor: 'hash',
         minWidth: config.ui.table.minCellWidth,
         Cell: (data) => <HashLink url={`/tx/${data.value}`} hash={data.value} />,
       },
@@ -33,11 +33,6 @@ class TransactionsTab extends React.Component {
         Cell: (data) => (
           <Link to={`/blocks/${data.value}`}>{TextUtils.formatNumber(data.value)}</Link>
         ),
-      },
-      {
-        Header: 'Output total',
-        accessor: 'outputSum',
-        Cell: (data) => AssetUtils.getAmountString(uiStore.state.assetTxsTable.asset, data.value),
       },
     ];
   }
@@ -89,7 +84,12 @@ class TransactionsTab extends React.Component {
           }
           SubComponent={(row) => {
             return (
-              <TransactionAssetLoader transactionAssets={assetStore.assetTxs} index={row.index} />
+              <TransactionAssetLoader
+                transactions={assetStore.assetTxs}
+                index={row.index}
+                asset={assetStore.asset.asset}
+                showAsset={false}
+              />
             );
           }}
         />

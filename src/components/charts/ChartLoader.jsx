@@ -4,7 +4,7 @@ import { observer, inject } from 'mobx-react';
 import { reaction } from 'mobx';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
-import Service from '../../lib/Service';
+import Service from '../../lib/ApiService';
 import TextUtils from '../../lib/TextUtils';
 import Loading from '../Loading';
 import LineChart from './LineChart.jsx';

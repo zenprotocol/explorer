@@ -31,9 +31,6 @@ module.exports = {
     const latestBlock = await blocksDAL.findLatest();
     return latestBlock ? latestBlock.blockNumber : 0;
   },
-  getById: async function({ id } = {}) {
-    return await blocksDAL.findById(id);
-  },
   getTotalZp: async function() {
     const height = await blocksDAL.count();
     return calcTotalZpByHeight({ height, genesis: config.get('GENESIS_TOTAL_ZP') });

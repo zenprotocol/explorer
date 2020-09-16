@@ -104,21 +104,21 @@ export default {
         method: 'get',
       });
     },
-    async findById(id) {
+    async findOne(hashOrBlockNumber) {
       return sendHttpRequest({
-        url: `${Endpoints.blocks}/${id}`,
+        url: `${Endpoints.blocks}/${hashOrBlockNumber}`,
         method: 'get',
       });
     },
-    async findTransactionsAssets(blockNumber, params) {
+    async findTxs(blockNumber, params) {
       return sendHttpRequest({
-        url: `${Endpoints.blocks}/${blockNumber}/assets`,
+        url: `${Endpoints.blocks}/${blockNumber}/txs`,
         method: 'get',
         params,
       });
     },
   },
-  transactions: {
+  txs: {
     async find(params) {
       return sendHttpRequest({
         url: Endpoints.transactions,
@@ -132,10 +132,11 @@ export default {
         method: 'get',
       });
     },
-    async findAsset(id, asset) {
+    async findAssets(hash, params) {
       return sendHttpRequest({
-        url: `${Endpoints.transactions}/${id}/${asset}`,
+        url: `${Endpoints.transactions}/${hash}/assets`,
         method: 'get',
+        params
       });
     },
     broadcast(tx) {

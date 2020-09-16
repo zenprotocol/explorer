@@ -1,5 +1,5 @@
 import { observable, decorate, action, runInAction } from 'mobx';
-import Service from '../lib/Service';
+import Service from '../lib/ApiService';
 
 export default class ContractStore {
   constructor(rootStore, initialState = {}) {
@@ -9,11 +9,14 @@ export default class ContractStore {
     this.contract = initialState.contract || {};
     this.assets = initialState.assets || [];
     this.assetsCount = initialState.assetsCount || 0;
+    this.txs = initialState.txs || [];
+    this.txsCount = initialState.txsCount || 0;
     this.executions = initialState.executions || [];
     this.executionsCount = initialState.executionsCount || 0;
     this.loading = {
       contracts: false,
       contract: false,
+      txs: false,
       assets: false,
       executions: false,
     };
@@ -80,6 +83,24 @@ export default class ContractStore {
       });
   }
 
+  fetchTxs(address, params = {}) {
+    this.loading.txs = true;
+    return Service.txs
+      .find(Object.assign({ contractAddress: address }, params))
+      .then(response => {
+        runInAction(() => {
+          this.addressTxs = response.data.items;
+          this.addressTxsCount = Number(response.data.count);
+        });
+      })
+      .catch(() => {})
+      .then(() => {
+        runInAction(() => {
+          this.loading.txs = false;
+        });
+      });
+  }
+
   loadAssets(address, params = {}) {
     this.loading.assets = true;
 
@@ -135,6 +156,8 @@ decorate(ContractStore, {
   contract: observable,
   assets: observable,
   assetsCount: observable,
+  txs: observable,
+  txsCount: observable,
   executions: observable,
   executionsCount: observable,
   loading: observable,

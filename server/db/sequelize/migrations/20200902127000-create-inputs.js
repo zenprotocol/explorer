@@ -55,6 +55,11 @@ module.exports = {
             unique: true,
             name: 'Inputs_outputId_index',
           }),
+          queryInterface.addIndex('Inputs', {
+            fields: ['txId'],
+            unique: false,
+            name: 'Inputs_txId_index',
+          }),
         ])
       );
   },

@@ -47,6 +47,11 @@ module.exports = {
             unique: false,
             name: 'Outputs_asset_index',
           }),
+          queryInterface.addIndex('Outputs', {
+            fields: ['txId'],
+            unique: false,
+            name: 'Outputs_txId_index',
+          }),
         ])
       );
   },

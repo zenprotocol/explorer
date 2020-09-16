@@ -18,7 +18,6 @@ module.exports = {
           type: Sequelize.INTEGER,
         },
         version: {
-          allowNull: false,
           type: Sequelize.INTEGER,
         },
         hash: {
@@ -26,11 +25,9 @@ module.exports = {
           type: Sequelize.STRING,
         },
         inputCount: {
-          allowNull: false,
           type: Sequelize.INTEGER,
         },
         outputCount: {
-          allowNull: false,
           type: Sequelize.INTEGER,
         },
       })
