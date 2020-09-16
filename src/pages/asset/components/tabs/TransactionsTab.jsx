@@ -5,7 +5,6 @@ import { Link } from 'react-router-dom';
 import config from '../../../../lib/Config';
 import WithSetIdsOnUiStore from '../../../../components/hoc/WithSetIdsOnUiStore';
 import TextUtils from '../../../../lib/TextUtils';
-import AssetUtils from '../../../../lib/AssetUtils';
 import { TabPanel } from '../../../../components/tabs';
 import { ItemsTable } from '../../../../components/ItemsTable';
 import HashLink from '../../../../components/HashLink';
@@ -13,7 +12,6 @@ import { TransactionAssetLoader } from '../../../../components/Transactions';
 
 class TransactionsTab extends React.Component {
   getTableColumns() {
-    const { uiStore } = this.props.rootStore;
     return [
       {
         Header: 'TX HASH',

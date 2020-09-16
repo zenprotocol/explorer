@@ -5,7 +5,6 @@ import { Link, withRouter } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import WithSetIdsOnUiStore from '../../../components/hoc/WithSetIdsOnUiStore';
 import config from '../../../lib/Config';
-import AssetUtils from '../../../lib/AssetUtils';
 import TextUtils from '../../../lib/TextUtils';
 import HashLink from '../../../components/HashLink';
 import { ItemsTable } from '../../../components/ItemsTable';
