@@ -52,8 +52,6 @@ class BlocksAdder {
 
       if (latestBlockNumberToAdd > latestBlockNumberInDB) {
         await this.setSyncingStatus({ syncing: 'syncing' });
-        const infos = await this.updateInfos();
-        this.blockchainParser.setChain(infos.chain);
 
         this.dbTransaction = await db.sequelize.transaction();
 
@@ -95,33 +93,6 @@ class BlocksAdder {
       await this.setSyncingStatus({ syncing: 'error' });
       throw new QueueError(error);
     }
-  }
-
-  async updateInfos() {
-    const infos = await this.networkHelper.getBlockchainInfo();
-    const infoKeys = Object.keys(infos);
-    const promises = [];
-    infoKeys.forEach((name) => {
-      const value = infos[name];
-      promises.push(
-        (async () => {
-          const info = await infosDAL.findByName(name);
-          if (info) {
-            await infosDAL.update(info.id, {
-              name,
-              value,
-            });
-          } else {
-            await infosDAL.create({
-              name,
-              value,
-            });
-          }
-        })()
-      );
-    });
-    await Promise.all(promises);
-    return infos;
   }
 
   async setSyncingStatus({ syncing = 'synced' } = {}) {

@@ -20,7 +20,7 @@ test('Add software versions', async function(t) {
   const infosAdder = new InfosAdder(networkHelper);
 
   try {
-    await infosAdder.doJob({});
+    await infosAdder.doJob({data: {type: 'expensive'}});
 
     const nodeVersion = await infosDAL.findOne({
       where: {
@@ -59,7 +59,7 @@ test('Update software versions', async function(t) {
         value: 'v0.7',
       }),
     ]);
-    await infosAdder.doJob({});
+    await infosAdder.doJob({data: {type: 'expensive'}});
 
     const nodeVersion = await infosDAL.findOne({
       where: {

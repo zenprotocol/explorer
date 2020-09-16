@@ -2,12 +2,17 @@
 
 const infosDAL = require('../../../server/components/api/infos/infosDAL');
 const statsDAL = require('../../../server/components/api/stats/statsDAL');
-const logger = require('../../lib/logger')('infos');
+const txsDAL = require('../../../server/components/api/txs/txsDAL');
+const cgpBLL = require('../../../server/components/api/cgp/cgpBLL');
+const cgpUtils = require('../../../server/components/api/cgp/cgpUtils');
+const blocksBLL = require('../../../server/components/api/blocks/blocksBLL');
+const getChain = require('../../../server/lib/getChain');
 const QueueError = require('../../lib/QueueError');
+const getJobData = require('../../lib/getJobData');
 
 function createOrUpdateInfos(infos) {
   const promises = [];
-  infos.forEach(item => {
+  infos.forEach((item) => {
     const { name, value } = item;
     promises.push(
       (async () => {
@@ -37,17 +42,28 @@ class InfosAdder {
 
   async doJob(job) {
     try {
-      logger.info('Updating software versions in infos');
-      await this.updateSoftwareVersions();
-      logger.info('Software versions in infos updated');
+      const type = getJobData(job, 'type'); // should execute lengthy operations?
 
-      logger.info('Updating hash rate in infos');
-      await this.updateHashRate();
-      logger.info('Hash rate in infos updated');
+      const promises = [];
+      if (type === 'expensive') {
+        promises.push(this.updateSoftwareVersions());
+        promises.push(this.updateHashRate());
+      }
+
+      // update non expensive and rapidly changing data
+      promises.push(this.updateBlockchainInfos());
+      promises.push(this.updateTxInfos());
+      promises.push(this.updateCgpInfos());
+
+      await Promise.all(promises);
     } catch (error) {
-      logger.error(`An Error has occurred when adding infos: ${error.message}`);
       throw new QueueError(error);
     }
+  }
+
+  async updateBlockchainInfos() {
+    const infos = await this.networkHelper.getBlockchainInfo();
+    return createOrUpdateInfos(Object.keys(infos).map((key) => ({ name: key, value: infos[key] })));
   }
 
   async updateSoftwareVersions() {
@@ -72,17 +88,49 @@ class InfosAdder {
 
   async updateHashRate() {
     const hashRates = await statsDAL.networkHashRate('1 week');
-    if(hashRates.length) {
+    const info = {
+      name: 'hashRate',
+      value: 0,
+    };
+    if (hashRates.length) {
       const lastDayHashRate = hashRates[hashRates.length - 1];
-      const infos = [
-        {
-          name: 'hashRate',
-          value: lastDayHashRate.hashrate,
-        },
-      ];
-  
-      await createOrUpdateInfos(infos);
+      info.value = lastDayHashRate.hashrate;
     }
+    await createOrUpdateInfos([info]);
+  }
+
+  async updateTxInfos() {
+    const txsCount = await txsDAL.count();
+    const infos = [
+      {
+        name: 'txsCount',
+        value: txsCount,
+      },
+    ];
+    await createOrUpdateInfos(infos);
+  }
+
+  async updateCgpInfos() {
+    const [currentBlock, chain] = await Promise.all([
+      blocksBLL.getCurrentBlockNumber(),
+      getChain(),
+    ]);
+    const currentInterval = cgpUtils.getIntervalByBlockNumber(chain, currentBlock);
+    const [cgpBalance, cgpAllocation] = await Promise.all([
+      cgpBLL.findCgpBalance(),
+      cgpBLL.findWinnerAllocation({ interval: currentInterval - 1, chain }),
+    ]);
+    const infos = [
+      {
+        name: 'cgpBalance',
+        value: JSON.stringify(cgpBalance),
+      },
+      {
+        name: 'cgpAllocation',
+        value: cgpAllocation,
+      },
+    ];
+    await createOrUpdateInfos(infos);
   }
 }
 
