@@ -101,8 +101,8 @@ const Mappers = {
   zpSupply(data) {
     return data.map((item) => {
       return {
-        x: Date.parse(item.dt),
-        y: Number(item.supply),
+        x: Date.parse(item.date),
+        y: Number(item.value),
       };
     });
   },

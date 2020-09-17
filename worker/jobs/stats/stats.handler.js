@@ -1,7 +1,13 @@
 const TxsPerDayCalc = require('./TxsPerDayCalc');
+const ZpSupplyPerDayCalc = require('./ZpSupplyPerDayCalc');
 
 module.exports = async function (job) {
   const txsPerDayCalc = new TxsPerDayCalc();
-  const txsPerDayRows = await txsPerDayCalc.doJob(job);
-  return `txs per day rows: ${txsPerDayRows}`;
+  const zpSupplyPerDayCalc = new ZpSupplyPerDayCalc();
+
+  const [txsPerDayRows, zpSupplyPerDayRows] = await Promise.all([
+    txsPerDayCalc.doJob(job),
+    zpSupplyPerDayCalc.doJob(job),
+  ]);
+  return `TxsPerDay rows: ${txsPerDayRows}, ZpSupplyPerDay rows: ${zpSupplyPerDayRows}`;
 };

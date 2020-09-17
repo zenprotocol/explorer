@@ -6,6 +6,7 @@ const txsDAL = require('../txs/txsDAL');
 const inputsDAL = require('../inputs/inputsDAL');
 const addressesDAL = require('../addresses/addressesDAL');
 const txsPerDayDAL = require('../txs-per-day/txsPerDayDAL');
+const zpSupplyPerDayDAL = require('../zp-supply-per-day/zpSupplyPerDayDAL');
 const db = txsDAL.db;
 const sequelize = db.sequelize;
 const Op = db.Sequelize.Op;
@@ -35,12 +36,24 @@ statsDAL.transactionsPerDay = async function ({ chartInterval = maximumChartInte
   });
 };
 
+statsDAL.zpSupply = async function ({ chartInterval = maximumChartInterval } = {}) {
+  return zpSupplyPerDayDAL.findAll({
+    where: {
+      date: {
+        [Op.lte]: db.Sequelize.literal('CURRENT_DATE'),
+        [Op.gt]: db.Sequelize.literal(`CURRENT_DATE - '${chartInterval}'::interval`),
+      },
+    },
+  });
+};
+
 statsDAL.blockDifficulty = async function ({ chartInterval = maximumChartInterval } = {}) {
   const sql = tags.oneLine`
   with t_vals as
   (select timestamp as tsp, "blockNumber" as block_number, least (greatest ((difficulty >> 24), 3), 32) as lnth, (difficulty & x'00FFFFFF' :: int) as mantissa from "Blocks")
   , i_vals as
   (select date_trunc('day',to_timestamp(0) + tsp * interval '1 millisecond') as block_date, ((x'1000000' :: int) :: real / (mantissa :: real)) * 256 ^ (32 - lnth) as expected_hashes, block_number from t_vals)
+
   select block_date as "dt", (sum(expected_hashes) / 86400.0) * 55000 / 1000000000000 as "difficulty" from i_vals
   where block_date < (select max(block_date) from i_vals) and now() - block_date < interval :chartInterval
   group by block_date
@@ -124,28 +137,6 @@ statsDAL.assetDistributionMap = async function ({ asset } = {}) {
     }
 
     return items;
-  });
-};
-
-// TODO: support halving
-statsDAL.zpSupply = async function ({
-  chartInterval = maximumChartInterval,
-  genesis = 20000000,
-} = {}) {
-  const sql = tags.oneLine`
-  SELECT (MAX("Blocks"."blockNumber") * 50 + ${genesis}) AS supply, "dt"
-  FROM
-    (SELECT CAST(to_timestamp("Blocks"."timestamp" / 1000) AS DATE) AS dt, *
-    FROM "Blocks") AS "Blocks"
-  WHERE "dt" < CURRENT_DATE AND "dt" > CURRENT_DATE - interval :chartInterval
-  GROUP BY "dt"
-  ORDER BY "dt"
-  `;
-  return sequelize.query(sql, {
-    type: sequelize.QueryTypes.SELECT,
-    replacements: {
-      chartInterval,
-    },
   });
 };
 

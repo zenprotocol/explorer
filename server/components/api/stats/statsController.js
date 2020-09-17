@@ -4,7 +4,6 @@ const httpStatus = require('http-status');
 const { Decimal } = require('decimal.js');
 const jsonResponse = require('../../../lib/jsonResponse');
 const HttpError = require('../../../lib/HttpError');
-const config = require('../../../config/Config');
 const blocksBLL = require('../blocks/blocksBLL');
 const statsDAL = require('./statsDAL');
 
@@ -19,16 +18,16 @@ const CHARTS = [
 ];
 
 const StatsFunctions = {
-  totalZp: async function() {
+  totalZp: async function () {
     return new Decimal(await blocksBLL.getTotalZp()).dividedBy(100000000).toFixed(8);
   },
-  totalKalapa: async function() {
+  totalKalapa: async function () {
     return await blocksBLL.getTotalZp();
   },
 };
 
 module.exports = {
-  index: async function(req, res) {
+  index: async function (req, res) {
     const totalZP = await StatsFunctions.totalZp();
     const totalKalapa = await StatsFunctions.totalKalapa();
 
@@ -39,7 +38,7 @@ module.exports = {
       })
     );
   },
-  show: async function(req, res) {
+  show: async function (req, res) {
     let name = req.params.name || '';
     name = name.toLowerCase().trim();
     if (!name || !STATS.includes(name)) {
@@ -58,19 +57,17 @@ module.exports = {
 
     res.status(httpStatus.OK).json(stat);
   },
-  charts: async function(req, res) {
+  charts: async function (req, res) {
     let name = req.params.name || '';
     name = name.trim();
     if (!name || !CHARTS.includes(name)) {
       throw new HttpError(httpStatus.NOT_FOUND);
     }
     const params = req.query;
-    if(name === 'zpRichList') {
+    if (name === 'zpRichList') {
       params.totalZpK = await StatsFunctions.totalKalapa();
     }
-    else if(name === 'zpSupply') {
-      params.genesis = config.get('GENESIS_TOTAL_ZP');
-    }
+
     const data = await statsDAL[name](params);
 
     res.status(httpStatus.OK).json(jsonResponse.create(httpStatus.OK, data));

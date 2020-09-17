@@ -178,7 +178,7 @@ package "Charts" {
     date
     value
   }
-  Table(ZpSupply, "ZpSupply") {
+  Table(ZpSupply, "ZpSupplyPerDay") {
     primary_key(id)
     date
     value
