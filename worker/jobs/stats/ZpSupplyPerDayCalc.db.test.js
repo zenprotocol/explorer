@@ -17,7 +17,7 @@ test('ZpSupplyPerDayCalc.doJob() (DB)', async function (t) {
     t.equal(result, 0, `${given}: should return 0`);
     t.equal(await zpSupplyPerDayDAL.count(), 0, `${given}: should not have any rows in ZpSupplyPerDay`);
   });
-  await wrapTest('Given genesis, 1 block and no rows yet', async (given) => {
+  await wrapTest('Given 1 block and no rows yet', async (given) => {
     // add a block
     await blocksDAL.create({
       blockNumber: 1,
