@@ -5,6 +5,7 @@ const { Decimal } = require('decimal.js');
 const txsDAL = require('../txs/txsDAL');
 const inputsDAL = require('../inputs/inputsDAL');
 const addressesDAL = require('../addresses/addressesDAL');
+const txsPerDayDAL = require('../txs-per-day/txsPerDayDAL');
 const db = txsDAL.db;
 const sequelize = db.sequelize;
 const Op = db.Sequelize.Op;
@@ -12,7 +13,7 @@ const Op = db.Sequelize.Op;
 const statsDAL = {};
 const maximumChartInterval = '1 year';
 
-statsDAL.totalIssued = async function(asset) {
+statsDAL.totalIssued = async function (asset) {
   return inputsDAL.sum('amount', {
     where: {
       [db.Sequelize.Op.and]: {
@@ -23,25 +24,18 @@ statsDAL.totalIssued = async function(asset) {
   });
 };
 
-statsDAL.transactionsPerDay = async function({ chartInterval = maximumChartInterval } = {}) {
-  const sql = tags.oneLine`
-  SELECT COUNT("Txs"."id"), "Blocks"."dt"
-  FROM "Txs"
-    INNER JOIN (SELECT CAST(to_timestamp("Blocks"."timestamp" / 1000) AS DATE) AS dt, *
-    FROM "Blocks") AS "Blocks" ON "Txs"."blockNumber" = "Blocks"."blockNumber"
-  WHERE "Blocks"."dt" < CURRENT_DATE AND "Blocks"."dt" > CURRENT_DATE - interval :chartInterval
-  GROUP BY "Blocks"."dt"
-  ORDER BY "Blocks"."dt"
-  `;
-  return sequelize.query(sql, {
-    type: sequelize.QueryTypes.SELECT,
-    replacements: {
-      chartInterval,
+statsDAL.transactionsPerDay = async function ({ chartInterval = maximumChartInterval } = {}) {
+  return txsPerDayDAL.findAll({
+    where: {
+      date: {
+        [Op.lte]: db.Sequelize.literal('CURRENT_DATE'),
+        [Op.gt]: db.Sequelize.literal(`CURRENT_DATE - '${chartInterval}'::interval`),
+      },
     },
   });
 };
 
-statsDAL.blockDifficulty = async function({ chartInterval = maximumChartInterval } = {}) {
+statsDAL.blockDifficulty = async function ({ chartInterval = maximumChartInterval } = {}) {
   const sql = tags.oneLine`
   with t_vals as
   (select timestamp as tsp, "blockNumber" as block_number, least (greatest ((difficulty >> 24), 3), 32) as lnth, (difficulty & x'00FFFFFF' :: int) as mantissa from "Blocks")
@@ -60,7 +54,7 @@ statsDAL.blockDifficulty = async function({ chartInterval = maximumChartInterval
   });
 };
 
-statsDAL.networkHashRate = async function({ chartInterval = maximumChartInterval } = {}) {
+statsDAL.networkHashRate = async function ({ chartInterval = maximumChartInterval } = {}) {
   const sql = tags.oneLine`
   with t_vals as
   (select timestamp as tsp, "blockNumber" as block_number, least (greatest ((difficulty >> 24), 3), 32) as lnth, (difficulty & x'00FFFFFF' :: int) as mantissa from "Blocks")
@@ -79,7 +73,7 @@ statsDAL.networkHashRate = async function({ chartInterval = maximumChartInterval
   });
 };
 
-statsDAL.zpRichList = async function({ totalZpK } = {}) {
+statsDAL.zpRichList = async function ({ totalZpK } = {}) {
   return addressesDAL
     .findAll({
       where: {
@@ -93,7 +87,7 @@ statsDAL.zpRichList = async function({ totalZpK } = {}) {
       limit: 100,
       offset: 0,
     })
-    .then(chartData => {
+    .then((chartData) => {
       const restKalapas = chartData.reduce((restAmount, curItem) => {
         return restAmount.minus(curItem.balance);
       }, new Decimal(totalZpK));
@@ -108,7 +102,7 @@ statsDAL.zpRichList = async function({ totalZpK } = {}) {
     });
 };
 
-statsDAL.assetDistributionMap = async function({ asset } = {}) {
+statsDAL.assetDistributionMap = async function ({ asset } = {}) {
   if (!asset) {
     return [];
   }
@@ -134,7 +128,10 @@ statsDAL.assetDistributionMap = async function({ asset } = {}) {
 };
 
 // TODO: support halving
-statsDAL.zpSupply = async function({ chartInterval = maximumChartInterval, genesis = 20000000 } = {}) {
+statsDAL.zpSupply = async function ({
+  chartInterval = maximumChartInterval,
+  genesis = 20000000,
+} = {}) {
   const sql = tags.oneLine`
   SELECT (MAX("Blocks"."blockNumber") * 50 + ${genesis}) AS supply, "dt"
   FROM

@@ -59,8 +59,8 @@ const Mappers = {
   transactionsPerDay(data) {
     return data.map((item) => {
       return {
-        x: Date.parse(item.dt),
-        y: Number(item.count),
+        x: Date.parse(item.date),
+        y: Number(item.value),
       };
     });
   },

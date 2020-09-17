@@ -37,6 +37,9 @@
     },
     "snapshots": {
       "name": "Vote Snapshots"
+    },
+    "stats": {
+      "name": "Stats"
     }
   },
   "governance": {

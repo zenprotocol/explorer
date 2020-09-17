@@ -1,6 +1,10 @@
 'use strict';
 
+const tags = require('common-tags');
 const dal = require('../../../lib/dal');
+const db = require('../../../db/sequelize/models');
+
+const sequelize = db.sequelize;
 
 const blocksDAL = dal.createDAL('Block');
 
@@ -14,12 +18,40 @@ blocksDAL.findLatest = function ({ transaction } = {}) {
   }
   return this.findAll(options).then((results) => (results.length ? results[0] : null));
 };
+blocksDAL.findFirst = function ({ transaction } = {}) {
+  return this.findOne({
+    order: [['blockNumber', 'ASC']],
+    transaction,
+  });
+};
 
 blocksDAL.findByHash = function (hash) {
   return this.findOne({
     where: {
       hash,
     },
+  });
+};
+
+/**
+ * Find all blocks with timestamp on the given date
+ * @param {Object} params
+ * @param {string} params.dateString - the date in a sql friendly format (2020-09-17) 
+ */
+blocksDAL.findByDay = function ({ dateString, transaction } = {}) {
+  const sql = tags.oneLine`
+  SELECT *
+  FROM "Blocks"
+  WHERE to_timestamp("Blocks"."timestamp" / 1000)::date = :dateString::date 
+    AND to_timestamp("Blocks"."timestamp" / 1000)::date < :dateString::date + '1 day'::interval;
+  `;
+
+  return sequelize.query(sql, {
+    replacements: {
+      dateString,
+    },
+    type: sequelize.QueryTypes.SELECT,
+    transaction,
   });
 };
 

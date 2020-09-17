@@ -5,25 +5,28 @@ const queue = require('./lib/queue');
 const TaskTimeLimiter = require('./lib/TaskTimeLimiter');
 const Config = require('../server/config/Config');
 const makeLogger = require('./lib/logger');
-const loggerBlocks = makeLogger('blocks');
-const loggerReorg = makeLogger('reorg');
 const slackLogger = require('../server/lib/slackLogger');
 const getChain = require('../server/lib/getChain');
-const NUM_OF_BLOCKS_IN_CHUNK = Config.get('queues:addBlocks:limitBlocks');
 
+const loggerBlocks = makeLogger('blocks');
+const loggerReorg = makeLogger('reorg');
+const loggerStats = makeLogger('stats');
+
+const NUM_OF_BLOCKS_IN_CHUNK = Config.get('queues:addBlocks:limitBlocks');
 const NODE_URL = Config.get('zp:node');
 const APP_NAME = Config.get('APP_NAME');
 const blocksQueue = queue(Config.get('queues:addBlocks:name'));
 const reorgsQueue = queue(Config.get('queues:reorgs:name'));
 const snapshotsQueue = queue(Config.get('queues:snapshots:name'));
 const executionsQueue = queue(Config.get('queues:executions:name'));
+const statsQueue = queue(Config.get('queues:stats:name'));
 
 const taskTimeLimiter = new TaskTimeLimiter(Config.get('queues:slackTimeLimit') * 1000);
 
 // process ---
 blocksQueue.process(path.join(__dirname, 'jobs/blocks/blocks.handler.js'));
 reorgsQueue.process(path.join(__dirname, 'jobs/blocks/reorgs.handler.js'));
-
+statsQueue.process(path.join(__dirname, 'jobs/stats/stats.handler.js'));
 
 // events
 blocksQueue.on('active', function(job, jobPromise) {
@@ -43,6 +46,7 @@ blocksQueue.on('completed', function(job, result) {
       blocksQueue.add({ type: 'add-blocks', limitBlocks: NUM_OF_BLOCKS_IN_CHUNK });
       // notify other queues that blocks were added
       snapshotsQueue.add();
+      statsQueue.add();
     }
     // start dependant queues
     executionsQueue.add();
@@ -93,6 +97,26 @@ reorgsQueue.on('failed', function(job, error) {
   });
 });
 
+// stats
+statsQueue.on('active', function() {
+  loggerStats.info('A job has started.');
+});
+
+statsQueue.on('completed', function(job, result) {
+  loggerStats.info(
+    `A job has been completed. ID=${job.id} result=${result}`
+  );
+});
+
+statsQueue.on('failed', function(job, error) {
+  loggerStats.error(`A job has failed. ID=${job.id}, error=${error.message}`);
+  taskTimeLimiter.executeTask(() => {
+    slackLogger.error(
+      `An stats/charts job has failed, error=${error.message} app=${APP_NAME} node=${NODE_URL}`
+    );
+  });
+});
+
 // first clean the queue
 Promise.all([
   blocksQueue.clean(0, 'active'),
@@ -105,6 +129,11 @@ Promise.all([
   reorgsQueue.clean(0, 'wait'),
   reorgsQueue.clean(0, 'completed'),
   reorgsQueue.clean(0, 'failed'),
+  statsQueue.clean(0, 'active'),
+  statsQueue.clean(0, 'delayed'),
+  statsQueue.clean(0, 'wait'),
+  statsQueue.clean(0, 'completed'),
+  statsQueue.clean(0, 'failed'),
 ]).then(() => {
   // schedule ---
   blocksQueue.add(
@@ -116,6 +145,8 @@ Promise.all([
   blocksQueue.add({ type: 'add-blocks', limitBlocks: NUM_OF_BLOCKS_IN_CHUNK });
   blocksQueue.add({ type: 'check-synced' });
   blocksQueue.resume();
+
+  statsQueue.add(); // once
 });
 
 setInterval(() => {
@@ -123,4 +154,6 @@ setInterval(() => {
   blocksQueue.clean(Config.get('queues:cleanAfter') * 1000, 'failed');
   reorgsQueue.clean(Config.get('queues:cleanAfter') * 1000, 'completed');
   reorgsQueue.clean(Config.get('queues:cleanAfter') * 1000, 'failed');
+  statsQueue.clean(Config.get('queues:cleanAfter') * 1000, 'completed');
+  statsQueue.clean(Config.get('queues:cleanAfter') * 1000, 'failed');
 }, Config.get('queues:cleanInterval') * 1000);
