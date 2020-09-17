@@ -36,7 +36,7 @@ blocksDAL.findByHash = function (hash) {
 /**
  * Find all blocks with timestamp on the given date
  * @param {Object} params
- * @param {string} params.dateString - the date in a sql friendly format (2020-09-17) 
+ * @param {string} params.dateString - the date in a sql friendly format (2020-09-17)
  */
 blocksDAL.findByDay = function ({ dateString, transaction } = {}) {
   const sql = tags.oneLine`
@@ -90,6 +90,31 @@ blocksDAL.search = function (search, limit = 10) {
       items = items.slice(0, limit);
     }
     return [count, items];
+  });
+};
+
+/**
+ * Find the average difficulty for a day
+ * @param {Object} params
+ * @param {string} params.dateString - the date in a sql friendly format (2020-09-17)
+ */
+blocksDAL.findDifficultyForDay = function ({ dateString, transaction } = {}) {
+  const sql = tags.oneLine`
+  with t_vals as
+  (select "timestamp" as tsp, "blockNumber" as block_number, least (greatest ((difficulty >> 24), 3), 32) as lnth, (difficulty & x'00FFFFFF' :: int) as mantissa from "Blocks")
+  , i_vals as
+  (select date_trunc('day',to_timestamp(0) + tsp * interval '1 millisecond') as block_date, ((x'1000000' :: int) :: real / (mantissa :: real)) * 256 ^ (32 - lnth) as expected_hashes, block_number from t_vals)
+
+  select (sum(expected_hashes) / 86400.0) * 55000 / 1000000000000 as "difficulty" from i_vals
+  where block_date = :dateString::date;
+  `;
+
+  return sequelize.query(sql, {
+    replacements: {
+      dateString,
+    },
+    type: sequelize.QueryTypes.SELECT,
+    transaction,
   });
 };
 

@@ -1,12 +1,12 @@
 'use strict';
 
-const tags = require('common-tags');
 const { Decimal } = require('decimal.js');
 const txsDAL = require('../txs/txsDAL');
 const inputsDAL = require('../inputs/inputsDAL');
 const addressesDAL = require('../addresses/addressesDAL');
 const txsPerDayDAL = require('../txs-per-day/txsPerDayDAL');
 const zpSupplyPerDayDAL = require('../zp-supply-per-day/zpSupplyPerDayDAL');
+const difficultyPerDayDAL = require('../difficulty-per-day/difficultyPerDayDAL');
 const db = txsDAL.db;
 const sequelize = db.sequelize;
 const Op = db.Sequelize.Op;
@@ -48,40 +48,24 @@ statsDAL.zpSupply = async function ({ chartInterval = maximumChartInterval } = {
 };
 
 statsDAL.blockDifficulty = async function ({ chartInterval = maximumChartInterval } = {}) {
-  const sql = tags.oneLine`
-  with t_vals as
-  (select timestamp as tsp, "blockNumber" as block_number, least (greatest ((difficulty >> 24), 3), 32) as lnth, (difficulty & x'00FFFFFF' :: int) as mantissa from "Blocks")
-  , i_vals as
-  (select date_trunc('day',to_timestamp(0) + tsp * interval '1 millisecond') as block_date, ((x'1000000' :: int) :: real / (mantissa :: real)) * 256 ^ (32 - lnth) as expected_hashes, block_number from t_vals)
-
-  select block_date as "dt", (sum(expected_hashes) / 86400.0) * 55000 / 1000000000000 as "difficulty" from i_vals
-  where block_date < (select max(block_date) from i_vals) and now() - block_date < interval :chartInterval
-  group by block_date
-  order by block_date asc offset 1
-  `;
-  return sequelize.query(sql, {
-    type: sequelize.QueryTypes.SELECT,
-    replacements: {
-      chartInterval,
+  return difficultyPerDayDAL.findAll({
+    where: {
+      date: {
+        [Op.lte]: db.Sequelize.literal('CURRENT_DATE'),
+        [Op.gt]: db.Sequelize.literal(`CURRENT_DATE - '${chartInterval}'::interval`),
+      },
     },
   });
 };
 
 statsDAL.networkHashRate = async function ({ chartInterval = maximumChartInterval } = {}) {
-  const sql = tags.oneLine`
-  with t_vals as
-  (select timestamp as tsp, "blockNumber" as block_number, least (greatest ((difficulty >> 24), 3), 32) as lnth, (difficulty & x'00FFFFFF' :: int) as mantissa from "Blocks")
-  , i_vals as
-  (select date_trunc('day',to_timestamp(0) + tsp * interval '1 millisecond') as block_date, ((x'1000000' :: int) :: real / (mantissa :: real)) * 256 ^ (32 - lnth) as expected_hashes, block_number from t_vals)
-  select block_date as "dt", sum(expected_hashes) / 86400.0 as "hashrate" from i_vals
-  where block_date < (select max(block_date) from i_vals) and now() - block_date < interval :chartInterval
-  group by block_date
-  order by block_date asc offset 1
-  `;
-  return sequelize.query(sql, {
-    type: sequelize.QueryTypes.SELECT,
-    replacements: {
-      chartInterval,
+  return difficultyPerDayDAL.findAll({
+    attributes: ['date', [db.Sequelize.literal('value * 1000000000000 / 55000'), 'value']],
+    where: {
+      date: {
+        [Op.lte]: db.Sequelize.literal('CURRENT_DATE'),
+        [Op.gt]: db.Sequelize.literal(`CURRENT_DATE - '${chartInterval}'::interval`),
+      },
     },
   });
 };

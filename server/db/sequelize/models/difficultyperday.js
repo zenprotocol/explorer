@@ -3,7 +3,6 @@ module.exports = (sequelize, DataTypes) => {
   var DifficultyPerDay = sequelize.define(
     'DifficultyPerDay',
     {
-      asset: DataTypes.STRING,
       date: DataTypes.DATEONLY,
       value: DataTypes.DOUBLE,
     },

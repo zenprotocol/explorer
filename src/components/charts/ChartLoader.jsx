@@ -67,16 +67,16 @@ const Mappers = {
   blockDifficulty(data) {
     return data.map((item) => {
       return {
-        x: Date.parse(item.dt),
-        y: Number(item.difficulty),
+        x: Date.parse(item.date),
+        y: Number(item.value),
       };
     });
   },
   networkHashRate(data) {
     return data.map((item) => {
       return {
-        x: Date.parse(item.dt),
-        y: Number(item.hashrate),
+        x: Date.parse(item.date),
+        y: Number(item.value),
       };
     });
   },
