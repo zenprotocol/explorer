@@ -1,3 +1,5 @@
+const fs = require('fs');
+const path = require('path');
 const block = require('./data/block');
 
 const REAL_BLOCKS_MAX_NUMBER = 4;
@@ -18,8 +20,9 @@ module.exports = {
       return hasFalsyValues ? 2 : latestBlockNumber;
     };
     networkHelper.getBlockFromNode = function (blockNumber) {
-      if (!hasFalsyValues && !isNaN(blockNumber) && blockNumber > 0) {
-        return Promise.resolve(require(`./data/blockNumber${blockNumber}.json`));
+      const filePath = `./data/blockNumber${blockNumber}.json`;
+      if (!hasFalsyValues && !isNaN(blockNumber) && blockNumber > 0 && fs.existsSync(path.join(__dirname, filePath))) {
+        return Promise.resolve(require(filePath));
       }
       return Promise.resolve(
         block({ blockNumber, falsyBlock, falsyTransaction, falsyInput, falsyOutput })

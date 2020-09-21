@@ -14,6 +14,25 @@ class NetworkHelper {
     return await Service.blocks.getBlock(blockNumber);
   }
 
+  async getBlocksFromNode({ blockNumber, take } = {}) {
+    // get all blocks in batch
+    // PREPARE FOR NEW API blockchain/blocks
+    // BLOCKS ARE ORDERED HIGH TO LOW
+    const nodeBlocksPromises = [];
+    for (let i = blockNumber; i > blockNumber - take; i--) {
+      nodeBlocksPromises.push(
+        this.getBlockFromNode(i).then((block) =>
+          Object.assign(block, {
+            blockNumber: block.header.blockNumber,
+          })
+        )
+      );
+    }
+
+    return Promise.all(nodeBlocksPromises);
+    // return await Service.blocks.getBlocks({blockNumber, take});
+  }
+
   async getBlockchainInfo() {
     return await Service.blocks.getChainInfo();
   }

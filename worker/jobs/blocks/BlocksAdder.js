@@ -56,18 +56,25 @@ class BlocksAdder {
 
         this.dbTransaction = await db.sequelize.transaction();
 
-        for (
-          let blockNumber = latestBlockNumberInDB + 1;
-          blockNumber <= latestBlockNumberToAdd;
-          blockNumber++
-        ) {
-          const nodeBlock = await this.networkHelper
-            .getBlockFromNode(blockNumber)
-            .then((block) =>
-              Object.assign(block, { reward: calcRewardByHeight(block.header.blockNumber) })
-            );
+        const nodeBlocks = await this.networkHelper.getBlocksFromNode({
+          blockNumber: latestBlockNumberToAdd,
+          take: latestBlockNumberToAdd - latestBlockNumberInDB,
+        });
 
-          logger.info(`Got block #${nodeBlock.header.blockNumber} from NODE...`);
+        // search for the index of (latestBlockNumberInDB + 1)
+        const startIndex = findIndexRight(
+          (item) => item.blockNumber === latestBlockNumberInDB + 1,
+          nodeBlocks
+        );
+
+        for (let i = startIndex; i >= 0; i--) {
+          // add reward
+          const nodeBlock = Object.assign(nodeBlocks[i], {
+            reward: calcRewardByHeight(nodeBlocks[i].blockNumber),
+          });
+
+          // TODO: deserialize the nodeBlock when getting from the new API
+
           blocks.push(await this.addBlock({ nodeBlock }));
         }
 
@@ -82,7 +89,7 @@ class BlocksAdder {
       // return the number of blocks added and the latest block number
       return {
         count: blocks.length,
-        latest: blocks.reduce((max, cur) => (max < cur.blockNumber ? cur.blockNumber : max), 0),
+        latest: latestBlockNumberToAdd,
       };
     } catch (error) {
       logger.error(`An Error has occurred when adding blocks: ${error.message}`);
@@ -651,3 +658,17 @@ class BlocksAdder {
 }
 
 module.exports = BlocksAdder;
+
+/**
+ * Like Array.prototype.findIndex() but search from last to first
+ * @param {(element: any, index: number, array: Array) => boolean} callback
+ * @param {Array} arr
+ */
+function findIndexRight(callback, arr = []) {
+  for (let i = arr.length - 1; i >= 0; i--) {
+    const element = arr[i];
+    if (callback(element, i, arr)) return i;
+  }
+
+  return -1;
+}
