@@ -14,10 +14,6 @@ class NetworkHelper {
     return await Service.blocks.getBlock(blockNumber);
   }
 
-  async getBlockRewardFromNode(blockNumber) {
-    return await Service.blocks.getBlockReward(blockNumber);
-  }
-
   async getBlockchainInfo() {
     return await Service.blocks.getChainInfo();
   }

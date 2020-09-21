@@ -453,7 +453,7 @@ test('BlocksAdder.doJob()', async function (t) {
     const networkHelper = new NetworkHelper();
     mock.mockNetworkHelper(networkHelper, { latestBlockNumber: 2 });
     networkHelper.getBlockFromNode = (blockNumber) => {
-      return blockchain[blockNumber - 1];
+      return Promise.resolve(blockchain[blockNumber - 1]);
     };
     const blocksAdder = new BlocksAdder(networkHelper, new BlockchainParser(), '20000000');
 
@@ -611,7 +611,7 @@ test('BlocksAdder.doJob()', async function (t) {
     const networkHelper = new NetworkHelper();
     mock.mockNetworkHelper(networkHelper, { latestBlockNumber: 3 });
     networkHelper.getBlockFromNode = (blockNumber) => {
-      return blockchain[blockNumber - 1];
+      return Promise.resolve(blockchain[blockNumber - 1]);
     };
     const blocksAdder = new BlocksAdder(networkHelper, new BlockchainParser(), '20000000');
 
@@ -724,7 +724,7 @@ test('BlocksAdder.doJob()', async function (t) {
       const networkHelper = new NetworkHelper();
       mock.mockNetworkHelper(networkHelper, { latestBlockNumber: 2 });
       networkHelper.getBlockFromNode = (blockNumber) => {
-        return blockchain[blockNumber - 1];
+        return Promise.resolve(blockchain[blockNumber - 1]);
       };
       const blocksAdder = new BlocksAdder(networkHelper, new BlockchainParser(), '20000000');
 
@@ -814,7 +814,7 @@ test('BlocksAdder.doJob()', async function (t) {
     const networkHelper = new NetworkHelper();
     mock.mockNetworkHelper(networkHelper, { latestBlockNumber: 2 });
     networkHelper.getBlockFromNode = (blockNumber) => {
-      return blockchain[blockNumber - 1];
+      return Promise.resolve(blockchain[blockNumber - 1]);
     };
     const blocksAdder = new BlocksAdder(networkHelper, new BlockchainParser('test'), '20000000');
 
@@ -952,7 +952,7 @@ test('BlocksAdder.doJob()', async function (t) {
     const networkHelper = new NetworkHelper();
     mock.mockNetworkHelper(networkHelper, { latestBlockNumber: 2 });
     networkHelper.getBlockFromNode = (blockNumber) => {
-      return blockchain[blockNumber - 1];
+      return Promise.resolve(blockchain[blockNumber - 1]);
     };
     const blocksAdder = new BlocksAdder(networkHelper, new BlockchainParser('test'), '20000000');
 

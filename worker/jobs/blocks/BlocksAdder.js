@@ -15,6 +15,7 @@ const addressesDAL = require('../../../server/components/api/addresses/addresses
 const addressTxsDAL = require('../../../server/components/api/address-txs/addressTxsDAL');
 const assetTxsDAL = require('../../../server/components/api/asset-txs/assetTxsDAL');
 const assetsDAL = require('../../../server/components/api/assets/assetsDAL');
+const calcRewardByHeight = require('../../../server/lib/calcRewardByHeight');
 
 const Op = db.Sequelize.Op;
 
@@ -60,12 +61,11 @@ class BlocksAdder {
           blockNumber <= latestBlockNumberToAdd;
           blockNumber++
         ) {
-          const nodeBlock = await Promise.all([
-            this.networkHelper.getBlockFromNode(blockNumber),
-            this.networkHelper.getBlockRewardFromNode(blockNumber),
-          ]).then(([block, reward]) =>
-            Object.assign(block, { reward: blockNumber === 1 ? 0 : reward })
-          );
+          const nodeBlock = await this.networkHelper
+            .getBlockFromNode(blockNumber)
+            .then((block) =>
+              Object.assign(block, { reward: calcRewardByHeight(block.header.blockNumber) })
+            );
 
           logger.info(`Got block #${nodeBlock.header.blockNumber} from NODE...`);
           blocks.push(await this.addBlock({ nodeBlock }));
@@ -623,7 +623,7 @@ class BlocksAdder {
     // assets are unique
     assets.forEach((value, asset) => {
       // check only is an asset was minted
-      if(value.issued.gt(0)) {
+      if (value.issued.gt(0)) {
         promisesContract.push(
           (async () => {
             const contractId = asset.substring(0, 72);
