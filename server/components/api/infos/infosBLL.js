@@ -18,7 +18,7 @@ module.exports = {
     }, {});
 
     const bcParser = new BlockchainParser(chain);
-    items.cgpBalance = allItems['cgpBalance'] ? JSON.parse(allItems['cgpBalance']) : [];
+    items.cgpBalance = items['cgpBalance'] ? JSON.parse(items['cgpBalance']) : [];
     items.cgpFundContractId = config.get('CGP_FUND_CONTRACT_ID');
     items.cgpFundContractAddress = bcParser.getAddressFromContractId(
       config.get('CGP_FUND_CONTRACT_ID')
