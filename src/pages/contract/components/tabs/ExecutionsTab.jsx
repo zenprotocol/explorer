@@ -69,25 +69,25 @@ ExecutionsTab.propTypes = {
 const columns = [
   {
     Header: 'Command',
-    accessor: 'execution',
+    accessor: 'command',
     className: 'text-uppercase',
     Cell: ({ value }) => <HashLink hash={value} />,
   },
   {
     Header: 'Timestamp',
-    accessor: 'Transaction.Block.timestamp',
+    accessor: 'timestamp',
     minWidth: config.ui.table.minCellWidthDate,
     Cell: ({ value }) => TextUtils.getDateStringFromTimestamp(value),
   },
   {
     Header: 'TX Hash',
-    accessor: 'Transaction.hash',
+    accessor: 'txHash',
     minWidth: config.ui.table.minCellWidth,
     Cell: ({ value }) => <HashLink url={`/tx/${value}`} hash={value} />,
   },
   {
     Header: 'Block',
-    accessor: 'Transaction.Block.blockNumber',
+    accessor: 'blockNumber',
     Cell: ({ value }) => <Link to={`/blocks/${value}`}>{TextUtils.formatNumber(value)}</Link>,
   },
 ];

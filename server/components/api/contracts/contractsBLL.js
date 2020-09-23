@@ -47,7 +47,7 @@ module.exports = {
     const contract = await contractsDAL.findByAddress(address);
     if (contract) {
       const query = createQueryObject({ page, pageSize, sorted: [] });
-      return await contractsDAL.findExecutionsWithRelations(contract.id, query);
+      return await contractsDAL.findExecutions(contract.id, query);
     } else {
       return [];
     }

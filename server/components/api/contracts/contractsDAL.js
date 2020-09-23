@@ -30,7 +30,7 @@ const orderMap = {
 function getSqlOrderBy(order = []) {
   return order
     .map(
-      item =>
+      (item) =>
         `"${item[0]}" ${item[1]} ${
           Object.keys(orderMap).includes(item[0]) ? orderMap[item[0]][item[1].toLowerCase()] : ''
         }`
@@ -38,7 +38,7 @@ function getSqlOrderBy(order = []) {
     .join(', ');
 }
 
-contractsDAL.findAllWithAssetsCountTxCountAndCountOrderByNewest = function({
+contractsDAL.findAllWithAssetsCountTxCountAndCountOrderByNewest = function ({
   limit = 10,
   offset = 0,
   order = [],
@@ -95,16 +95,16 @@ contractsDAL.findAllWithAssetsCountTxCountAndCountOrderByNewest = function({
   ]).then(this.getItemsAndCountResult);
 };
 
-contractsDAL.findByAddress = function(address, options) {
+contractsDAL.findByAddress = function (address, options) {
   return this.findOne({
     where: {
       address,
     },
-    ...options
+    ...options,
   });
 };
 
-contractsDAL.search = async function(search, limit = 10) {
+contractsDAL.search = async function (search, limit = 10) {
   const like = AddressUtils.isContract(search) ? `${search}%` : `%${search}%`;
   const where = {
     address: {
@@ -126,7 +126,7 @@ contractsDAL.search = async function(search, limit = 10) {
   ]);
 };
 
-contractsDAL.findAllActive = function() {
+contractsDAL.findAllActive = function () {
   return this.findAll({
     where: {
       expiryBlock: {
@@ -136,7 +136,7 @@ contractsDAL.findAllActive = function() {
   });
 };
 
-contractsDAL.findAllExpired = function() {
+contractsDAL.findAllExpired = function () {
   return this.findAll({
     where: {
       expiryBlock: null,
@@ -144,7 +144,7 @@ contractsDAL.findAllExpired = function() {
   });
 };
 
-contractsDAL.findAllOutstandingAssets = function(id, { limit = 10, offset = 0 } = {}) {
+contractsDAL.findAllOutstandingAssets = function (id, { limit = 10, offset = 0 } = {}) {
   return Promise.all([
     assetsDAL.count({
       where: {
@@ -152,8 +152,8 @@ contractsDAL.findAllOutstandingAssets = function(id, { limit = 10, offset = 0 } 
           [Op.like]: `${id}%`,
         },
         outstanding: {
-          [Op.gt]: 0
-        }
+          [Op.gt]: 0,
+        },
       },
     }),
     assetsDAL.findAll({
@@ -162,8 +162,8 @@ contractsDAL.findAllOutstandingAssets = function(id, { limit = 10, offset = 0 } 
           [Op.like]: `${id}%`,
         },
         outstanding: {
-          [Op.gt]: 0
-        }
+          [Op.gt]: 0,
+        },
       },
       limit,
       offset,
@@ -171,7 +171,7 @@ contractsDAL.findAllOutstandingAssets = function(id, { limit = 10, offset = 0 } 
   ]).then(this.getItemsAndCountResult);
 };
 
-contractsDAL.setExpired = function(ids = []) {
+contractsDAL.setExpired = function (ids = []) {
   if (!ids.length) {
     return Promise.resolve();
   }
@@ -190,7 +190,7 @@ contractsDAL.setExpired = function(ids = []) {
   );
 };
 
-contractsDAL.countExecutions = function(id) {
+contractsDAL.countExecutions = function (id) {
   return executionsDAL.count({
     where: {
       contractId: id,
@@ -198,7 +198,7 @@ contractsDAL.countExecutions = function(id) {
   });
 };
 
-contractsDAL.getExecutions = function(id, options) {
+contractsDAL.getExecutions = function (id, options) {
   return executionsDAL.findAll(
     deepMerge(
       {
@@ -211,7 +211,7 @@ contractsDAL.getExecutions = function(id, options) {
   );
 };
 
-contractsDAL.getLastExecutionOfTx = function(id, txHash) {
+contractsDAL.getLastExecutionOfTx = function (id, txHash) {
   return executionsDAL
     .findAll({
       where: {
@@ -229,42 +229,37 @@ contractsDAL.getLastExecutionOfTx = function(id, txHash) {
       order: [['indexInTx', 'DESC']],
       limit: 1,
     })
-    .then(results => {
+    .then((results) => {
       return results.length ? results[0] : null;
     });
 };
 
-contractsDAL.findExecutionsWithRelations = function(id, options) {
+contractsDAL.findExecutions = function (id, { limit, offset } = {}) {
   return Promise.all([
-    this.countExecutions(id),
-    this.getExecutions(
-      id,
-      deepMerge(
-        {
-          include: [
-            {
-              model: this.db.Tx,
-              required: true,
-              include: [
-                {
-                  model: this.db.Block,
-                  required: true,
-                },
-              ],
-            },
-          ],
-          order: [
-            [{ model: this.db.Tx }, { model: this.db.Block }, 'timestamp', 'DESC'],
-            ['indexInTx', 'ASC'],
-          ],
+    executionsDAL.count({ where: { contractId: id } }),
+    sequelize.query(
+      tags.oneLine`
+        SELECT "Executions".*, "Txs"."hash" AS "txHash", "Blocks"."timestamp" AS "timestamp"
+        FROM "Executions"
+        INNER JOIN "Txs" ON "Executions"."txId" = "Txs"."id"
+        INNER JOIN "Blocks" ON "Executions"."blockNumber" = "Blocks"."blockNumber"
+        WHERE "Executions"."contractId" = :contractId
+        ORDER BY "Executions"."blockNumber" DESC, "Executions"."indexInTx" DESC
+        ${limit ? 'LIMIT :limit' : ''} ${offset ? 'OFFSET :offset' : ''}
+    `,
+      {
+        replacements: {
+          limit,
+          offset,
+          contractId: id,
         },
-        options
-      )
+        type: sequelize.QueryTypes.SELECT,
+      }
     ),
   ]).then(this.getItemsAndCountResult);
 };
 
-contractsDAL.deleteExecutions = function(id) {
+contractsDAL.deleteExecutions = function (id) {
   return this.db.Execution.destroy({
     where: {
       contractId: id,
@@ -272,7 +267,7 @@ contractsDAL.deleteExecutions = function(id) {
   });
 };
 
-contractsDAL.getActivationTxs = function(contract) {
+contractsDAL.getActivationTxs = function (contract) {
   return contract.getActivationTxs({
     order: [[sequelize.col('Block.blockNumber'), 'DESC']],
     include: [
@@ -283,7 +278,7 @@ contractsDAL.getActivationTxs = function(contract) {
     ],
   });
 };
-contractsDAL.getLastActivationTx = function(contract) {
+contractsDAL.getLastActivationTx = function (contract) {
   return contract
     .getActivationTxs({
       order: [[sequelize.col('Block.blockNumber'), 'DESC']],
@@ -295,10 +290,10 @@ contractsDAL.getLastActivationTx = function(contract) {
         },
       ],
     })
-    .then(results => (results.length ? results[0] : null));
+    .then((results) => (results.length ? results[0] : null));
 };
 
-contractsDAL.addActivationTx = async function(contract, transaction, options) {
+contractsDAL.addActivationTx = async function (contract, transaction, options) {
   if (contract && transaction) {
     return contract.addActivationTx(transaction, options);
   }
