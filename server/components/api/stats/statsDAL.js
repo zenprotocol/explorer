@@ -33,6 +33,7 @@ statsDAL.transactionsPerDay = async function ({ chartInterval = maximumChartInte
         [Op.gt]: db.Sequelize.literal(`CURRENT_DATE - '${chartInterval}'::interval`),
       },
     },
+    order: [['date', 'ASC']],
   });
 };
 
@@ -44,6 +45,7 @@ statsDAL.zpSupply = async function ({ chartInterval = maximumChartInterval } = {
         [Op.gt]: db.Sequelize.literal(`CURRENT_DATE - '${chartInterval}'::interval`),
       },
     },
+    order: [['date', 'ASC']],
   });
 };
 
@@ -55,6 +57,7 @@ statsDAL.blockDifficulty = async function ({ chartInterval = maximumChartInterva
         [Op.gt]: db.Sequelize.literal(`CURRENT_DATE - '${chartInterval}'::interval`),
       },
     },
+    order: [['date', 'ASC']],
   });
 };
 
@@ -67,6 +70,7 @@ statsDAL.networkHashRate = async function ({ chartInterval = maximumChartInterva
         [Op.gt]: db.Sequelize.literal(`CURRENT_DATE - '${chartInterval}'::interval`),
       },
     },
+    order: [['date', 'ASC']],
   });
 };
 
