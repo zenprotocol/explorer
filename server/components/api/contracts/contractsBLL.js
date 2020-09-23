@@ -23,9 +23,6 @@ module.exports = {
   findActivationTxs: async function({ contract } = {}) {
     return await contractsDAL.getActivationTxs(contract);
   },
-  findLastActivationTransaction: async function({ contract } = {}) {
-    return await contractsDAL.getLastActivationTx(contract);
-  },
   assets: async function({ address, page = 0, pageSize = 10 } = {}) {
     if (!address) {
       return [];

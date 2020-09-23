@@ -126,9 +126,8 @@ async function getContractStoreData(req) {
     };
   }
 
-  const lastActivationTransaction = await contractsBLL.findLastActivationTransaction({ contract });
   return {
-    contract: Object.assign({}, contractsDAL.toJSON(contract), { lastActivationTransaction }),
+    contract,
   };
 }
 

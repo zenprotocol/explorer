@@ -62,9 +62,8 @@ export default class ContractStore {
     return Service.contracts
       .findByAddress(address)
       .then((response) => {
-        const contract = new Contract(response.data);
         runInAction(() => {
-          this.contract = contract;
+          this.contract = response.data;
         });
       })
       .catch((error) => {
@@ -166,19 +165,3 @@ decorate(ContractStore, {
   loadAssets: action,
   loadExecutions: action,
 });
-
-export class Contract {
-  constructor({
-    id = '',
-    address = '',
-    code = '',
-    expiryBlock = null,
-    lastActivationTransaction = null,
-  } = {}) {
-    this.id = id;
-    this.address = address;
-    this.code = code;
-    this.expiryBlock = expiryBlock;
-    this.lastActivationTransaction = lastActivationTransaction;
-  }
-}

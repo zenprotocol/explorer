@@ -15,7 +15,6 @@ import Page from '../../components/Page';
 import { Tabs, TabHead, TabBody, Tab } from '../../components/tabs';
 import { AssetsTab, CodeTab, ExecutionsTab, TransactionsTab } from './components/tabs';
 import './Contract.scss';
-import ObjectUtils from '../../lib/ObjectUtils';
 
 class ContractPage extends Component {
   get contractStore() {
@@ -96,10 +95,6 @@ class ContractPage extends Component {
     if (!contract.id) {
       return null;
     }
-    const lastActivationBlockNumber = ObjectUtils.getSafeProperty(
-      contract,
-      'lastActivationTransaction.Block.blockNumber'
-    );
     return (
       <div className="row">
         <div className="col-lg-6">
@@ -130,12 +125,12 @@ class ContractPage extends Component {
                 <td>TRANSACTIONS</td>
                 <td>{TextUtils.formatNumber(address.totalTxs)}</td>
               </tr>
-              {lastActivationBlockNumber && (
+              {contract.lastActivationBlock && (
                 <tr>
                   <td>LAST ACTIVATION BLOCK</td>
                   <td>
-                    <Link to={`/blocks/${lastActivationBlockNumber}`}>
-                      {TextUtils.formatNumber(lastActivationBlockNumber)}
+                    <Link to={`/blocks/${contract.lastActivationBlock}`}>
+                      {TextUtils.formatNumber(contract.lastActivationBlock)}
                     </Link>
                   </td>
                 </tr>
