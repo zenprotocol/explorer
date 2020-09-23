@@ -11,7 +11,7 @@ const addressesDAL = dal.createDAL('Address');
 const sequelize = db.sequelize;
 const Op = db.Sequelize.Op;
 
-const LOCK_TYPE_FOR_BALANCE = '"lockType" IN (\'Coinbase\',\'PK\',\'Contract\',\'Destroy\')';
+const LOCK_TYPE_FOR_BALANCE = "\"lockType\" IN ('Coinbase','PK','Contract','Destroy')";
 
 addressesDAL.findByAddressAsset = function ({ address, asset, ...options } = {}) {
   return this.findAll({
@@ -30,7 +30,14 @@ addressesDAL.findAllByAddress = function (address, options) {
   return this.findAll({
     where: {
       address,
+      balance: {
+        [Op.gt]: 0,
+      },
     },
+    order: [
+      [sequelize.literal('CASE WHEN "asset" = \'00\' THEN 0 ELSE 1 END'), 'ASC'],
+      ['balance', 'DESC'],
+    ],
     ...options,
   });
 };
