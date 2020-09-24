@@ -1,6 +1,6 @@
 'use strict';
 
-const zen = require('@zen/zenjs');
+const { Data, PublicKey, Signature } = require('@zen/zenjs');
 const sha3 = require('js-sha3');
 const BigInteger = require('bigi');
 const logger = require('../../lib/logger')('votes.repo');
@@ -250,7 +250,6 @@ class VotesAdder {
   }
 
   verify({ publicKey, signature, voteInterval, commitId } = {}) {
-    const { Data, PublicKey, Signature } = zen;
     const sha = sha3.sha3_256;
     return PublicKey.fromString(publicKey).verify(
       Buffer.from(

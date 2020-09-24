@@ -1,8 +1,7 @@
 'use strict';
 
-const zen = require('@zen/zenjs');
+const { Data, PublicKey, Signature, Hash } = require('@zen/zenjs');
 const R = require('ramda');
-const { Hash } = require('@zen/zenjs/build/src/Consensus/Types/Hash');
 const { Decimal } = require('decimal.js');
 const Bigi = require('bigi');
 const { fromPairs } = require('ramda');
@@ -227,7 +226,6 @@ class CgpVotesAdder {
   }
 
   verifySignature({ publicKey, signature, interval, ballot, phase } = {}) {
-    const { Data, PublicKey, Signature } = zen;
     return PublicKey.fromString(publicKey).verify(
       Hash.compute(
         Data.serialize(new Data.UInt32(Bigi.valueOf(interval)))

@@ -1,6 +1,6 @@
 'use strict';
 
-const { Ballot } = require('@zen/zenjs/build/src/Consensus/Types/Ballot');
+const { Ballot } = require('@zen/zenjs');
 
 module.exports = function(ballot) {
   try {

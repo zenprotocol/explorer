@@ -2,8 +2,7 @@
 
 const test = require('blue-tape');
 const { Decimal } = require('decimal.js');
-const { Address } = require('@zen/zenjs');
-const { ContractId } = require('@zen/zenjs/build/src/Consensus/Types/ContractId');
+const { Address, ContractId } = require('@zen/zenjs');
 const truncate = require('../../../../test/lib/truncate');
 const txsDAL = require('../txs/txsDAL');
 const blocksDAL = require('../blocks/blocksDAL');

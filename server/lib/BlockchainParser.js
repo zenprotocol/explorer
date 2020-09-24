@@ -1,8 +1,6 @@
 'use strict';
 
-const bech32 = require('bech32');
-const zen = require('@zen/zenjs');
-const { ContractId } = require('@zen/zenjs/build/src/Consensus/Types/ContractId');
+const { Address, PublicKey, ContractId, Block } = require('@zen/zenjs');
 
 const LOCK_VALUE_KEY_OPTIONS = ['hash', 'pkHash', 'id', 'data'];
 
@@ -17,15 +15,17 @@ class BlockchainParser {
 
   getChainBaseName(chain) {
     const append = 'net'; // remove this append text
-    return chain.endsWith(append) ? chain.substring(0, chain.length - append.length).toLowerCase() : chain.toLowerCase();
+    return chain.endsWith(append)
+      ? chain.substring(0, chain.length - append.length).toLowerCase()
+      : chain.toLowerCase();
   }
 
   getPublicKeyHashAddress(pkHash) {
-    return zen.Address.getPublicKeyHashAddress(this.chain, pkHash);
+    return Address.getPublicKeyHashAddress(this.chain, pkHash);
   }
 
   getAddressFromPublicKey(publicKey) {
-    return zen.PublicKey.fromString(publicKey).toAddress(this.chain);
+    return PublicKey.fromString(publicKey).toAddress(this.chain);
   }
 
   getAddressFromContractId(contractId) {
@@ -33,11 +33,15 @@ class BlockchainParser {
   }
 
   getPkHashFromAddress(address) {
-    return zen.Address.decode(this.chain, address).hash;
+    return Address.decode(this.chain, address).hash;
   }
 
   getContractVersion(contractId) {
     return ContractId.fromString(contractId).version;
+  }
+
+  deserializeBlock(serialized) {
+    return Block.fromHex(serialized);
   }
 
   getLockValuesFromOutput(output) {
