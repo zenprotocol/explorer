@@ -9,17 +9,10 @@ module.exports = (sequelize, DataTypes) => {
       endBlock: DataTypes.INTEGER,
       threshold: DataTypes.BIGINT,
       hasSnapshot: DataTypes.BOOLEAN,
-      prevPhaseId: DataTypes.INTEGER,
     },
     {
       timestamps: false
     }
   );
-  RepoVoteInterval.associate = function() {
-    RepoVoteInterval.belongsTo(RepoVoteInterval, {
-      as: 'PrevPhase',
-      foreignKey: 'prevPhaseId'
-    });
-  };
   return RepoVoteInterval;
 };

@@ -137,7 +137,6 @@ package "Votes" {
     beginBlock
     endBlock
     threshold field_comment(in Kalapas)
-    prevPhaseId
     hasSnapshot
   }
   Table(Snapshot, "Snapshot") {

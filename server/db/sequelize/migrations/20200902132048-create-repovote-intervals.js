@@ -27,9 +27,6 @@ module.exports = {
         threshold: {
           type: Sequelize.BIGINT,
         },
-        prevPhaseId: {
-          type: Sequelize.INTEGER,
-        },
         hasSnapshot: {
           type: Sequelize.BOOLEAN,
           allowNull: false,
@@ -42,17 +39,6 @@ module.exports = {
             fields: ['interval', 'phase'],
             type: 'unique',
             name: 'RepoVoteIntervals_interval_phase_unique_constraint',
-          }),
-          queryInterface.addConstraint('RepoVoteIntervals', {
-            fields: ['prevPhaseId'],
-            type: 'foreign key',
-            name: 'VoteIntervals_prevPhaseId_fkey',
-            references: {
-              table: 'RepoVoteIntervals',
-              field: 'id',
-            },
-            onDelete: 'set null',
-            onUpdate: 'cascade',
           }),
         ])
       );

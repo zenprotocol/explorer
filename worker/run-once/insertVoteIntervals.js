@@ -34,15 +34,13 @@ const run = async () => {
     order: [['interval', 'DESC']]
   });
   const interval = lastIntervalInDb ? lastIntervalInDb.interval : 0;
-  let prevPhase = null;
   for (let i = 0; i < amount * 2; i++) {
-    prevPhase = await voteIntervalsDAL.create({
+    await voteIntervalsDAL.create({
       interval: interval + Math.floor(i / 2) + 1,
       phase: i % 2 === 0 ? 'Contestant' : 'Candidate',
       beginBlock: begin + i * (length + gap),
       endBlock: begin + i * (length + gap) + length,
       threshold: i % 2 === 0 ? threshold : null,
-      prevPhaseId: i % 2 === 1 ? prevPhase.id : null,
     });
   }
   logger.info('Finished inserting intervals');

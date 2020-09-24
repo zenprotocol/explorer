@@ -455,7 +455,7 @@ async function createDemoData() {
   });
 
   // add the intervals
-  const contestant = await voteIntervalsDAL.create({
+  await voteIntervalsDAL.create({
     interval: 1,
     phase: 'Contestant',
     beginBlock: SNAPSHOT_BLOCK_CONTESTANT,
@@ -467,7 +467,6 @@ async function createDemoData() {
     phase: 'Candidate',
     beginBlock: SNAPSHOT_BLOCK_CANDIDATE,
     endBlock: TALLY_BLOCK_CANDIDATE,
-    prevPhaseId: contestant.id,
   });
 
   const snapshotsTaker = new SnapshotsTaker({ chain: 'test' });
