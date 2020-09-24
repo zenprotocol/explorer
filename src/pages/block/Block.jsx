@@ -179,7 +179,7 @@ class BlockPage extends Component {
               ) : null}
               <tr>
                 <td>TRANSACTIONS</td>
-                <td>{TextUtils.formatNumber(block.transactionCount)}</td>
+                <td>{TextUtils.formatNumber(block.txsCount)}</td>
               </tr>
               <tr>
                 <td>TIMESTAMP</td>

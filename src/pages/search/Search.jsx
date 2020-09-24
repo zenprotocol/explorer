@@ -251,7 +251,7 @@ class SearchResultsPage extends Component {
                     cell: (data) => TextUtils.getDateStringFromTimestamp(data),
                   },
                   {
-                    accessor: 'transactionCount',
+                    accessor: 'txsCount',
                     cell: (data) => <span>{TextUtils.formatNumber(data)} txns</span>,
                   },
                 ]}
