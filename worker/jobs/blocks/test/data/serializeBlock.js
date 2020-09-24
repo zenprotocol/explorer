@@ -84,7 +84,7 @@ module.exports = function (blockJson) {
     commitments: Hash.fromBytes(blockJson.header.commitments),
     timestamp: bigi(blockJson.header.commitments),
     difficulty: blockJson.header.difficulty,
-    nonce: new Nonce([bigi(blockJson.header.nonce[0], bigi(blockJson.header.nonce[1]))]),
+    nonce: new Nonce([bigi(blockJson.header.nonce[0]), bigi(blockJson.header.nonce[1])]),
   };
   
   let transactions = Object.keys(blockJson.transactions).map((key) =>
