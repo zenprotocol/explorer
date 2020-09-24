@@ -1,6 +1,8 @@
 const fs = require('fs');
 const path = require('path');
 const block = require('./data/block');
+const realSerializedBlocks = require('./data/blockchain-blocks.json');
+const serializeBlock = require('./data/serializeBlock');
 
 const REAL_BLOCKS_MAX_NUMBER = 4;
 
@@ -19,14 +21,27 @@ module.exports = {
     networkHelper.getLatestBlockNumberFromNode = function () {
       return hasFalsyValues ? 2 : latestBlockNumber;
     };
-    networkHelper.getBlockFromNode = function (blockNumber) {
-      const filePath = `./data/blockNumber${blockNumber}.json`;
-      if (!hasFalsyValues && !isNaN(blockNumber) && blockNumber > 0 && fs.existsSync(path.join(__dirname, filePath))) {
-        return Promise.resolve(require(filePath));
+    networkHelper.getSerializedBlocksFromNode = function ({ blockNumber, take = 1 } = {}) {
+      const blocks = [];
+      for (let i = blockNumber; i > Math.max(1, blockNumber - take); i--) {
+        const filePath = `./data/blockNumber${i}.json`;
+        if (hasFalsyValues || isNaN(blockNumber) || blockNumber < 1) {
+          blocks.push({
+            blockNumber: i,
+            rawBlock: serializeBlock(
+              block({ blockNumber, falsyBlock, falsyTransaction, falsyInput, falsyOutput })
+            ),
+          });
+        } else if (fs.existsSync(path.join(__dirname, filePath))) {
+          blocks.push({
+            blockNumber: i,
+            rawBlock: serializeBlock(require(filePath)),
+          });
+        } else {
+          blocks.push(realSerializedBlocks[i - 1]);
+        }
       }
-      return Promise.resolve(
-        block({ blockNumber, falsyBlock, falsyTransaction, falsyInput, falsyOutput })
-      );
+      return Promise.resolve(blocks);
     };
     networkHelper.getBlockchainInfo = function () {
       return {
