@@ -1,35 +1,37 @@
 {
-  "hash": "000000000487ce7fe33b124f2d782346f4c69e5de25fa9ac33368e79d3bc9169",
-  "header": {
-      "version": 0,
-      "parent": "cb746bfdbc472602064dbc04e66326a8edf11a3c64d08ddfa90257e86e866b0f",
-      "blockNumber": 2,
-      "commitments": "626a22feb6275762b45b8a5a329296343343efbd6ccea80d7f1ebf63d8b0efcf",
-      "timestamp": 1530378044087,
-      "difficulty": 471719622,
-      "nonce": [
-          8015528688734519415,
-          5802497780545032333
-      ]
-  },
-  "transactions": {
-      "395e22aaeda855eb4140b694f03a624e715387b208224f6ad2c03a2e62c7a9aa": {
-          "version": 0,
-          "inputs": [],
-          "outputs": [
-              {
-                  "lock": {
-                      "Coinbase": {
-                          "blockNumber": 2,
-                          "pkHash": "04665956a394179bd8d96d81cdf1471565cfe6f937f3d4741b93208577d3971e"
-                      }
-                  },
-                  "spend": {
-                      "asset": "00",
-                      "amount": 5000000000
-                  }
-              }
-          ]
-      }
-  }
+    "hash": "000000379a65b3d3b5c2a822805ebea50e9723b2d21d4478841f1548f8d5928c",
+    "header": {
+        "version": 0,
+        "parent": "5488069e4be0551a3c886543845c332633731c536853209c2dbe04c035946490",
+        "blockNumber": 2,
+        "commitments": "ca42763cfe7d87f7764817a6f97e4bab53c76d358ba405752c16f2f586d34ca8",
+        "timestamp": 1546371824778,
+        "difficulty": 503316479,
+        "nonce": [
+            -6507696809894692309,
+            14991978
+        ]
+    },
+    "transactions": {
+        "76567fbaffa524424dc79b6f46bdfe85340ae8dd0581c8298260349c7130f7c2": {
+            "version": 0,
+            "inputs": [],
+            "outputs": [
+                {
+                    "lock": {
+                        "Coinbase": {
+                            "blockNumber": 2,
+                            "pkHash": "30759b07ca01caf8e524fc279946a1e96afc3546ee5f1fd4a1cfaf644763c2b4",
+                            "address": "tzn1qxp6ekp72q8903efylsnej34pa940cd2xae03l49pe7hkg3mrc26qyh2rgr"
+                        }
+                    },
+                    "spend": {
+                        "asset": "00",
+                        "amount": 5000000000
+                    }
+                }
+            ],
+            "witness": []
+        }
+    }
 }
