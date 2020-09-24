@@ -6,7 +6,7 @@
     "slackTimeLimit": 3600,
     "addBlocks": {
       "name": "Add Blocks From Node",
-      "limitBlocks": 20
+      "limitBlocks": 10
     },
     "updateGeneralInfos": {
       "name": "Update General Infos"
