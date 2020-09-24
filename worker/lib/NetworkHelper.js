@@ -14,9 +14,12 @@ class NetworkHelper {
     return await Service.blocks.getBlock(blockNumber);
   }
 
+  /**
+   * Get blocks in a batch from /blockchain/block
+   * calls the api *take* times in parallel
+   */
   async getBlocksFromNode({ blockNumber, take } = {}) {
     // get all blocks in batch
-    // PREPARE FOR NEW API blockchain/blocks
     // BLOCKS ARE ORDERED HIGH TO LOW
     const nodeBlocksPromises = [];
     for (let i = blockNumber; i > blockNumber - take; i--) {
@@ -30,7 +33,12 @@ class NetworkHelper {
     }
 
     return Promise.all(nodeBlocksPromises);
-    // return await Service.blocks.getBlocks({blockNumber, take});
+  }
+  /**
+   * Get serialized blocks in a batch from blockchain/blocks
+   */
+  async getSerializedBlocksFromNode({ blockNumber, take } = {}) {
+    return Service.blocks.getBlocks({ blockNumber, take });
   }
 
   async getBlockchainInfo() {
