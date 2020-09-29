@@ -25,6 +25,7 @@ function before({ numOfExecutionsInDb = 0 } = {}) {
     findLatest: td.func('findLatest'),
   });
   contractsDAL = td.replace('../../../server/components/api/contracts/contractsDAL', {
+    findAll: td.func('findAll'),
     findAllActive: td.func('findAllActive'),
     countExecutions: td.func('countExecutions'),
     getLastExecutionOfTx: td.func('getLastExecutionOfTx'),
@@ -105,27 +106,22 @@ function after() {
 
 test('ExecutionsAdder.doJob()', async function(t) {
   function stub({
+    allContracts = [],
     activeContracts = [],
     executionsCount = 0,
     transactionId = 1,
     latestBlockNumber = LATEST_BLOCK_NUMBER,
   } = {}) {
+    td.when(contractsDAL.findAll()).thenResolve(allContracts);
     td.when(contractsDAL.findAllActive()).thenResolve(activeContracts);
     td.when(contractsDAL.countExecutions(td.matchers.anything())).thenResolve(executionsCount);
     td.when(txsDAL.findOne(td.matchers.anything())).thenResolve({ id: transactionId, blockNumber: latestBlockNumber });
     td.when(blocksDAL.findLatest()).thenResolve({ blockNumber: latestBlockNumber });
   }
-  // await (async function doJob_shouldReturnANumber() {
-  //   before();
-  //   stub();
-  //   const result = await executionsAdder.doJob({});
-  //   t.assert(typeof result === 'number', 'doJob() should return a number');
-  //   after();
-  // })();
 
   await (async function doJob_shouldCallBulkCreate() {
     before();
-    stub({ activeContracts: [{ id: CONTRACT_ID_1 }] });
+    stub({ activeContracts: [{ id: CONTRACT_ID_1 }], allContracts: [{ id: CONTRACT_ID_1 }] });
     await executionsAdder.doJob({ data: { take: CUSTOM_TAKE } });
     try {
       td.verify(executionsDAL.bulkCreate(td.matchers.isA(Array)));
@@ -139,7 +135,7 @@ test('ExecutionsAdder.doJob()', async function(t) {
 
   await (async function doJob_dbNotSynced() {
     before();
-    stub({ activeContracts: [{ id: CONTRACT_ID_1 }], latestBlockNumber: LATEST_BLOCK_NUMBER - 1 });
+    stub({ activeContracts: [{ id: CONTRACT_ID_1 }], allContracts: [{ id: CONTRACT_ID_1 }], latestBlockNumber: LATEST_BLOCK_NUMBER - 1 });
     const result = await executionsAdder.doJob({ data: { take: CUSTOM_TAKE } });
     t.equal(result, 0, 'Given a not synced db: should not insert anything');
     after();
@@ -147,7 +143,7 @@ test('ExecutionsAdder.doJob()', async function(t) {
 
   await (async function doJob_oneContract_nothingInDb() {
     before();
-    stub({ activeContracts: [{ id: CONTRACT_ID_1 }] });
+    stub({ activeContracts: [{ id: CONTRACT_ID_1 }], allContracts: [{ id: CONTRACT_ID_1 }] });
     const result = await executionsAdder.doJob({ data: { take: CUSTOM_TAKE } });
     t.equal(
       result,
@@ -161,6 +157,7 @@ test('ExecutionsAdder.doJob()', async function(t) {
     before();
     stub({
       activeContracts: [{ id: CONTRACT_ID_1 }, { id: CONTRACT_ID_2 }],
+      allContracts: [{ id: CONTRACT_ID_1 }, { id: CONTRACT_ID_2 }],
     });
     const result = await executionsAdder.doJob({ data: { take: CUSTOM_TAKE } });
     t.equal(
@@ -174,18 +171,47 @@ test('ExecutionsAdder.doJob()', async function(t) {
   await (async function doJob_oneContract_lessInDb() {
     const numOfExecutionsInDb = numOfExecutionsWithConfirmations - 1;
     before({ numOfExecutionsInDb });
-    stub({ activeContracts: [{ id: CONTRACT_ID_1 }], executionsCount: numOfExecutionsInDb });
+    stub({ activeContracts: [{ id: CONTRACT_ID_1 }], allContracts: [{ id: CONTRACT_ID_1 }], executionsCount: numOfExecutionsInDb });
     const result = await executionsAdder.doJob({ data: { take: CUSTOM_TAKE } });
     t.equal(result, 1, 'Given less data in db: should insert only the new executions');
     after();
   })();
 
-  await (async function doJob_oneContract_someInDb() {
+  await (async function doJob_oneContract_sameInDb() {
     const numOfExecutionsInDb = numOfExecutionsWithConfirmations;
     before({ numOfExecutionsInDb });
-    stub({ activeContracts: [{ id: CONTRACT_ID_1 }], executionsCount: numOfExecutionsInDb });
+    stub({ activeContracts: [{ id: CONTRACT_ID_1 }], allContracts: [{ id: CONTRACT_ID_1 }], executionsCount: numOfExecutionsInDb });
     const result = await executionsAdder.doJob({ data: { take: CUSTOM_TAKE } });
     t.equal(result, 0, 'Given same data in db: should not insert anything');
+    after();
+  })();
+
+  await (async function doJob_severalContracts_notAllActive_JobTypeRapid() {
+    before();
+    stub({
+      activeContracts: [{ id: CONTRACT_ID_1 }],
+      allContracts: [{ id: CONTRACT_ID_1 }, { id: CONTRACT_ID_2 }],
+    });
+    const result = await executionsAdder.doJob({ data: { take: CUSTOM_TAKE, type: 'rapid' } });
+    t.equal(
+      result,
+      numOfExecutionsWithConfirmations,
+      'Given some non active contracts and job type = rapid: should insert executions for the active contracts only'
+    );
+    after();
+  })();
+  await (async function doJob_severalContracts_notAllActive_JobTypeExpensive() {
+    before();
+    stub({
+      activeContracts: [{ id: CONTRACT_ID_1 }],
+      allContracts: [{ id: CONTRACT_ID_1 }, { id: CONTRACT_ID_2 }],
+    });
+    const result = await executionsAdder.doJob({ data: { take: CUSTOM_TAKE, type: 'expensive' } });
+    t.equal(
+      result,
+      numOfExecutionsWithConfirmations * 2,
+      'Given some non active contracts and job type = expensive: should insert executions for all contracts'
+    );
     after();
   })();
 });

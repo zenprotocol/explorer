@@ -12,7 +12,7 @@ const QueueError = require('../../lib/QueueError');
 const DEFAULT_NUM_OF_EXECUTIONS_TO_TAKE = 100;
 
 function filterOutZeroConfirmations(nodeExecutions) {
-  return R.filter(execution => execution.confirmations > 0, nodeExecutions);
+  return R.filter((execution) => execution.confirmations > 0, nodeExecutions);
 }
 
 class ExecutionsAdder {
@@ -27,18 +27,21 @@ class ExecutionsAdder {
         logger.info('Blocks are not yet synced - aborting');
         return 0;
       }
+      const jobType = getJobData(job, 'type'); // should execute lengthy operations?
       const numOfExecutionsToTake = getJobData(job, 'take') || DEFAULT_NUM_OF_EXECUTIONS_TO_TAKE;
-      // Non active contracts can not add executions
-      const activeContracts = await contractsDAL.findAllActive();
-      if (!activeContracts.length) {
-        logger.info('There are no active contracts at the moment - aborting');
+      const contracts =
+        jobType === 'expensive' ? await contractsDAL.findAll() : await contractsDAL.findAllActive();
+      if (!contracts.length) {
+        logger.info(
+          `No ${jobType === 'expensive' ? '' : 'active '}contracts found in DB - aborting`
+        );
         return 0;
       }
 
-      logger.info('Updating active contracts executions');
-      const numOfRowsAffected = await this.processContracts(activeContracts, numOfExecutionsToTake);
+      logger.info('Updating contracts executions');
+      const numOfRowsAffected = await this.processContracts(contracts, numOfExecutionsToTake);
       logger.info(
-        `Executions for active contracts updated - ${numOfRowsAffected} number of rows affected`
+        `Executions for contracts updated - ${numOfRowsAffected} number of rows affected`
       );
       return numOfRowsAffected;
     } catch (error) {
@@ -61,7 +64,7 @@ class ExecutionsAdder {
    */
   async processContracts(contracts, numOfExecutionsToTake = DEFAULT_NUM_OF_EXECUTIONS_TO_TAKE) {
     const promises = [];
-    contracts.forEach(contract =>
+    contracts.forEach((contract) =>
       promises.push(this.getExecutionsToInsert(contract.id, numOfExecutionsToTake))
     );
     const results = await Promise.all(promises);

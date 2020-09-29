@@ -20,22 +20,22 @@ const taskTimeLimiter = new TaskTimeLimiter(Config.get('queues:slackTimeLimit') 
 executionsQueue.process(path.join(__dirname, 'jobs/executions/executions.handler.js'));
 
 // events
-executionsQueue.on('active', function(job, jobPromise) {
+executionsQueue.on('active', function (job) {
   logger.info(`A job has started. ID=${job.id}`);
 });
 
-executionsQueue.on('completed', function(job, result) {
-  logger.info(`A job has been completed. ID=${job.id} result=${result}`);
+executionsQueue.on('completed', function (job, result) {
+  logger.info(`A job has been completed. ID=${job.id} type=${job.data.type} result=${result}`);
   if (result > 0) {
     votesQueue.add({ type: 'cgp' });
     votesQueue.add({ type: 'repo' });
   }
 });
 
-executionsQueue.on('failed', function(job, error) {
+executionsQueue.on('failed', function (job, error) {
   logger.error(`A job has failed. ID=${job.id}, error=${error.message}`);
   taskTimeLimiter.executeTask(() => {
-    getChain().then(chain => {
+    getChain().then((chain) => {
       slackLogger.error(
         `An Executions job has failed, error=${error.message} app=${APP_NAME} chain=${chain} node=${NODE_URL}`
       );
@@ -52,7 +52,13 @@ Promise.all([
   executionsQueue.clean(0, 'failed'),
 ]).then(() => {
   // now
-  executionsQueue.add({});
+  executionsQueue.add({ type: 'expensive' });
+
+  // schedule expensive job, the rapid jobs will be queued after each blocks queue job
+  executionsQueue.add(
+    { type: 'expensive' },
+    { repeat: { cron: '0 */12 * * *' } } // At minute 0 past every 12th hour.
+  );
 });
 
 setInterval(() => {

@@ -49,7 +49,7 @@ blocksQueue.on('completed', function(job, result) {
       statsQueue.add();
     }
     // start dependant queues
-    executionsQueue.add();
+    executionsQueue.add({ type: 'rapid' });
   }
 });
 
