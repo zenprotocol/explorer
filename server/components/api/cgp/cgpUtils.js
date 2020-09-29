@@ -96,14 +96,14 @@ function getPhaseBlocks({ chain, interval, type } = {}) {
  * @param {(number|string)} params.height - the height at which to calculate
  * @param {(number|string)} params.genesisTotal - the genesis total in ZP
  * @param {Chain} params.chain - the current chain
- * @returns (string) the threshold at the given height
+ * @returns (string) the threshold at the given height in Kalapas
  */
 function getThreshold({ height, genesisTotal = 0, chain = 'main' } = {}) {
   const threshold = new Decimal(calcTotalZpByHeight({ genesis: genesisTotal, height }))
     .times(config.get(`cgp:${chain}:thresholdPercentage`))
     .div(100);
 
-  return threshold.toFixed(Math.min(threshold.decimalPlaces(), 8));
+  return threshold.floor().toString();
 }
 
 module.exports = {

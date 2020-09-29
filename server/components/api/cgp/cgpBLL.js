@@ -63,7 +63,7 @@ module.exports = {
 
       return {
         ...relevant,
-        winnersNomination: addBallotContentToResults({ type: 'nomination', chain })(nominees),
+        winnersNomination: await addBallotContentToResults({ type: 'nomination', chain })(nominees),
         winnerAllocation: null,
         winnerPayout: null,
         zpParticipatedNomination,
