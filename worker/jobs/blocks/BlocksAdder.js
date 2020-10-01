@@ -18,6 +18,7 @@ const assetsDAL = require('../../../server/components/api/assets/assetsDAL');
 const calcRewardByHeight = require('../../../server/lib/calcRewardByHeight');
 
 const Op = db.Sequelize.Op;
+const LOCK_TYPES_FOR_BALANCE = ['Coinbase', 'PK', 'Contract', 'Destroy'];
 
 class BlocksAdder {
   constructor(networkHelper, blockchainParser, genesisTotalZp) {
@@ -447,8 +448,10 @@ class BlocksAdder {
         }
 
         // add to outputSum for the asset
-        const addressObj = addresses.get(address);
-        addressObj[asset].outputSum = addressObj[asset].outputSum.plus(output.amount);
+        if (LOCK_TYPES_FOR_BALANCE.includes(output.lockType)) {
+          const addressObj = addresses.get(address);
+          addressObj[asset].outputSum = addressObj[asset].outputSum.plus(output.amount);
+        }
       }
 
       // asset
@@ -476,8 +479,10 @@ class BlocksAdder {
         }
 
         // add to inputSum for the asset
-        const addressObj = addresses.get(address);
-        addressObj[asset].inputSum = addressObj[asset].inputSum.plus(input.amount);
+        if (LOCK_TYPES_FOR_BALANCE.includes(input.lockType)) {
+          const addressObj = addresses.get(address);
+          addressObj[asset].inputSum = addressObj[asset].inputSum.plus(input.amount);
+        }
       }
 
       // asset
