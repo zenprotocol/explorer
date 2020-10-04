@@ -1,20 +1,19 @@
 {
-    "COMMENT": "THIS BLOCK WAS EDITED FOR TESTING MINT INPUT ONLY!!!",
-    "hash": "0000009168ca89604ae8a575775fe045f8013c807dfbce948e460138ba546ffe",
+    "hash": "0000000015b7fd9d5a22f3943e93aa260f489831be1ed44a9b74c22518c3efe2",
     "header": {
         "version": 0,
-        "parent": "0000000aae789a890e95b1a9b4c91443f1452ddb363eda7b8b0a99550af6fc3e",
+        "parent": "000000001604b1bc9c9cb3689d3bc7606ae19b35b45300b30fc311d81534afed",
         "blockNumber": 4,
-        "commitments": "78ac4290de47c8106e049d872592c60a603a57b7300ee667036147264eb5a485",
-        "timestamp": 1546371883013,
-        "difficulty": 502778116,
+        "commitments": "8a39f4c790e6d141ed6f76d504e05740f37d628347f0cc8a611fca80a950af19",
+        "timestamp": 1530378111726,
+        "difficulty": 471598731,
         "nonce": [
-            2756398254548127889,
-            11868197
+            -1844128446271926074,
+            -5146420197042277952
         ]
     },
     "transactions": {
-        "32115d31c76e874b464b1faaeb5e9fda19e71537e5ffb6d796d40ecc26bf7792": {
+        "6dd446057050b1e4555a6ea37bfa7fca5dc0f830188b0090f2e0a0d45c61491b": {
             "version": 0,
             "inputs": [],
             "outputs": [
@@ -22,91 +21,12 @@
                     "lock": {
                         "Coinbase": {
                             "blockNumber": 4,
-                            "pkHash": "30759b07ca01caf8e524fc279946a1e96afc3546ee5f1fd4a1cfaf644763c2b4",
-                            "address": "tzn1qxp6ekp72q8903efylsnej34pa940cd2xae03l49pe7hkg3mrc26qyh2rgr"
+                            "pkHash": "04665956a394179bd8d96d81cdf1471565cfe6f937f3d4741b93208577d3971e"
                         }
                     },
                     "spend": {
                         "asset": "00",
                         "amount": 5000000000
-                    }
-                }
-            ],
-            "witness": []
-        },
-        "84cdd09b98afce14fb920738611db23df7af58db717cda85679b6c6d5e556f3a": {
-            "version": 0,
-            "inputs": [
-                {
-                    "outpoint": {
-                        "txHash": "f0725f58037f339cb3849bb6c4636efc9006aec9c04be5b78f97c92da661439d",
-                        "index": 0
-                    }
-                },
-                {
-                    "mint": {
-                        "asset": "00000000ea0491531b62de13d9760c6d9dd4046316080d1339daae5d2072811815c6bbe366ee23c55bdb1658ac0399925307fc9ffdbc09e95d6f9c0a32fc5be1caa61c3f",
-                        "amount": 1
-                    }
-                }
-            ],
-            "outputs": [
-                {
-                    "lock": {
-                        "PK": {
-                            "hash": "30759b07ca01caf8e524fc279946a1e96afc3546ee5f1fd4a1cfaf644763c2b4",
-                            "address": "tzn1qxp6ekp72q8903efylsnej34pa940cd2xae03l49pe7hkg3mrc26qyh2rgr"
-                        }
-                    },
-                    "spend": {
-                        "asset": "00",
-                        "amount": 4999999998
-                    }
-                },
-                {
-                    "lock": "Fee",
-                    "spend": {
-                        "asset": "00",
-                        "amount": 1
-                    }
-                },
-                {
-                    "lock": {
-                        "Contract": {
-                            "id": "00000000ea0491531b62de13d9760c6d9dd4046316080d1339daae5d2072811815c6bbe3",
-                            "address": "ctzn1qqqqqqq82qjg4xxmzmcfajasvdkwagprrzcyq6yeem2h96grjsyvpt34muvh2nmmu"
-                        }
-                    },
-                    "spend": {
-                        "asset": "00000000ea0491531b62de13d9760c6d9dd4046316080d1339daae5d2072811815c6bbe366ee23c55bdb1658ac0399925307fc9ffdbc09e95d6f9c0a32fc5be1caa61c3f",
-                        "amount": 1
-                    }
-                }
-            ],
-            "witness": [
-                {
-                    "PKWitness": {
-                        "sigHash": "FollowingWitnesses",
-                        "hash": "30759b07ca01caf8e524fc279946a1e96afc3546ee5f1fd4a1cfaf644763c2b4",
-                        "address": "tzn1qxp6ekp72q8903efylsnej34pa940cd2xae03l49pe7hkg3mrc26qyh2rgr",
-                        "signature": "c0f36a5cd56e0781b382bf3ebc56c40ae7de53e24f8ed5ca11f8c04241c5266a1387143f132747b58d451d177d1f45bd75ad65a3d34c4f20fb0a4af4c757dbe3"
-                    }
-                },
-                {
-                    "ContractWitness": {
-                        "contractId": "00000000ea0491531b62de13d9760c6d9dd4046316080d1339daae5d2072811815c6bbe3",
-                        "command": "Commit",
-                        "messageBody": {
-                            "dict": [
-                                [
-                                    "Commit",
-                                    {
-                                        "hash": "edb079f3025474967cca906021b0360b3801701d1568d35423813065ed81f5b0"
-                                    }
-                                ]
-                            ]
-                        },
-                        "messageBodyRaw": "0c0106436f6d6d697407edb079f3025474967cca906021b0360b3801701d1568d35423813065ed81f5b0"
                     }
                 }
             ]

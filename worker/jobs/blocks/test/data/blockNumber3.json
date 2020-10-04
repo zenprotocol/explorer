@@ -1,20 +1,19 @@
 {
-    "COMMENT": "ADDED AN OUTPOINT TO BLOCK 2",
-    "hash": "0000000aae789a890e95b1a9b4c91443f1452ddb363eda7b8b0a99550af6fc3e",
+    "hash": "000000001604b1bc9c9cb3689d3bc7606ae19b35b45300b30fc311d81534afed",
     "header": {
         "version": 0,
-        "parent": "000000379a65b3d3b5c2a822805ebea50e9723b2d21d4478841f1548f8d5928c",
+        "parent": "000000000487ce7fe33b124f2d782346f4c69e5de25fa9ac33368e79d3bc9169",
         "blockNumber": 3,
-        "commitments": "4b594e492d922019eb99c6111e23dde6032cd214cd2bb8699a510aff8ac95893",
-        "timestamp": 1546371848371,
-        "difficulty": 503316479,
+        "commitments": "e88b874a1deb5fe5fda3093a2a58130f08782e73a87ccf80e25f064376837ff4",
+        "timestamp": 1530378056588,
+        "difficulty": 471662970,
         "nonce": [
-            -2637707469395790729,
-            8178528
+            8611678987731239437,
+            -6510393731867898070
         ]
     },
     "transactions": {
-        "f0725f58037f339cb3849bb6c4636efc9006aec9c04be5b78f97c92da661439d": {
+        "23b946071b524e58bf862d913e85aa38e2a4dc698ee7a99e283f27f555f1cf39": {
             "version": 0,
             "inputs": [],
             "outputs": [
@@ -22,8 +21,7 @@
                     "lock": {
                         "Coinbase": {
                             "blockNumber": 3,
-                            "pkHash": "30759b07ca01caf8e524fc279946a1e96afc3546ee5f1fd4a1cfaf644763c2b4",
-                            "address": "tzn1qxp6ekp72q8903efylsnej34pa940cd2xae03l49pe7hkg3mrc26qyh2rgr"
+                            "pkHash": "04665956a394179bd8d96d81cdf1471565cfe6f937f3d4741b93208577d3971e"
                         }
                     },
                     "spend": {
@@ -31,34 +29,7 @@
                         "amount": 5000000000
                     }
                 }
-            ],
-            "witness": []
-        },
-        "d357b1dae2281b2eb32828154eab99f81104eee7035a1f3471cff658b47b58dc": {
-            "version": 0,
-            "inputs": [
-                {
-                    "outpoint": {
-                        "txHash": "76567fbaffa524424dc79b6f46bdfe85340ae8dd0581c8298260349c7130f7c2",
-                        "index": 0
-                    }
-                }
-            ],
-            "outputs": [
-                {
-                    "lock": {
-                        "PK": {
-                            "hash": "72a6aa805930d89ba685c7919812209de5bdd9d3c4fb86903930286283db9ced",
-                            "address": "tzn1qw2n24qzexrvfhf59c7gesy3qnhjmmkwncnacdypexq5x9q7mnnksp5htq3"
-                        }
-                    },
-                    "spend": {
-                        "asset": "00",
-                        "amount": 5000000000
-                    }
-                }
-            ],
-            "witness": []
+            ]
         }
     }
 }
