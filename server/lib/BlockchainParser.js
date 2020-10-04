@@ -32,6 +32,10 @@ class BlockchainParser {
     return this.getPublicKeyHashAddress(ContractId.fromString(contractId));
   }
 
+  getPkHashFromAddress(address) {
+    return zen.Address.decode(this.chain, address).hash;
+  }
+
   getContractVersion(contractId) {
     return ContractId.fromString(contractId).version;
   }

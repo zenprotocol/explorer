@@ -70,7 +70,9 @@ class AddressPage extends Component {
 
   render() {
     const params = RouterUtils.getRouteParams(this.props);
-    let zpBalance = (this.addressStore.address.assetAmounts || []).find((x) => x.asset === '00') || {
+    let zpBalance = (this.addressStore.address.assetAmounts || []).find(
+      (x) => x.asset === '00'
+    ) || {
       balance: 0,
       received: 0,
       sent: 0,
@@ -102,6 +104,12 @@ class AddressPage extends Component {
                     </tr>
                   </thead>
                   <tbody>
+                    <tr>
+                      <td>PK HASH</td>
+                      <td>
+                        <HashLink hash={this.addressStore.address.pkHash} />
+                      </td>
+                    </tr>
                     <tr>
                       <td>BALANCE</td>
                       <td>{AssetUtils.getAmountString('00', zpBalance.balance)}</td>
