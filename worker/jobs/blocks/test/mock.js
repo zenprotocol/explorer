@@ -23,7 +23,7 @@ module.exports = {
     };
     networkHelper.getSerializedBlocksFromNode = function ({ blockNumber, take = 1 } = {}) {
       const blocks = [];
-      for (let i = blockNumber; i > Math.max(1, blockNumber - take); i--) {
+      for (let i = blockNumber; i > Math.max(0, blockNumber - take); i--) {
         const filePath = `./data/blockNumber${i}.json`;
         if (hasFalsyValues || isNaN(blockNumber) || blockNumber < 1) {
           blocks.push({
@@ -38,7 +38,7 @@ module.exports = {
             rawBlock: serializeBlock(require(filePath)),
           });
         } else {
-          blocks.push(realSerializedBlocks[i - 1]);
+          blocks.push(realSerializedBlocks[realSerializedBlocks.length - i]);
         }
       }
       return Promise.resolve(blocks);

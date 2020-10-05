@@ -9,43 +9,43 @@ const outputsDAL = require('../../../server/components/api/outputs/outputsDAL');
 const repoVoteIntervalsDAL = require('../../../server/components/api/repovote-intervals/repoVoteIntervalsDAL');
 const snapshotsDAL = require('../../../server/components/api/snapshots/snapshotsDAL');
 const SnapshotTaker = require('./SnapshotsTaker');
-const BlocksAdder = require('../blocks/BlocksAdder');
-const BlockchainParser = require('../../../server/lib/BlockchainParser');
 const createDemoBlocksFromTo = require('../../../test/lib/createDemoBlocksFromTo');
-const block1 = require('./data/block1.json');
-
-const UNIQUE_ADDRESSES_IN_BLOCK_1 = 2203;
 
 test.onFinish(() => {
   blocksDAL.db.sequelize.close();
 });
 
-test('SnapshotTaker.doJob() (DB)', async function(t) {
-  await wrapTest('VoteIntervals: Given no intervals', async given => {
+test('SnapshotTaker.doJob() (DB)', async function (t) {
+  await wrapTest('VoteIntervals: Given no intervals', async (given) => {
     const snapshotTaker = new SnapshotTaker({ chain: 'test' });
     const result = await snapshotTaker.doJob();
     t.equal(result.voteIntervals.length, 0, `${given}: should not do anything`);
   });
 
-  await wrapTest('VoteIntervals: Given an interval', async given => {
+  await wrapTest('VoteIntervals: Given an interval', async (given) => {
     const snapshotTaker = new SnapshotTaker({ chain: 'test' });
-    const blocksAdder = new BlocksAdder({}, new BlockchainParser(), '20000000');
 
-    // insert an interval
-    repoVoteIntervalsDAL.create({
-      interval: 1,
-      beginBlock: 1,
-      endBlock: 100,
+    await createDemoData({
+      currentBlock: 10,
+      addressAmounts: {
+        tzn1q123: 50 * 100000000,
+        tzn1q124: 100 * 100000000,
+      },
+      voteIntervals: [
+        {
+          interval: 1,
+          beginBlock: 1,
+          endBlock: 100,
+        },
+      ],
     });
-    // insert blocks
-    await blocksAdder.addBlock({ job: {}, nodeBlock: JSON.parse(JSON.stringify(block1)) });
 
     const result = await snapshotTaker.doJob();
     t.equal(result.voteIntervals.length, 1, `${given}: should add 1 interval`);
     t.equal(
       result.voteIntervals[0].snapshotCount,
-      UNIQUE_ADDRESSES_IN_BLOCK_1,
-      `${given}: should add ${UNIQUE_ADDRESSES_IN_BLOCK_1} addresses from block 1`
+      2,
+      `${given}: should add 2 addresses from block 1`
     );
 
     const block1SnapshotCount = await snapshotsDAL.count({
@@ -55,8 +55,8 @@ test('SnapshotTaker.doJob() (DB)', async function(t) {
     });
     t.equal(
       block1SnapshotCount,
-      UNIQUE_ADDRESSES_IN_BLOCK_1,
-      `${given}: should insert ${UNIQUE_ADDRESSES_IN_BLOCK_1} rows to snapshots`
+      2,
+      `${given}: should insert 2 rows to snapshots`
     );
 
     const theInterval = await repoVoteIntervalsDAL.findOne({ where: { interval: 1 } });
@@ -68,13 +68,13 @@ test('SnapshotTaker.doJob() (DB)', async function(t) {
   });
 
   // CGP ---
-  await wrapTest('CGP: No blocks', async given => {
+  await wrapTest('CGP: No blocks', async (given) => {
     const snapshotTaker = new SnapshotTaker({ chain: 'test' });
     const result = await snapshotTaker.doJob();
     t.equal(result.cgp.length, 0, `${given}: should not take a snapshot`);
   });
 
-  await wrapTest('CGP: before 1st snapshot block', async given => {
+  await wrapTest('CGP: before 1st snapshot block', async (given) => {
     const snapshotTaker = new SnapshotTaker({ chain: 'test' });
     await createDemoData({
       currentBlock: 89,
@@ -87,7 +87,7 @@ test('SnapshotTaker.doJob() (DB)', async function(t) {
     t.equal(result.cgp.length, 0, `${given}: should not take a snapshot`);
   });
 
-  await wrapTest('CGP: at 1st snapshot block', async given => {
+  await wrapTest('CGP: at 1st snapshot block', async (given) => {
     const snapshotTaker = new SnapshotTaker({ chain: 'test' });
     await createDemoData({
       currentBlock: 90,
@@ -102,7 +102,7 @@ test('SnapshotTaker.doJob() (DB)', async function(t) {
     t.equal(result.cgp[0].snapshotCount, 2, `${given}: should have 2 rows in the snapshot`);
   });
 
-  await wrapTest('CGP: snapshot already exists', async given => {
+  await wrapTest('CGP: snapshot already exists', async (given) => {
     const snapshotTaker = new SnapshotTaker({ chain: 'test' });
     await createDemoData({
       currentBlock: 91,
@@ -120,15 +120,15 @@ test('SnapshotTaker.doJob() (DB)', async function(t) {
     t.equal(result.cgp.length, 0, `${given}: should not take a 2nd CGP snapshot`);
   });
 
-  await wrapTest('CGP: some snapshots already exist', async given => {
+  await wrapTest('CGP: some snapshots already exist', async (given) => {
     const snapshotTaker = new SnapshotTaker({ chain: 'test' });
 
     // add a snapshot for the 2nd interval but leave the 1st and 3rd empty
     await snapshotsDAL.bulkCreate([
-      {blockNumber: 190, address: 'tzn1q123', amount: 50 * 100000000},
-      {blockNumber: 190, address: 'tzn1q124', amount: 100 * 100000000},
+      { blockNumber: 190, address: 'tzn1q123', amount: 50 * 100000000 },
+      { blockNumber: 190, address: 'tzn1q124', amount: 100 * 100000000 },
     ]);
-    
+
     await createDemoData({
       currentBlock: 300,
       addressAmounts: {
@@ -146,7 +146,7 @@ test('SnapshotTaker.doJob() (DB)', async function(t) {
     );
   });
 
-  await wrapTest('CGP+VoteIntervals: different snapshot block', async given => {
+  await wrapTest('CGP+VoteIntervals: different snapshot block', async (given) => {
     const snapshotTaker = new SnapshotTaker({ chain: 'test' });
     await createDemoData({
       currentBlock: 90,
@@ -173,7 +173,7 @@ test('SnapshotTaker.doJob() (DB)', async function(t) {
     t.equal(result.cgp[0].snapshotCount, 2, `${given}: should have 2 rows in the CGP snapshot`);
   });
 
-  await wrapTest('CGP+VoteIntervals: same snapshot block', async given => {
+  await wrapTest('CGP+VoteIntervals: same snapshot block', async (given) => {
     const snapshotTaker = new SnapshotTaker({ chain: 'test' });
     await createDemoData({
       currentBlock: 90,
@@ -236,11 +236,10 @@ async function createDemoData({ currentBlock, addressAmounts = {}, voteIntervals
       amount,
       index: 0,
     });
-
   }
   if (voteIntervals.length) {
     await Promise.all(
-      voteIntervals.map(voteInterval => {
+      voteIntervals.map((voteInterval) => {
         return repoVoteIntervalsDAL.create({
           interval: voteInterval.interval,
           beginBlock: voteInterval.beginBlock,

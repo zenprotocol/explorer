@@ -44,9 +44,13 @@ class BlockchainParser {
     return Block.fromHex(serialized);
   }
 
+  deserializeBlockToJson(serialized) {
+    return Block.fromHex(serialized).toApiJson();
+  }
+
   getLockValuesFromOutput(output) {
     let lockType = null;
-    let lockValue = null; // contains hash/id/pkHash
+    let lockKeyValue = { key: null, value: null }; // contains hash/id/pkHash
     let address = null;
     if (output.lock && typeof output.lock !== 'object') {
       // output lock is a primitive - just take it as it is
@@ -57,22 +61,24 @@ class BlockchainParser {
       const lockKeys = Object.keys(lock);
       if (lockKeys.length) {
         // lockValue should be one of LOCK_VALUE_KEY_OPTIONS
-        lockValue = lockKeys.reduce(
-          (value, key) => (LOCK_VALUE_KEY_OPTIONS.includes(key) ? lock[key] : value),
-          null
+        lockKeyValue = lockKeys.reduce(
+          (cur, key) => (LOCK_VALUE_KEY_OPTIONS.includes(key) ? { key, value: lock[key] } : cur),
+          { key: null, value: null }
         );
-        address = lock.address || null;
-        if (!address && lockValue) {
+        if (lockKeyValue.value) {
           try {
-            // try to parse the address
-            address = this.getPublicKeyHashAddress(lockValue);
+            // try to parse the address, make sure a contract address is parsed correctly
+            address =
+              lockKeyValue.key === 'id'
+                ? this.getAddressFromContractId(lockKeyValue.value)
+                : this.getPublicKeyHashAddress(lockKeyValue.value);
           } catch (error) {
             address = null;
           }
         }
       }
     }
-    return { lockType, lockValue, address };
+    return { lockType, lockValue: lockKeyValue.value, address };
   }
 
   isMintInputValid(input) {

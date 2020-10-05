@@ -21,6 +21,11 @@ const Op = db.Sequelize.Op;
 const LOCK_TYPES_FOR_BALANCE = ['Coinbase', 'PK', 'Contract', 'Destroy'];
 
 class BlocksAdder {
+  /**
+   * @param {import('../../lib/NetworkHelper')} networkHelper
+   * @param {import('../../../server/lib/BlockchainParser')} blockchainParser
+   * @param {string} genesisTotalZp
+   */
   constructor(networkHelper, blockchainParser, genesisTotalZp) {
     this.networkHelper = networkHelper;
     this.blockchainParser = blockchainParser;
@@ -57,7 +62,7 @@ class BlocksAdder {
 
         this.dbTransaction = await db.sequelize.transaction();
 
-        const nodeBlocks = await this.networkHelper.getBlocksFromNode({
+        const nodeBlocks = await this.networkHelper.getSerializedBlocksFromNode({
           blockNumber: latestBlockNumberToAdd,
           take: latestBlockNumberToAdd - latestBlockNumberInDB,
         });
@@ -70,12 +75,11 @@ class BlocksAdder {
 
         for (let i = startIndex; i >= 0; i--) {
           // add reward
-          const nodeBlock = Object.assign(nodeBlocks[i], {
+          const nodeBlock = {
+            blockNumber: nodeBlocks[i].blockNumber,
             reward: calcRewardByHeight(nodeBlocks[i].blockNumber),
-          });
-
-          // TODO: deserialize the nodeBlock when getting from the new API
-
+            item: this.blockchainParser.deserializeBlockToJson(nodeBlocks[i].rawBlock),
+          };
           blocks.push(await this.addBlock({ nodeBlock }));
         }
 
@@ -118,6 +122,10 @@ class BlocksAdder {
     }
   }
 
+  /**
+   * @param {Object} params
+   * @param {NodeBlock} params.nodeBlock
+   */
   async addBlock({ nodeBlock } = {}) {
     const startTime = process.hrtime();
     if (await this.isReorg({ nodeBlock })) {
@@ -125,84 +133,82 @@ class BlocksAdder {
     }
     const block = await this.createBlock({ nodeBlock });
     logger.info(`Block #${block.blockNumber} created. hash=${block.hash}`);
-    const skipTransactions = getJobData(this.job, 'skipTransactions'); // for tests
-    if (!skipTransactions) {
-      // transactions
-      const txHashes = Object.keys(nodeBlock.transactions);
-      const txsToAdd = getJobData(this.job, 'limitTransactions')
-        ? Math.min(getJobData(this.job, 'limitTransactions'), txHashes.length)
-        : txHashes.length;
-      for (let txIndex = 0; txIndex < txsToAdd; txIndex++) {
-        const txHash = txHashes[txIndex];
-        const nodeTx = nodeBlock.transactions[txHash];
-        const tx = await this.addTxToBlock({
-          block,
-          nodeTx,
-          txHash,
-          txIndex,
-        });
+    // transactions
+    const nodeTxs = nodeBlock.item.transactions;
+    for (let txIndex = 0; txIndex < nodeTxs.length; txIndex++) {
+      const txHash = Object.keys(nodeBlock.item.transactions[txIndex])[0];
+      const nodeTx = nodeBlock.item.transactions[txIndex][txHash];
+      const tx = await this.addTxToBlock({
+        block,
+        nodeTx,
+        txHash,
+        txIndex,
+      });
 
+      logger.info(
+        `Transaction created and added to block #${block.blockNumber} blockHash=${block.hash}. txHash=${tx.hash}, transactionId=${tx.id}`
+      );
+
+      try {
+        // add outputs
         logger.info(
-          `Transaction created and added to block #${block.blockNumber} blockHash=${block.hash}. txHash=${tx.hash}, transactionId=${tx.id}`
+          `Adding ${nodeTx.outputs.length} outputs to block #${block.blockNumber} txHash=${tx.hash}`
+        );
+        const outputsToInsert = this.getOutputsToInsert({
+          nodeOutputs: nodeTx.outputs,
+          txId: tx.id,
+          blockNumber: block.blockNumber,
+        });
+        await this.addOutputsToTx({ outputs: outputsToInsert });
+
+        // add inputs
+        logger.info(
+          `Adding ${nodeTx.inputs.length} inputs to block #${block.blockNumber} txHash=${tx.hash}`
+        );
+        const inputsToInsert = await this.getInputsToInsert({
+          nodeInputs: nodeTx.inputs,
+          blockNumber: block.blockNumber,
+          txId: tx.id,
+        });
+        await this.addInputsToTx({ inputs: inputsToInsert });
+        logger.info(
+          `All ${
+            inputsToInsert.length + outputsToInsert.length
+          } inputs and outputs where added to block #${block.blockNumber} txHash=${tx.hash}`
         );
 
-        try {
-          // add outputs
-          logger.info(
-            `Adding ${nodeTx.outputs.length} outputs to block #${block.blockNumber} txHash=${tx.hash}`
-          );
-          const outputsToInsert = this.getOutputsToInsert({
-            nodeOutputs: nodeTx.outputs,
-            txId: tx.id,
-            blockNumber: block.blockNumber,
-          });
-          await this.addOutputsToTx({ outputs: outputsToInsert });
-
-          // add inputs
-          logger.info(
-            `Adding ${nodeTx.inputs.length} inputs to block #${block.blockNumber} txHash=${tx.hash}`
-          );
-          const inputsToInsert = await this.getInputsToInsert({
-            nodeInputs: nodeTx.inputs,
-            blockNumber: block.blockNumber,
-            txId: tx.id,
-          });
-          await this.addInputsToTx({ inputs: inputsToInsert });
-          logger.info(
-            `All ${
-              inputsToInsert.length + outputsToInsert.length
-            } inputs and outputs where added to block #${block.blockNumber} txHash=${tx.hash}`
-          );
-
-          if (txIndex === 0) {
-            await this.updateBlockCoinbaseParams({ outputs: outputsToInsert, block });
-          }
-
-          // add data to Addresses, Assets, AddressTxs, AssetTxs
-          await this.calcAddressAssetsPerTx({
-            inputs: inputsToInsert,
-            outputs: outputsToInsert,
-            tx,
-            block,
-          });
-
-          await this.addContract({ txHash, nodeBlock });
-        } catch (error) {
-          throw new Error(`${error.message} txHash=${tx.hash}`);
+        if (txIndex === 0) {
+          await this.updateBlockCoinbaseParams({ outputs: outputsToInsert, block });
         }
+
+        // add data to Addresses, Assets, AddressTxs, AssetTxs
+        await this.calcAddressAssetsPerTx({
+          inputs: inputsToInsert,
+          outputs: outputsToInsert,
+          tx,
+          block,
+        });
+
+        await this.addContract({ nodeTx, nodeBlock, tx });
+      } catch (error) {
+        throw new Error(`${error.message} txHash=${tx.hash}`);
       }
     }
     const hrEnd = process.hrtime(startTime);
     logger.info(
-      `AddBlock Finished. blockNumber=${nodeBlock.header.blockNumber}. Time elapsed = ${
+      `AddBlock Finished. blockNumber=${nodeBlock.blockNumber}. Time elapsed = ${
         (hrEnd[0] * 1e9 + hrEnd[1]) / 1000000
       }ms`
     );
     return block;
   }
 
+  /**
+   * @param {Object} params
+   * @param {NodeBlock} params.nodeBlock
+   */
   async isReorg({ nodeBlock } = {}) {
-    const { parent, blockNumber } = nodeBlock.header;
+    const { parent, blockNumber } = nodeBlock.item.header;
     if (blockNumber > 1) {
       const prevDbBlock = await blocksDAL.findById(blockNumber - 1, {
         transaction: this.dbTransaction,
@@ -214,21 +220,25 @@ class BlocksAdder {
     return false;
   }
 
+  /**
+   * @param {Object} params
+   * @param {NodeBlock} params.nodeBlock
+   */
   async createBlock({ nodeBlock } = {}) {
     return blocksDAL.create(
       {
-        blockNumber: nodeBlock.header.blockNumber,
-        version: nodeBlock.header.version,
-        hash: nodeBlock.hash,
-        parent: nodeBlock.header.parent,
-        commitments: nodeBlock.header.commitments,
-        timestamp: nodeBlock.header.timestamp,
-        difficulty: nodeBlock.header.difficulty,
-        nonce1: nodeBlock.header.nonce[0],
-        nonce2: nodeBlock.header.nonce[1],
-        txsCount: Object.keys(nodeBlock.transactions).length,
+        blockNumber: nodeBlock.blockNumber,
+        version: nodeBlock.item.header.version,
+        hash: nodeBlock.item.hash,
+        parent: nodeBlock.item.header.parent,
+        commitments: nodeBlock.item.header.commitments,
+        timestamp: nodeBlock.item.header.timestamp,
+        difficulty: nodeBlock.item.header.difficulty,
+        // nonce1: nodeBlock.item.header.nonce[0], // TODO: enable when nonce is parsed right
+        // nonce2: nodeBlock.item.header.nonce[1],
+        txsCount: nodeBlock.item.transactions.length,
         reward:
-          nodeBlock.header.blockNumber == 1
+          nodeBlock.item.header.blockNumber == 1
             ? new Decimal(this.genesisTotalZp).times(100000000).toString()
             : nodeBlock.reward,
         coinbaseAmount: 0,
@@ -252,14 +262,17 @@ class BlocksAdder {
     );
   }
 
-  async addContract({ nodeBlock, txHash }) {
-    const nodeTransaction = nodeBlock.transactions[txHash];
+  /**
+   * @param {Object} params
+   * @param {NodeBlock} params.nodeBlock
+   * @param {*} params.nodeTx
+   * @param {*} params.tx - the db tx
+   */
+  async addContract({ nodeBlock, nodeTx, tx }) {
     let created = 0;
-    if (nodeTransaction.contract) {
-      logger.info(
-        `Found a contract - blockNumber=${nodeBlock.header.blockNumber}. txHash=${txHash}`
-      );
-      const nodeContract = nodeTransaction.contract;
+    if (nodeTx.contract) {
+      logger.info(`Found a contract - blockNumber=${nodeBlock.blockNumber}. txHash=${tx.hash}`);
+      const nodeContract = nodeTx.contract;
       let dbContract = await contractsDAL.findById(nodeContract.contractId, {
         transaction: this.dbTransaction,
       });
@@ -268,27 +281,23 @@ class BlocksAdder {
         dbContract = await contractsDAL.create(
           {
             id: nodeContract.contractId,
-            address: nodeContract.address,
+            address: this.blockchainParser.getAddressFromContractId(nodeContract.contractId),
             version: this.blockchainParser.getContractVersion(nodeContract.contractId),
             code: nodeContract.code,
             expiryBlock: 0,
             txsCount: '0',
             assetsIssued: '0',
-            lastActivationBlock: nodeBlock.header.blockNumber,
+            lastActivationBlock: nodeBlock.blockNumber,
           },
           { transaction: this.dbTransaction }
         );
         created = 1;
       } else {
         dbContract.update(
-          { lastActivationBlock: nodeBlock.header.blockNumber },
+          { lastActivationBlock: nodeBlock.blockNumber },
           { transaction: this.dbTransaction }
         );
       }
-      const tx = await txsDAL.findOne({
-        where: { hash: txHash },
-        transaction: this.dbTransaction,
-      });
 
       await contractsDAL.addActivationTx(dbContract, tx, {
         transaction: this.dbTransaction,
@@ -677,3 +686,11 @@ function findIndexRight(callback, arr = []) {
 
   return -1;
 }
+
+/**
+ * @typedef {{
+ *  blockNumber: number,
+ *  reward: string,
+ *  item: {},
+ * }} NodeBlock
+ */

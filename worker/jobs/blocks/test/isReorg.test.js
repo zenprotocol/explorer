@@ -51,9 +51,13 @@ async function wrapTest(given, test) {
 
 function getNodeBlock({blockNumber = 1, parent = ''} = {}) {
   return {
-    header: {
-      blockNumber,
-      parent,
+    blockNumber,
+    reward: 50000000,
+    item: {
+      header: {
+        blockNumber,
+        parent,
+      }
     }
   };
 }
