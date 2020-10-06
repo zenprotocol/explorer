@@ -174,6 +174,7 @@ class CGPPage extends React.Component {
           <div className="col-md-4">
             <IntervalsDropDown
               currentBlock={this.currentBlock}
+              intervalLength={this.cgpStore.intervalLength}
               currentInterval={this.cgpStore.currentInterval}
               relevantInterval={this.cgpStore.relevantInterval}
               onIntervalChange={this.handleIntervalChange}
