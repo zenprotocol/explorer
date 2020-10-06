@@ -88,7 +88,19 @@ class AddressPage extends Component {
         <section>
           <PageTitle
             title="ADDRESS"
-            subtitle={<HashLink hash={params.address} truncate={false} />}
+            subtitle={
+              <>
+                <div>
+                  <div className="mb-1">
+                    <strong>Address</strong>: <HashLink hash={params.address} truncate={false} />
+                  </div>
+                  <div>
+                    <strong>PkHash</strong>:{' '}
+                    <HashLink hash={this.addressStore.address.pkHash || ''} truncate={false} />
+                  </div>
+                </div>
+              </>
+            }
           />
           {this.is1stTimeLoading && <Loading />}
           {is404 && <ItemNotFound item="address" />}
@@ -104,12 +116,6 @@ class AddressPage extends Component {
                     </tr>
                   </thead>
                   <tbody>
-                    <tr>
-                      <td>PK HASH</td>
-                      <td>
-                        <HashLink hash={this.addressStore.address.pkHash} />
-                      </td>
-                    </tr>
                     <tr>
                       <td>BALANCE</td>
                       <td>{AssetUtils.getAmountString('00', zpBalance.balance)}</td>
