@@ -1,6 +1,6 @@
 'use strict';
 
-const { Data, PublicKey, Signature } = require('@zen/zenjs');
+const { DataFactory, U32, Str, PublicKey, Signature } = require('@zen/zenjs');
 const sha3 = require('js-sha3');
 const BigInteger = require('bigi');
 const logger = require('../../lib/logger')('votes.repo');
@@ -254,9 +254,9 @@ class VotesAdder {
     return PublicKey.fromString(publicKey).verify(
       Buffer.from(
         sha
-          .update(sha(Data.serialize(new Data.UInt32(BigInteger.valueOf(voteInterval.interval)))))
-          .update(sha(Data.serialize(new Data.String(voteInterval.phase))))
-          .update(sha(Data.serialize(new Data.String(commitId))))
+          .update(sha(DataFactory.serialize(new U32(BigInteger.valueOf(voteInterval.interval)))))
+          .update(sha(DataFactory.serialize(new Str(voteInterval.phase))))
+          .update(sha(DataFactory.serialize(new Str(commitId))))
           .hex(),
         'hex'
       ),

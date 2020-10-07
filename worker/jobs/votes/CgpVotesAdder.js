@@ -1,6 +1,6 @@
 'use strict';
 
-const { Data, PublicKey, Signature, Hash } = require('@zen/zenjs');
+const { DataFactory, U32, Str, PublicKey, Signature, Hash } = require('@zen/zenjs');
 const R = require('ramda');
 const { Decimal } = require('decimal.js');
 const Bigi = require('bigi');
@@ -228,9 +228,9 @@ class CgpVotesAdder {
   verifySignature({ publicKey, signature, interval, ballot, phase } = {}) {
     return PublicKey.fromString(publicKey).verify(
       Hash.compute(
-        Data.serialize(new Data.UInt32(Bigi.valueOf(interval)))
-          .concat(Data.serialize(new Data.String(phase)))
-          .concat(Data.serialize(new Data.String(ballot)))
+        DataFactory.serialize(new U32(Bigi.valueOf(interval)))
+          .concat(DataFactory.serialize(new Str(phase)))
+          .concat(DataFactory.serialize(new Str(ballot)))
       ).bytes,
       Signature.fromString(signature)
     );
@@ -271,7 +271,9 @@ class CgpVotesAdder {
           : 0;
       const { maxAllocation, minAllocation } = getAllocationMinMax({ prevAllocation });
       if (allocation < minAllocation || allocation > maxAllocation) {
-        return { error: `allocation is not in the range of the prev allocation min and max (min=${minAllocation}, max=${maxAllocation})` };
+        return {
+          error: `allocation is not in the range of the prev allocation min and max (min=${minAllocation}, max=${maxAllocation})`,
+        };
       }
 
       return { error: '' };
