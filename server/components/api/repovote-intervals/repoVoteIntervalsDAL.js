@@ -11,7 +11,7 @@ const Op = db.Sequelize.Op;
  *
  * @param {number} height the height (blockNumber) to search until
  */
-voteIntervalsDAL.findAllWithoutSnapshot = async function(height) {
+voteIntervalsDAL.findAllWithoutSnapshot = async function (height) {
   return this.findAll({
     where: {
       hasSnapshot: false,
@@ -29,11 +29,28 @@ voteIntervalsDAL.findAllWithoutSnapshot = async function(height) {
  * @param {(Contestant|Candidate)} phase
  * @returns {VoteInterval}
  */
-voteIntervalsDAL.findByIntervalAndPhase = async function(interval, phase) {
+voteIntervalsDAL.findByIntervalAndPhase = async function (interval, phase) {
   return this.findOne({
     where: {
       interval,
       phase,
+    },
+  });
+};
+
+/**
+ * Find an interval which contains the given block number
+ * @param {number} blockNumber
+ */
+voteIntervalsDAL.findByBlockNumber = async function (blockNumber) {
+  return this.findOne({
+    where: {
+      beginBlock: {
+        [Op.lte]: blockNumber,
+      },
+      endBlock: {
+        [Op.gt]: blockNumber,
+      },
     },
   });
 };
@@ -44,7 +61,7 @@ voteIntervalsDAL.findByIntervalAndPhase = async function(interval, phase) {
  * @param {number} currentBlock
  * @returns {VoteInterval}
  */
-voteIntervalsDAL.findCurrent = async function(currentBlock) {
+voteIntervalsDAL.findCurrent = async function (currentBlock) {
   return this.findOne({
     where: {
       [Op.and]: {
@@ -66,7 +83,7 @@ voteIntervalsDAL.findCurrent = async function(currentBlock) {
  * @param {number} currentBlock
  * @returns {VoteInterval}
  */
-voteIntervalsDAL.findPrev = async function(currentBlock) {
+voteIntervalsDAL.findPrev = async function (currentBlock) {
   return this.findOne({
     where: {
       endBlock: {
@@ -83,7 +100,7 @@ voteIntervalsDAL.findPrev = async function(currentBlock) {
  * @param {number} currentBlock
  * @returns {VoteInterval}
  */
-voteIntervalsDAL.findNext = async function(currentBlock) {
+voteIntervalsDAL.findNext = async function (currentBlock) {
   return this.findOne({
     where: {
       beginBlock: {
@@ -100,7 +117,7 @@ voteIntervalsDAL.findNext = async function(currentBlock) {
  * @param {number} currentBlock
  * @returns {VoteInterval}
  */
-voteIntervalsDAL.findCurrentOrNext = async function(currentBlock) {
+voteIntervalsDAL.findCurrentOrNext = async function (currentBlock) {
   return this.findOne({
     where: {
       endBlock: {
@@ -116,7 +133,7 @@ voteIntervalsDAL.findCurrentOrNext = async function(currentBlock) {
  *
  * @param {number} currentBlock
  */
-voteIntervalsDAL.findAllRecent = async function(currentBlock = 0) {
+voteIntervalsDAL.findAllRecent = async function (currentBlock = 0) {
   const [prev, next] = await Promise.all([
     this.findAll({
       where: {
@@ -151,7 +168,7 @@ voteIntervalsDAL.findAllRecent = async function(currentBlock = 0) {
  * Sets hasSnapshot to true
  * @param {number} id
  */
-voteIntervalsDAL.setHasSnapshot = async function(id) {
+voteIntervalsDAL.setHasSnapshot = async function (id) {
   return this.update(id, { hasSnapshot: true });
 };
 

@@ -179,7 +179,12 @@ votesDAL.countAllVoteResults = async function ({ beginBlock, endBlock } = {}) {
  * @param {number} endBlock - the end block of the contestant phase
  * @param {string} threshold - the threshold in kalapas
  */
-votesDAL.findContestantWinners = async function ({ beginBlock, endBlock, threshold } = {}) {
+votesDAL.findContestantWinners = async function ({
+  beginBlock,
+  endBlock,
+  threshold,
+  transaction,
+} = {}) {
   const sql = tags.oneLine`
   SELECT "commitId", "amount", "zpAmount" FROM (
     SELECT "RepoVotes"."commitId", 
@@ -204,6 +209,7 @@ votesDAL.findContestantWinners = async function ({ beginBlock, endBlock, thresho
       threshold,
     },
     type: sequelize.QueryTypes.SELECT,
+    transaction,
   });
 };
 

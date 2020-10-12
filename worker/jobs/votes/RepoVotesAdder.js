@@ -26,22 +26,40 @@ class VotesAdder {
       // query for all executions with the voting contract id and that the execution id is not in RepoVotes
       // those executions are ordered by block number and tx index (first counts)
       const executions = await repoVotesDAL.findAllUnprocessedExecutions(this.contractId);
+
       if (executions.length) {
         logger.info(`${executions.length} executions to add`);
         this.dbTransaction = await db.sequelize.transaction();
-        // for each of those executions - verify all signatures and add to RepoVotes
-        const votesToAdd = await this.processExecutions(executions);
 
-        // filter out double votes in the new list
-        this.resetDoubleVotes({ votesToAdd });
+        const { groups, nonValidExecutions } = await this.groupExecutionsByInterval(executions);
 
-        if (votesToAdd.length) {
-          await repoVotesDAL.bulkCreate(votesToAdd, { transaction: this.dbTransaction });
+        // process each group seperatly, candidate phase executions will need the contestants already in DB
+        for (let i = 0; i < groups.length; i++) {
+          const executionsGroup = groups[i];
+
+          // for each of those executions - verify all signatures and add to RepoVotes
+          const votesToAdd = await this.processExecutions(executionsGroup);
+
+          // filter out double votes in the new list
+          this.resetDoubleVotes({ votesToAdd });
+
+          if (votesToAdd.length) {
+            result += votesToAdd.length;
+            await repoVotesDAL.bulkCreate(votesToAdd, { transaction: this.dbTransaction });
+          }
         }
 
+        // add a vote per non valid execution
+        await repoVotesDAL.bulkCreate(
+          nonValidExecutions.map((e) => ({
+            blockNumber: e.blockNumber,
+            executionId: e.id,
+          })),
+          { transaction: this.dbTransaction }
+        );
+        result += nonValidExecutions.length;
+
         await this.dbTransaction.commit();
-        logger.info(`Added ${votesToAdd.length} votes from ${executions.length} executions`);
-        result = votesToAdd.length;
       }
       return result;
     } catch (error) {
@@ -52,6 +70,41 @@ class VotesAdder {
       }
       throw new QueueError(error);
     }
+  }
+
+  /**
+   * Group the executions by RepoVoteIntervals
+   * @param {Array} executions
+   */
+  async groupExecutionsByInterval(executions) {
+    /** @type {[{beginBlock: number, endBlock: number, executions: []}]} */
+    const relevantIntervals = []; // will contain the intervals and for each the group of executions
+    const nonValidExecutions = []; // executions outside interval range
+
+    for (let i = 0; i < executions.length; i++) {
+      const execution = executions[i];
+
+      // first check the intervals we already have
+      const relevantInterval = relevantIntervals.find(
+        (i) => execution.blockNumber >= i.beginBlock && execution.blockNumber < i.endBlock
+      );
+
+      if (relevantInterval) {
+        relevantInterval.executions.push(execution);
+      } else {
+        // try to find a new interval for the execution
+        const interval = await repoVoteIntervalsDAL.findByBlockNumber(execution.blockNumber);
+
+        if (interval) {
+          interval.executions = [execution];
+          relevantIntervals.push(interval);
+        } else {
+          nonValidExecutions.push(execution);
+        }
+      }
+    }
+
+    return { groups: relevantIntervals.map((x) => x.executions), nonValidExecutions };
   }
 
   checkContractId() {
@@ -83,8 +136,8 @@ class VotesAdder {
       if (
         await this.validateIntervalAndCandidates({
           voteInterval,
-          execution,
           commitId,
+          execution,
         })
       ) {
         // go over each element in the dict and verify it against the interval and commitId
@@ -111,6 +164,10 @@ class VotesAdder {
             continue;
           }
 
+          logger.info(
+            `Adding a valid vote blockNumber=${execution.blockNumber} executionId:${execution.id} address=${address}`
+          );
+
           const voteToAdd = {
             blockNumber: execution.blockNumber,
             executionId: execution.id,
@@ -133,7 +190,6 @@ class VotesAdder {
       votesToAdd.push({
         blockNumber: execution.blockNumber,
         executionId: execution.id,
-        txHash: tx.hash,
       });
     }
 
@@ -164,7 +220,7 @@ class VotesAdder {
    * Checks if vote is in the range of a vote interval,
    * if phase is Candidate, checks that the vote is for a valid candidate
    */
-  async validateIntervalAndCandidates({ voteInterval, commitId } = {}) {
+  async validateIntervalAndCandidates({ voteInterval, commitId, execution } = {}) {
     // an interval must exist in order to insert votes
     if (!voteInterval) {
       return false;
@@ -185,7 +241,9 @@ class VotesAdder {
         beginBlock: intervalContestant.beginBlock,
         endBlock: intervalContestant.endBlock,
         threshold: intervalContestant.threshold,
+        transaction: this.dbTransaction,
       });
+
       // add the default commit id if exists
       if (this.defaultCommitId) {
         candidates.push({
@@ -196,6 +254,9 @@ class VotesAdder {
         !candidates.length ||
         candidates.findIndex((candidate) => candidate.commitId === commitId) === -1
       ) {
+        logger.info(
+          `Valid contestant does not exist for vote with executionId=${execution.id} blockNumber=${execution.blockNumber}`
+        );
         return false;
       }
     }
@@ -241,6 +302,9 @@ class VotesAdder {
           vote.address === vote1.address &&
           vote.interval.beginBlock === vote1.interval.beginBlock
         ) {
+          logger.info(
+            `Resetting a double vote: blockNumber=${vote.blockNumber} executionId=${vote.executionId}`
+          );
           // double vote, reset it
           vote1.address = null;
           vote1.commitId = null;
