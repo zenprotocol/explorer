@@ -197,6 +197,146 @@ test('BlocksAdder.doJob()', async function (t) {
       t.fail(`${given}: Should not throw an error`);
     }
   });
+  await wrapTest('Given a block with 2 transactions', async (given) => {
+    const block1 = {
+      hash: 'd45ced8e8926de5ae36dffa9cfdd992c61d99fd8cfcc770196a80830c08daeed',
+      header: {
+        version: 0,
+        parent: '0000000000000000000000000000000000000000000000000000000000000000',
+        blockNumber: 1,
+        commitments: '626a22feb6275762b45b8a5a329296343343efbd6ccea80d7f1ebf63d8b0efcf',
+        timestamp: 1530378044087,
+        difficulty: 471719622,
+        nonce: ['8015528688734519415', '5802497780545032333'],
+      },
+      transactions: {
+        '2ff5284f9a8cbde0a32523332a04cfc242b86adb911b0467a80b7767a1da7a30': {
+          version: 0,
+          inputs: [],
+          outputs: [
+            {
+              lock: {
+                PK: {
+                  hash: 'db82dd716d10015fa28ac79e9d7734f876cc017b7a19d303e36197e2b81c4c4f',
+                  address: 'zen1qmwpd6utdzqq4lg52c70f6ae5lpmvcqtm0gvaxqlrvxt79wquf38s9mrydf',
+                },
+              },
+              spend: {
+                asset: '00',
+                amount: 5000000000,
+              },
+            },
+          ],
+        },
+        '395e22aaeda855eb4140b694f03a624e715387b208224f6ad2c03a2e62c7a9aa': {
+          version: 0,
+          inputs: [],
+          outputs: [
+            {
+              lock: {
+                PK: {
+                  hash: '59a36aded14d3edfba33152fb001917acb415f4cbb7bd5264be99c4bc0375c4c',
+                  address: 'zen1qtx3k4hk3f5ldlw3nz5hmqqv30t95zh6vhdaa2fjtaxwyhspht3xqe0mv9a',
+                },
+              },
+              spend: {
+                asset: '00',
+                amount: 5000000000,
+              },
+            },
+          ],
+        },
+      },
+    };
+    const block2 = {
+      hash: 'cbf83cd431f417552de810a55f69837888533d60a8e35d0b6be78f8fa1e6b0c8',
+      header: {
+        version: 0,
+        parent: 'd45ced8e8926de5ae36dffa9cfdd992c61d99fd8cfcc770196a80830c08daeed',
+        blockNumber: 2,
+        commitments: '626a22feb6275762c45b8a5a329296343343efbd6ccea80d7f1ebf63d8b0efcf',
+        timestamp: 1530378044088,
+        difficulty: 471719622,
+        nonce: ['8015528688734519415', '5802497780545032333'],
+      },
+      transactions: {
+        '6dd446057050b1e4555a6ea37bfa7fca5dc0f830188b0090f2e0a0d45c61491b': {
+          version: 0,
+          inputs: [],
+          outputs: [
+            {
+              lock: {
+                Coinbase: {
+                  blockNumber: 2,
+                  address: 'zen1qtx3k4hk3f5ldlw3nz5hmqqv30t95zh6vhdaa2fjtaxwyhspht3xqe0mv9a',
+                  pkHash: '59a36aded14d3edfba33152fb001917acb415f4cbb7bd5264be99c4bc0375c4c',
+                },
+              },
+              spend: {
+                asset: '00',
+                amount: 5000000000,
+              },
+            },
+          ],
+        },
+        '23b946071b524e58bf862d913e85aa38e2a4dc698ee7a99e283f27f555f1cf39': {
+          version: 0,
+          inputs: [],
+          outputs: [
+            {
+              lock: {
+                PK: {
+                  hash: '697e891b26cfdac380aa85b79efb64cb835c59a8930c46038e259d844595fb69',
+                  address: 'zen1qd9lgjxexeldv8q92skmea7myewp4ckdgjvxyvquwykwcg3v4ld5s48907m',
+                },
+              },
+              spend: {
+                asset: '00',
+                amount: 100000000,
+              },
+            },
+          ],
+        },
+      },
+    };
+    
+    const networkHelper = new NetworkHelper();
+    mock.mockNetworkHelper(networkHelper, { latestBlockNumber: 2 });
+    networkHelper.getSerializedBlocksFromNode = () => {
+      return Promise.resolve([
+        {
+          blockNumber: 2,
+          rawBlock: serializeBlock(block2),
+        },
+        {
+          blockNumber: 1,
+          rawBlock: serializeBlock(block1),
+        },
+      ]);
+    };
+    const blocksAdder = new BlocksAdder(networkHelper, new BlockchainParser(), '20000000');
+
+    try {
+      await blocksAdder.doJob();
+
+      const assets = await assetsDAL.findAll();
+      t.equal(assets.length, 1, `${given}: There should be 1 row in the Assets table for 00`);
+      t.equal(assets[0].asset, '00', `${given}: The only asset in Assets should be 00`);
+      t.equal(
+        assets[0].issued,
+        '2000005000000000',
+        `${given}: should have issued 50 ZP + GENESIS (2 blocks)`
+      );
+      t.equal(assets[0].destroyed, '0', `${given}: should have destroyed 0 ZP`);
+      t.equal(
+        assets[0].outstanding,
+        '2000005000000000',
+        `${given}: should have outstanding 50 ZP + GENESIS`
+      );
+    } catch (error) {
+      t.fail(`${given}: Should not throw an error`);
+    }
+  });
   await wrapTest('Given a transaction with an outpoint input', async (given) => {
     const TEST_BLOCK_NUMBER = 86;
     const OUTPOINT_BLOCK_NUMBER = 1;
