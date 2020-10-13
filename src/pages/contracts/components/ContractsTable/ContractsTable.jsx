@@ -25,6 +25,14 @@ class ContractsTable extends Component {
         Cell: ({ value }) => <HashLink url={`/contracts/${value}`} hash={value} />,
       },
       {
+        Header: 'Activation',
+        accessor: 'lastActivationBlock',
+        minWidth: config.ui.table.minCellWidth,
+        sortable: true,
+        hideOnMobile: true,
+        Cell: ({ value }) => <Link to={`/blocks/${value}`}>{TextUtils.formatNumber(value)}</Link>,
+      },
+      {
         Header: 'Active until',
         accessor: 'expiryBlock',
         minWidth: config.ui.table.minCellWidth,
@@ -45,14 +53,6 @@ class ContractsTable extends Component {
         minWidth: config.ui.table.minCellWidth,
         hideOnMobile: true,
         Cell: ({ value }) => TextUtils.formatNumber(value),
-      },
-      {
-        Header: 'Activation',
-        accessor: 'lastActivationBlock',
-        minWidth: config.ui.table.minCellWidth,
-        sortable: true,
-        hideOnMobile: true,
-        Cell: ({ value }) => <Link to={`/blocks/${value}`}>{TextUtils.formatNumber(value)}</Link>,
       },
     ];
   }
