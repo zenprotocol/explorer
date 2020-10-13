@@ -29,7 +29,7 @@ statsDAL.transactionsPerDay = async function ({ chartInterval = maximumChartInte
   return txsPerDayDAL.findAll({
     where: {
       date: {
-        [Op.lte]: db.Sequelize.literal('CURRENT_DATE'),
+        [Op.lt]: db.Sequelize.literal('CURRENT_DATE'),
         [Op.gt]: db.Sequelize.literal(`CURRENT_DATE - '${chartInterval}'::interval`),
       },
     },
@@ -41,7 +41,7 @@ statsDAL.zpSupply = async function ({ chartInterval = maximumChartInterval } = {
   return zpSupplyPerDayDAL.findAll({
     where: {
       date: {
-        [Op.lte]: db.Sequelize.literal('CURRENT_DATE'),
+        [Op.lt]: db.Sequelize.literal('CURRENT_DATE'),
         [Op.gt]: db.Sequelize.literal(`CURRENT_DATE - '${chartInterval}'::interval`),
       },
     },
@@ -53,7 +53,7 @@ statsDAL.blockDifficulty = async function ({ chartInterval = maximumChartInterva
   return difficultyPerDayDAL.findAll({
     where: {
       date: {
-        [Op.lte]: db.Sequelize.literal('CURRENT_DATE'),
+        [Op.lt]: db.Sequelize.literal('CURRENT_DATE'),
         [Op.gt]: db.Sequelize.literal(`CURRENT_DATE - '${chartInterval}'::interval`),
       },
     },
@@ -66,7 +66,7 @@ statsDAL.networkHashRate = async function ({ chartInterval = maximumChartInterva
     attributes: ['date', [db.Sequelize.literal('value * 1000000000000 / 55000'), 'value']],
     where: {
       date: {
-        [Op.lte]: db.Sequelize.literal('CURRENT_DATE'),
+        [Op.lt]: db.Sequelize.literal('CURRENT_DATE'),
         [Op.gt]: db.Sequelize.literal(`CURRENT_DATE - '${chartInterval}'::interval`),
       },
     },

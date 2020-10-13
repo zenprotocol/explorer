@@ -93,9 +93,7 @@ class InfosAdder {
       value: 0,
     };
     if (hashRates.length) {
-      // the last hash rate might be partial, better to take the one from yesterday
-      const lastDayHashRate =
-        hashRates.length > 1 ? hashRates[hashRates.length - 2] : hashRates[hashRates.length - 1];
+      const lastDayHashRate = hashRates[hashRates.length - 1];
       info.value = lastDayHashRate.value;
     }
     await createOrUpdateInfos([info]);
