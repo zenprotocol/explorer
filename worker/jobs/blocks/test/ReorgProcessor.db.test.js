@@ -9,6 +9,9 @@ const inputsDAL = require('../../../../server/components/api/inputs/inputsDAL');
 const addressesDAL = require('../../../../server/components/api/addresses/addressesDAL');
 const assetsDAL = require('../../../../server/components/api/assets/assetsDAL');
 const addressTxsDAL = require('../../../../server/components/api/address-txs/addressTxsDAL');
+const difficultyPerDayDAL = require('../../../../server/components/api/difficulty-per-day/difficultyPerDayDAL');
+const txsPerDayDAL = require('../../../../server/components/api/txs-per-day/txsPerDayDAL');
+const zpSupplyPerDayDAL = require('../../../../server/components/api/zp-supply-per-day/zpSupplyPerDayDAL');
 const NetworkHelper = require('../../../lib/NetworkHelper');
 const ReorgProcessor = require('../ReorgProcessor');
 const createDemoBlocksFromTo = require('../../../../test/lib/createDemoBlocksFromTo');
@@ -50,7 +53,6 @@ test('ReorgProcessor.doJob() (DB)', async function (t) {
     let txBlock6;
     let outputBlock1;
     for (let i = 1; i <= 10; i++) {
-
       const tx = await txsDAL.create({
         blockNumber: i,
         index: 0,
@@ -73,7 +75,7 @@ test('ReorgProcessor.doJob() (DB)', async function (t) {
       if (i === 1) {
         outputBlock1 = output;
       }
-      if(i === 6) {
+      if (i === 6) {
         txBlock6 = tx;
       }
     }
@@ -118,7 +120,10 @@ test('ReorgProcessor.doJob() (DB)', async function (t) {
       `${given}: should revert the balance to the state before the reorg`
     );
     t.equal(addressTxsDb.length, 5, `${given}: should delete all AddressTxs from the fork`);
-    t.assert(addressTxsDb.every(a => a.blockNumber < 6), `${given}: should leave AddressTxs before the fork`);
+    t.assert(
+      addressTxsDb.every((a) => a.blockNumber < 6),
+      `${given}: should leave AddressTxs before the fork`
+    );
     t.equal(
       assetDb.issued,
       '2000020000000000',
@@ -134,6 +139,74 @@ test('ReorgProcessor.doJob() (DB)', async function (t) {
       '5',
       `${given}: should revert asset.txsCount to the state before the reorg`
     );
+  });
+
+  await wrapTest('Given a reorg and charts data', async (given) => {
+    const reorgProcessor = getReorgProcessor();
+    const badHash = 'bad';
+    const fork = 6;
+
+    const blocksData = [];
+    const txsPerDayData = [];
+    const difficultyPerDayData = [];
+    const zpSupplyPerDayData = [];
+    for (let i = 1; i <= 10; i++) {
+      // 2 blocks a day from 5 days ago until today
+      const date = new Date();
+      date.setDate(date.getDate() - Math.ceil(i / 2));
+      blocksData.push({
+        version: 0,
+        hash: i === fork ? badHash : String(i),
+        parent: String(i - 1),
+        blockNumber: i,
+        commitments: 'test',
+        timestamp: date.valueOf(),
+        difficulty: 486539008,
+        nonce1: -8412464686019857620,
+        nonce2: 25078183,
+        reward: i === 1 ? '2000000000000000' : '5000000000',
+      });
+
+      // add charts data
+      if (i % 2 === 0) {
+        txsPerDayData.push({
+          date,
+          value: 2,
+        });
+        difficultyPerDayData.push({
+          date,
+          value: 2,
+        });
+        zpSupplyPerDayData.push({
+          date,
+          value: 2,
+        });
+      }
+    }
+    await Promise.all([
+      blocksDAL.bulkCreate(blocksData),
+      txsPerDayDAL.bulkCreate(txsPerDayData),
+      difficultyPerDayDAL.bulkCreate(difficultyPerDayData),
+      zpSupplyPerDayDAL.bulkCreate(zpSupplyPerDayData),
+    ]);
+
+    await reorgProcessor.doJob();
+    const lastBlock = await blocksDAL.findLatest();
+    const txsPerDay = await txsPerDayDAL.findAll();
+    const difficultyPerDay = await difficultyPerDayDAL.findAll();
+    const zpSupplyPerDay = await zpSupplyPerDayDAL.findAll();
+
+    const getMaxDate = (max, cur) => max.date > cur.date ? max : cur;
+    const expectedDate = new Date(Number(lastBlock.timestamp));
+    expectedDate.setDate(expectedDate.getDate() - 1);
+    const expectedDateString = expectedDate.toISOString().split('T')[0];
+
+    t.equal(txsPerDay.length, 2, `${given}: should have TxsPerDay up to a day before last valid block`);
+    t.equal(difficultyPerDay.length, 2, `${given}: should have DifficultyPerDay up to a day before last valid block`);
+    t.equal(zpSupplyPerDay.length, 2, `${given}: should have ZpSupplyPerDay up to a day before last valid block`);
+    t.equal(txsPerDay.reduce(getMaxDate).date, expectedDateString , `${given}: last TxsPerDay should have same timestamp as last block`);
+    t.equal(difficultyPerDay.reduce(getMaxDate).date, expectedDateString , `${given}: last difficultyPerDay should have same timestamp as last block`);
+    t.equal(zpSupplyPerDay.reduce(getMaxDate).date, expectedDateString , `${given}: last zpSupplyPerDay should have same timestamp as last block`);
   });
 });
 

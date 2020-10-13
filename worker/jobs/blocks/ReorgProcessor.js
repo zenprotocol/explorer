@@ -10,6 +10,9 @@ const addressesDAL = require('../../../server/components/api/addresses/addresses
 const assetsDAL = require('../../../server/components/api/assets/assetsDAL');
 const inputsDAL = require('../../../server/components/api/inputs/inputsDAL');
 const outputsDAL = require('../../../server/components/api/outputs/outputsDAL');
+const difficultyPerDayDAL = require('../../../server/components/api/difficulty-per-day/difficultyPerDayDAL');
+const txsPerDayDAL = require('../../../server/components/api/txs-per-day/txsPerDayDAL');
+const zpSupplyPerDayDAL = require('../../../server/components/api/zp-supply-per-day/zpSupplyPerDayDAL');
 const db = require('../../../server/db/sequelize/models');
 const calcRewardByHeight = require('../../../server/lib/calcRewardByHeight');
 const getJobData = require('../../lib/getJobData');
@@ -71,6 +74,9 @@ class ReorgProcessor extends EventEmitter {
             ]);
             await this.calcAddressAssetsPerTx({ inputs, outputs, tx });
           }
+
+          logger.info(`Deleting all charts data with date > #${lowestFork}'s date`);
+          await this.removeChartsData(lowestFork);
 
           logger.info(`Deleting all blocks with blockNumber > ${lowestFork}`);
           deleted = await blocksDAL.bulkDelete({
@@ -277,6 +283,44 @@ class ReorgProcessor extends EventEmitter {
     });
 
     await Promise.all(promisesContract);
+  }
+
+  /**
+   * Deletes all charts data with date >= fork date
+   * using '>=' because there can be blocks from the same day of the fork after the fork
+   */
+  async removeChartsData(fork) {
+    const forkBlock = await blocksDAL.findOne({ where: { blockNumber: fork } });
+    if (forkBlock) {
+      const goodDate = new Date(Number(forkBlock.timestamp));
+      goodDate.setDate(goodDate.getDate() - 1);
+      await Promise.all([
+        txsPerDayDAL.bulkDelete({
+          where: {
+            date: {
+              [Op.gt]: goodDate,
+            },
+          },
+          transaction: this.dbTransaction,
+        }),
+        difficultyPerDayDAL.bulkDelete({
+          where: {
+            date: {
+              [Op.gt]: goodDate,
+            },
+          },
+          transaction: this.dbTransaction,
+        }),
+        zpSupplyPerDayDAL.bulkDelete({
+          where: {
+            date: {
+              [Op.gt]: goodDate,
+            },
+          },
+          transaction: this.dbTransaction,
+        }),
+      ]);
+    }
   }
 }
 

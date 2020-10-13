@@ -118,6 +118,7 @@ async function wrapTest(given, test) {
   blocksDAL = td.replace('../../../../server/components/api/blocks/blocksDAL', {
     findLatest: td.func('findLatest'),
     findById: td.func('findById'),
+    findOne: td.func('findOne'),
     bulkDelete: td.func('bulkDelete'),
   });
   const txsDAL = td.replace('../../../../server/components/api/txs/txsDAL', {
