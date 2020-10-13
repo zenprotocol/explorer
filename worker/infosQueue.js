@@ -18,7 +18,7 @@ const taskTimeLimiter = new TaskTimeLimiter(Config.get('queues:slackTimeLimit') 
 updateGeneralInfosQueue.process(path.join(__dirname, 'jobs/infos/updateGeneralInfos.handler.js'));
 
 // events
-updateGeneralInfosQueue.on('active', function (job, jobPromise) {
+updateGeneralInfosQueue.on('active', function (job) {
   logger.info(`A job has started. ID=${job.id}`);
 });
 
@@ -47,15 +47,11 @@ Promise.all([
 ]).then(() => {
   // schedule ---
   updateGeneralInfosQueue.add(
-    { type: 'expensive' },
+    {},
     { repeat: { cron: '0 1 * * *' } } // once a day at 1:00
   );
-  updateGeneralInfosQueue.add(
-    { type: 'rapid' },
-    { repeat: { cron: '* * * * *' } } // every minute
-  );
   // now
-  updateGeneralInfosQueue.add({ type: 'expensive' });
+  updateGeneralInfosQueue.add();
 });
 
 setInterval(() => {

@@ -25,7 +25,7 @@ statsDAL.totalIssued = async function (asset) {
   });
 };
 
-statsDAL.transactionsPerDay = async function ({ chartInterval = maximumChartInterval } = {}) {
+statsDAL.transactionsPerDay = async function ({ chartInterval = maximumChartInterval, transaction } = {}) {
   return txsPerDayDAL.findAll({
     where: {
       date: {
@@ -34,10 +34,11 @@ statsDAL.transactionsPerDay = async function ({ chartInterval = maximumChartInte
       },
     },
     order: [['date', 'ASC']],
+    transaction
   });
 };
 
-statsDAL.zpSupply = async function ({ chartInterval = maximumChartInterval } = {}) {
+statsDAL.zpSupply = async function ({ chartInterval = maximumChartInterval, transaction } = {}) {
   return zpSupplyPerDayDAL.findAll({
     where: {
       date: {
@@ -46,10 +47,11 @@ statsDAL.zpSupply = async function ({ chartInterval = maximumChartInterval } = {
       },
     },
     order: [['date', 'ASC']],
+    transaction
   });
 };
 
-statsDAL.blockDifficulty = async function ({ chartInterval = maximumChartInterval } = {}) {
+statsDAL.blockDifficulty = async function ({ chartInterval = maximumChartInterval, transaction } = {}) {
   return difficultyPerDayDAL.findAll({
     where: {
       date: {
@@ -58,10 +60,14 @@ statsDAL.blockDifficulty = async function ({ chartInterval = maximumChartInterva
       },
     },
     order: [['date', 'ASC']],
+    transaction
   });
 };
 
-statsDAL.networkHashRate = async function ({ chartInterval = maximumChartInterval } = {}) {
+statsDAL.networkHashRate = async function ({
+  chartInterval = maximumChartInterval,
+  transaction,
+} = {}) {
   return difficultyPerDayDAL.findAll({
     attributes: ['date', [db.Sequelize.literal('value * 1000000000000 / 55000'), 'value']],
     where: {
@@ -71,6 +77,7 @@ statsDAL.networkHashRate = async function ({ chartInterval = maximumChartInterva
       },
     },
     order: [['date', 'ASC']],
+    transaction,
   });
 };
 

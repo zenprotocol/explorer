@@ -15,21 +15,36 @@ const addressesDAL = require('../../../server/components/api/addresses/addresses
 const addressTxsDAL = require('../../../server/components/api/address-txs/addressTxsDAL');
 const assetTxsDAL = require('../../../server/components/api/asset-txs/assetTxsDAL');
 const assetsDAL = require('../../../server/components/api/assets/assetsDAL');
+const statsDAL = require('../../../server/components/api/stats/statsDAL');
+const cgpUtils = require('../../../server/components/api/cgp/cgpUtils');
+const cgpBLL = require('../../../server/components/api/cgp/cgpBLL');
 const calcRewardByHeight = require('../../../server/lib/calcRewardByHeight');
+const createOrUpdateInfos = require('../../lib/createOrUpdateInfos');
 const calcAddressesAssets = require('./calcAddressesAssetsPerTx');
 
 const Op = db.Sequelize.Op;
 
 class BlocksAdder {
   /**
-   * @param {import('../../lib/NetworkHelper')} networkHelper
-   * @param {import('../../../server/lib/BlockchainParser')} blockchainParser
-   * @param {string} genesisTotalZp
+   * @param {Object} params
+   * @param {import('../../lib/NetworkHelper')} params.networkHelper
+   * @param {import('../../../server/lib/BlockchainParser')} params.blockchainParser
+   * @param {string} params.genesisTotalZp
+   * @param {('test'|'main')} params.chain
+   * @param {string} params.cgpFundContractId
    */
-  constructor(networkHelper, blockchainParser, genesisTotalZp) {
+  constructor({
+    networkHelper,
+    blockchainParser,
+    genesisTotalZp,
+    chain = 'main',
+    cgpFundContractId,
+  } = {}) {
     this.networkHelper = networkHelper;
     this.blockchainParser = blockchainParser;
     this.genesisTotalZp = genesisTotalZp;
+    this.chain = chain;
+    this.cgpFundContractId = cgpFundContractId;
     this.dbTransaction = null;
     this.job = null;
   }
@@ -83,6 +98,9 @@ class BlocksAdder {
           blocks.push(await this.addBlock({ nodeBlock }));
         }
 
+        logger.info('Updating infos');
+        await this.updateInfos();
+
         logger.info('Commit the database transaction');
         await this.dbTransaction.commit();
       } else {
@@ -120,6 +138,74 @@ class BlocksAdder {
         value: syncing,
       });
     }
+  }
+
+  async updateInfos() {
+    const funcs = {
+      blockchainInfos: async () => {
+        const infos = await this.networkHelper.getBlockchainInfo();
+        await createOrUpdateInfos(
+          Object.keys(infos).map((key) => ({ name: key, value: infos[key] })),
+          { transaction: this.dbTransaction }
+        );
+      },
+      hashRate: async () => {
+        const hashRates = await statsDAL.networkHashRate({
+          chartInterval: '1 week',
+          transaction: this.dbTransaction,
+        });
+        const info = {
+          name: 'hashRate',
+          value: 0,
+        };
+        if (hashRates.length) {
+          const lastDayHashRate = hashRates[hashRates.length - 1];
+          info.value = lastDayHashRate.value;
+        }
+        await createOrUpdateInfos([info], { transaction: this.dbTransaction });
+      },
+      txsCount: async () => {
+        const txsCount = await txsDAL.count({ transaction: this.dbTransaction });
+        const infos = [
+          {
+            name: 'txsCount',
+            value: txsCount,
+          },
+        ];
+        await createOrUpdateInfos(infos, { transaction: this.dbTransaction });
+      },
+      cgp: async () => {
+        const currentBlockNumber = await blocksDAL
+          .findLatest({ transaction: this.dbTransaction })
+          .then((b) => b.blockNumber);
+        const currentInterval = cgpUtils.getIntervalByBlockNumber(this.chain, currentBlockNumber);
+        const [cgpBalance, cgpAllocation] = await Promise.all([
+          addressesDAL
+            .findAllByAddress(
+              this.blockchainParser.getAddressFromContractId(this.cgpFundContractId),
+              { transaction: this.dbTransaction }
+            )
+            .then((result) => result.map((item) => ({ asset: item.asset, amount: item.balance }))),
+          cgpBLL.findWinnerAllocation({
+            interval: currentInterval - 1,
+            chain: this.chain,
+            dbTransaction: this.dbTransaction,
+          }),
+        ]);
+        const infos = [
+          {
+            name: 'cgpBalance',
+            value: JSON.stringify(cgpBalance),
+          },
+          {
+            name: 'cgpAllocation',
+            value: cgpAllocation,
+          },
+        ];
+        await createOrUpdateInfos(infos, { transaction: this.dbTransaction });
+      },
+    };
+    return Promise.all([funcs.blockchainInfos(), funcs.hashRate(), funcs.txsCount(), funcs.cgp()]);
   }
 
   /**

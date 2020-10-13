@@ -11,6 +11,7 @@ const addressesDAL = require('../../../../server/components/api/addresses/addres
 const assetTxsDAL = require('../../../../server/components/api/asset-txs/assetTxsDAL');
 const assetsDAL = require('../../../../server/components/api/assets/assetsDAL');
 const contractsDAL = require('../../../../server/components/api/contracts/contractsDAL');
+const infosDAL = require('../../../../server/components/api/infos/infosDAL');
 const NetworkHelper = require('../../../lib/NetworkHelper');
 const BlockchainParser = require('../../../../server/lib/BlockchainParser');
 const createDemoBlocksFromTo = require('../../../../test/lib/createDemoBlocksFromTo');
@@ -32,7 +33,13 @@ test('BlocksAdder.doJob()', async function (t) {
   await wrapTest('Given nothing in db', async (given) => {
     const networkHelper = new NetworkHelper();
     mock.mockNetworkHelper(networkHelper);
-    const blocksAdder = new BlocksAdder(networkHelper, new BlockchainParser(), '20000000');
+    const blocksAdder = new BlocksAdder({
+      networkHelper,
+      blockchainParser: new BlockchainParser(),
+      genesisTotalZp: '20000000',
+      chain: 'main',
+      cgpFundContractId: '00000000cdaa2a511cd2e1d07555b00314d1be40a649d3b6f419eb1e4e7a8e63240a36d1',
+    });
 
     try {
       const { count, latest } = await blocksAdder.doJob({
@@ -53,6 +60,30 @@ test('BlocksAdder.doJob()', async function (t) {
       const block2 = await blocksDAL.findById(2);
       t.assert(block2 !== null, `${given}: Block 2 should be in the db`);
       t.equal(block2.reward, '5000000000', `${given}: Block 2 should have a reward`);
+
+      // check infos
+      const infos = await infosDAL.findAll();
+      t.assert(infos.length > 0, `${given}: Should add infos`);
+      t.assert(
+        infos.some((i) => ['chain', 'blocks', 'headers', 'difficulty'].includes(i.name)),
+        `${given}: Should add blockchain infos`
+      );
+      t.assert(
+        infos.some((i) => i.name === 'hashRate'),
+        `${given}: Should add hashRate`
+      );
+      t.assert(
+        infos.some((i) => i.name === 'txsCount'),
+        `${given}: Should add txsCount`
+      );
+      t.assert(
+        infos.some((i) => i.name === 'cgpBalance'),
+        `${given}: Should add cgpBalance`
+      );
+      t.assert(
+        infos.some((i) => i.name === 'cgpAllocation'),
+        `${given}: Should add cgpAllocation`
+      );
     } catch (error) {
       t.fail(`${given}: Should not throw an error`);
     }
@@ -61,7 +92,13 @@ test('BlocksAdder.doJob()', async function (t) {
   await wrapTest('Given some already in DB', async (given) => {
     const networkHelper = new NetworkHelper();
     mock.mockNetworkHelper(networkHelper);
-    const blocksAdder = new BlocksAdder(networkHelper, new BlockchainParser(), '20000000');
+    const blocksAdder = new BlocksAdder({
+      networkHelper,
+      blockchainParser: new BlockchainParser(),
+      genesisTotalZp: '20000000',
+      chain: 'main',
+      cgpFundContractId: '00000000cdaa2a511cd2e1d07555b00314d1be40a649d3b6f419eb1e4e7a8e63240a36d1',
+    });
 
     // add demo first block in DB
     await blocksDAL.create({
@@ -92,7 +129,13 @@ test('BlocksAdder.doJob()', async function (t) {
   });
   await wrapTest('Given network error when getting blocks info from node', async (given) => {
     const networkHelper = new NetworkHelper();
-    const blocksAdder = new BlocksAdder(networkHelper, new BlockchainParser(), '20000000');
+    const blocksAdder = new BlocksAdder({
+      networkHelper,
+      blockchainParser: new BlockchainParser(),
+      genesisTotalZp: '20000000',
+      chain: 'main',
+      cgpFundContractId: '00000000cdaa2a511cd2e1d07555b00314d1be40a649d3b6f419eb1e4e7a8e63240a36d1',
+    });
 
     // mute the service to get empty responses
     Service.config.setBaseUrl('http://wrong.address.io');
@@ -112,7 +155,13 @@ test('BlocksAdder.doJob()', async function (t) {
     const ADDRESS_IN_BLOCK_1 = 'zen1qmwpd6utdzqq4lg52c70f6ae5lpmvcqtm0gvaxqlrvxt79wquf38s9mrydf';
     const networkHelper = new NetworkHelper();
     mock.mockNetworkHelper(networkHelper);
-    const blocksAdder = new BlocksAdder(networkHelper, new BlockchainParser(), '20000000');
+    const blocksAdder = new BlocksAdder({
+      networkHelper,
+      blockchainParser: new BlockchainParser(),
+      genesisTotalZp: '20000000',
+      chain: 'main',
+      cgpFundContractId: '00000000cdaa2a511cd2e1d07555b00314d1be40a649d3b6f419eb1e4e7a8e63240a36d1',
+    });
 
     try {
       const { count } = await blocksAdder.doJob({
@@ -299,7 +348,7 @@ test('BlocksAdder.doJob()', async function (t) {
         },
       },
     };
-    
+
     const networkHelper = new NetworkHelper();
     mock.mockNetworkHelper(networkHelper, { latestBlockNumber: 2 });
     networkHelper.getSerializedBlocksFromNode = () => {
@@ -314,7 +363,13 @@ test('BlocksAdder.doJob()', async function (t) {
         },
       ]);
     };
-    const blocksAdder = new BlocksAdder(networkHelper, new BlockchainParser(), '20000000');
+    const blocksAdder = new BlocksAdder({
+      networkHelper,
+      blockchainParser: new BlockchainParser(),
+      genesisTotalZp: '20000000',
+      chain: 'main',
+      cgpFundContractId: '00000000cdaa2a511cd2e1d07555b00314d1be40a649d3b6f419eb1e4e7a8e63240a36d1',
+    });
 
     try {
       await blocksAdder.doJob();
@@ -342,7 +397,13 @@ test('BlocksAdder.doJob()', async function (t) {
     const OUTPOINT_BLOCK_NUMBER = 1;
     const networkHelper = new NetworkHelper();
     mock.mockNetworkHelper(networkHelper, { latestBlockNumber: TEST_BLOCK_NUMBER });
-    const blocksAdder = new BlocksAdder(networkHelper, new BlockchainParser(), '20000000');
+    const blocksAdder = new BlocksAdder({
+      networkHelper,
+      blockchainParser: new BlockchainParser(),
+      genesisTotalZp: '20000000',
+      chain: 'main',
+      cgpFundContractId: '00000000cdaa2a511cd2e1d07555b00314d1be40a649d3b6f419eb1e4e7a8e63240a36d1',
+    });
 
     try {
       // add 1st block as the tested input references this
@@ -397,7 +458,13 @@ test('BlocksAdder.doJob()', async function (t) {
       '00000000f24db32aa1881956646d3ccbb647df71455de10cf98b635810e8870906a56b63';
     const networkHelper = new NetworkHelper();
     mock.mockNetworkHelper(networkHelper, { latestBlockNumber: TEST_BLOCK_NUMBER });
-    const blocksAdder = new BlocksAdder(networkHelper, new BlockchainParser(), '20000000');
+    const blocksAdder = new BlocksAdder({
+      networkHelper,
+      blockchainParser: new BlockchainParser(),
+      genesisTotalZp: '20000000',
+      chain: 'main',
+      cgpFundContractId: '00000000cdaa2a511cd2e1d07555b00314d1be40a649d3b6f419eb1e4e7a8e63240a36d1',
+    });
 
     try {
       await createDemoBlocksFromTo(
@@ -565,7 +632,13 @@ test('BlocksAdder.doJob()', async function (t) {
         },
       ]);
     };
-    const blocksAdder = new BlocksAdder(networkHelper, new BlockchainParser(), '20000000');
+    const blocksAdder = new BlocksAdder({
+      networkHelper,
+      blockchainParser: new BlockchainParser(),
+      genesisTotalZp: '20000000',
+      chain: 'main',
+      cgpFundContractId: '00000000cdaa2a511cd2e1d07555b00314d1be40a649d3b6f419eb1e4e7a8e63240a36d1',
+    });
 
     try {
       const { count } = await blocksAdder.doJob();
@@ -639,7 +712,7 @@ test('BlocksAdder.doJob()', async function (t) {
                 PK: {
                   hash: 'db82dd716d10015fa28ac79e9d7734f876cc017b7a19d303e36197e2b81c4c4f',
                   address: 'zen1qmwpd6utdzqq4lg52c70f6ae5lpmvcqtm0gvaxqlrvxt79wquf38s9mrydf',
-                }
+                },
               },
               spend: {
                 asset: '00',
@@ -702,7 +775,7 @@ test('BlocksAdder.doJob()', async function (t) {
         nonce: ['8015528688734519415', '5802497780545032333'],
       },
       transactions: {
-        'ff1a817aeec8264e4f9c5ed74cc29cfa33cc0222b16a5f5b28db35c9d3437e94': {
+        ff1a817aeec8264e4f9c5ed74cc29cfa33cc0222b16a5f5b28db35c9d3437e94: {
           version: 0,
           inputs: [],
           outputs: [
@@ -748,7 +821,13 @@ test('BlocksAdder.doJob()', async function (t) {
         },
       ]);
     };
-    const blocksAdder = new BlocksAdder(networkHelper, new BlockchainParser(), '20000000');
+    const blocksAdder = new BlocksAdder({
+      networkHelper,
+      blockchainParser: new BlockchainParser(),
+      genesisTotalZp: '20000000',
+      chain: 'main',
+      cgpFundContractId: '00000000cdaa2a511cd2e1d07555b00314d1be40a649d3b6f419eb1e4e7a8e63240a36d1',
+    });
 
     try {
       const { count } = await blocksAdder.doJob();
@@ -798,7 +877,7 @@ test('BlocksAdder.doJob()', async function (t) {
                   PK: {
                     hash: 'db82dd716d10015fa28ac79e9d7734f876cc017b7a19d303e36197e2b81c4c4f',
                     address: 'zen1qmwpd6utdzqq4lg52c70f6ae5lpmvcqtm0gvaxqlrvxt79wquf38s9mrydf',
-                  }
+                  },
                 },
                 spend: {
                   asset: '00',
@@ -870,7 +949,13 @@ test('BlocksAdder.doJob()', async function (t) {
           },
         ]);
       };
-      const blocksAdder = new BlocksAdder(networkHelper, new BlockchainParser(), '20000000');
+      const blocksAdder = new BlocksAdder({
+        networkHelper,
+        blockchainParser: new BlockchainParser(),
+        genesisTotalZp: '20000000',
+        chain: 'main',
+        cgpFundContractId: '00000000cdaa2a511cd2e1d07555b00314d1be40a649d3b6f419eb1e4e7a8e63240a36d1',
+      });
 
       try {
         await blocksAdder.doJob();
@@ -919,7 +1004,7 @@ test('BlocksAdder.doJob()', async function (t) {
                 PK: {
                   hash: 'db82dd716d10015fa28ac79e9d7734f876cc017b7a19d303e36197e2b81c4c4f',
                   address: 'zen1qmwpd6utdzqq4lg52c70f6ae5lpmvcqtm0gvaxqlrvxt79wquf38s9mrydf',
-                }
+                },
               },
               spend: {
                 asset: '00',
@@ -966,7 +1051,13 @@ test('BlocksAdder.doJob()', async function (t) {
         },
       ]);
     };
-    const blocksAdder = new BlocksAdder(networkHelper, new BlockchainParser(), '20000000');
+    const blocksAdder = new BlocksAdder({
+      networkHelper,
+      blockchainParser: new BlockchainParser(),
+      genesisTotalZp: '20000000',
+      chain: 'main',
+      cgpFundContractId: '00000000cdaa2a511cd2e1d07555b00314d1be40a649d3b6f419eb1e4e7a8e63240a36d1',
+    });
 
     try {
       await blocksAdder.doJob();
@@ -995,9 +1086,10 @@ test('BlocksAdder.doJob()', async function (t) {
   await wrapTest(
     'Given a block with a contract, mint and pk with contract address',
     async (given) => {
-      const CONTRACT_ID = '0000000085d4c3f4f85c228e699b32d9b83875b7f2197c564e101d3a8e6d988e5c4ade37';
-    const CONTRACT_ADDRESS =
-      'czen1qqqqqqqy96nplf7zuy28xnxejmxursadh7gvhc4jwzqwn4rndnz89cjk7xufhuseh';
+      const CONTRACT_ID =
+        '0000000085d4c3f4f85c228e699b32d9b83875b7f2197c564e101d3a8e6d988e5c4ade37';
+      const CONTRACT_ADDRESS =
+        'czen1qqqqqqqy96nplf7zuy28xnxejmxursadh7gvhc4jwzqwn4rndnz89cjk7xufhuseh';
       /**
        * block1 is genesis
        * block 2 has a contract activation
@@ -1023,7 +1115,7 @@ test('BlocksAdder.doJob()', async function (t) {
                   PK: {
                     hash: 'db82dd716d10015fa28ac79e9d7734f876cc017b7a19d303e36197e2b81c4c4f',
                     address: 'zen1qmwpd6utdzqq4lg52c70f6ae5lpmvcqtm0gvaxqlrvxt79wquf38s9mrydf',
-                  }
+                  },
                 },
                 spend: {
                   asset: '00',
@@ -1095,7 +1187,7 @@ test('BlocksAdder.doJob()', async function (t) {
                   amount: 5000000000,
                 },
               },
-            ]
+            ],
           },
         },
       };
@@ -1113,7 +1205,13 @@ test('BlocksAdder.doJob()', async function (t) {
           },
         ]);
       };
-      const blocksAdder = new BlocksAdder(networkHelper, new BlockchainParser(), '20000000');
+      const blocksAdder = new BlocksAdder({
+        networkHelper,
+        blockchainParser: new BlockchainParser(),
+        genesisTotalZp: '20000000',
+        chain: 'main',
+        cgpFundContractId: '00000000cdaa2a511cd2e1d07555b00314d1be40a649d3b6f419eb1e4e7a8e63240a36d1',
+      });
 
       try {
         await blocksAdder.doJob();
@@ -1146,7 +1244,13 @@ test('BlocksAdder.doJob()', async function (t) {
       const TEST_BLOCK_NUMBER = 4;
       const networkHelper = new NetworkHelper();
       mock.mockNetworkHelper(networkHelper, { latestBlockNumber: TEST_BLOCK_NUMBER });
-      const blocksAdder = new BlocksAdder(networkHelper, new BlockchainParser(), '20000000');
+      const blocksAdder = new BlocksAdder({
+        networkHelper,
+        blockchainParser: new BlockchainParser(),
+        genesisTotalZp: '20000000',
+        chain: 'main',
+        cgpFundContractId: '00000000cdaa2a511cd2e1d07555b00314d1be40a649d3b6f419eb1e4e7a8e63240a36d1',
+      });
 
       try {
         await createDemoBlocksFromTo(
@@ -1170,7 +1274,13 @@ if (Config.get('RUN_REAL_DATA_TESTS')) {
   test('Add New Blocks with real data from node (NO MOCK)', async function (t) {
     await truncate();
     const networkHelper = new NetworkHelper();
-    const blocksAdder = new BlocksAdder(networkHelper, new BlockchainParser(), '20000000');
+    const blocksAdder = new BlocksAdder({
+      networkHelper,
+      blockchainParser: new BlockchainParser(),
+      genesisTotalZp: '20000000',
+      chain: 'main',
+      cgpFundContractId: '00000000cdaa2a511cd2e1d07555b00314d1be40a649d3b6f419eb1e4e7a8e63240a36d1',
+    });
 
     try {
       const { count } = await blocksAdder.doJob({ data: { limitBlocks: 200 } });
