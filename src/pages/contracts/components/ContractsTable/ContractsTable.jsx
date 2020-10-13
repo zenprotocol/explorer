@@ -94,7 +94,7 @@ class ContractsTable extends Component {
         tableDataSetter={uiStore.setContractsTableData.bind(uiStore)}
         dataTable={uiStore.state.contractsTable}
         topContent={<PageTitle title="Contracts" margin={false} />}
-        defaultSorted={[{ id: 'expiryBlock', desc: true }]}
+        defaultSorted={[{ id: 'lastActivationBlock', desc: true }]}
         defaultSortDesc={true}
       />
     );

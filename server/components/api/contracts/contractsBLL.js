@@ -6,7 +6,7 @@ const createQueryObject = require('../../../lib/createQueryObject');
 module.exports = {
   findAll: async function({ page = 0, pageSize = 10, sorted, blockNumber } = {}) {
     const sortBy =
-      sorted && sorted != '[]' ? JSON.parse(sorted) : [{ id: 'expiryBlock', desc: true }];
+      sorted && sorted != '[]' ? JSON.parse(sorted) : [{ id: 'lastActivationBlock', desc: true }];
     const query = createQueryObject({ page, pageSize, sorted: sortBy });
     return await contractsDAL.findAllWithAssetsCountTxCountAndCountOrderByNewest({
       ...query,
