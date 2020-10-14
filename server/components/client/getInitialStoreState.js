@@ -2,7 +2,6 @@ const blocksBLL = require('../api/blocks/blocksBLL');
 const txsBLL = require('../api/txs/txsBLL');
 const addressesBLL = require('../api/addresses/addressesBLL');
 const contractsBLL = require('../api/contracts/contractsBLL');
-const contractsDAL = require('../api/contracts/contractsDAL');
 const assetsBLL = require('../api/assets/assetsBLL');
 const infosBLL = require('../api/infos/infosBLL');
 const repoVotesBLL = require('../api/repovotes/repoVotesBLL');
@@ -10,7 +9,7 @@ const interval1CacheBLL = require('../api/repovotes/cache/1/interval1CacheBLL');
 const cgpBLL = require('../api/cgp/cgpBLL');
 const getChain = require('../../lib/getChain');
 
-module.exports = async req => {
+module.exports = async (req) => {
   const { routeName } = req;
   const initialState = {
     addressStore: {},
@@ -26,49 +25,49 @@ module.exports = async req => {
   };
   const promises = [];
   // blocks
-  promises.push(blocksBLL.count().then(count => (initialState.blockStore.blocksCount = count)));
+  promises.push(blocksBLL.count().then((count) => (initialState.blockStore.blocksCount = count)));
   // info
-  promises.push(getInfoStoreData(req).then(data => (initialState.infoStore = data)));
+  promises.push(getInfoStoreData(req).then((data) => (initialState.infoStore = data)));
 
   const { page: curPage, pageSize } = safePaginationParams(req);
   switch (routeName) {
     case 'blocks':
-      promises.push(getBlockListStoreData(req).then(data => (initialState.blockStore = data)));
+      promises.push(getBlockListStoreData(req).then((data) => (initialState.blockStore = data)));
       initialState.uiStore.blocksTable = { curPage, pageSize };
       break;
     case 'block':
-      promises.push(getBlockStoreData(req).then(data => (initialState.blockStore = data)));
+      promises.push(getBlockStoreData(req).then((data) => (initialState.blockStore = data)));
       break;
     case 'tx':
       promises.push(
-        getTransactionStoreData(req).then(data => (initialState.transactionStore = data))
+        getTransactionStoreData(req).then((data) => (initialState.transactionStore = data))
       );
       break;
     case 'address':
-      promises.push(getAddressStoreData(req).then(data => (initialState.addressStore = data)));
+      promises.push(getAddressStoreData(req).then((data) => (initialState.addressStore = data)));
       break;
     case 'contracts':
       promises.push(
-        getContractListStoreData(req).then(data => (initialState.contractStore = data))
+        getContractListStoreData(req).then((data) => (initialState.contractStore = data))
       );
       initialState.uiStore.contractsTable = { curPage, pageSize };
       break;
     case 'contract':
-      promises.push(getContractStoreData(req).then(data => (initialState.contractStore = data)));
-      promises.push(getAddressStoreData(req).then(data => (initialState.addressStore = data)));
+      promises.push(getContractStoreData(req).then((data) => (initialState.contractStore = data)));
+      promises.push(getAddressStoreData(req).then((data) => (initialState.addressStore = data)));
       break;
     case 'assets':
-      promises.push(getAssetListStoreData(req).then(data => (initialState.assetStore = data)));
+      promises.push(getAssetListStoreData(req).then((data) => (initialState.assetStore = data)));
       initialState.uiStore.assetsTable = { curPage, pageSize };
       break;
     case 'asset':
-      promises.push(getAssetStoreData(req).then(data => (initialState.assetStore = data)));
+      promises.push(getAssetStoreData(req).then((data) => (initialState.assetStore = data)));
       break;
     case 'governance':
-      promises.push(getRepoVoteStoreData(req).then(data => (initialState.repoVoteStore = data)));
+      promises.push(getRepoVoteStoreData(req).then((data) => (initialState.repoVoteStore = data)));
       break;
     case 'cgp':
-      promises.push(getCGPStoreData(req).then(data => (initialState.cgpStore = data)));
+      promises.push(getCGPStoreData(req).then((data) => (initialState.cgpStore = data)));
       break;
   }
 
@@ -180,10 +179,24 @@ async function getRepoVoteStoreData(req) {
 }
 
 async function getCGPStoreData(req) {
-  const relevantInterval = await cgpBLL.findIntervalAndTally(req.params);
+  // change interval to real one when requesting and to ui one when sending
+  const chain = await getChain();
+  const relevantInterval = await cgpBLL.findIntervalAndTally(
+    Object.assign({}, req.params, { interval: uiIntervalToServer(chain, req.params.interval) })
+  );
   return {
-    relevantInterval,
+    relevantInterval: Object.assign({}, relevantInterval, {
+      interval: serverIntervalToUi(chain, relevantInterval.interval),
+    }),
   };
+}
+// CGP helpers ------
+function serverIntervalToUi(chain, interval) {
+  return chain === 'main' ? Number(interval) - 24 : interval;
+}
+function uiIntervalToServer(chain, interval) {
+  if (Number(interval) === 0) return 0;
+  return chain === 'main' ? Number(interval) + 24 : Number(interval);
 }
 
 function safePaginationParams(req) {
