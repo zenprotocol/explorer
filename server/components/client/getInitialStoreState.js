@@ -192,11 +192,11 @@ async function getCGPStoreData(req) {
 }
 // CGP helpers ------
 function serverIntervalToUi(chain, interval) {
-  return chain === 'main' ? Number(interval) - 24 : interval;
+  return chain === 'main' ? Number(interval) - 24 : Number(interval) - 1413;
 }
 function uiIntervalToServer(chain, interval) {
   if (Number(interval) === 0) return 0;
-  return chain === 'main' ? Number(interval) + 24 : Number(interval);
+  return chain === 'main' ? Number(interval) + 24 : Number(interval) + 1413;
 }
 
 function safePaginationParams(req) {

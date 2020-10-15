@@ -47,7 +47,7 @@ export default class CGPStore {
    * @param {(number|string)} interval
    */
   serverIntervalToUi(interval) {
-    return this.rootStore.infoStore.infos.chain === 'main' ? Number(interval) - 24 : interval;
+    return this.rootStore.infoStore.infos.chain === 'main' ? Number(interval) - 24 : Number(interval) - 1413;
   }
   /**
    * Convert a UI interval number to the real one
@@ -56,7 +56,7 @@ export default class CGPStore {
    */
   uiIntervalToServer(display) {
     if (Number(display) === 0) return 0;
-    return this.rootStore.infoStore.infos.chain === 'main' ? Number(display) + 24 : Number(display);
+    return this.rootStore.infoStore.infos.chain === 'main' ? Number(display) + 24 : Number(display) + 1413;
   }
 
   loadRelevantInterval(params = {}) {
