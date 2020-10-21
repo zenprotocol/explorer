@@ -1,5 +1,5 @@
 import { observable, decorate, action, runInAction, computed } from 'mobx';
-import Service from '../lib/Service';
+import Service from '../lib/ApiService';
 import SearchUtils from '../lib/SearchUtils';
 
 export default class SearchStore {

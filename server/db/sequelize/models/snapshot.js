@@ -3,7 +3,7 @@ module.exports = (sequelize, DataTypes) => {
   const Snapshot = sequelize.define(
     'Snapshot',
     {
-      height: DataTypes.INTEGER,
+      blockNumber: DataTypes.INTEGER,
       address: DataTypes.STRING,
       amount: DataTypes.BIGINT,
     },

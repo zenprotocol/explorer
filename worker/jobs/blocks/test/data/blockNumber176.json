@@ -1,6 +1,6 @@
 {
     "COMMENT": "THIS BLOCK WAS EDITED FOR TESTING MINT INPUT ONLY!!!",
-    "hash": "0000000000045e742e4c91cd1447351fcbde6d7ada71985ebbc5f1dc2a20361a",
+    "hash": "622be326005c0efd2070004259742c3a66486468e57cfafb0eba285a026a602c",
     "header": {
         "version": 0,
         "parent": "00000000000fad5999c26f7d37331082f6558ff8f809cdf0845c071af2bff7e2",
@@ -9,8 +9,8 @@
         "timestamp": 1530385370279,
         "difficulty": 455874015,
         "nonce": [
-            -8689598013436005834,
-            5093008228602618652
+            "8689598013436005834",
+            "5093008228602618652"
         ]
     },
     "transactions": {

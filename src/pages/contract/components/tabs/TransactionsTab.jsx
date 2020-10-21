@@ -45,15 +45,15 @@ class TransactionsTab extends React.Component {
       <TabPanel>
         <ItemsTable
           columns={columns}
-          loading={addressStore.loading.addressTransactions}
-          itemsCount={addressStore.addressTransactionsCount}
-          items={addressStore.addressTransactions}
+          loading={addressStore.loading.addressTxs}
+          itemsCount={addressStore.addressTxsCount}
+          items={addressStore.addressTxs}
           pageSize={uiStore.state.addressTxsTable.pageSize}
           curPage={uiStore.state.addressTxsTable.curPage}
           tableDataSetter={this.tableDataSetter}
           topContent={
             <div>
-              Total of {TextUtils.formatNumber(addressStore.addressTransactionsCount)} transactions
+              Total of {TextUtils.formatNumber(addressStore.addressTxsCount)} transactions
               found
             </div>
           }
@@ -76,19 +76,14 @@ const columns = [
   },
   {
     Header: 'Timestamp',
-    accessor: 'Block.timestamp',
+    accessor: 'timestamp',
     minWidth: config.ui.table.minCellWidthDate,
     Cell: ({ value }) => TextUtils.getDateStringFromTimestamp(value),
   },
   {
     Header: 'Block',
-    accessor: 'Block.blockNumber',
+    accessor: 'blockNumber',
     Cell: ({ value }) => <Link to={`/blocks/${value}`}>{TextUtils.formatNumber(value)}</Link>,
-  },
-  {
-    Header: 'Command',
-    accessor: 'firstCommand',
-    className: 'text-uppercase',
   },
 ];
 

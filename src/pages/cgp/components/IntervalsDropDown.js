@@ -5,6 +5,7 @@ import Dropdown from '../../../components/Dropdown';
 import getPhaseName from '../modules/getPhaseName';
 
 export default function IntervalsDropDown({
+  intervalLength,
   relevantInterval,
   currentInterval,
   currentBlock,
@@ -13,7 +14,6 @@ export default function IntervalsDropDown({
   if (!(relevantInterval || {}).interval) return null;
 
   const maturityBlocks = relevantInterval.coinbaseMaturity - relevantInterval.tally;
-  const intervalLength = relevantInterval.tally / relevantInterval.interval;
 
   let intervals = [relevantInterval.interval];
   for (let i = 1; i < 5; i++) {
@@ -59,6 +59,7 @@ export default function IntervalsDropDown({
   );
 }
 IntervalsDropDown.propTypes = {
+  intervalLength: PropTypes.number,
   relevantInterval: PropTypes.object,
   currentInterval: PropTypes.number.isRequired,
   currentBlock: PropTypes.number.isRequired,

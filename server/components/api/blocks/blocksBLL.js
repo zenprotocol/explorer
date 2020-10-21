@@ -12,7 +12,7 @@ module.exports = {
       sorted && sorted != '[]' ? JSON.parse(sorted) : [{ id: 'blockNumber', desc: true }];
 
     const query = createQueryObject({ page, pageSize, sorted: sortBy });
-    return await Promise.all([blocksDAL.count(), blocksDAL.findAllWithCoinbase(query)]).then(
+    return await Promise.all([blocksDAL.count(), blocksDAL.findAll(query)]).then(
       blocksDAL.getItemsAndCountResult
     );
   },
@@ -22,7 +22,7 @@ module.exports = {
     }
     return isHash(hashOrBlockNumber)
       ? await blocksDAL.findByHash(hashOrBlockNumber)
-      : await blocksDAL.findByBlockNumber(hashOrBlockNumber);
+      : await blocksDAL.findById(hashOrBlockNumber);
   },
   count: async function() {
     return await blocksDAL.count();
@@ -30,9 +30,6 @@ module.exports = {
   getCurrentBlockNumber: async function() {
     const latestBlock = await blocksDAL.findLatest();
     return latestBlock ? latestBlock.blockNumber : 0;
-  },
-  getById: async function({ id } = {}) {
-    return await blocksDAL.findById(id);
   },
   getTotalZp: async function() {
     const height = await blocksDAL.count();

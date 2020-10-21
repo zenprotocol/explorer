@@ -34,14 +34,16 @@ class TransactionAsset extends Component {
   }
 
   toggleShowMore() {
-    this.setState(state => ({
+    this.setState((state) => ({
       showMore: !state.showMore,
     }));
   }
 
   render() {
-    const { transactionAsset, showHeader, addressFoundIn, showAsset } = this.props;
+    const { transactionAsset, showHeader, showAsset } = this.props;
     const { showMore, rowsData } = this.state;
+
+    const { addressFoundIn } = transactionAsset;
 
     if (!transactionAsset || rowsData.length === 0) {
       return null;
@@ -76,11 +78,11 @@ class TransactionAsset extends Component {
   }
 
   getRowsData(props = {}) {
-    const { transactionAsset, asset, address, addressFoundIn, total } = props;
+    const { transactionAsset, asset, address, total } = props;
     const outputs = this.filterOutputsByAddress(
       this.getOutputs(transactionAsset),
       address,
-      addressFoundIn
+      transactionAsset.addressFoundIn
     );
     const inputs = this.getInputs(transactionAsset);
     const rowsData = [];
@@ -112,14 +114,14 @@ class TransactionAsset extends Component {
   }
 
   getInputs(transactionAsset) {
-    if (!transactionAsset.Inputs || !transactionAsset.Inputs.length) {
-      return [this.getDataItem({ data: 'No Inputs', isHash: false })];
+    if (!transactionAsset.inputs || !transactionAsset.inputs.length) {
+      return [this.getDataItem({ data: 'No inputs', isHash: false })];
     } else {
-      return transactionAsset.Inputs.map(input => {
-        return input.Output.address
-          ? this.getDataItem({ data: input.Output.address })
+      return transactionAsset.inputs.map((input) => {
+        return input.address
+          ? this.getDataItem({ data: input.address })
           : this.getDataItem({
-              data: OutputUtils.getTextByLockType(input.Output.lockType),
+              data: input.isMint ? 'Mint' : OutputUtils.getTextByLockType(input.lockType),
               isHash: false,
             });
       });
@@ -127,10 +129,10 @@ class TransactionAsset extends Component {
   }
 
   getOutputs(transactionAsset) {
-    if (!transactionAsset.Outputs || !transactionAsset.Outputs.length) {
-      return [this.getDataItem({ data: 'No Outputs', isHash: false })];
+    if (!transactionAsset.outputs || !transactionAsset.outputs.length) {
+      return [this.getDataItem({ data: 'No outputs', isHash: false })];
     } else {
-      return transactionAsset.Outputs.map(output => {
+      return transactionAsset.outputs.map((output) => {
         let amount = output.amount;
         return output.address
           ? this.getDataItem({ data: output.address, amount })
@@ -147,7 +149,7 @@ class TransactionAsset extends Component {
     if (!address || addressFoundIn.includes('input')) {
       return outputs;
     }
-    return outputs.filter(output => output.data === address);
+    return outputs.filter((output) => output.data === address);
   }
 
   getDataItem({ data, amount, isHash = true } = {}) {
@@ -207,7 +209,7 @@ class TransactionAsset extends Component {
       {
         Header: '',
         width: 30,
-        Cell: data =>
+        Cell: (data) =>
           data.index === 0 ? (
             <div className="arrow">
               <i className="fas fa-arrow-right" />
@@ -220,7 +222,7 @@ class TransactionAsset extends Component {
         Header: 'Output',
         accessor: 'output',
         minWidth: config.ui.table.minCellWidth,
-        Cell: data =>
+        Cell: (data) =>
           data.original.isOutputHash ? (
             <AddressLink
               address={data.value}
@@ -254,7 +256,6 @@ TransactionAsset.propTypes = {
   transactionAsset: PropTypes.object.isRequired,
   asset: PropTypes.string.isRequired,
   address: PropTypes.string,
-  addressFoundIn: PropTypes.array,
   showHeader: PropTypes.bool,
   showAsset: PropTypes.bool,
   total: PropTypes.number,

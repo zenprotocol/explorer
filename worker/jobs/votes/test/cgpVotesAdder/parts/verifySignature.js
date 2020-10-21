@@ -3,17 +3,17 @@ const wrapTest = require('../../../../../../test/lib/wrapTest');
 const BlockchainParser = require('../../../../../../server/lib/BlockchainParser');
 const cgpDAL = require('../../../../../../server/components/api/cgp/cgpDAL');
 const cgpUtils = require('../../../../../../server/components/api/cgp/cgpUtils');
-const CGPVotesAdder = require('../../../CGPVotesAdder');
+const CgpVotesAdder = require('../../../CgpVotesAdder');
 const cgpAdderParams = require('../modules/cgpAdderParams');
 const { addDemoData } = require('../modules/addDemoData');
-const getDemoCommand = require('../modules/getDemoCommand');
+const getDemoExecution = require('../modules/getDemoExecution');
 const getValidMessageBody = require('../modules/getValidMessageBody');
 
 const blockchainParser = new BlockchainParser('test');
 
 module.exports = async function part({ t, before, after }) {
   await wrapTest('Given an allocation vote with wrong interval', async given => {
-    const cgpVotesAdder = new CGPVotesAdder({
+    const cgpVotesAdder = new CgpVotesAdder({
       blockchainParser,
       chain: 'test',
       ...cgpAdderParams,
@@ -22,9 +22,9 @@ module.exports = async function part({ t, before, after }) {
 
     await addDemoData({
       blockchainParser,
-      commandsBlockNumber: 96,
-      commands: [
-        getDemoCommand({
+      executionsBlockNumber: 96,
+      executions: [
+        getDemoExecution({
           command: 'Allocation',
           messageBody: {
             // signed with the wrong interval
@@ -66,13 +66,13 @@ module.exports = async function part({ t, before, after }) {
   });
 
   await wrapTest('Given an allocation vote with one bad signature', async given => {
-    const cgpVotesAdder = new CGPVotesAdder({
+    const cgpVotesAdder = new CgpVotesAdder({
       blockchainParser,
       chain: 'test',
       ...cgpAdderParams,
     });
     before();
-    // the command was made in interval 623
+    // the execution was made in interval 623
     td.replace(cgpUtils, 'getIntervalByBlockNumber');
     td.when(
       cgpUtils.getIntervalByBlockNumber(td.matchers.anything(), td.matchers.anything())
@@ -83,9 +83,9 @@ module.exports = async function part({ t, before, after }) {
 
     await addDemoData({
       blockchainParser,
-      commandsBlockNumber: 96,
-      commands: [
-        getDemoCommand({
+      executionsBlockNumber: 96,
+      executions: [
+        getDemoExecution({
           command: 'Allocation',
           messageBody,
         }),

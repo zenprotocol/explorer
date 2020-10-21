@@ -16,7 +16,7 @@ function before() {
   addressesDAL = td.replace('../../../server/components/api/addresses/addressesDAL', {
     snapshotBalancesByBlock: td.func('snapshotBalancesByBlock'),
   });
-  voteIntervalsDAL = td.replace('../../../server/components/api/voteIntervals/voteIntervalsDAL', {
+  voteIntervalsDAL = td.replace('../../../server/components/api/repovote-intervals/repoVoteIntervalsDAL.js', {
     findAllWithoutSnapshot: td.func('findAllWithoutSnapshot'),
     setHasSnapshot: td.func('setHasSnapshot'),
   });
@@ -69,8 +69,8 @@ test('SnapshotsTaker.doJob()', async function(t) {
       voteIntervals: [
         {
           interval: 1,
-          beginHeight: 1,
-          endHeight: 1000,
+          beginBlock: 1,
+          endBlock: 1000,
         },
       ],
       addressAmounts: [
@@ -144,8 +144,8 @@ test('SnapshotsTaker.doJob()', async function(t) {
       voteIntervals: [
         {
           interval: 1,
-          beginHeight: 1,
-          endHeight: 1000,
+          beginBlock: 1,
+          endBlock: 1000,
         },
       ],
       addressAmounts: [

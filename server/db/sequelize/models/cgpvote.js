@@ -1,17 +1,22 @@
 'use strict';
 module.exports = (sequelize, DataTypes) => {
-  const CGPVote = sequelize.define(
-    'CGPVote',
+  const CgpVote = sequelize.define(
+    'CgpVote',
     {
-      CommandId: DataTypes.BIGINT,
-      type: DataTypes.ENUM('allocation', 'payout', 'nomination'),
+      executionId: DataTypes.BIGINT,
+      blockNumber: DataTypes.INTEGER,
+      txHash: DataTypes.STRING,
+      type: DataTypes.ENUM('nomination', 'allocation', 'payout'),
       ballot: DataTypes.TEXT,
       address: DataTypes.STRING,
     },
-    {}
+    {
+      timestamps: false,
+    }
   );
-  CGPVote.associate = function(models) {
-    CGPVote.belongsTo(models.Command);
+  CgpVote.associate = function (models) {
+    CgpVote.belongsTo(models.Block, { foreignKey: 'blockNumber' });
+    CgpVote.belongsTo(models.Execution, { foreignKey: 'executionId'});
   };
-  return CGPVote;
+  return CgpVote;
 };

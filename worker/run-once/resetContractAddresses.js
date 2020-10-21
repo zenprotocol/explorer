@@ -22,7 +22,7 @@ const run = async () => {
     },
     include: [
       {
-        model: outputsDAL.db.Transaction,
+        model: outputsDAL.db.Tx,
         include: [
           {
             model: outputsDAL.db.Block,
@@ -49,9 +49,9 @@ const run = async () => {
 };
 
 const getAddressFromNode = async output => {
-  const nodeBlock = await networkHelper.getBlockFromNode(output.Transaction.Block.blockNumber);
+  const nodeBlock = await networkHelper.getBlockFromNode(output.blockNumber);
   const { address } = blockchainParser.getLockValuesFromOutput(
-    nodeBlock.transactions[output.Transaction.hash].outputs[output.index]
+    nodeBlock.transactions[output.Tx.hash].outputs[output.index]
   );
   return address;
 };

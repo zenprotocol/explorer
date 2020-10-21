@@ -5,6 +5,7 @@ import { reaction } from 'mobx';
 import { Helmet } from 'react-helmet';
 import { Route, Switch, Redirect } from 'react-router-dom';
 import TextUtils from '../../lib/TextUtils';
+import AssetUtils from '../../lib/AssetUtils';
 import ObjectUtils from '../../lib/ObjectUtils';
 import Page from '../../components/Page';
 import PageTitle from '../../components/PageTitle';
@@ -50,8 +51,8 @@ class GovernancePage extends React.Component {
   get voteStatus() {
     return getVoteStatus({
       currentBlock: this.currentBlock,
-      beginHeight: this.repoVoteStore.relevantInterval.beginHeight,
-      endHeight: this.repoVoteStore.relevantInterval.endHeight,
+      beginBlock: this.repoVoteStore.relevantInterval.beginBlock,
+      endBlock: this.repoVoteStore.relevantInterval.endBlock,
     });
   }
 
@@ -222,7 +223,7 @@ class GovernancePage extends React.Component {
 }
 
 function BeforeVoteInfo({ currentBlock, relevantInterval }) {
-  const blocksToStart = relevantInterval.beginHeight - currentBlock;
+  const blocksToStart = relevantInterval.beginBlock - currentBlock;
 
   return (
     <div className="container">
@@ -234,12 +235,12 @@ function BeforeVoteInfo({ currentBlock, relevantInterval }) {
         />
         <InfoBox
           title="Snapshot Block"
-          content={TextUtils.formatNumber(relevantInterval.beginHeight)}
+          content={TextUtils.formatNumber(relevantInterval.beginBlock)}
           iconClass="fal fa-cubes fa-fw"
         />
         <InfoBox
           title="Tally Block"
-          content={TextUtils.formatNumber(relevantInterval.endHeight)}
+          content={TextUtils.formatNumber(relevantInterval.endBlock)}
           iconClass="fal fa-cubes fa-fw"
         />
       </div>
@@ -268,13 +269,13 @@ function DuringVoteInfo({ currentBlock, relevantInterval }) {
         />
         <InfoBox
           title="Tally Block"
-          content={TextUtils.formatNumber(relevantInterval.endHeight)}
+          content={TextUtils.formatNumber(relevantInterval.endBlock)}
           iconClass="fal fa-money-check fa-fw"
         />
         {relevantInterval.phase === 'Contestant' && (
           <InfoBox
             title="Threshold"
-            content={`${TextUtils.formatNumber(relevantInterval.thresholdZp)} ZP`}
+            content={`${TextUtils.formatNumber(relevantInterval.threshold)} ZP`}
             iconClass="fal fa-coins fa-fw"
           />
         )}
@@ -291,7 +292,7 @@ DuringVoteInfo.propTypes = {
 };
 
 function AfterVoteInfo({ relevantInterval }) {
-  const { winner, beginHeight, endHeight, interval } = relevantInterval;
+  const { winner, beginBlock, endBlock, interval } = relevantInterval;
   const winnerArr = Array.isArray(winner) ? winner : winner ? [winner] : [];
   const winnerJsx = winnerArr.map((item) =>
     item && item.commitId ? <CommitLink commitId={item.commitId} key={item.commitId} /> : null
@@ -302,18 +303,18 @@ function AfterVoteInfo({ relevantInterval }) {
       <div className="row">
         <InfoBox
           title="Snapshot Block"
-          content={TextUtils.formatNumber(beginHeight)}
+          content={TextUtils.formatNumber(beginBlock)}
           iconClass="fal fa-cube fa-fw"
         />
         <InfoBox
           title="Tally Block"
-          content={TextUtils.formatNumber(endHeight)}
+          content={TextUtils.formatNumber(endBlock)}
           iconClass="fal fa-money-check fa-fw"
         />
         {relevantInterval.phase === 'Contestant' && (
           <InfoBox
             title="Threshold"
-            content={`${TextUtils.formatNumber(relevantInterval.thresholdZp)} ZP`}
+            content={AssetUtils.getAmountString('00', relevantInterval.threshold)}
             iconClass="fal fa-coins fa-fw"
           />
         )}
@@ -387,9 +388,7 @@ IntervalsDropDown.propTypes = {
 function getDropDownSemesterText(interval) {
   return `${TextUtils.getOrdinal(interval.interval)} Semester, ${
     interval.phase
-  }s - ${TextUtils.formatNumber(interval.beginHeight)}-${TextUtils.formatNumber(
-    interval.endHeight
-  )}`;
+  }s - ${TextUtils.formatNumber(interval.beginBlock)}-${TextUtils.formatNumber(interval.endBlock)}`;
 }
 
 function getPageUrl(interval, phase) {

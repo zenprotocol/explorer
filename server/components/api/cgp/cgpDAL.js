@@ -3,28 +3,21 @@
 const tags = require('common-tags');
 const dal = require('../../../lib/dal');
 const db = require('../../../db/sequelize/models');
-const {
-  WITH_FILTER_TABLES,
-  FIND_ALL_BY_INTERVAL_BASE_SQL,
-  FIND_ALL_VOTE_RESULTS_BASE_SQL,
-  FIND_ALL_BALLOTS_BASE_SQL,
-  FIND_ALL_ZP_PARTICIPATED_BASE_SQL,
-} = require('./cgpSql');
 
 const sequelize = db.sequelize;
-const cgpDAL = dal.createDAL('CGPVote');
+const Op = db.Sequelize.Op;
+const cgpDAL = dal.createDAL('CgpVote');
 
-cgpDAL.findAllUnprocessedCommands = async function(contractId) {
+cgpDAL.findAllUnprocessedExecutions = async function (contractId) {
   const sql = tags.oneLine`
-    SELECT "Commands".*
-    FROM "Commands"
-    INNER JOIN "Transactions" ON "Commands"."TransactionId" = "Transactions"."id"
-    INNER JOIN "Blocks" ON "Transactions"."BlockId" = "Blocks"."id"
-    WHERE "Commands"."ContractId" = :contractId
-    AND "Commands"."id" NOT IN 
-      (SELECT DISTINCT "CommandId"
-      FROM "CGPVotes")
-    ORDER BY "Blocks"."blockNumber" ASC, "Transactions"."index" ASC
+    SELECT "Executions".*
+    FROM "Executions"
+    INNER JOIN "Txs" ON "Executions"."txId" = "Txs"."id"
+    WHERE "Executions"."contractId" = :contractId
+    AND "Executions"."id" NOT IN 
+      (SELECT DISTINCT "executionId"
+      FROM "CgpVotes")
+    ORDER BY "Executions"."blockNumber" ASC, "Txs"."index" ASC
   `;
 
   return sequelize.query(sql, {
@@ -35,35 +28,44 @@ cgpDAL.findAllUnprocessedCommands = async function(contractId) {
   });
 };
 
+cgpDAL.findAllVotesInPhaseByAddress = async function ({
+  address,
+  beginBlock,
+  endBlock,
+  type,
+  ...options
+} = {}) {
+  return this.findAll({
+    where: {
+      address,
+      type,
+      blockNumber: {
+        [Op.gt]: beginBlock,
+        [Op.lte]: endBlock,
+      },
+    },
+    ...options,
+  });
+};
+
 /**
  * Find the highest block number with a valid vote
  * @param {Object} params
  * @param {number} params.startBlockNumber - the highest block number to look from
- * @param {number} params.intervalLength
- * @param {number} params.interval1Snapshot - the snapshot of interval 1
- * @param {number} params.interval1Tally - the tally of interval 1
- * @param {('allocation'|'payout')} params.type - vote type
+ * @param {('allocation'|'payout'|'nomination')} params.type - vote type
  * @returns {number} the highest block number with a vote or 0
  */
-cgpDAL.findLastValidVoteBlockNumber = async function({
+cgpDAL.findLastValidVoteBlockNumber = async function ({
   startBlockNumber,
-  intervalLength,
-  interval1Snapshot,
-  interval1Tally,
   type,
-  dbTransaction,
+  transaction,
 } = {}) {
   const sql = tags.oneLine`
-  SELECT "Blocks"."blockNumber"
-  FROM "CGPVotes"
-  INNER JOIN "Commands" ON "Commands"."id" = "CGPVotes"."CommandId"
-  INNER JOIN "Transactions" ON "Transactions"."id" = "Commands"."TransactionId"
-  INNER JOIN "Blocks" ON "Blocks"."id" = "Transactions"."BlockId"
-    AND ("Blocks"."blockNumber" - 1) % :intervalLength > :interval1Snapshot - 1
-    AND ("Blocks"."blockNumber" - 1) % :intervalLength < :interval1Tally
-    AND "Blocks"."blockNumber" <= :startBlockNumber
-  WHERE "CGPVotes"."type" = :type
-  ORDER BY "Blocks"."blockNumber" DESC
+  SELECT v."blockNumber"
+  FROM "CgpVotes" v
+  WHERE v."type" = :type
+    AND v."blockNumber" <= :startBlockNumber
+  ORDER BY v."blockNumber" DESC
   LIMIT 1; 
   `;
 
@@ -72,24 +74,46 @@ cgpDAL.findLastValidVoteBlockNumber = async function({
       replacements: {
         type,
         startBlockNumber,
-        intervalLength,
-        interval1Snapshot,
-        interval1Tally,
       },
       type: sequelize.QueryTypes.SELECT,
-      transaction: dbTransaction,
+      transaction,
     })
-    .then(result => (result.length ? result[0].blockNumber : 0));
+    .then((result) => (result.length ? result[0].blockNumber : 0));
 };
 
 /**
- * Find all votes for an interval, grouped by command and filter double votes
+ * Find all votes for an interval, grouped by execution and filter double votes
  */
-cgpDAL.findAllVotesInInterval = async function({ snapshot, tally, type, limit, offset = 0 } = {}) {
+cgpDAL.findAllVotesInInterval = async function ({
+  snapshot,
+  beginBlock,
+  endBlock,
+  type,
+  limit,
+  offset = 0,
+} = {}) {
   const sql = tags.oneLine`
-  ${WITH_FILTER_TABLES}
-  ${FIND_ALL_BY_INTERVAL_BASE_SQL}
-  ORDER BY "Blocks"."blockNumber" DESC
+  SELECT "CgpVotes"."txHash",
+    "CgpVotes"."blockNumber",
+    "Blocks"."timestamp",
+    "CgpVotes"."ballot",
+    sum("Snapshots"."amount") AS "amount",
+    (sum("Snapshots"."amount") / 100000000) AS "zpAmount"
+  FROM "CgpVotes"
+  INNER JOIN "Blocks" ON "Blocks"."blockNumber" = "CgpVotes"."blockNumber"
+  INNER JOIN "Snapshots" 
+    ON "Snapshots"."blockNumber" = :snapshot
+    AND "CgpVotes"."address" = "Snapshots"."address"
+  WHERE "CgpVotes"."address" IS NOT NULL
+    AND "CgpVotes"."type" = :type
+    AND "CgpVotes"."blockNumber" > :beginBlock
+    AND "CgpVotes"."blockNumber" <= :endBlock
+  GROUP BY "CgpVotes"."blockNumber", 
+          "CgpVotes"."txHash", 
+          "CgpVotes"."executionId", 
+          "CgpVotes"."ballot", 
+          "Blocks","timestamp"
+  ORDER BY "CgpVotes"."blockNumber" DESC
   ${limit ? 'LIMIT :limit' : ''} OFFSET :offset; 
   `;
 
@@ -97,7 +121,8 @@ cgpDAL.findAllVotesInInterval = async function({ snapshot, tally, type, limit, o
     replacements: {
       type,
       snapshot,
-      tally,
+      beginBlock,
+      endBlock,
       limit,
       offset,
     },
@@ -106,19 +131,30 @@ cgpDAL.findAllVotesInInterval = async function({ snapshot, tally, type, limit, o
 };
 
 /**
- * Count all votes in an interval, grouped by command and filter double votes
+ * Count all votes in an interval, grouped by execution and filter double votes
  */
-cgpDAL.countVotesInInterval = async function({ snapshot, tally, type } = {}) {
+cgpDAL.countVotesInInterval = async function ({ snapshot, beginBlock, endBlock, type } = {}) {
   const sql = tags.oneLine`
-  ${WITH_FILTER_TABLES}
-  SELECT count(*) FROM (${FIND_ALL_BY_INTERVAL_BASE_SQL}) AS "Votes";
+  SELECT COUNT(1) FROM
+  (SELECT "CgpVotes"."ballot"
+  FROM "CgpVotes"
+  INNER JOIN "Snapshots" 
+    ON "Snapshots"."blockNumber" = :snapshot
+    AND "CgpVotes"."address" = "Snapshots"."address"
+  WHERE "CgpVotes"."address" IS NOT NULL
+    AND "CgpVotes"."type" = :type
+    AND "CgpVotes"."blockNumber" > :beginBlock
+    AND "CgpVotes"."blockNumber" <= :endBlock
+  GROUP BY "CgpVotes"."executionId", 
+          "CgpVotes"."ballot") AS "Votes"
   `;
 
   return sequelize
     .query(sql, {
       replacements: {
         snapshot,
-        tally,
+        beginBlock,
+        endBlock,
         type,
       },
       type: sequelize.QueryTypes.SELECT,
@@ -129,20 +165,28 @@ cgpDAL.countVotesInInterval = async function({ snapshot, tally, type } = {}) {
 /**
  * Get the repo vote results for an interval
  * per address, get the vote that was done in the earliest block and earliest tx in it
- *
- * @param {number} interval
  */
-cgpDAL.findAllVoteResults = async function({
+cgpDAL.findAllVoteResults = async function ({
   snapshot,
-  tally,
+  beginBlock,
+  endBlock,
   type,
   limit,
   offset = 0,
-  dbTransaction = null,
+  transaction = null,
 } = {}) {
   const sql = tags.oneLine`
-  ${WITH_FILTER_TABLES}
-  ${FIND_ALL_VOTE_RESULTS_BASE_SQL}
+  SELECT "CgpVotes"."ballot", 
+    sum("Snapshots"."amount") as "amount", 
+    (sum("Snapshots"."amount") / 100000000) AS "zpAmount"
+  FROM "CgpVotes"
+  INNER JOIN "Snapshots" 
+  ON "Snapshots"."blockNumber" = :snapshot
+  AND "CgpVotes"."address" = "Snapshots"."address"
+  WHERE "CgpVotes"."type" = :type 
+    AND "CgpVotes"."blockNumber" > :beginBlock
+    AND "CgpVotes"."blockNumber" <= :endBlock
+  GROUP BY "CgpVotes"."ballot"
   ORDER BY "zpAmount" DESC
   ${limit ? 'LIMIT :limit' : ''} OFFSET :offset;
   `;
@@ -150,27 +194,38 @@ cgpDAL.findAllVoteResults = async function({
   return sequelize.query(sql, {
     replacements: {
       snapshot,
-      tally,
+      beginBlock,
+      endBlock,
       type,
       limit,
       offset,
     },
     type: sequelize.QueryTypes.SELECT,
-    transaction: dbTransaction,
+    transaction,
   });
 };
 
-cgpDAL.countAllVoteResults = async function({ snapshot, tally, type } = {}) {
+cgpDAL.countAllVoteResults = async function ({ snapshot, beginBlock, endBlock, type } = {}) {
   const sql = tags.oneLine`
-  ${WITH_FILTER_TABLES}
-  SELECT count(*) FROM (${FIND_ALL_VOTE_RESULTS_BASE_SQL}) AS "Results"
+  SELECT count(1) FROM (
+    SELECT "CgpVotes"."ballot"
+    FROM "CgpVotes"
+    INNER JOIN "Snapshots" 
+    ON "Snapshots"."blockNumber" = :snapshot
+    AND "CgpVotes"."address" = "Snapshots"."address"
+    WHERE "CgpVotes"."type" = :type 
+      AND "CgpVotes"."blockNumber" > :beginBlock
+      AND "CgpVotes"."blockNumber" <= :endBlock
+    GROUP BY "CgpVotes"."ballot"
+  ) AS "Results"
   `;
 
   return sequelize
     .query(sql, {
       replacements: {
         snapshot,
-        tally,
+        beginBlock,
+        endBlock,
         type,
       },
       type: sequelize.QueryTypes.SELECT,
@@ -178,10 +233,26 @@ cgpDAL.countAllVoteResults = async function({ snapshot, tally, type } = {}) {
     .then(this.queryResultToCount);
 };
 
-cgpDAL.findAllBallots = async function({ type, snapshot, tally, limit, offset = 0 }) {
+cgpDAL.findAllBallots = async function ({
+  type,
+  snapshot,
+  beginBlock,
+  endBlock,
+  limit,
+  offset = 0,
+}) {
   const sql = tags.oneLine`
-  ${WITH_FILTER_TABLES}
-  ${FIND_ALL_BALLOTS_BASE_SQL}
+  SELECT "CgpVotes"."ballot", 
+    sum("Snapshots"."amount") as "amount", 
+    (sum("Snapshots"."amount") / 100000000) AS "zpAmount"
+  FROM "CgpVotes"
+  INNER JOIN "Snapshots" 
+  ON "Snapshots"."blockNumber" = :snapshot
+  AND "CgpVotes"."address" = "Snapshots"."address"
+  WHERE "CgpVotes"."type" = :type
+    AND "CgpVotes"."blockNumber" > :beginBlock
+    AND "CgpVotes"."blockNumber" <= :endBlock
+  GROUP BY "CgpVotes"."ballot"
   ORDER BY "zpAmount" DESC
   ${limit ? 'LIMIT :limit' : ''} OFFSET :offset;
   `;
@@ -190,17 +261,27 @@ cgpDAL.findAllBallots = async function({ type, snapshot, tally, limit, offset = 
     replacements: {
       type,
       snapshot,
-      tally,
+      beginBlock,
+      endBlock,
       limit,
       offset,
     },
     type: sequelize.QueryTypes.SELECT,
   });
 };
-cgpDAL.countAllBallots = async function({ type, snapshot, tally }) {
+cgpDAL.countAllBallots = async function ({ type, snapshot, beginBlock, endBlock }) {
   const sql = tags.oneLine`
-  ${WITH_FILTER_TABLES}
-  SELECT count(*) FROM (${FIND_ALL_BALLOTS_BASE_SQL}) AS "Results"
+  SELECT count(*) FROM (
+    SELECT "CgpVotes"."ballot"
+    FROM "CgpVotes"
+    INNER JOIN "Snapshots" 
+    ON "Snapshots"."blockNumber" = :snapshot
+    AND "CgpVotes"."address" = "Snapshots"."address"
+    WHERE "CgpVotes"."type" = :type
+      AND "CgpVotes"."blockNumber" > :beginBlock
+      AND "CgpVotes"."blockNumber" <= :endBlock
+    GROUP BY "CgpVotes"."ballot"
+  ) AS "Results"
   `;
 
   return sequelize
@@ -208,43 +289,64 @@ cgpDAL.countAllBallots = async function({ type, snapshot, tally }) {
       replacements: {
         type,
         snapshot,
-        tally,
+        beginBlock,
+        endBlock,
       },
       type: sequelize.QueryTypes.SELECT,
     })
     .then(this.queryResultToCount);
 };
 
-cgpDAL.findZpParticipated = async function({ snapshot, tally, type } = {}) {
+cgpDAL.findZpParticipated = async function ({ snapshot, beginBlock, endBlock, type } = {}) {
   const sql = tags.oneLine`
-  ${WITH_FILTER_TABLES}
-  ${FIND_ALL_ZP_PARTICIPATED_BASE_SQL}
+  SELECT sum("Snapshots"."amount") AS "amount",
+    (sum("Snapshots"."amount") / 100000000) AS "zpAmount"
+  FROM "CgpVotes"
+  INNER JOIN "Snapshots" 
+    ON "Snapshots"."blockNumber" = :snapshot
+    AND "CgpVotes"."address" = "Snapshots"."address"
+  WHERE "CgpVotes"."type" = :type
+    AND "CgpVotes"."blockNumber" > :beginBlock
+    AND "CgpVotes"."blockNumber" <= :endBlock
   `;
 
   return sequelize
     .query(sql, {
       replacements: {
         snapshot,
-        tally,
+        beginBlock,
+        endBlock,
         type,
       },
       type: sequelize.QueryTypes.SELECT,
     })
-    .then(result => (result.length && result[0].amount ? result[0].amount : '0'));
+    .then((result) => (result.length && result[0].amount ? result[0].amount : '0'));
 };
 
-cgpDAL.findAllNominees = async function({
+cgpDAL.findAllNominees = async function ({
   snapshot,
   tally,
   threshold,
   limit,
   offset = 0,
-  dbTransaction = null,
+  transaction = null,
 } = {}) {
+  const middle = snapshot + (tally - snapshot) / 2;
   const sql = tags.oneLine`
-  ${WITH_FILTER_TABLES}
   SELECT "ballot", "amount", "zpAmount" FROM
-  (${FIND_ALL_BALLOTS_BASE_SQL}) AS Results
+  (
+    SELECT "CgpVotes"."ballot", 
+      sum("Snapshots"."amount") as "amount", 
+      (sum("Snapshots"."amount") / 100000000) AS "zpAmount"
+    FROM "CgpVotes"
+    INNER JOIN "Snapshots" 
+      ON "Snapshots"."blockNumber" = :snapshot
+      AND "CgpVotes"."address" = "Snapshots"."address"
+    WHERE "CgpVotes"."type" = :type
+      AND "CgpVotes"."blockNumber" > :snapshot
+      AND "CgpVotes"."blockNumber" <= :middle
+    GROUP BY "CgpVotes"."ballot"
+  ) AS Results
   WHERE "amount" >= :threshold
   ORDER BY "zpAmount" DESC
   ${limit ? 'LIMIT :limit' : ''} OFFSET :offset;
@@ -254,27 +356,38 @@ cgpDAL.findAllNominees = async function({
     replacements: {
       type: 'nomination',
       snapshot,
-      tally,
+      middle,
       limit,
       offset,
       threshold,
     },
     type: sequelize.QueryTypes.SELECT,
-    transaction: dbTransaction,
+    transaction,
   });
 };
 
-cgpDAL.countAllNominees = async function({
+cgpDAL.countAllNominees = async function ({
   snapshot,
   tally,
   threshold,
-  dbTransaction = null,
+  transaction = null,
 } = {}) {
+  const middle = snapshot + (tally - snapshot) / 2;
   const sql = tags.oneLine`
-  ${WITH_FILTER_TABLES}
-  SELECT count(*) from (
-    SELECT "ballot", "amount" FROM
-    (${FIND_ALL_BALLOTS_BASE_SQL}) AS Results
+  SELECT count(1) from (
+    SELECT "ballot" FROM
+    (
+      SELECT "CgpVotes"."ballot", 
+        sum("Snapshots"."amount") as "amount"
+      FROM "CgpVotes"
+      INNER JOIN "Snapshots" 
+        ON "Snapshots"."blockNumber" = :snapshot
+        AND "CgpVotes"."address" = "Snapshots"."address"
+      WHERE "CgpVotes"."type" = :type
+        AND "CgpVotes"."blockNumber" > :snapshot
+        AND "CgpVotes"."blockNumber" <= :middle
+      GROUP BY "CgpVotes"."ballot"
+    ) AS Results
     WHERE "amount" >= :threshold
   ) AS "CountResults"
   `;
@@ -284,11 +397,11 @@ cgpDAL.countAllNominees = async function({
       replacements: {
         type: 'nomination',
         snapshot,
-        tally,
+        middle,
         threshold,
       },
       type: sequelize.QueryTypes.SELECT,
-      transaction: dbTransaction,
+      transaction,
     })
     .then(this.queryResultToCount);
 };

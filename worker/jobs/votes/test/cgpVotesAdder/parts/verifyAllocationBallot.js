@@ -1,10 +1,10 @@
 const wrapTest = require('../../../../../../test/lib/wrapTest');
 const BlockchainParser = require('../../../../../../server/lib/BlockchainParser');
 const cgpDAL = require('../../../../../../server/components/api/cgp/cgpDAL');
-const CGPVotesAdder = require('../../../CGPVotesAdder');
+const CgpVotesAdder = require('../../../CgpVotesAdder');
 const cgpAdderParams = require('../modules/cgpAdderParams');
-const { addDemoData, addCommands } = require('../modules/addDemoData');
-const getDemoCommand = require('../modules/getDemoCommand');
+const { addDemoData, addExecutions } = require('../modules/addDemoData');
+const getDemoExecution = require('../modules/getDemoExecution');
 const getValidMessageBody = require('../modules/getValidMessageBody');
 const getAllocationBallot = require('../modules/getAllocationBallot');
 const allocationValues = require('../modules/allocationValues');
@@ -13,8 +13,8 @@ const blockchainParser = new BlockchainParser('test');
 
 module.exports = async function part({ t, before, after }) {
   const getAllocationTest = ({ allocation, should, assert }) =>
-    wrapTest(`Given allocation = ${allocation}%`, async given => {
-      const cgpVotesAdder = new CGPVotesAdder({
+    wrapTest(`Given allocation = ${allocation}%`, async (given) => {
+      const cgpVotesAdder = new CgpVotesAdder({
         blockchainParser,
         chain: 'test',
         ...cgpAdderParams,
@@ -25,9 +25,9 @@ module.exports = async function part({ t, before, after }) {
       messageBody.dict[1][1].string = getAllocationBallot(allocation);
       await addDemoData({
         blockchainParser,
-        commandsBlockNumber: 96,
-        commands: [
-          getDemoCommand({
+        executionsBlockNumber: 96,
+        executions: [
+          getDemoExecution({
             command: 'Allocation',
             messageBody,
           }),
@@ -40,7 +40,7 @@ module.exports = async function part({ t, before, after }) {
     });
 
   const addsEmptyVoteAssert = ({ votes }) => votes.length === 1 && votes[0].ballot === null;
-  const addsTheVoteAssert = allocationKey => ({ votes }) =>
+  const addsTheVoteAssert = (allocationKey) => ({ votes }) =>
     votes.length === 2 &&
     votes[0].ballot === allocationValues[allocationKey].ballot &&
     votes[1].ballot === allocationValues[allocationKey].ballot;
@@ -59,7 +59,7 @@ module.exports = async function part({ t, before, after }) {
 
   const getAllocationTestWithPrevWinner = ({ prevAllocation, allocation, given, should, assert }) =>
     wrapTest(given, async () => {
-      const cgpVotesAdder = new CGPVotesAdder({
+      const cgpVotesAdder = new CgpVotesAdder({
         blockchainParser,
         chain: 'test',
         ...cgpAdderParams,
@@ -71,21 +71,21 @@ module.exports = async function part({ t, before, after }) {
       messageBodyPrevWinner.dict[1][1].string = getAllocationBallot(prevAllocation);
       messageBodyCurrent.dict[1][1].string = getAllocationBallot(allocation);
       await addDemoData({ blockchainParser, lastBlockNumber: 200 });
-      // add a command to block 96 (prev winner)
-      await addCommands({
-        commandsBlockNumber: 96,
-        commands: [
-          getDemoCommand({
+      // add a execution to block 96 (prev winner)
+      await addExecutions({
+        executionsBlockNumber: 96,
+        executions: [
+          getDemoExecution({
             command: 'Allocation',
             messageBody: messageBodyPrevWinner,
           }),
         ],
       });
-      // add a command to block 196 (current)
-      await addCommands({
-        commandsBlockNumber: 196,
-        commands: [
-          getDemoCommand({
+      // add a execution to block 196 (current)
+      await addExecutions({
+        executionsBlockNumber: 196,
+        executions: [
+          getDemoExecution({
             command: 'Allocation',
             messageBody: messageBodyCurrent,
           }),
@@ -94,29 +94,11 @@ module.exports = async function part({ t, before, after }) {
 
       await cgpVotesAdder.doJob();
       const votes = await cgpDAL.findAll({
-        include: [
-          {
-            model: cgpDAL.db.Command,
-            required: true,
-            include: [
-              {
-                model: cgpDAL.db.Transaction,
-                required: true,
-                include: [
-                  {
-                    model: cgpDAL.db.Block,
-                    required: true,
-                    where: {
-                      blockNumber: {
-                        [cgpDAL.db.Sequelize.Op.gt]: 190,
-                      },
-                    },
-                  },
-                ],
-              },
-            ],
+        where: {
+          blockNumber: {
+            [cgpDAL.db.Sequelize.Op.gt]: 190,
           },
-        ],
+        },
       });
       t.assert(assert({ votes }), `Given ${given}: should ${should}`);
       after();
@@ -162,7 +144,7 @@ module.exports = async function part({ t, before, after }) {
     assert,
   }) =>
     wrapTest(given, async () => {
-      const cgpVotesAdder = new CGPVotesAdder({
+      const cgpVotesAdder = new CgpVotesAdder({
         blockchainParser,
         chain: 'test',
         ...cgpAdderParams,
@@ -175,20 +157,20 @@ module.exports = async function part({ t, before, after }) {
       messageBodyCurrent.dict[1][1].string = getAllocationBallot(allocation);
       await addDemoData({ blockchainParser, lastBlockNumber: 300 });
       // (prev winner)
-      await addCommands({
-        commandsBlockNumber: 96,
-        commands: [
-          getDemoCommand({
+      await addExecutions({
+        executionsBlockNumber: 96,
+        executions: [
+          getDemoExecution({
             command: 'Allocation',
             messageBody: messageBodyPrevWinner,
           }),
         ],
       });
       // (current)
-      await addCommands({
-        commandsBlockNumber: 296,
-        commands: [
-          getDemoCommand({
+      await addExecutions({
+        executionsBlockNumber: 296,
+        executions: [
+          getDemoExecution({
             command: 'Allocation',
             messageBody: messageBodyCurrent,
           }),
@@ -197,29 +179,11 @@ module.exports = async function part({ t, before, after }) {
 
       await cgpVotesAdder.doJob();
       const votes = await cgpDAL.findAll({
-        include: [
-          {
-            model: cgpDAL.db.Command,
-            required: true,
-            include: [
-              {
-                model: cgpDAL.db.Transaction,
-                required: true,
-                include: [
-                  {
-                    model: cgpDAL.db.Block,
-                    required: true,
-                    where: {
-                      blockNumber: {
-                        [cgpDAL.db.Sequelize.Op.gt]: 290,
-                      },
-                    },
-                  },
-                ],
-              },
-            ],
+        where: {
+          blockNumber: {
+            [cgpDAL.db.Sequelize.Op.gt]: 290,
           },
-        ],
+        },
       });
       t.assert(assert({ votes }), `Given ${given}: should ${should}`);
       after();

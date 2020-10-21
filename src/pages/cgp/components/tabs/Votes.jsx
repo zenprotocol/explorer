@@ -119,7 +119,7 @@ export default inject('rootStore')(
   observer(
     WithSetIdsOnUiStore(
       observer(VotesTab),
-      'setCGPVotesTablesData',
+      'setCgpVotesTablesData',
       ['interval', 'phase', 'type'],
       true
     )

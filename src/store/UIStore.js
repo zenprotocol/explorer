@@ -1,6 +1,6 @@
 import { observable, action, autorun, toJS, runInAction } from 'mobx';
 import localStore from '../lib/localStore';
-import Service from '../lib/Service';
+import Service from '../lib/ApiService';
 import config from '../lib/Config';
 import ObjectUtils from '../lib/ObjectUtils';
 
@@ -37,13 +37,6 @@ export default function UIStore(rootStore, initialState = {}) {
       sorted: defaultValues.get('blockContractsTable.sorted'),
     },
 
-    addressTxAssetsTable: {
-      force: 1,
-      address: defaultValues.get('addressTxAssetsTable.address'),
-      pageSize: defaultValues.get('addressTxAssetsTable.pageSize'),
-      curPage: defaultValues.get('addressTxAssetsTable.curPage'),
-    },
-
     addressTxsTable: {
       force: 1,
       address: defaultValues.get('addressTxsTable.address'),
@@ -65,11 +58,11 @@ export default function UIStore(rootStore, initialState = {}) {
       curPage: defaultValues.get('contractAssetsTable.curPage'),
     },
 
-    contractCommandsTable: {
+    contractExecutionsTable: {
       force: 1,
-      address: defaultValues.get('contractCommandsTable.address'),
-      pageSize: defaultValues.get('contractCommandsTable.pageSize'),
-      curPage: defaultValues.get('contractCommandsTable.curPage'),
+      address: defaultValues.get('contractExecutionsTable.address'),
+      pageSize: defaultValues.get('contractExecutionsTable.pageSize'),
+      curPage: defaultValues.get('contractExecutionsTable.curPage'),
     },
 
     assetsTable: {
@@ -181,12 +174,6 @@ export default function UIStore(rootStore, initialState = {}) {
       objectToSet: state.blockContractsTable,
     })
   );
-  const setAddressTxAssetsTableData = action(
-    setTableData({
-      identifiers: ['address'],
-      objectToSet: state.addressTxAssetsTable,
-    })
-  );
   const setAddressTxsTableData = action(
     setTableData({
       identifiers: ['address'],
@@ -200,10 +187,10 @@ export default function UIStore(rootStore, initialState = {}) {
       objectToSet: state.contractAssetsTable,
     })
   );
-  const setContractCommandsTableData = action(
+  const setContractExecutionsTableData = action(
     setTableData({
       identifiers: ['address'],
-      objectToSet: state.contractCommandsTable,
+      objectToSet: state.contractExecutionsTable,
     })
   );
   const setAssetsTableData = action(setTableData({ objectToSet: state.assetsTable }));
@@ -266,7 +253,7 @@ export default function UIStore(rootStore, initialState = {}) {
     })
   );
   // add also setters to control all types at the same time
-  const setCGPVotesTablesData = action((params = {}) => {
+  const setCgpVotesTablesData = action((params = {}) => {
     const { type, ...rest } = params;
     if (type === 'nomination') {
       setCGPNominationVotesTableData(rest);
@@ -322,12 +309,12 @@ export default function UIStore(rootStore, initialState = {}) {
     });
 
     autorun(function runOnBlockChange() {
-      blockStore.resetBlockTransactionAssets(state.blockTxTable.hashOrBlockNumber);
+      blockStore.resetBlockTxs();
     });
 
     autorun(function fetchBlockTransactionAssetsOnChange() {
       if (hashOrBlockNumberNotEmpty(state.blockTxTable.hashOrBlockNumber)) {
-        blockStore.fetchBlockTransactionAssets(state.blockTxTable.hashOrBlockNumber, {
+        blockStore.fetchBlockTxs(state.blockTxTable.hashOrBlockNumber, {
           page: state.blockTxTable.curPage,
           pageSize: state.blockTxTable.pageSize,
         });
@@ -347,18 +334,9 @@ export default function UIStore(rootStore, initialState = {}) {
       }
     });
 
-    autorun(function fetchAddressTxAssetsOnChange() {
-      if (state.addressTxAssetsTable.address && state.addressTxAssetsTable.force > 1) {
-        addressStore.fetchAddressTransactionAssets(state.addressTxAssetsTable.address, {
-          page: state.addressTxAssetsTable.curPage,
-          pageSize: state.addressTxAssetsTable.pageSize,
-        });
-      }
-    });
-
     autorun(function fetchAddressTxsOnChange() {
       if (state.addressTxsTable.address && state.addressTxsTable.force > 1) {
-        addressStore.loadAddressTransactions(state.addressTxsTable.address, {
+        addressStore.fetchAddressTxs(state.addressTxsTable.address, {
           page: state.addressTxsTable.curPage,
           pageSize: state.addressTxsTable.pageSize,
         });
@@ -384,11 +362,11 @@ export default function UIStore(rootStore, initialState = {}) {
       }
     });
 
-    autorun(function fetchContractCommandsOnChange() {
-      if (state.contractCommandsTable.address && state.contractCommandsTable.force > 1) {
-        contractStore.loadCommands(state.contractCommandsTable.address, {
-          page: state.contractCommandsTable.curPage,
-          pageSize: state.contractCommandsTable.pageSize,
+    autorun(function fetchContractExecutionsOnChange() {
+      if (state.contractExecutionsTable.address && state.contractExecutionsTable.force > 1) {
+        contractStore.loadExecutions(state.contractExecutionsTable.address, {
+          page: state.contractExecutionsTable.curPage,
+          pageSize: state.contractExecutionsTable.pageSize,
         });
       }
     });
@@ -565,7 +543,6 @@ export default function UIStore(rootStore, initialState = {}) {
   })();
 
   return Object.freeze({
-    setAddressTxAssetsTableData,
     setAddressTxsTableData,
     setAssetKeyholdersTableData,
     setAssetTxsTableData,
@@ -574,7 +551,7 @@ export default function UIStore(rootStore, initialState = {}) {
     setBlockContractsTableData,
     setBlocksTableData,
     setContractAssetsTableData,
-    setContractCommandsTableData,
+    setContractExecutionsTableData,
     setContractsTableData,
     setRepoVotesTableData,
     setRepoVoteResultsTableData,
@@ -585,7 +562,7 @@ export default function UIStore(rootStore, initialState = {}) {
     setCGPNominationResultsTableData,
     setCGPNominationVotesTableData,
     setCGPVoteResultsTablesData,
-    setCGPVotesTablesData,
+    setCgpVotesTablesData,
     fetchSyncing,
     state,
   });

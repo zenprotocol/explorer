@@ -1,5 +1,5 @@
 import { observable, decorate, action, runInAction } from 'mobx';
-import Service from '../lib/Service';
+import Service from '../lib/ApiService';
 
 export default class ContractStore {
   constructor(rootStore, initialState = {}) {
@@ -9,13 +9,16 @@ export default class ContractStore {
     this.contract = initialState.contract || {};
     this.assets = initialState.assets || [];
     this.assetsCount = initialState.assetsCount || 0;
-    this.commands = initialState.commands || [];
-    this.commandsCount = initialState.commandsCount || 0;
+    this.txs = initialState.txs || [];
+    this.txsCount = initialState.txsCount || 0;
+    this.executions = initialState.executions || [];
+    this.executionsCount = initialState.executionsCount || 0;
     this.loading = {
       contracts: false,
       contract: false,
+      txs: false,
       assets: false,
-      commands: false,
+      executions: false,
     };
   }
 
@@ -59,9 +62,8 @@ export default class ContractStore {
     return Service.contracts
       .findByAddress(address)
       .then((response) => {
-        const contract = new Contract(response.data);
         runInAction(() => {
-          this.contract = contract;
+          this.contract = response.data;
         });
       })
       .catch((error) => {
@@ -77,6 +79,24 @@ export default class ContractStore {
           this.loading.contract = false;
         });
         return this.contract;
+      });
+  }
+
+  fetchTxs(address, params = {}) {
+    this.loading.txs = true;
+    return Service.txs
+      .find(Object.assign({ contractAddress: address }, params))
+      .then(response => {
+        runInAction(() => {
+          this.addressTxs = response.data.items;
+          this.addressTxsCount = Number(response.data.count);
+        });
+      })
+      .catch(() => {})
+      .then(() => {
+        runInAction(() => {
+          this.loading.txs = false;
+        });
       });
   }
 
@@ -104,26 +124,26 @@ export default class ContractStore {
       });
   }
 
-  loadCommands(address, params = {}) {
-    this.loading.commands = true;
+  loadExecutions(address, params = {}) {
+    this.loading.executions = true;
 
     return Service.contracts
-      .findCommands(address, params)
+      .findExecutions(address, params)
       .then(({ data }) => {
         runInAction(() => {
-          this.commands = data.items;
-          this.commandsCount = data.count;
+          this.executions = data.items;
+          this.executionsCount = data.count;
         });
       })
       .catch(() => {
         runInAction(() => {
-          this.commands = [];
-          this.commandsCount = 0;
+          this.executions = [];
+          this.executionsCount = 0;
         });
       })
       .then(() => {
         runInAction(() => {
-          this.loading.commands = false;
+          this.loading.executions = false;
         });
       });
   }
@@ -135,27 +155,13 @@ decorate(ContractStore, {
   contract: observable,
   assets: observable,
   assetsCount: observable,
-  commands: observable,
-  commandsCount: observable,
+  txs: observable,
+  txsCount: observable,
+  executions: observable,
+  executionsCount: observable,
   loading: observable,
   loadContracts: action,
   loadContract: action,
   loadAssets: action,
-  loadCommands: action,
+  loadExecutions: action,
 });
-
-export class Contract {
-  constructor({
-    id = '',
-    address = '',
-    code = '',
-    expiryBlock = null,
-    lastActivationTransaction = null,
-  } = {}) {
-    this.id = id;
-    this.address = address;
-    this.code = code;
-    this.expiryBlock = expiryBlock;
-    this.lastActivationTransaction = lastActivationTransaction;
-  }
-}

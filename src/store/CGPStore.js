@@ -1,5 +1,5 @@
 import { observable, decorate, action, runInAction, computed } from 'mobx';
-import Service from '../lib/Service';
+import Service from '../lib/ApiService';
 
 export default class CGPStore {
   constructor(rootStore, initialState = {}) {
@@ -25,28 +25,53 @@ export default class CGPStore {
   }
 
   get currentInterval() {
-    return Math.ceil(this.rootStore.blockStore.blocksCount / this.intervalLength);
+    return this.serverIntervalToUi(
+      Math.ceil(this.rootStore.blockStore.blocksCount / this.intervalLength)
+    );
   }
 
   get snapshotBlock() {
-    return (this.currentInterval - 1) * this.intervalLength + this.intervalLength * 0.9;
+    return (
+      (this.uiIntervalToServer(this.currentInterval) - 1) * this.intervalLength +
+      this.intervalLength * 0.9
+    );
   }
 
   get tallyBlock() {
-    return this.currentInterval * this.intervalLength;
+    return this.uiIntervalToServer(this.currentInterval) * this.intervalLength;
+  }
+
+  /**
+   * Convert a real interval number to the UI one
+   * On mainnet the 1st interval was actually interval 25, display it as 1
+   * @param {(number|string)} interval
+   */
+  serverIntervalToUi(interval) {
+    return this.rootStore.infoStore.infos.chain === 'main' ? Number(interval) - 24 : Number(interval) - 1413;
+  }
+  /**
+   * Convert a UI interval number to the real one
+   * On mainnet the 1st interval was actually interval 25, display it as 1
+   * @param {(number|string)} display
+   */
+  uiIntervalToServer(display) {
+    if (Number(display) === 0) return 0;
+    return this.rootStore.infoStore.infos.chain === 'main' ? Number(display) + 24 : Number(display) + 1413;
   }
 
   loadRelevantInterval(params = {}) {
     this.loading.relevantInterval = true;
 
     return Service.cgp
-      .findCurrent(params)
+      .findCurrent(Object.assign({}, params, { interval: this.uiIntervalToServer(params.interval) }))
       .then(({ data }) => {
         runInAction(() => {
-          this.relevantInterval = data;
+          this.relevantInterval = Object.assign(data, {
+            interval: this.serverIntervalToUi(data.interval),
+          });
         });
       })
-      .catch(error => {
+      .catch((error) => {
         runInAction(() => {
           this.relevantInterval = {};
           if (error.status === 404) {
@@ -66,7 +91,7 @@ export default class CGPStore {
     this.loading.votes = true;
 
     return Service.cgp
-      .findAllVotes(type, params)
+      .findAllVotes(type, Object.assign({}, params, { interval: this.uiIntervalToServer(params.interval) }))
       .then(({ data }) => {
         runInAction(() => {
           if (type === 'nomination') {
@@ -101,7 +126,7 @@ export default class CGPStore {
     this.loading.results = true;
 
     return Service.cgp
-      .findAllResults(type, params)
+      .findAllResults(type, Object.assign({}, params, { interval: this.uiIntervalToServer(params.interval) }))
       .then(({ data }) => {
         runInAction(() => {
           if (type === 'nomination') {

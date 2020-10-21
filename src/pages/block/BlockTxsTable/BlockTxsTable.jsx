@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import { observer, inject } from 'mobx-react';
 import config from '../../../lib/Config';
 import TextUtils from '../../../lib/TextUtils';
-import AssetUtils from '../../../lib/AssetUtils';
 import HashLink from '../../../components/HashLink';
 import { ItemsTable } from '../../../components/ItemsTable';
 import PageTitle from '../../../components/PageTitle';
@@ -21,24 +20,12 @@ class BlockTxsTable extends Component {
   getTableColumns() {
     return [
       {
-        Header: 'Hash',
-        accessor: 'txHash',
+        Header: 'TX HASH',
+        accessor: 'hash',
         minWidth: config.ui.table.minCellWidth,
         Cell: data => {
           return <HashLink url={`/tx/${data.value}`} hash={data.value} />;
         },
-      },
-      {
-        Header: 'Asset',
-        accessor: 'asset',
-        minWidth: config.ui.table.minCellWidth,
-        Cell: ({ value }) => (
-          <HashLink
-            hash={AssetUtils.getAssetNameFromCode(value)}
-            value={value}
-            url={`/assets/${value}`}
-          />
-        ),
       },
       {
         Header: 'Timestamp',
@@ -50,15 +37,10 @@ class BlockTxsTable extends Component {
       },
       {
         Header: '',
-        accessor: 'isCoinbaseTx',
+        accessor: 'isCoinbase',
         Cell: data => {
           return data.value ? 'Coinbase' : '';
         },
-      },
-      {
-        Header: 'Total Moved',
-        accessor: 'totalMoved',
-        Cell: data => AssetUtils.getAmountString(data.original.asset, Number(data.value)),
       },
     ];
   }
@@ -66,9 +48,9 @@ class BlockTxsTable extends Component {
     return (
       <ItemsTable
         columns={this.getTableColumns()}
-        loading={this.blockStore.loading.blockTransactionAssets}
-        itemsCount={this.blockStore.blockTransactionAssetsCount}
-        items={this.blockStore.blockTransactionAssets}
+        loading={this.blockStore.loading.blockTxs}
+        itemsCount={this.blockStore.blockTxsCount}
+        items={this.blockStore.blockTxs}
         pageSize={this.uiStore.state.blockTxTable.pageSize}
         curPage={this.uiStore.state.blockTxTable.curPage}
         tableDataSetter={this.uiStore.setBlockTxTableData.bind(this.uiStore)}
@@ -76,7 +58,7 @@ class BlockTxsTable extends Component {
         SubComponent={row => {
           return (
             <TransactionAssetLoader
-              transactionAssets={this.blockStore.blockTransactionAssets}
+              transactions={this.blockStore.blockTxs}
               index={row.index}
               timestamp={row.original.timestamp}
             />

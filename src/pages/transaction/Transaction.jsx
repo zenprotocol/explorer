@@ -126,7 +126,7 @@ class TransactionPage extends Component {
                       {TextUtils.formatNumber(confirmations)}
                     </td>
                   </tr>
-                  {transaction.isCoinbaseTx && (
+                  {transaction.isCoinbase && (
                     <tr>
                       <td>Coinbase</td>
                       <td>

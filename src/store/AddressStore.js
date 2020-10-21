@@ -1,18 +1,15 @@
 import { observable, decorate, action, runInAction } from 'mobx';
-import Service from '../lib/Service';
+import Service from '../lib/ApiService';
 
 export default class AddressStore {
   constructor(rootStore, initialState = {}) {
     this.rootStore = rootStore;
     this.address = initialState.address || {};
-    this.addressTransactions = initialState.addressTransactions || [];
-    this.addressTransactionsCount = initialState.addressTransactionsCount || 0;
-    this.addressTransactionAssets = initialState.addressTransactionAssets || [];
-    this.addressTransactionAssetsCount = initialState.addressTransactionAssetsCount || 0;
+    this.addressTxs = initialState.addressTxs || [];
+    this.addressTxsCount = initialState.addressTxsCount || 0;
     this.loading = {
       address: false,
-      addressTransactions: false,
-      addressTransactionAssets: false,
+      addressTxs: false,
     };
   }
 
@@ -43,57 +40,38 @@ export default class AddressStore {
     }
   }
 
-  fetchAddressTransactionAssets(address, params = {}) {
-    this.loading.addressTransactionAssets = true;
-    return Service.addresses
-      .findTransactionsAssets(address, params)
-      .then(response => {
-        runInAction(() => {
-          this.addressTransactionAssets = response.data.items;
-          this.addressTransactionAssetsCount = Number(response.data.total);
-        });
-      })
-      .catch(() => {})
-      .then(() => {
-        runInAction(() => {
-          this.loading.addressTransactionAssets = false;
-        });
-      });
-  }
-
-  resetAddressTransactionAssets() {
-    this.addressTransactionAssets = [];
-    this.addressTransactionAssetsCount = 0;
-  }
-
-  loadAddressTransactions(address, params = {}) {
-    this.loading.addressTransactions = true;
-    return Service.transactions
+  fetchAddressTxs(address, params = {}) {
+    this.loading.addressTxs = true;
+    return Service.txs
       .find(Object.assign({ address }, params))
       .then(response => {
         runInAction(() => {
-          this.addressTransactions = response.data.items;
-          this.addressTransactionsCount = Number(response.data.count);
+          this.addressTxs = response.data.items;
+          this.addressTxsCount = Number(response.data.count);
         });
       })
       .catch(() => {})
       .then(() => {
         runInAction(() => {
-          this.loading.addressTransactions = false;
+          this.loading.addressTxs = false;
         });
       });
+  }
+
+
+
+  resetAddressTxs() {
+    this.addressTxs = [];
+    this.addressTxsCount = 0;
   }
 }
 
 decorate(AddressStore, {
   address: observable,
-  addressTransactionAssets: observable,
-  addressTransactionAssetsCount: observable,
-  addressTransactions: observable,
-  addressTransactionsCount: observable,
+  addressTxs: observable,
+  addressTxsCount: observable,
   loading: observable,
   fetchAddress: action,
-  fetchAddressTransactionAssets: action,
-  loadAddressTransactions: action,
-  resetAddressTransactionAssets: action,
+  fetchAddressTxs: action,
+  resetAddressTxs: action,
 });

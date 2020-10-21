@@ -43,7 +43,7 @@ Promise.all([
   votesQueue.clean(0, 'completed'),
   votesQueue.clean(0, 'failed'),
 ]).then(() => {
-  // once only, for future commands, the commands queue will add jobs
+  // once only, for future executions, the executions queue will add jobs
   votesQueue.add({type: 'cgp'});
   votesQueue.add({type: 'repo'});
 });

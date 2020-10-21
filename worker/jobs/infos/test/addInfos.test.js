@@ -20,7 +20,7 @@ test('Add software versions', async function(t) {
   const infosAdder = new InfosAdder(networkHelper);
 
   try {
-    await infosAdder.doJob({});
+    await infosAdder.doJob();
 
     const nodeVersion = await infosDAL.findOne({
       where: {
@@ -38,7 +38,7 @@ test('Add software versions', async function(t) {
     t.ok(walletVersion, 'Should find a walletVersion in infos');
     t.equals(walletVersion.value, 'v0.9.456', 'The wallet version should be the same as the mocked one');
   } catch (error) {
-    t.equals(error.name, 'NetworkError', 'Should throw a custom NetworkError');
+    t.fail('Should not throw');
   }
 });
 
@@ -59,7 +59,7 @@ test('Update software versions', async function(t) {
         value: 'v0.7',
       }),
     ]);
-    await infosAdder.doJob({});
+    await infosAdder.doJob();
 
     const nodeVersion = await infosDAL.findOne({
       where: {
@@ -75,6 +75,6 @@ test('Update software versions', async function(t) {
     });
     t.equals(walletVersion.value, 'v0.9.456', 'The wallet version should be the same as the mocked one');
   } catch (error) {
-    t.equals(error.name, 'NetworkError', 'Should throw a custom NetworkError');
+    t.fail('Should not throw');
   }
 });

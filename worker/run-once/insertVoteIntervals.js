@@ -3,7 +3,7 @@
  */
 const cli = require('sywac');
 const logger = require('../lib/logger')('vote-intervals');
-const voteIntervalsDAL = require('../../server/components/api/voteIntervals/voteIntervalsDAL');
+const voteIntervalsDAL = require('../../server/components/api/repovote-intervals/repoVoteIntervalsDAL');
 const db = require('../../server/db/sequelize/models');
 
 const run = async () => {
@@ -22,7 +22,7 @@ const run = async () => {
       required: true
     })
     .number('-t, --threshold', {
-      desc: 'The threshold in zp for a valid candidate',
+      desc: 'The threshold in Kalapas for a valid candidate',
       required: true
     })
     .help('-h, --help')
@@ -34,15 +34,13 @@ const run = async () => {
     order: [['interval', 'DESC']]
   });
   const interval = lastIntervalInDb ? lastIntervalInDb.interval : 0;
-  let prevPhase = null;
   for (let i = 0; i < amount * 2; i++) {
-    prevPhase = await voteIntervalsDAL.create({
+    await voteIntervalsDAL.create({
       interval: interval + Math.floor(i / 2) + 1,
       phase: i % 2 === 0 ? 'Contestant' : 'Candidate',
-      beginHeight: begin + i * (length + gap),
-      endHeight: begin + i * (length + gap) + length,
-      thresholdZp: i % 2 === 0 ? threshold : null,
-      prevPhaseId: i % 2 === 1 ? prevPhase.id : null,
+      beginBlock: begin + i * (length + gap),
+      endBlock: begin + i * (length + gap) + length,
+      threshold: i % 2 === 0 ? threshold : null,
     });
   }
   logger.info('Finished inserting intervals');

@@ -6,7 +6,7 @@ const createQueryObject = require('../../../lib/createQueryObject');
 module.exports = {
   findAll: async function({ page = 0, pageSize = 10, sorted, blockNumber } = {}) {
     const sortBy =
-      sorted && sorted != '[]' ? JSON.parse(sorted) : [{ id: 'expiryBlock', desc: true }];
+      sorted && sorted != '[]' ? JSON.parse(sorted) : [{ id: 'lastActivationBlock', desc: true }];
     const query = createQueryObject({ page, pageSize, sorted: sortBy });
     return await contractsDAL.findAllWithAssetsCountTxCountAndCountOrderByNewest({
       ...query,
@@ -20,11 +20,8 @@ module.exports = {
 
     return await contractsDAL.findByAddress(address);
   },
-  findActivationTransactions: async function({ contract } = {}) {
-    return await contractsDAL.getActivationTransactions(contract);
-  },
-  findLastActivationTransaction: async function({ contract } = {}) {
-    return await contractsDAL.getLastActivationTransaction(contract);
+  findActivationTxs: async function({ contract } = {}) {
+    return await contractsDAL.getActivationTxs(contract);
   },
   assets: async function({ address, page = 0, pageSize = 10 } = {}) {
     if (!address) {
@@ -39,7 +36,7 @@ module.exports = {
       return [];
     }
   },
-  commands: async function({ address, page = 0, pageSize = 10 } = {}) {
+  executions: async function({ address, page = 0, pageSize = 10 } = {}) {
     if (!address) {
       return [];
     }
@@ -47,7 +44,7 @@ module.exports = {
     const contract = await contractsDAL.findByAddress(address);
     if (contract) {
       const query = createQueryObject({ page, pageSize, sorted: [] });
-      return await contractsDAL.findCommandsWithRelations(contract.id, query);
+      return await contractsDAL.findExecutions(contract.id, query);
     } else {
       return [];
     }

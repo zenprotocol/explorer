@@ -3,7 +3,7 @@
 const { Decimal } = require('decimal.js');
 const httpStatus = require('http-status');
 const blocksDAL = require('../blocks/blocksDAL');
-const transactionsDAL = require('../transactions/transactionsDAL');
+const txsDAL = require('../txs/txsDAL');
 const addressesDAL = require('../addresses/addressesDAL');
 const contractsDAL = require('../contracts/contractsDAL');
 const assetsDAL = require('../assets/assetsDAL');
@@ -42,7 +42,7 @@ function getSearchPromises(search, limit) {
 
   return [
     searchFor.blocks ? blocksDAL.search(search, limit) : Promise.resolve([0, []]),
-    searchFor.transactions ? transactionsDAL.search(search, limit) : Promise.resolve([0, []]),
+    searchFor.transactions ? txsDAL.search(search, limit) : Promise.resolve([0, []]),
     searchFor.addresses ? addressesDAL.search(search, limit) : Promise.resolve([0, []]),
     searchFor.contracts ? contractsDAL.search(search, limit) : Promise.resolve([0, []]),
     searchFor.assets ? assetsDAL.search(search, limit) : Promise.resolve([0, []]),

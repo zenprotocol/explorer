@@ -13,9 +13,8 @@ import AssetsBalancesTable from '../../components/AssetsBalancesTable';
 import PageTitle from '../../components/PageTitle';
 import Page from '../../components/Page';
 import { Tabs, TabHead, TabBody, Tab } from '../../components/tabs';
-import { AssetsTab, CodeTab, CommandsTab, TransactionsTab } from './components/tabs';
+import { AssetsTab, CodeTab, ExecutionsTab, TransactionsTab } from './components/tabs';
 import './Contract.scss';
-import ObjectUtils from '../../lib/ObjectUtils';
 
 class ContractPage extends Component {
   get contractStore() {
@@ -96,10 +95,6 @@ class ContractPage extends Component {
     if (!contract.id) {
       return null;
     }
-    const lastActivationBlockNumber = ObjectUtils.getSafeProperty(
-      contract,
-      'lastActivationTransaction.Block.blockNumber'
-    );
     return (
       <div className="row">
         <div className="col-lg-6">
@@ -130,12 +125,12 @@ class ContractPage extends Component {
                 <td>TRANSACTIONS</td>
                 <td>{TextUtils.formatNumber(address.totalTxs)}</td>
               </tr>
-              {lastActivationBlockNumber && (
+              {contract.lastActivationBlock && (
                 <tr>
                   <td>LAST ACTIVATION BLOCK</td>
                   <td>
-                    <Link to={`/blocks/${lastActivationBlockNumber}`}>
-                      {TextUtils.formatNumber(lastActivationBlockNumber)}
+                    <Link to={`/blocks/${contract.lastActivationBlock}`}>
+                      {TextUtils.formatNumber(contract.lastActivationBlock)}
                     </Link>
                   </td>
                 </tr>
@@ -171,7 +166,7 @@ class ContractPage extends Component {
         <TabBody>
           <Switch>
             <Route path={`${currentPath}/txns`} component={TransactionsTab} />
-            <Route path={`${currentPath}/commands`} component={CommandsTab} />
+            <Route path={`${currentPath}/commands`} component={ExecutionsTab} />
             <Route path={`${currentPath}/code`} component={CodeTab} />
             <Route path={`${currentPath}/assets`} component={AssetsTab} />
             <Redirect from={`${currentPath}`} to={`${currentPath}/txns`} />

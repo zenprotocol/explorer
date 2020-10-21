@@ -79,18 +79,6 @@ test('ReorgProcessor.doJob()', async function(t) {
     t.equal(result.deleted, 0, `${given}: "deleted" key should be 0`);
   });
 
-  await wrapTest('Given a reorg', async given => {
-    const fork = 7;
-    const reorgProcessor = getReorgProcessor({ blocksWithDifferentHash: [fork + 1] });
-    await reorgProcessor.doJob();
-    try {
-      td.verify(blocksDAL.bulkDelete(td.matchers.anything()));
-      t.pass(`${given}: should call blocksDAL.bulkDelete`);
-    } catch (error) {
-      t.fail(`${given}: should call blocksDAL.bulkDelete`);
-    }
-  });
-
   await wrapTest('Given a prevent delete parameter is sent', async given => {
     const fork = 7;
     const reorgProcessor = getReorgProcessor({ blocksWithDifferentHash: [fork + 1] });
@@ -129,19 +117,43 @@ test('ReorgProcessor.doJob()', async function(t) {
 async function wrapTest(given, test) {
   blocksDAL = td.replace('../../../../server/components/api/blocks/blocksDAL', {
     findLatest: td.func('findLatest'),
-    findByBlockNumber: td.func('findByBlockNumber'),
+    findById: td.func('findById'),
+    findOne: td.func('findOne'),
     bulkDelete: td.func('bulkDelete'),
   });
-
-  td.replace('../../../../server/db/sequelize/models/index.js', {
-    sequelize: td.object(),
-    Sequelize: td.object(),
+  const txsDAL = td.replace('../../../../server/components/api/txs/txsDAL', {
+    findAll: td.func('findAll'),
+  });
+  td.replace('../../../../server/components/api/contracts/contractsDAL', {
+    findByAddress: td.func('findByAddress'),
+    findById: td.func('findById'),
+  });
+  td.replace('../../../../server/components/api/addresses/addressesDAL', {
+    findByAddressAsset: td.func('findByAddressAsset'),
+    count: td.func('count'),
+  });
+  td.replace('../../../../server/components/api/assets/assetsDAL', {
+    findById: td.func('findById'),
+    count: td.func('count'),
+  });
+  td.replace('../../../../server/components/api/inputs/inputsDAL', {
+    findAll: td.func('findAll'),
+  });
+  td.replace('../../../../server/components/api/outputs/outputsDAL', {
+    findAll: td.func('findAll'),
   });
 
+  const db = td.replace('../../../../server/db/sequelize/models/index.js', {
+    sequelize: td.object(['transaction']),
+    Sequelize: td.object(),
+  });
+  td.when(db.sequelize.transaction()).thenResolve({ commit() {}, rollback() {} });
+
   td.when(blocksDAL.findLatest()).thenResolve({ blockNumber: LATEST_DB_BLOCK });
+  td.when(txsDAL.findAll(td.matchers.anything())).thenResolve([]);
 
   for (let blockNumber = LATEST_DB_BLOCK; blockNumber > 0; blockNumber--) {
-    td.when(blocksDAL.findByBlockNumber(blockNumber)).thenResolve({
+    td.when(blocksDAL.findById(blockNumber)).thenResolve({
       hash: String(blockNumber),
     });
   }
@@ -165,5 +177,5 @@ function getReorgProcessor({ blocksWithDifferentHash = [] } = {}) {
     }
   }
   const ReorgProcessor = require('../ReorgProcessor');
-  return new ReorgProcessor(new FakeNetworkHelper());
+  return new ReorgProcessor(new FakeNetworkHelper(), '20000000');
 }

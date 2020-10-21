@@ -1,12 +1,12 @@
 const wrapTest = require('../../../../../../test/lib/wrapTest');
 const BlockchainParser = require('../../../../../../server/lib/BlockchainParser');
-const CGPVotesAdder = require('../../../CGPVotesAdder');
+const CgpVotesAdder = require('../../../CgpVotesAdder');
 const cgpAdderParams = require('../modules/cgpAdderParams');
 
 module.exports = async function part({ t, before, after }) {
   await wrapTest('Given no contractId', async given => {
     try {
-      const cgpVotesAdder = new CGPVotesAdder({
+      const cgpVotesAdder = new CgpVotesAdder({
         blockchainParser: new BlockchainParser('test'),
         chain: 'test',
         genesisTotal: cgpAdderParams.genesisTotal,
@@ -23,7 +23,7 @@ module.exports = async function part({ t, before, after }) {
 
   await wrapTest('Given no cgp fund payout ballot', async given => {
     try {
-      const cgpVotesAdder = new CGPVotesAdder({
+      const cgpVotesAdder = new CgpVotesAdder({
         blockchainParser: new BlockchainParser('test'),
         chain: 'test',
         genesisTotal: cgpAdderParams.genesisTotal,
@@ -41,7 +41,7 @@ module.exports = async function part({ t, before, after }) {
 
   await wrapTest('Given no chain', async given => {
     try {
-      const cgpVotesAdder = new CGPVotesAdder({
+      const cgpVotesAdder = new CgpVotesAdder({
         blockchainParser: new BlockchainParser('test'),
         genesisTotal: cgpAdderParams.genesisTotal,
         ...cgpAdderParams,
@@ -57,7 +57,7 @@ module.exports = async function part({ t, before, after }) {
 
   await wrapTest('Given no genesis total', async given => {
     try {
-      const cgpVotesAdder = new CGPVotesAdder({
+      const cgpVotesAdder = new CgpVotesAdder({
         blockchainParser: new BlockchainParser('test'),
         chain: 'test',
         cgpFundPayoutBallot: cgpAdderParams.cgpFundPayoutBallot,

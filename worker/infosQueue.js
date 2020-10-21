@@ -18,19 +18,21 @@ const taskTimeLimiter = new TaskTimeLimiter(Config.get('queues:slackTimeLimit') 
 updateGeneralInfosQueue.process(path.join(__dirname, 'jobs/infos/updateGeneralInfos.handler.js'));
 
 // events
-updateGeneralInfosQueue.on('active', function(job, jobPromise) {
+updateGeneralInfosQueue.on('active', function (job) {
   logger.info(`A job has started. ID=${job.id}`);
 });
 
-updateGeneralInfosQueue.on('completed', function(job, result) {
+updateGeneralInfosQueue.on('completed', function (job, result) {
   logger.info(`A job has been completed. ID=${job.id} result=${result}`);
 });
 
-updateGeneralInfosQueue.on('failed', function(job, error) {
+updateGeneralInfosQueue.on('failed', function (job, error) {
   logger.error(`A job has failed. ID=${job.id}, error=${error.message}`);
   taskTimeLimiter.executeTask(() => {
-    getChain().then(chain => {
-      slackLogger.error(`An UpdateGeneralInfos job has failed, error=${error.message} app=${APP_NAME} chain=${chain} node=${NODE_URL}`);
+    getChain().then((chain) => {
+      slackLogger.error(
+        `An UpdateGeneralInfos job has failed, error=${error.message} app=${APP_NAME} chain=${chain} node=${NODE_URL}`
+      );
     });
   });
 });
@@ -49,7 +51,7 @@ Promise.all([
     { repeat: { cron: '0 1 * * *' } } // once a day at 1:00
   );
   // now
-  updateGeneralInfosQueue.add({});
+  updateGeneralInfosQueue.add();
 });
 
 setInterval(() => {

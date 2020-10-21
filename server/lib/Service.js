@@ -11,11 +11,11 @@ const Endpoints = {
   blocks: {
     info: '/blockchain/info',
     block: '/blockchain/block?blockNumber=',
-    blockReward: '/blockchain/blockreward?blockNumber=',
+    blocks: '/blockchain/blocks',
   },
   contracts: {
     active: '/contract/active',
-    commands: '/addressdb/contract/history',
+    executions: '/addressdb/contract/history',
   },
   oracle: 'http://oracle.zp.io',
 };
@@ -26,7 +26,7 @@ function sendHttpRequest(config) {
   if (globalMute) {
     return Promise.resolve({ data: {} });
   }
-  return request.request(config).catch(error => {
+  return request.request(config).catch((error) => {
     throw new NetworkError(error, error.message, (error.response || {}).status);
   });
 }
@@ -51,19 +51,23 @@ module.exports = {
       return sendHttpRequest({
         url: Endpoints.blocks.info,
         method: 'get',
-      }).then(response => response.data);
+      }).then((response) => response.data);
     },
     async getBlock(blockNumber) {
       return sendHttpRequest({
         url: Endpoints.blocks.block + blockNumber,
         method: 'get',
-      }).then(response => response.data);
+      }).then((response) => response.data);
     },
-    async getBlockReward(blockNumber) {
+    /**
+     * Get a list of serialized blocks order DESC, from blockNumber
+     */
+    async getBlocks({ blockNumber, take } = {}) {
       return sendHttpRequest({
-        url: Endpoints.blocks.blockReward + blockNumber,
+        url: Endpoints.blocks.blocks,
         method: 'get',
-      }).then(response => response.data);
+        params: { blockNumber, take },
+      }).then((response) => response.data);
     },
   },
   contracts: {
@@ -71,14 +75,14 @@ module.exports = {
       return sendHttpRequest({
         url: Endpoints.contracts.active,
         method: 'get',
-      }).then(response => response.data);
+      }).then((response) => response.data);
     },
-    async getCommands(data) {
+    async getExecutions(data) {
       return sendHttpRequest({
-        url: Endpoints.contracts.commands,
+        url: Endpoints.contracts.executions,
         method: 'post',
         data,
-      }).then(response => response.data);
+      }).then((response) => response.data);
     },
   },
   zen: {
@@ -86,7 +90,7 @@ module.exports = {
       return sendHttpRequest({
         url: 'https://api.github.com/repos/zenprotocol/zenprotocol/releases/latest',
         method: 'get',
-      }).then(response => {
+      }).then((response) => {
         return response.data;
       });
     },
@@ -94,7 +98,7 @@ module.exports = {
       return sendHttpRequest({
         url: 'https://api.github.com/repos/zenprotocol/zenwallet/releases/latest',
         method: 'get',
-      }).then(response => {
+      }).then((response) => {
         return response.data;
       });
     },
@@ -107,7 +111,7 @@ module.exports = {
         data: {
           tx,
         },
-      }).then(response => {
+      }).then((response) => {
         return response.data;
       });
     },
@@ -121,7 +125,7 @@ module.exports = {
           ticker,
           date,
         },
-      }).then(response => response.data);
+      }).then((response) => response.data);
     },
     proof(ticker, date) {
       return sendHttpRequest({
@@ -131,7 +135,7 @@ module.exports = {
           ticker,
           date,
         },
-      }).then(response => response.data);
+      }).then((response) => response.data);
     },
     timestamp(date) {
       return sendHttpRequest({
@@ -140,7 +144,7 @@ module.exports = {
         params: {
           date,
         },
-      }).then(response => response.data);
+      }).then((response) => response.data);
     },
   },
 };

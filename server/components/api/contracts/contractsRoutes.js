@@ -11,7 +11,7 @@ router.route('/:address')
 router.route('/:address/assets')
   .get(wrapAsync(controller.assets));
 
-router.route('/:address/commands')
-  .get(wrapAsync(controller.commands));
+router.route('/:address/executions')
+  .get(wrapAsync(controller.executions));
 
 module.exports = router;

@@ -1,6 +1,5 @@
 'use strict';
 
-const faker = require('faker');
 const blocksDAL = require('../../server/components/api/blocks/blocksDAL');
 
 module.exports = async function(fromBlockNumber, toBlockNumber, lastHash = '') {
@@ -12,10 +11,11 @@ module.exports = async function(fromBlockNumber, toBlockNumber, lastHash = '') {
       parent: String(i - 1),
       blockNumber: i,
       commitments: 'test commitments',
-      timestamp: 123456789,
+      timestamp: 1602566830620,
       difficulty: 486539008,
       nonce1: -8412464686019857620,
       nonce2: 25078183,
+      reward: 50,
     });
   }
   await blocksDAL.bulkCreate(blocks);

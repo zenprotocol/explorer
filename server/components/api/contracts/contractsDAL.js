@@ -3,8 +3,8 @@
 const tags = require('common-tags');
 const dal = require('../../../lib/dal');
 const deepMerge = require('deepmerge');
-const commandsDAL = require('../commands/commandsDAL');
-const assetOutstandingsDAL = require('../assetOutstandings/assetOutstandingsDAL');
+const executionsDAL = require('../executions/executionsDAL');
+const assetsDAL = require('../assets/assetsDAL');
 const AddressUtils = require('../../../../src/common/utils/AddressUtils');
 
 const contractsDAL = dal.createDAL('Contract');
@@ -18,8 +18,8 @@ const nullsOrderMap = {
 // Control what happens when sorting by these parameters
 const orderMap = {
   expiryBlock: {
-    asc: `${nullsOrderMap.asc}, "createdAt" ASC`,
-    desc: `${nullsOrderMap.desc}, "createdAt" DESC`,
+    asc: `${nullsOrderMap.asc}`,
+    desc: `${nullsOrderMap.desc}`,
   },
   lastActivationBlockNumber: nullsOrderMap,
 };
@@ -30,7 +30,7 @@ const orderMap = {
 function getSqlOrderBy(order = []) {
   return order
     .map(
-      item =>
+      (item) =>
         `"${item[0]}" ${item[1]} ${
           Object.keys(orderMap).includes(item[0]) ? orderMap[item[0]][item[1].toLowerCase()] : ''
         }`
@@ -38,7 +38,7 @@ function getSqlOrderBy(order = []) {
     .join(', ');
 }
 
-contractsDAL.findAllWithAssetsCountTxCountAndCountOrderByNewest = function({
+contractsDAL.findAllWithAssetsCountTxCountAndCountOrderByNewest = function ({
   limit = 10,
   offset = 0,
   order = [],
@@ -49,61 +49,19 @@ contractsDAL.findAllWithAssetsCountTxCountAndCountOrderByNewest = function({
 
   const filterByBlockSql = `
   INNER JOIN (
-    SELECT "ContractActivations"."ContractId"
-    FROM "Blocks"
-    JOIN "Transactions" ON "Transactions"."BlockId" = "Blocks"."id"
-    JOIN "ContractActivations" ON "ContractActivations"."TransactionId" = "Transactions"."id"
-    WHERE "Blocks"."blockNumber" = :blockNumber
-    GROUP BY "ContractActivations"."ContractId"
+    SELECT "Activations"."contractId"
+    FROM "Activations"
+    JOIN "Txs" ON "Activations"."txId" = "Txs"."id"
+    WHERE "Txs"."blockNumber" = :blockNumber
+    GROUP BY "Activations"."contractId"
   ) AS "ActivationBlockContracts"
-  ON "ActivationBlockContracts"."ContractId" = "ContractsFinal"."id"
+  ON "ActivationBlockContracts"."contractId" = c.id
   `;
 
   const sql = tags.oneLine`
-  WITH "ContractsFinal" AS 
-  (SELECT "Contracts".*, COUNT("Assets".asset) AS "assetsCount"
-    FROM "Contracts" 
-    LEFT JOIN 
-      (SELECT asset
-      FROM "AssetOutstandings") AS "Assets"
-    ON "Assets"."asset" LIKE CONCAT("Contracts"."id", '%')
-    GROUP BY "Contracts"."id" 
-    LIMIT (SELECT COUNT(*) FROM "Contracts"))
-
   SELECT 
-    "ContractsFinal"."id",
-    "ContractsFinal"."address",
-    "ContractsFinal"."expiryBlock",
-    "ContractsFinal"."assetsCount",
-    COALESCE("Txs"."total", 0) AS "transactionsCount",
-    "LastActivationTransactions"."blockNumber" AS "lastActivationBlockNumber"
-  FROM "ContractsFinal"
-  LEFT JOIN
-  (SELECT 
-    COUNT(*) AS "total",
-    COALESCE("Outputs"."address", "Inputs"."address") AS "address"
-    FROM
-      (SELECT "TransactionId", "address"
-        FROM "Outputs" 
-        WHERE "Outputs"."address" IN (SELECT address FROM "ContractsFinal")
-        GROUP BY "TransactionId", "address") AS "Outputs"
-      FULL OUTER JOIN (SELECT "Inputs"."TransactionId", "Outputs"."address"
-        FROM "Inputs" JOIN "Outputs" 
-        ON "Inputs"."OutputId" = "Outputs"."id" 
-        AND "Outputs"."address" IN (SELECT address FROM "ContractsFinal")
-        GROUP BY "Inputs"."TransactionId", "Outputs"."address" ) AS "Inputs"
-      ON "Outputs"."TransactionId" = "Inputs"."TransactionId" and "Outputs"."address" = "Inputs"."address"
-    GROUP BY COALESCE("Outputs"."address", "Inputs"."address")) AS "Txs"
-  ON "Txs"."address" = "ContractsFinal"."address"
-  LEFT JOIN (
-    SELECT MAX("Blocks"."blockNumber") as "blockNumber", "ContractActivations"."ContractId"
-    FROM "Blocks"
-    JOIN "Transactions" ON "Transactions"."BlockId" = "Blocks"."id"
-    JOIN "ContractActivations" ON "ContractActivations"."TransactionId" = "Transactions"."id"
-    GROUP BY "ContractActivations"."ContractId"
-    ORDER BY "ContractActivations"."ContractId", MAX("Blocks"."blockNumber") DESC
-  ) AS "LastActivationTransactions"
-  ON "LastActivationTransactions"."ContractId" = "ContractsFinal"."id"
+    c.*
+  FROM "Contracts" c
   ${hasBlockNumber ? filterByBlockSql : ''}
   ORDER BY ${orderBy}
   LIMIT :limit OFFSET :offset
@@ -114,18 +72,12 @@ contractsDAL.findAllWithAssetsCountTxCountAndCountOrderByNewest = function({
     countOptions = {
       include: [
         {
-          model: this.db.Transaction,
-          as: 'ActivationTransactions',
+          model: this.db.Tx,
+          as: 'ActivationTxs',
           required: true,
-          include: [
-            {
-              model: this.db.Block,
-              required: true,
-              where: {
-                blockNumber,
-              },
-            },
-          ],
+          where: {
+            blockNumber,
+          },
         },
       ],
     };
@@ -143,15 +95,16 @@ contractsDAL.findAllWithAssetsCountTxCountAndCountOrderByNewest = function({
   ]).then(this.getItemsAndCountResult);
 };
 
-contractsDAL.findByAddress = function(address) {
+contractsDAL.findByAddress = function (address, options) {
   return this.findOne({
     where: {
       address,
     },
+    ...options,
   });
 };
 
-contractsDAL.search = async function(search, limit = 10) {
+contractsDAL.search = async function (search, limit = 10) {
   const like = AddressUtils.isContract(search) ? `${search}%` : `%${search}%`;
   const where = {
     address: {
@@ -173,7 +126,7 @@ contractsDAL.search = async function(search, limit = 10) {
   ]);
 };
 
-contractsDAL.findAllActive = function() {
+contractsDAL.findAllActive = function () {
   return this.findAll({
     where: {
       expiryBlock: {
@@ -183,7 +136,7 @@ contractsDAL.findAllActive = function() {
   });
 };
 
-contractsDAL.findAllExpired = function() {
+contractsDAL.findAllExpired = function () {
   return this.findAll({
     where: {
       expiryBlock: null,
@@ -191,19 +144,25 @@ contractsDAL.findAllExpired = function() {
   });
 };
 
-contractsDAL.findAllOutstandingAssets = function(id, { limit = 10, offset = 0 } = {}) {
+contractsDAL.findAllOutstandingAssets = function (id, { limit = 10, offset = 0 } = {}) {
   return Promise.all([
-    assetOutstandingsDAL.count({
+    assetsDAL.count({
       where: {
         asset: {
           [Op.like]: `${id}%`,
         },
+        outstanding: {
+          [Op.gt]: 0,
+        },
       },
     }),
-    assetOutstandingsDAL.findAll({
+    assetsDAL.findAll({
       where: {
         asset: {
           [Op.like]: `${id}%`,
+        },
+        outstanding: {
+          [Op.gt]: 0,
         },
       },
       limit,
@@ -212,7 +171,7 @@ contractsDAL.findAllOutstandingAssets = function(id, { limit = 10, offset = 0 } 
   ]).then(this.getItemsAndCountResult);
 };
 
-contractsDAL.setExpired = function(ids = []) {
+contractsDAL.setExpired = function (ids = []) {
   if (!ids.length) {
     return Promise.resolve();
   }
@@ -231,20 +190,20 @@ contractsDAL.setExpired = function(ids = []) {
   );
 };
 
-contractsDAL.countCommands = function(id) {
-  return commandsDAL.count({
+contractsDAL.countExecutions = function (id) {
+  return executionsDAL.count({
     where: {
-      ContractId: id,
+      contractId: id,
     },
   });
 };
 
-contractsDAL.getCommands = function(id, options) {
-  return commandsDAL.findAll(
+contractsDAL.getExecutions = function (id, options) {
+  return executionsDAL.findAll(
     deepMerge(
       {
         where: {
-          ContractId: id,
+          contractId: id,
         },
       },
       options
@@ -252,69 +211,64 @@ contractsDAL.getCommands = function(id, options) {
   );
 };
 
-contractsDAL.getLastCommandOfTx = function(id, txHash) {
-  return commandsDAL
+contractsDAL.getLastExecutionOfTx = function (id, txHash) {
+  return executionsDAL
     .findAll({
       where: {
-        ContractId: id,
+        contractId: id,
       },
       include: [
         {
-          model: this.db.Transaction,
+          model: this.db.Tx,
           required: true,
           where: {
             hash: txHash,
           },
         },
       ],
-      order: [['createdAt', 'DESC']],
+      order: [['indexInTx', 'DESC']],
       limit: 1,
     })
-    .then(results => {
+    .then((results) => {
       return results.length ? results[0] : null;
     });
 };
 
-contractsDAL.findCommandsWithRelations = function(id, options) {
+contractsDAL.findExecutions = function (id, { limit, offset } = {}) {
   return Promise.all([
-    this.countCommands(id),
-    this.getCommands(
-      id,
-      deepMerge(
-        {
-          include: [
-            {
-              model: this.db.Transaction,
-              required: true,
-              include: [
-                {
-                  model: this.db.Block,
-                  required: true,
-                },
-              ],
-            },
-          ],
-          order: [
-            [{ model: this.db.Transaction }, { model: this.db.Block }, 'timestamp', 'DESC'],
-            ['indexInTransaction', 'ASC'],
-          ],
+    executionsDAL.count({ where: { contractId: id } }),
+    sequelize.query(
+      tags.oneLine`
+        SELECT "Executions".*, "Txs"."hash" AS "txHash", "Blocks"."timestamp" AS "timestamp"
+        FROM "Executions"
+        INNER JOIN "Txs" ON "Executions"."txId" = "Txs"."id"
+        INNER JOIN "Blocks" ON "Executions"."blockNumber" = "Blocks"."blockNumber"
+        WHERE "Executions"."contractId" = :contractId
+        ORDER BY "Executions"."blockNumber" DESC, "Executions"."indexInTx" DESC
+        ${limit ? 'LIMIT :limit' : ''} ${offset ? 'OFFSET :offset' : ''}
+    `,
+      {
+        replacements: {
+          limit,
+          offset,
+          contractId: id,
         },
-        options
-      )
+        type: sequelize.QueryTypes.SELECT,
+      }
     ),
   ]).then(this.getItemsAndCountResult);
 };
 
-contractsDAL.deleteCommands = function(id) {
-  return this.db.Command.destroy({
+contractsDAL.deleteExecutions = function (id) {
+  return this.db.Execution.destroy({
     where: {
-      ContractId: id,
+      contractId: id,
     },
   });
 };
 
-contractsDAL.getActivationTransactions = function(contract) {
-  return contract.getActivationTransactions({
+contractsDAL.getActivationTxs = function (contract) {
+  return contract.getActivationTxs({
     order: [[sequelize.col('Block.blockNumber'), 'DESC']],
     include: [
       {
@@ -324,9 +278,9 @@ contractsDAL.getActivationTransactions = function(contract) {
     ],
   });
 };
-contractsDAL.getLastActivationTransaction = function(contract) {
+contractsDAL.getLastActivationTx = function (contract) {
   return contract
-    .getActivationTransactions({
+    .getActivationTxs({
       order: [[sequelize.col('Block.blockNumber'), 'DESC']],
       limit: 1,
       include: [
@@ -336,12 +290,12 @@ contractsDAL.getLastActivationTransaction = function(contract) {
         },
       ],
     })
-    .then(results => (results.length ? results[0] : null));
+    .then((results) => (results.length ? results[0] : null));
 };
 
-contractsDAL.addActivationTransaction = async function(contract, transaction, options) {
+contractsDAL.addActivationTx = async function (contract, transaction, options) {
   if (contract && transaction) {
-    return contract.addActivationTransaction(transaction, options);
+    return contract.addActivationTx(transaction, options);
   }
   return null;
 };
