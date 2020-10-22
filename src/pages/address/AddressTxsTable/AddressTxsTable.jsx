@@ -5,7 +5,6 @@ import { Link, withRouter } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import WithSetIdsOnUiStore from '../../../components/hoc/WithSetIdsOnUiStore';
 import config from '../../../lib/Config';
-import AssetUtils from '../../../lib/AssetUtils';
 import TextUtils from '../../../lib/TextUtils';
 import HashLink from '../../../components/HashLink';
 import { ItemsTable } from '../../../components/ItemsTable';
@@ -23,16 +22,12 @@ class AddressTxsTable extends Component {
   getTableColumns() {
     return [
       {
-        Header: 'Asset',
-        accessor: 'asset',
+        Header: 'TX HASH',
+        accessor: 'hash',
         minWidth: config.ui.table.minCellWidth,
-        Cell: ({ value }) => (
-          <HashLink
-            hash={AssetUtils.getAssetNameFromCode(value)}
-            value={value}
-            url={`/assets/${value}`}
-          />
-        ),
+        Cell: (data) => {
+          return <HashLink url={`/tx/${data.value}`} hash={data.value} />;
+        },
       },
       {
         Header: 'Timestamp',
@@ -50,42 +45,22 @@ class AddressTxsTable extends Component {
         },
       },
       {
-        Header: 'TX',
-        accessor: 'txHash',
-        minWidth: config.ui.table.minCellWidth,
-        Cell: (data) => {
-          return <HashLink url={`/tx/${data.value}`} hash={data.value} />;
-        },
-      },
-      {
         Header: '',
-        accessor: 'isCoinbaseTx',
+        accessor: 'isCoinbase',
         hideOnMobile: true,
         Cell: (data) => {
           return data.value ? 'Coinbase' : '';
-        },
-      },
-      {
-        Header: 'Amount',
-        accessor: 'totalSum',
-        Cell: (data) => {
-          const isNegative = Number(data.value) < 0;
-          return (
-            <span className={isNegative ? 'negative' : 'positive'}>
-              {AssetUtils.getAmountString(data.original.asset, Number(data.value))}
-            </span>
-          );
         },
       },
     ];
   }
 
   get tableDataSetter() {
-    return this.uiStore.setAddressTxAssetsTableData.bind(this.uiStore);
+    return this.uiStore.setAddressTxsTableData.bind(this.uiStore);
   }
 
   forceReload() {
-    this.props.rootStore.uiStore.setAddressTxAssetsTableData({ force: true });
+    this.props.rootStore.uiStore.setAddressTxsTableData({ force: true });
   }
 
   componentDidMount() {
@@ -111,11 +86,11 @@ class AddressTxsTable extends Component {
     return (
       <ItemsTable
         columns={this.getTableColumns()}
-        loading={this.addressStore.loading.addressTransactionAssets}
-        itemsCount={this.addressStore.addressTransactionAssetsCount}
-        items={this.addressStore.addressTransactionAssets}
-        pageSize={this.uiStore.state.addressTxAssetsTable.pageSize}
-        curPage={this.uiStore.state.addressTxAssetsTable.curPage}
+        loading={this.addressStore.loading.addressTxs}
+        itemsCount={this.addressStore.addressTxsCount}
+        items={this.addressStore.addressTxs}
+        pageSize={this.uiStore.state.addressTxsTable.pageSize}
+        curPage={this.uiStore.state.addressTxsTable.curPage}
         tableDataSetter={this.tableDataSetter}
         topContent={<PageTitle title="Transactions" margin={false} />}
         SubComponent={(row) => {
@@ -126,7 +101,7 @@ class AddressTxsTable extends Component {
           }
           return (
             <TransactionAssetLoader
-              transactionAssets={this.addressStore.addressTransactionAssets}
+              transactions={this.addressStore.addressTxs}
               index={row.index}
               timestamp={row.original.timestamp}
               address={address}
@@ -147,7 +122,7 @@ AddressTxsTable.propTypes = {
 export default withRouter(
   inject('rootStore')(
     observer(
-      WithSetIdsOnUiStore(observer(AddressTxsTable), 'setAddressTxAssetsTableData', ['address'])
+      WithSetIdsOnUiStore(observer(AddressTxsTable), 'setAddressTxsTableData', ['address'])
     )
   )
 );

@@ -1,13 +1,8 @@
 'use strict';
 
-const { Payout } = require('@zen/zenjs/build/src/Consensus/Types/Payout');
-const { Ballot } = require('@zen/zenjs/build/src/Consensus/Types/Ballot');
-const { Spend } = require('@zen/zenjs/build/src/Consensus/Types/Spend');
-const { Asset } = require('@zen/zenjs/build/src/Consensus/Types/Asset');
-const { ContractId } = require('@zen/zenjs/build//src/Consensus/Types/ContractId');
-const { Address } = require('@zen/zenjs');
+const { Address, Payout, Ballot, Spend, Asset, ContractId } = require('@zen/zenjs');
 
-module.exports = function({ address, spends } = {}) {
+module.exports = function ({ address, spends } = {}) {
   const payout = toPayout('testnet', address, spends);
   return new Ballot(payout).toHex();
 };
@@ -34,7 +29,7 @@ function toPayout(chain, recipient, spends) {
 }
 
 function toSpend(spends) {
-  return spends.map(spend => {
+  return spends.map((spend) => {
     const { asset, amount } = spend;
     return new Spend(new Asset(asset), amount);
   });

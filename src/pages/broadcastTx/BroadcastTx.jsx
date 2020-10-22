@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import debounce from 'lodash.debounce';
 import { Helmet } from 'react-helmet';
-import Service from '../../lib/Service';
+import Service from '../../lib/ApiService';
 import TextUtils from '../../lib/TextUtils';
 import RouterUtils from '../../lib/RouterUtils';
 import BrowserUtils from '../../lib/BrowserUtils';
@@ -157,7 +157,7 @@ class BroadcastTx extends Component {
 
   decodeHex(hex) {
     this.cancelCurrentDecodeRequest();
-    this.currentDecodePromise = Service.transactions.rawToTx(hex);
+    this.currentDecodePromise = Service.txs.rawToTx(hex);
     this.currentDecodePromise
       .then(res => {
         this.setState({ decodedTx: res.data, decodedTxValid: true });
@@ -190,7 +190,7 @@ class BroadcastTx extends Component {
     } else {
       this.setState({ progress: true, broadcastResponse: '', error: '' });
       this.cancelCurrentSubmitRequest();
-      this.currentSubmitPromise = Service.transactions.broadcast(hex);
+      this.currentSubmitPromise = Service.txs.broadcast(hex);
       this.currentSubmitPromise
         .then(res => {
           this.setState({ broadcastResponse: res.data, hex: '' });

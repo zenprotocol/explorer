@@ -25,31 +25,34 @@ class ContractsTable extends Component {
         Cell: ({ value }) => <HashLink url={`/contracts/${value}`} hash={value} />,
       },
       {
-        Header: 'Status',
-        accessor: 'expiryBlock',
+        Header: 'Activation',
+        accessor: 'lastActivationBlock',
+        minWidth: config.ui.table.minCellWidth,
         sortable: true,
-        Cell: ({ value }) =>
-          value ? `Active until block ${TextUtils.formatNumber(value)}` : 'Inactive',
+        hideOnMobile: true,
+        Cell: ({ value }) => <Link to={`/blocks/${value}`}>{TextUtils.formatNumber(value)}</Link>,
+      },
+      {
+        Header: 'Active until',
+        accessor: 'expiryBlock',
+        minWidth: config.ui.table.minCellWidth,
+        sortable: true,
+        Cell: ({ value }) => (value ? TextUtils.formatNumber(value) : 'Inactive'),
       },
       {
         Header: 'Txs',
-        accessor: 'transactionsCount',
+        accessor: 'txsCount',
+        minWidth: config.ui.table.minCellWidth,
         sortable: true,
         hideOnMobile: true,
         Cell: ({ value }) => TextUtils.formatNumber(value),
       },
       {
         Header: 'Assets Issued',
-        accessor: 'assetsCount',
+        accessor: 'assetsIssued',
+        minWidth: config.ui.table.minCellWidth,
         hideOnMobile: true,
         Cell: ({ value }) => TextUtils.formatNumber(value),
-      },
-      {
-        Header: 'Activation',
-        accessor: 'lastActivationBlockNumber',
-        sortable: true,
-        hideOnMobile: true,
-        Cell: ({ value }) => <Link to={`/blocks/${value}`}>{TextUtils.formatNumber(value)}</Link>,
       },
     ];
   }
@@ -91,7 +94,7 @@ class ContractsTable extends Component {
         tableDataSetter={uiStore.setContractsTableData.bind(uiStore)}
         dataTable={uiStore.state.contractsTable}
         topContent={<PageTitle title="Contracts" margin={false} />}
-        defaultSorted={[{ id: 'expiryBlock', desc: true }]}
+        defaultSorted={[{ id: 'lastActivationBlock', desc: true }]}
         defaultSortDesc={true}
       />
     );

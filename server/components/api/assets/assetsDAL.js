@@ -1,26 +1,17 @@
 'use strict';
 
 const dal = require('../../../lib/dal');
-const addressAmountsDAL = require('../addressAmounts/addressAmountsDAL');
-const assetOutstandingsDAL = require('../assetOutstandings/assetOutstandingsDAL');
+const addressesDAL = require('../addresses/addressesDAL');
 
-const assetsDAL = dal.createDAL('');
+const assetsDAL = dal.createDAL('Asset');
 const Op = assetsDAL.db.Sequelize.Op;
-
-assetsDAL.findOutstanding = function(asset) {
-  return assetOutstandingsDAL.findOne({
-    where: {
-      asset,
-    },
-  }).then(assetOutstanding => assetOutstanding ? assetOutstandingsDAL.toJSON(assetOutstanding) : null);
-};
 
 assetsDAL.keyholders = function({ asset, limit, offset } = {}) {
   if (!asset) {
     return this.getItemsAndCountResult([0, []]);
   }
 
-  return addressAmountsDAL.keyholders({ asset, limit, offset });
+  return addressesDAL.keyholders({ asset, limit, offset });
 };
 
 assetsDAL.search = async function(search, limit = 10) {
@@ -31,10 +22,10 @@ assetsDAL.search = async function(search, limit = 10) {
     },
   };
   return Promise.all([
-    assetOutstandingsDAL.count({
+    this.count({
       where,
     }),
-    assetOutstandingsDAL.findAll({
+    this.findAll({
       where,
       attributes: ['asset'],
       limit,

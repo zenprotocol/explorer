@@ -1,6 +1,6 @@
 {
     "COMMENT": "FOR TESTING OUTPOINT INPUT. THIS OUTPOINT REFS BLOCK NUMBER 1",
-    "hash": "00000000006e1133f8a51628701ec6a0ca916e0feff7a0c3c77e45ba01302d17",
+    "hash": "e044901c036c115c2b272c6ac34b3c32958368117157313310870747eba0ab45",
     "header": {
         "version": 0,
         "parent": "0000000001286157818c62beede85613a0293c66abe795a2397b6487e72d29d0",
@@ -9,8 +9,8 @@
         "timestamp": 1530380295214,
         "difficulty": 469893301,
         "nonce": [
-            1010815619414965902,
-            -5577989613475009533
+            "1010815619414965902",
+            "5577989613475009533"
         ]
     },
     "transactions": {

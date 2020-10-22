@@ -8,7 +8,7 @@ test('voteStatus.getVoteStatus()', function(t) {
     'Given next interval',
     given => {
       const currentBlock = 1000;
-      const actual = getVoteStatus({ currentBlock, beginHeight: 2001, endHeight: 3000 });
+      const actual = getVoteStatus({ currentBlock, beginBlock: 2001, endBlock: 3000 });
       t.equal(actual, voteStatus.before, `${given}: should return "before"`);
     },
     t
@@ -18,7 +18,7 @@ test('voteStatus.getVoteStatus()', function(t) {
     'Given current interval',
     given => {
       const currentBlock = 2100;
-      const actual = getVoteStatus({ currentBlock, beginHeight: 2001, endHeight: 3000 });
+      const actual = getVoteStatus({ currentBlock, beginBlock: 2001, endBlock: 3000 });
       t.equal(actual, voteStatus.during, `${given}: should return "during"`);
     },
     t
@@ -28,7 +28,7 @@ test('voteStatus.getVoteStatus()', function(t) {
     'Given past interval',
     given => {
       const currentBlock = 2100;
-      const actual = getVoteStatus({ currentBlock, beginHeight: 1000, endHeight: 2000 });
+      const actual = getVoteStatus({ currentBlock, beginBlock: 1000, endBlock: 2000 });
       t.equal(actual, voteStatus.after, `${given}: should return "after"`);
     },
     t

@@ -1,5 +1,5 @@
 import { observable, decorate, action, runInAction, computed } from 'mobx';
-import service from '../lib/Service';
+import service from '../lib/ApiService';
 
 export default class InfoStore {
   constructor(rootStore, initialState = {}) {

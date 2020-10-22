@@ -9,9 +9,9 @@ test.onFinish(() => {
   db.sequelize.close();
 });
 
-test('cgpUtils.getIntervalBlocks()', async function(t) {
+test('cgpUtils.getIntervalBlocks()', async function (t) {
   async function getTest({ chain, interval, expected } = {}) {
-    return wrapTest(`Given chain=${chain}, interval=${interval}`, async given => {
+    return wrapTest(`Given chain=${chain}, interval=${interval}`, async (given) => {
       const result = cgpUtils.getIntervalBlocks(chain, interval);
       t.deepEqual(result, expected, `${given}: should return  ${JSON.stringify(expected)}`);
     });
@@ -39,9 +39,9 @@ test('cgpUtils.getIntervalBlocks()', async function(t) {
   });
 });
 
-test('cgpUtils.getIntervalByBlockNumber()', async function(t) {
+test('cgpUtils.getIntervalByBlockNumber()', async function (t) {
   async function getTest({ chain, block, shouldReturnInterval } = {}) {
-    return wrapTest(`Given chain=${chain}, current block = ${block}`, async given => {
+    return wrapTest(`Given chain=${chain}, current block = ${block}`, async (given) => {
       const result = cgpUtils.getIntervalByBlockNumber(chain, block);
       t.equal(
         result,
@@ -63,11 +63,11 @@ test('cgpUtils.getIntervalByBlockNumber()', async function(t) {
   await getTest({ chain: 'main', block: 10001, shouldReturnInterval: 2 });
 });
 
-test('cgpUtils.getRelevantIntervalBlocks()', async function(t) {
+test('cgpUtils.getRelevantIntervalBlocks()', async function (t) {
   async function getTest({ chain, interval, phase, block, expected } = {}) {
     return wrapTest(
       `Given chain=${chain}, interval=${interval}, phase=${phase}, block=${block}`,
-      async given => {
+      async (given) => {
         const result = cgpUtils.getRelevantIntervalBlocks({
           chain,
           currentBlock: block,
@@ -105,7 +105,13 @@ test('cgpUtils.getRelevantIntervalBlocks()', async function(t) {
   await getTest({
     chain: 'test',
     interval: 2,
-    expected: { interval: 2, snapshot: 190, tally: 200, phase: 'Nomination', coinbaseMaturity: 210 },
+    expected: {
+      interval: 2,
+      snapshot: 190,
+      tally: 200,
+      phase: 'Nomination',
+      coinbaseMaturity: 210,
+    },
   });
   await getTest({
     chain: 'test',
@@ -151,22 +157,112 @@ test('cgpUtils.getRelevantIntervalBlocks()', async function(t) {
   await getTest({
     chain: 'test',
     block: 111,
-    expected: { interval: 2, snapshot: 190, tally: 200, phase: 'Nomination', coinbaseMaturity: 210 },
+    expected: {
+      interval: 2,
+      snapshot: 190,
+      tally: 200,
+      phase: 'Nomination',
+      coinbaseMaturity: 210,
+    },
   });
   await getTest({
     chain: 'main',
     interval: 1,
-    expected: { interval: 1, snapshot: 9000, tally: 10000, phase: 'Nomination', coinbaseMaturity: 10100 },
+    expected: {
+      interval: 1,
+      snapshot: 9000,
+      tally: 10000,
+      phase: 'Nomination',
+      coinbaseMaturity: 10100,
+    },
   });
   await getTest({
     chain: 'main',
     interval: 2,
-    expected: { interval: 2, snapshot: 19000, tally: 20000, phase: 'Nomination', coinbaseMaturity: 20100 },
+    expected: {
+      interval: 2,
+      snapshot: 19000,
+      tally: 20000,
+      phase: 'Nomination',
+      coinbaseMaturity: 20100,
+    },
   });
   await getTest({
     chain: 'main',
     block: 1,
-    expected: { interval: 1, snapshot: 9000, tally: 10000, phase: 'Nomination', coinbaseMaturity: 10100 },
+    expected: {
+      interval: 1,
+      snapshot: 9000,
+      tally: 10000,
+      phase: 'Nomination',
+      coinbaseMaturity: 10100,
+    },
+  });
+});
+
+test('cgpUtils.getPhaseBlocks()', async function (t) {
+  async function getTest({ chain, interval, type, expected } = {}) {
+    return wrapTest(`Given chain=${chain}, interval=${interval}, type=${type}`, async (given) => {
+      const result = cgpUtils.getPhaseBlocks({ chain, interval, type });
+      t.deepEqual(result, expected, `${given}: should return ${JSON.stringify(expected)}`);
+    });
+  }
+
+  await getTest({
+    chain: 'test',
+    interval: 1,
+    type: 'Nomination',
+    expected: { beginBlock: 90, endBlock: 95 },
+  });
+  await getTest({
+    chain: 'test',
+    interval: 1,
+    type: 'allocation', // try with lower case
+    expected: { beginBlock: 95, endBlock: 100 },
+  });
+  await getTest({
+    chain: 'test',
+    interval: 1,
+    type: 'Payout', // try with lower case
+    expected: { beginBlock: 95, endBlock: 100 },
+  });
+
+  await getTest({
+    chain: 'main',
+    interval: 1,
+    type: 'nomination',
+    expected: { beginBlock: 9000, endBlock: 9500 },
+  });
+  await getTest({
+    chain: 'main',
+    interval: 1,
+    type: 'Allocation',
+    expected: { beginBlock: 9500, endBlock: 10000 },
+  });
+  await getTest({
+    chain: 'main',
+    interval: 1,
+    type: 'payout',
+    expected: { beginBlock: 9500, endBlock: 10000 },
+  });
+
+  await getTest({
+    chain: 'test',
+    interval: 8,
+    type: 'Nomination',
+    expected: { beginBlock: 790, endBlock: 795 },
+  });
+  await getTest({
+    chain: 'test',
+    interval: 8,
+    type: 'allocation', // try with lower case
+    expected: { beginBlock: 795, endBlock: 800 },
+  });
+  await getTest({
+    chain: 'test',
+    interval: 8,
+    type: 'Payout', // try with lower case
+    expected: { beginBlock: 795, endBlock: 800 },
   });
 });
 

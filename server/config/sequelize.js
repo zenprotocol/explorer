@@ -14,7 +14,7 @@ module.exports = {
     logging: Config.get('db:logging') !== 'false' ? console.log : false,
   }),
   test: merge(testJson.db, {
-    logging: false,
+    logging: Config.get('db:logging') !== 'false' ? console.log : false,
   }),
   production: {
     use_env_variable: 'DATABASE_URL',

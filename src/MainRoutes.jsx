@@ -48,11 +48,6 @@ const BroadcastTx = Loadable({
   loading: AsyncComponentLoading,
   delay,
 });
-const Oracle = Loadable({
-  loader: () => import(/* webpackChunkName: "oracle" */ './pages/oracle'),
-  loading: AsyncComponentLoading,
-  delay,
-});
 const Assets = Loadable({
   loader: () => import(/* webpackChunkName: "assets" */ './pages/assets'),
   loading: AsyncComponentLoading,
@@ -60,18 +55,6 @@ const Assets = Loadable({
 });
 const Asset = Loadable({
   loader: () => import(/* webpackChunkName: "asset" */ './pages/asset'),
-  loading: AsyncComponentLoading,
-  delay,
-});
-const ContractTemplates = Loadable({
-  loader: () =>
-    import(/* webpackChunkName: "contractTemplatesContainer" */ './pages/contractTemplates/ContractTemplatesContainer.jsx'),
-  loading: AsyncComponentLoading,
-  delay,
-});
-const CreateContractTemplate = Loadable({
-  loader: () =>
-    import(/* webpackChunkName: "createContractTemplateContainer" */ './pages/contractTemplates/CreateContractTemplateContainer.jsx'),
   loading: AsyncComponentLoading,
   delay,
 });
@@ -101,12 +84,9 @@ export default function MainRoutes() {
       <Route path="/address/:address" component={Address} />
       <Route path="/contracts" exact={true} component={Contracts} />
       <Route path="/contracts/:address" component={Contract} />
-      <Route path="/templates/contract" exact component={ContractTemplates} />
-      <Route path="/templates/contract/:slug" component={CreateContractTemplate} />
       <Route path="/search/:search" component={Search} />
       <Route path="/charts/:name" component={Chart} />
       <Route path="/broadcastTx/:hex?" component={BroadcastTx} />
-      <Route path="/oracle" component={Oracle} />
       <Route path="/assets" exact={true} component={Assets} />
       <Route path="/assets/:asset" component={Asset} />
       <Route path="/governance/:interval/:phase" component={Governance} />

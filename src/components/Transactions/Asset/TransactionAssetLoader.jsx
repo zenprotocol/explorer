@@ -6,42 +6,47 @@ import Loading from '../../Loading';
 
 class TransactionAssetLoader extends Component {
   componentDidMount() {
-    const { transactionAssets, index, rootStore } = this.props;
-    if (!this.transactionAssetAlreadyLoaded) {
-      rootStore.transactionStore.fetchTransactionAsset(transactionAssets, index);
+    const { transactions, index, rootStore, address, asset } = this.props;
+    if (!this.txAssetsAlreadyLoaded) {
+      rootStore.transactionStore.fetchTxAssets(transactions, index, { address, asset });
     }
   }
   render() {
-    const { index, address, addressFoundIn, transactionAssets, total } = this.props;
-    if (!this.transactionAssetAlreadyLoaded) {
+    const { index, address, transactions, total, showAsset } = this.props;
+    if (!this.txAssetsAlreadyLoaded) {
       return <Loading />;
     }
-
-    return (
+    return transactions[index].assets.map((asset, index) => (
       <TransactionAsset
-        transactionAsset={transactionAssets[index].TransactionAsset}
-        asset={transactionAssets[index].asset}
-        showHeader={true}
+        key={asset}
+        transactionAsset={asset}
+        asset={asset.asset}
+        showHeader={index === 0}
+        showAsset={showAsset}
         address={address}
-        addressFoundIn={addressFoundIn}
         total={total}
       />
-    );
+    ));
   }
 
-  get transactionAssetAlreadyLoaded() {
-    const { index, transactionAssets } = this.props;
-    return !!transactionAssets[index].TransactionAsset;
+  get txAssetsAlreadyLoaded() {
+    const { index, transactions } = this.props;
+    return !!transactions[index].assets;
   }
 }
 
 TransactionAssetLoader.propTypes = {
-  transactionAssets: PropTypes.array,
+  transactions: PropTypes.array,
   index: PropTypes.number,
   address: PropTypes.string,
+  asset: PropTypes.string,
   addressFoundIn: PropTypes.array,
   total: PropTypes.number,
   rootStore: PropTypes.object,
+  showAsset: PropTypes.bool,
+};
+TransactionAssetLoader.defaultProps = {
+  showAsset: true,
 };
 
 export default inject('rootStore')(observer(TransactionAssetLoader));

@@ -1,5 +1,5 @@
 import { observable, decorate, action, runInAction } from 'mobx';
-import Service from '../lib/Service';
+import Service from '../lib/ApiService';
 import AssetUtils from '../lib/AssetUtils';
 
 export default class AssetStore {
@@ -89,7 +89,7 @@ export default class AssetStore {
   loadAssetTxs(asset, params = {}) {
     this.loading.assetTxs = true;
 
-    return Service.transactions
+    return Service.txs
       .find(Object.assign({ asset }, params))
       .then(({ data }) => {
         runInAction(() => {

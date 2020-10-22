@@ -5,7 +5,6 @@ import { Link } from 'react-router-dom';
 import config from '../../../../lib/Config';
 import WithSetIdsOnUiStore from '../../../../components/hoc/WithSetIdsOnUiStore';
 import TextUtils from '../../../../lib/TextUtils';
-import AssetUtils from '../../../../lib/AssetUtils';
 import { TabPanel } from '../../../../components/tabs';
 import { ItemsTable } from '../../../../components/ItemsTable';
 import HashLink from '../../../../components/HashLink';
@@ -13,7 +12,6 @@ import { TransactionAssetLoader } from '../../../../components/Transactions';
 
 class TransactionsTab extends React.Component {
   getTableColumns() {
-    const { uiStore } = this.props.rootStore;
     return [
       {
         Header: 'TX HASH',
@@ -33,11 +31,6 @@ class TransactionsTab extends React.Component {
         Cell: (data) => (
           <Link to={`/blocks/${data.value}`}>{TextUtils.formatNumber(data.value)}</Link>
         ),
-      },
-      {
-        Header: 'Output total',
-        accessor: 'outputSum',
-        Cell: (data) => AssetUtils.getAmountString(uiStore.state.assetTxsTable.asset, data.value),
       },
     ];
   }
@@ -89,7 +82,12 @@ class TransactionsTab extends React.Component {
           }
           SubComponent={(row) => {
             return (
-              <TransactionAssetLoader transactionAssets={assetStore.assetTxs} index={row.index} />
+              <TransactionAssetLoader
+                transactions={assetStore.assetTxs}
+                index={row.index}
+                asset={assetStore.asset.asset}
+                showAsset={false}
+              />
             );
           }}
         />

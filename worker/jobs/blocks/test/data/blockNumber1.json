@@ -1,6 +1,6 @@
 {
   "comment": "THIS BLOCK WAS EDITED - REMOVED TXS AND LEFT ONES THAT ARE REFERENCED IN OTHER BLOCKS",
-  "hash": "cb746bfdbc472602064dbc04e66326a8edf11a3c64d08ddfa90257e86e866b0f",
+  "hash": "cae179c83c877c40ac9346bf942c99e387ebd5a980a81579c9b8303a0646fb50",
   "header": {
     "version": 0,
     "parent": "0000000000000000000000000000000000000000000000000000000000000000",
@@ -8,7 +8,7 @@
     "commitments": "5c7b8fc634b29f426526d1d9f0c081b44ee75be0dd490bb0c82afad8a2fb0033",
     "timestamp": 1530378000000,
     "difficulty": 471719622,
-    "nonce": [-251630181581216792, 953087631993001383]
+    "nonce": ["0", "0"]
   },
   "transactions": {
     "fded83cc7e8738028beeb81db7af0406990bd17215cc0f5db37c16904f5e329d": {

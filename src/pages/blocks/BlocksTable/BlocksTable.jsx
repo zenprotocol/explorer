@@ -51,7 +51,7 @@ class BlocksTable extends Component {
       },
       {
         Header: 'Txs',
-        accessor: 'transactionCount',
+        accessor: 'txsCount',
         Cell: ({ value }) => TextUtils.formatNumber(value),
       },
       {

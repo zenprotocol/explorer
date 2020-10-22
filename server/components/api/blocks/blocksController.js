@@ -30,14 +30,6 @@ module.exports = {
 
     res.status(httpStatus.OK).json(jsonResponse.create(httpStatus.OK, count));
   },
-  getById: async function(req, res) {
-    const block = await blocksBLL.getById(req.params.id);
-    if (block) {
-      res.status(httpStatus.OK).json(jsonResponse.create(httpStatus.OK, block));
-    } else {
-      throw new HttpError(httpStatus.NOT_FOUND);
-    }
-  },
   getTotalZp: async function(req, res) {
     let total = await blocksBLL.getTotalZp();
 

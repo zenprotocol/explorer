@@ -1,27 +1,15 @@
 'use strict';
 
 const infosDAL = require('./infosDAL');
-const transactionsDAL = require('../transactions/transactionsDAL');
-const blocksBLL = require('../blocks/blocksBLL');
-const cgpBLL = require('../cgp/cgpBLL');
-const cgpUtils = require('../cgp/cgpUtils');
 const getChain = require('../../../lib/getChain');
 const config = require('../../../config/Config');
 const BlockchainParser = require('../../../lib/BlockchainParser');
 
 module.exports = {
-  findAll: async function() {
-    const [currentBlock, chain] = await Promise.all([
-      blocksBLL.getCurrentBlockNumber(),
+  findAll: async function () {
+    const [chain, allItems] = await Promise.all([
       getChain(),
-    ]);
-    const currentInterval = cgpUtils.getIntervalByBlockNumber(chain, currentBlock);
-
-    const [allItems, transactionsCount, cgpBalance, cgpAllocation] = await Promise.all([
       infosDAL.findAll({ attributes: ['name', 'value'] }),
-      transactionsDAL.count(),
-      cgpBLL.findCgpBalance(),
-      cgpBLL.findWinnerAllocation({ interval: currentInterval - 1, chain }),
     ]);
 
     const items = allItems.reduce((all, cur) => {
@@ -30,10 +18,7 @@ module.exports = {
     }, {});
 
     const bcParser = new BlockchainParser(chain);
-
-    items.transactions = transactionsCount;
-    items.cgpBalance = cgpBalance;
-    items.cgpAllocation = cgpAllocation;
+    items.cgpBalance = items['cgpBalance'] ? JSON.parse(items['cgpBalance']) : [];
     items.cgpFundContractId = config.get('CGP_FUND_CONTRACT_ID');
     items.cgpFundContractAddress = bcParser.getAddressFromContractId(
       config.get('CGP_FUND_CONTRACT_ID')
@@ -45,7 +30,7 @@ module.exports = {
 
     return items;
   },
-  findByName: async function({ name } = {}) {
+  findByName: async function ({ name } = {}) {
     return await infosDAL.findByName(name);
   },
 };

@@ -6,7 +6,7 @@
     "slackTimeLimit": 3600,
     "addBlocks": {
       "name": "Add Blocks From Node",
-      "limitBlocks": 10
+      "limitBlocks": 10000
     },
     "updateGeneralInfos": {
       "name": "Update General Infos"
@@ -14,8 +14,8 @@
     "contracts": {
       "name": "Contracts"
     },
-    "commands": {
-      "name": "Commands"
+    "executions": {
+      "name": "Executions"
     },
     "reorgs": {
       "name": "Reorgs"
@@ -37,6 +37,9 @@
     },
     "snapshots": {
       "name": "Vote Snapshots"
+    },
+    "stats": {
+      "name": "Stats"
     }
   },
   "governance": {

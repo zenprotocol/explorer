@@ -1,65 +1,63 @@
 'use strict';
 
 const tags = require('common-tags');
+const dal = require('../../../lib/dal');
 const outputsDAL = require('../outputs/outputsDAL');
 const infosDAL = require('../infos/infosDAL');
 const db = require('../../../db/sequelize/models');
-const addressAmountsDAL = require('../addressAmounts/addressAmountsDAL');
 const AddressUtils = require('../../../../src/common/utils/AddressUtils');
-const addressesDAL = {};
+const addressesDAL = dal.createDAL('Address');
 
 const sequelize = db.sequelize;
 const Op = db.Sequelize.Op;
 
-const LOCK_TYPE_FOR_BALANCE = '"lockType" = ANY(\'{"Coinbase","PK","Contract","Destroy"}\')';
+const LOCK_TYPE_FOR_BALANCE = "\"lockType\" IN ('Coinbase','PK','Contract','Destroy')";
 
-addressesDAL.findOne = function(address) {
-  return outputsDAL
-    .findAll({
-      where: {
-        address,
-      },
-      limit: 1,
-    })
-    .then(results => {
-      return results.length ? results[0] : null;
-    });
+addressesDAL.findByAddressAsset = function ({ address, asset, ...options } = {}) {
+  return this.findAll({
+    where: {
+      address,
+      asset,
+    },
+    limit: 1,
+    ...options,
+  }).then((results) => {
+    return results.length ? results[0] : null;
+  });
 };
 
-addressesDAL.addressExists = function(address) {
-  const sql = tags.oneLine`
-    SELECT 1 FROM "Outputs" WHERE "Outputs"."address" = :address LIMIT 1;
-  `;
-  return sequelize
-    .query(sql, {
-      replacements: {
-        address,
+addressesDAL.findAllByAddress = function (address, options) {
+  return this.findAll({
+    where: {
+      address,
+      balance: {
+        [Op.gt]: 0,
       },
-      type: sequelize.QueryTypes.SELECT,
-    })
-    .then(results => {
-      return results.length > 0;
-    });
+    },
+    order: [
+      [sequelize.literal('CASE WHEN "asset" = \'00\' THEN 0 ELSE 1 END'), 'ASC'],
+      ['balance', 'DESC'],
+    ],
+    ...options,
+  });
 };
 
-addressesDAL.search = async function(search, limit = 10) {
+addressesDAL.search = async function (search, limit = 10) {
   const like = AddressUtils.isAddress(search) ? `${search}%` : `%${search}%`;
   const prefix = AddressUtils.getPrefix(((await infosDAL.findByName('chain')) || {}).value);
   const where = {
     address: {
-      [Op.and]: {
-        [Op.like]: like,
-        [Op.notLike]: `c${prefix}%`,
-      },
+      [Op.like]: like,
+      [Op.notLike]: `c${prefix}%`,
     },
   };
   return Promise.all([
-    addressAmountsDAL.count({
+    this.count({
       where,
       distinct: true,
       col: 'address',
     }),
-    addressAmountsDAL.findAll({
+    this.findAll({
       where,
       attributes: ['address'],
       group: 'address',
@@ -68,73 +66,8 @@ addressesDAL.search = async function(search, limit = 10) {
   ]);
 };
 
-addressesDAL.getAssetAmounts = function(address) {
-  return addressAmountsDAL
-    .findAll({
-      where: {
-        address,
-        balance: {
-          [Op.gt]: 0,
-        },
-      },
-      order: [['balance', 'DESC']],
-    });
-};
-
-/**
- * Get the send and received amounts for an address taking change-back into account
- * divides the calculation per tx
- */
-addressesDAL.getZpSentReceived = function(address) {
-  const sql = tags.oneLine`
-  SELECT
-    sum(bothsums.sent) AS sent,
-    sum(bothsums.received) AS received,
-    sum(bothsums.received) - sum(bothsums.sent) AS balance
-  FROM
-    (SELECT
-      CASE
-        WHEN COALESCE(isums.input_sum, 0) = 0 THEN COALESCE(osums.output_sum, 0)
-        ELSE 0
-      END AS received,
-      CASE
-        WHEN COALESCE(isums.input_sum, 0) > 0 THEN isums.input_sum - COALESCE(osums.output_sum, 0)
-        ELSE 0
-      END AS sent
-    FROM
-      (SELECT
-        o."TransactionId",
-        SUM(o.amount) AS output_sum
-      FROM "Outputs" o
-      WHERE o.address = :address
-        AND o.asset = '00' AND o.${LOCK_TYPE_FOR_BALANCE}
-      GROUP BY "TransactionId") AS osums
-      FULL OUTER JOIN
-      (SELECT
-        i."TransactionId",
-        SUM(io.amount) AS input_sum
-      FROM
-        "Outputs" io
-        JOIN "Inputs" i
-        ON i."OutputId" = io.id
-      WHERE io.address = :address
-        AND io.asset = '00' AND io.${LOCK_TYPE_FOR_BALANCE}
-      GROUP BY i."TransactionId") AS isums
-      ON osums."TransactionId" = isums."TransactionId") AS bothsums;
-  `;
-
-  return sequelize
-    .query(sql, {
-      replacements: {
-        address,
-      },
-      type: sequelize.QueryTypes.SELECT,
-    })
-    .then(results => (results.length ? results[0] : null));
-};
-
-addressesDAL.getZpBalance = async function(address) {
-  return addressAmountsDAL.findOne({
+addressesDAL.getZpBalance = async function (address) {
+  return this.findOne({
     where: {
       address,
       asset: '00',
@@ -147,37 +80,34 @@ addressesDAL.getZpBalance = async function(address) {
  *
  * @param {number} blockNumber the block number
  */
-addressesDAL.snapshotBalancesByBlock = async function(blockNumber) {
+addressesDAL.snapshotBalancesByBlock = async function (blockNumber) {
   const sql = tags.oneLine`
   SELECT
-    bothsums.address AS address,
-    (output_sum - input_sum) AS amount
+    COALESCE(osums.address, isums.address) AS address,
+    osums.output_sum,
+    isums.input_sum,
+    COALESCE(osums.output_sum, 0) - COALESCE(isums.input_sum, 0) AS amount
   FROM
     (SELECT
-      COALESCE(osums.address, isums.address) AS address,
-      COALESCE(osums.output_sum, 0) AS output_sum,
-      COALESCE(isums.input_sum, 0) AS input_sum
+      o.address,
+      SUM(o.amount) AS output_sum
+    FROM "Outputs" o
+    WHERE o."blockNumber" <= :blockNumber AND 
+          o.address IS NOT NULL AND 
+          o.asset = '00'
+    GROUP BY address) AS osums
+    FULL OUTER JOIN
+    (SELECT
+      i.address,
+      SUM(i.amount) AS input_sum
     FROM
-      (SELECT
-        o.address,
-        SUM(o.amount) AS output_sum
-      FROM "Outputs" o
-      INNER JOIN "Transactions" t ON o."TransactionId" = t.id
-      INNER JOIN "Blocks" b ON t."BlockId" = b.id AND b."blockNumber" <= :blockNumber
-      WHERE o.address IS NOT NULL AND o.asset = '00' AND o.${LOCK_TYPE_FOR_BALANCE}
-      GROUP BY address) AS osums
-      FULL OUTER JOIN
-      (SELECT
-        io.address,
-        SUM(io.amount) AS input_sum
-      FROM
-        "Outputs" io
-        INNER JOIN "Inputs" i ON i."OutputId" = io.id
-        INNER JOIN "Transactions" t ON i."TransactionId" = t.id
-        INNER JOIN "Blocks" b ON t."BlockId" = b.id AND b."blockNumber" <= :blockNumber
-      WHERE io.address IS NOT NULL AND io.asset = '00' AND io.${LOCK_TYPE_FOR_BALANCE}
-      GROUP BY io.address) AS isums
-      ON osums.address = isums.address) AS bothsums;
+      "Inputs" i
+    WHERE i."blockNumber" <= :blockNumber AND 
+          i.address IS NOT NULL AND 
+          i.asset = '00'
+    GROUP BY i.address) AS isums
+    ON osums.address = isums.address
+    WHERE COALESCE(osums.output_sum, 0) != COALESCE(isums.input_sum, 0);
   `;
 
   return sequelize.query(sql, {
@@ -194,7 +124,7 @@ addressesDAL.snapshotBalancesByBlock = async function(blockNumber) {
  * @param {string} address the address
  * @param {number} blockNumber the block number
  */
-addressesDAL.snapshotAddressBalancesByBlock = async function({
+addressesDAL.snapshotAddressBalancesByBlock = async function ({
   address,
   blockNumber,
   dbTransaction = null,
@@ -213,9 +143,7 @@ addressesDAL.snapshotAddressBalancesByBlock = async function({
         o.asset,
         SUM(o.amount) AS output_sum
       FROM "Outputs" o
-      INNER JOIN "Transactions" t ON o."TransactionId" = t.id
-      INNER JOIN "Blocks" b ON t."BlockId" = b.id AND b."blockNumber" <= :blockNumber
-      WHERE o.address = :address AND o.${LOCK_TYPE_FOR_BALANCE}
+      WHERE o."blockNumber" <= :blockNumber AND o.address = :address AND o.${LOCK_TYPE_FOR_BALANCE}
       GROUP BY o.asset) AS osums
       FULL OUTER JOIN
       (SELECT
@@ -223,10 +151,8 @@ addressesDAL.snapshotAddressBalancesByBlock = async function({
         SUM(io.amount) AS input_sum
       FROM
         "Outputs" io
-        INNER JOIN "Inputs" i ON i."OutputId" = io.id
-        INNER JOIN "Transactions" t ON i."TransactionId" = t.id
-        INNER JOIN "Blocks" b ON t."BlockId" = b.id AND b."blockNumber" <= :blockNumber
-      WHERE io.address = :address AND io.${LOCK_TYPE_FOR_BALANCE}
+        INNER JOIN "Inputs" i ON i."outputId" = io.id
+      WHERE i."blockNumber" <= :blockNumber AND io.address = :address AND io.${LOCK_TYPE_FOR_BALANCE}
       GROUP BY io.asset) AS isums
       ON osums.asset = isums.asset) AS bothsums
       WHERE output_sum > input_sum;
@@ -240,6 +166,20 @@ addressesDAL.snapshotAddressBalancesByBlock = async function({
     type: sequelize.QueryTypes.SELECT,
     transaction: dbTransaction,
   });
+};
+addressesDAL.keyholders = function ({ asset, limit, offset } = {}) {
+  const where = {
+    [Op.and]: {
+      asset,
+      balance: {
+        [Op.gt]: 0,
+      },
+    },
+  };
+  return Promise.all([
+    this.count({ where }),
+    this.findAll({ where, order: [['balance', 'DESC']], limit, offset }),
+  ]).then(this.getItemsAndCountResult);
 };
 
 module.exports = addressesDAL;

@@ -1,0 +1,11 @@
+{
+  "interval": 1,
+  "beginBlock": 129000,
+  "endBlock": 130000,
+  "phase": "Candidate",
+  "threshold": 0,
+  "winner": {
+    "commitId": "6ff0b83aad7041560ed1d446991e87f23cbc32c2",
+    "zpAmount": "2885984.585167580000"
+  }
+}

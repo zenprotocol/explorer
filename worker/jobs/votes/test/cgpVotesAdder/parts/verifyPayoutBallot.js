@@ -1,10 +1,10 @@
 const wrapTest = require('../../../../../../test/lib/wrapTest');
 const BlockchainParser = require('../../../../../../server/lib/BlockchainParser');
 const cgpDAL = require('../../../../../../server/components/api/cgp/cgpDAL');
-const CGPVotesAdder = require('../../../CGPVotesAdder');
+const CgpVotesAdder = require('../../../CgpVotesAdder');
 const cgpAdderParams = require('../modules/cgpAdderParams');
 const { addDemoData, addFundBalance } = require('../modules/addDemoData');
-const getDemoCommand = require('../modules/getDemoCommand');
+const getDemoExecution = require('../modules/getDemoExecution');
 const getValidMessageBody = require('../modules/getValidMessageBody');
 const getPayoutBallot = require('../modules/getPayoutBallot');
 
@@ -19,7 +19,7 @@ module.exports = async function part({ t, before, after }) {
     assert = ({ votes }) => votes.length === 1 && votes[0].ballot === null,
   }) =>
     wrapTest(given, async () => {
-      const cgpVotesAdder = new CGPVotesAdder({
+      const cgpVotesAdder = new CgpVotesAdder({
         blockchainParser,
         chain: 'test',
         ...cgpAdderParams,
@@ -31,7 +31,7 @@ module.exports = async function part({ t, before, after }) {
       await addDemoData({
         cgpFundZp: 0,
         blockchainParser,
-        commands: [getDemoCommand({ command: 'Nomination', messageBody })],
+        executions: [getDemoExecution({ command: 'Nomination', messageBody })],
       });
       await Promise.all(
         cgpFundBalance.map(({ asset, amount }) =>

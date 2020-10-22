@@ -63,7 +63,7 @@ class InfoPage extends Component {
     const {
       chain,
       blocks,
-      transactions,
+      txsCount,
       difficulty,
       nodeVersion,
       walletVersion,
@@ -71,7 +71,7 @@ class InfoPage extends Component {
       cgpAllocation,
     } = infos;
     const formattedHashRate = formatHashRate(infos);
-    const cgpZpBalance = (cgpBalance || []).find(item => AssetUtils.isZP(item.asset)) || {
+    const cgpZpBalance = (cgpBalance || []).find((item) => AssetUtils.isZP(item.asset)) || {
       asset: '00',
       amount: '0',
     };
@@ -100,7 +100,7 @@ class InfoPage extends Component {
             <InfoBox
               className="transactions"
               title="Transactions"
-              content={TextUtils.formatNumber(transactions)}
+              content={TextUtils.formatNumber(txsCount)}
               iconClass="fal fa-money-check fa-fw"
             />
           </div>
@@ -108,7 +108,9 @@ class InfoPage extends Component {
             <InfoBox
               className="difficulty"
               title="Mining difficulty"
-              content={TextUtils.formatNumber(Math.floor(difficulty))}
+              content={TextUtils.formatNumber(
+                difficulty < 1 ? Number(difficulty).toFixed(8) : Math.floor(difficulty)
+              )}
               iconClass="fal fa-dumbbell fa-fw"
             />
             <InfoBox

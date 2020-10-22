@@ -36,7 +36,7 @@ function getIntervalBlocks(chain, interval) {
 /**
  * Get interval snapshot and tally blocks by:
  * 1. if interval is supplied, by that interval
- * 2. previous interval if currentBlock - prev.endHeight < maturity
+ * 2. previous interval if currentBlock - prev.endBlock < maturity
  * 3. on going interval
  */
 function getRelevantIntervalBlocks({ chain, interval, phase, currentBlock } = {}) {
@@ -74,20 +74,36 @@ function getRelevantIntervalBlocks({ chain, interval, phase, currentBlock } = {}
 }
 
 /**
+ * Get the beginBlock and endBlock of a phase
+ * @param {Object} params
+ * @param {Chain} params.chain
+ * @param {number} params.interval
+ * @param {string} params.type
+ */
+function getPhaseBlocks({ chain, interval, type } = {}) {
+  const { snapshot, tally } = getIntervalBlocks(chain, interval);
+  const middle = snapshot + (tally - snapshot) / 2;
+
+  return type.toLowerCase() === 'nomination'
+    ? { beginBlock: snapshot, endBlock: middle }
+    : { beginBlock: middle, endBlock: tally };
+}
+
+/**
  * Get the threshold in ZP Kalapas at the given height
  *
  * @param {Object} params
  * @param {(number|string)} params.height - the height at which to calculate
  * @param {(number|string)} params.genesisTotal - the genesis total in ZP
- * @param {("main"|"test")} params.chain - the current chain
- * @returns (string) the threshold at the given height
+ * @param {Chain} params.chain - the current chain
+ * @returns (string) the threshold at the given height in Kalapas
  */
 function getThreshold({ height, genesisTotal = 0, chain = 'main' } = {}) {
   const threshold = new Decimal(calcTotalZpByHeight({ genesis: genesisTotal, height }))
     .times(config.get(`cgp:${chain}:thresholdPercentage`))
     .div(100);
 
-  return threshold.toFixed(Math.min(threshold.decimalPlaces(), 8));
+  return threshold.floor().toString();
 }
 
 module.exports = {
@@ -98,4 +114,9 @@ module.exports = {
   getRelevantIntervalBlocks,
   getThresholdPercentage,
   getThreshold,
+  getPhaseBlocks,
 };
+
+/**
+ * @typedef {("main"|"test")} Chain
+ */

@@ -74,12 +74,7 @@
 
 @media (min-width: map-get($grid-breakpoints, "lg")) {
   .GenericTable .TransactionAsset  {
-    align-self: flex-end;
-    width: 80%;
-
     .GenericTable {
-      
-  
       .rt-thead .rt-th {
         padding-left: $content-padding-x-lg;
         padding-right: $content-padding-x-lg;

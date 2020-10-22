@@ -1,5 +1,5 @@
 import { observable, decorate, action, runInAction } from 'mobx';
-import Service from '../lib/Service';
+import Service from '../lib/ApiService';
 
 export default class RepoVoteStore {
   constructor(rootStore, initialState = {}) {

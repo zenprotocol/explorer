@@ -1,5 +1,5 @@
 import { observable, decorate, action, runInAction } from 'mobx';
-import Service from '../lib/Service';
+import Service from '../lib/ApiService';
 
 export default class TransactionStore {
   constructor(rootStore, initialState = {}) {
@@ -20,7 +20,7 @@ export default class TransactionStore {
     
     this.loading.transaction = true;
 
-    return Service.transactions
+    return Service.txs
       .findByHash(hash)
       .then(response => {
         const transaction = response.data;
@@ -39,7 +39,7 @@ export default class TransactionStore {
 
   fetchTransactions(params = {}) {
     this.loading.transactions = true;
-    return Service.transactions
+    return Service.txs
       .find(params)
       .then(response => {
         runInAction(() => {
@@ -55,15 +55,21 @@ export default class TransactionStore {
       });
   }
 
-  fetchTransactionAsset(transactionAssets, index) {
-    const transactionAsset =
-      (transactionAssets || []).length > index ? transactionAssets[index] : null;
-    if (transactionAsset) {
-      return Service.transactions
-        .findAsset(transactionAsset.transactionId, transactionAsset.asset)
+  /**
+   * Fetch all assets in a tx
+   * @param {Array} transactions - a transactions list
+   * @param {Array} index - the index in the transactions list
+   * @param {Object} params - extra params for the fetch like address
+   */
+  fetchTxAssets(transactions, index, params) {
+    const tx =
+      (transactions || []).length > index ? transactions[index] : null;
+    if (tx) {
+      return Service.txs
+        .findAssets(tx.hash, params)
         .then(response => {
           runInAction(() => {
-            transactionAssets[index].TransactionAsset = response.data;
+            transactions[index].assets = response.data.items;
           });
         });
     }
@@ -78,5 +84,5 @@ decorate(TransactionStore, {
   loading: observable,
   fetchTransaction: action,
   fetchTransactions: action,
-  fetchTransactionAsset: action,
+  fetchTxAssets: action,
 });

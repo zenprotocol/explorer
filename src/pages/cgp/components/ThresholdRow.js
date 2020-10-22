@@ -24,4 +24,5 @@ export default function ThresholdRow({ thresholdPercentage, threshold, inOneColu
 ThresholdRow.propTypes = {
   thresholdPercentage: PropTypes.number,
   threshold: PropTypes.string,
+  inOneColumn: PropTypes.bool,
 };

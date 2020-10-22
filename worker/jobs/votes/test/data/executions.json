@@ -1,0 +1,259 @@
+[
+  {
+    "id": "1",
+    "command": "commit id is missing",
+    "messageBody": {
+      "list": [
+        {
+          "dict": [
+            [
+              "029ae9b49e60259958302fab6c9be333775fd7ada72f11643218dcf23e5f37ec92",
+              {
+                "signature": "d0d01ed241f3ca624cfd987a6d0208fd44e758a9d21c007f09e89c5d2a74e290bed769f07b8f9c853b73445a0325f35278556c67fed68020d0b2b1767bb5d850"
+              }
+            ],
+            [
+              "02b43a1cb4cb6472e1fcd71b237eb9c1378335cd200dd07536594348d9e450967e",
+              {
+                "signature": "f379996a3977a41b7ac8822c80dcd4be09b1246967d52b5676d22a644e9e8c898e20674ecaa7164769d4cdd2fa13b5915d39a8f6da8c0fee08dc20984632f354"
+              }
+            ]
+          ]
+        }
+      ]
+    },
+    "txId": "100",
+    "indexInTx": 0,
+    "contractId": "test-contract-id"
+  },
+  {
+    "id": "2",
+    "command": "unknown extra data",
+    "messageBody": {
+      "list": [
+        {
+          "u32": 1
+        },
+        {
+          "string": "1234512345123451234512345123451234512345"
+        },
+        {
+          "dict": [
+            [
+              "029ae9b49e60259958302fab6c9be333775fd7ada72f11643218dcf23e5f37ec92",
+              {
+                "signature": "d0d01ed241f3ca624cfd987a6d0208fd44e758a9d21c007f09e89c5d2a74e290bed769f07b8f9c853b73445a0325f35278556c67fed68020d0b2b1767bb5d850"
+              }
+            ],
+            [
+              "02b43a1cb4cb6472e1fcd71b237eb9c1378335cd200dd07536594348d9e450967e",
+              {
+                "signature": "f379996a3977a41b7ac8822c80dcd4be09b1246967d52b5676d22a644e9e8c898e20674ecaa7164769d4cdd2fa13b5915d39a8f6da8c0fee08dc20984632f354"
+              }
+            ]
+          ]
+        }
+      ]
+    },
+    "txId": "100",
+    "indexInTx": 0,
+    "contractId": "test-contract-id"
+  },
+  {
+    "id": "3",
+    "command": "no data in dictionary",
+    "messageBody": {
+      "list": [
+        {
+          "string": "1234512345123451234512345123451234512345"
+        },
+        {
+          "dict": []
+        }
+      ]
+    },
+    "txId": "200",
+    "indexInTx": 0,
+    "contractId": "test-contract-id"
+  },
+  {
+    "id": "4",
+    "command": "",
+    "messageBody": {
+      "list": [
+        {
+          "string": "1234512345123451234512345123451234512345"
+        },
+        {
+          "dict": [
+            [
+              "029ae9b49e60259958302fab6c9be333775fd7ada72f11643218dcf23e5f37ec92",
+              {
+                "signature": "68366a87c63e0aadedfb497b2a7dcb6d4841811e0e6b54b4dd6982207cc6f4a3e2ee862a0b0c80a15c8cec4f905bf7b03fb2959d38f92cf8a95af64af6f10f56"
+              }
+            ],
+            [
+              "02b43a1cb4cb6472e1fcd71b237eb9c1378335cd200dd07536594348d9e450967e",
+              {
+                "signature": "e29bc1cb0b464ef334c9abfdaaea7808ba5145cf474e9ca0b6ecacd7687b92b1860a8fbee7066819c3f3ae8257902fffeb63b4cd4aa02d6a355db7bd87b99b7c"
+              }
+            ]
+          ]
+        }
+      ]
+    },
+    "txId": "300",
+    "indexInTx": 0,
+    "contractId": "test-contract-id"
+  },
+  {
+    "id": "5",
+    "command": "",
+    "messageBody": {
+      "list": [
+        {
+          "string": "1234512345123451234512345123451234512345"
+        },
+        {
+          "dict": [
+            [
+              "029ae9b49e60259958302fab6c9be333775fd7ada72f11643218dcf23e5f37ec92",
+              {
+                "signature": "b14796f93d2fb7adf43bd9284dbcb8d6850d7cab25e52c23e9f529940c1ec45889afe3fb00a88ca135d71f4b6788b3ba9134683c704dc194f4baea0de3b73049"
+              }
+            ],
+            [
+              "02b43a1cb4cb6472e1fcd71b237eb9c1378335cd200dd07536594348d9e450967e",
+              {
+                "signature": "e9c671327b538bf273fe1653d79df397420a1a425424041ec79155e188b9f8d9041e203559ef4dfd0d08a1ddce0333fb84057621e3028e14fff801d112245d51"
+              }
+            ]
+          ]
+        }
+      ]
+    },
+    "txId": "400",
+    "indexInTx": 0,
+    "contractId": "test-contract-id"
+  },
+  {
+    "id": "6",
+    "command": "",
+    "messageBody": {
+      "list": [
+        {
+          "string": "1234512345123451234512345123451234512345"
+        },
+        {
+          "dict": [
+            [
+              "029ae9b49e60259958302fab6c9be333775fd7ada72f11643218dcf23e5f37ec92",
+              {
+                "signature": "366a87c63e0aadedfb497b2a7dcb6d4841811e0e6b54b4dd6982207cc6f4a309ee862a0b0c80a15c8cec4f905bf7b03fb2959d38f92cf8a95af64af6f10f5668"
+              }
+            ],
+            [
+              "02b43a1cb4cb6472e1fcd71b237eb9c1378335cd200dd07536594348d9e450967e",
+              {
+                "signature": "9bc1cb0b464ef334c9abfdaaea7808ba5145cf474e9ca0b6ecacd7687b92b1090a8fbee7066819c3f3ae8257902fffeb63b4cd4aa02d6a355db7bd87b99b7ce2"
+              }
+            ]
+          ]
+        }
+      ]
+    },
+    "txId": "500",
+    "indexInTx": 0,
+    "contractId": "test-contract-id"
+  },
+  {
+    "id": "7",
+    "command": "",
+    "messageBody": {
+      "list": [
+        {
+          "string": "1234512345123451234512345123451234512345"
+        },
+        {
+          "dict": [
+            [
+              "029ae9b49e60259958302fab6c9be333775fd7ada72f11643218dcf23e5f37ec92",
+              {
+                "signature": "366a87c63e0aadedfb497b2a7dcb6d4841811e0e6b54b4dd6982207cc6f4a309ee862a0b0c80a15c8cec4f905bf7b03fb2959d38f92cf8a95af64af6f10f5668"
+              }
+            ],
+            [
+              "02b43a1cb4cb6472e1fcd71b237eb9c1378335cd200dd07536594348d9e450967e",
+              {
+                "signature": "9bc1cb0b464ef334c9abfdaaea7808ba5145cf474e9ca0b6ecacd7687b92b1090a8fbee7066819c3f3ae8257902fffeb63b4cd4aa02d6a355db7bd87b99b7ce2"
+              }
+            ]
+          ]
+        }
+      ]
+    },
+    "txId": "600",
+    "indexInTx": 0,
+    "contractId": "test-contract-id"
+  },
+  {
+    "id": "8",
+    "command": "",
+    "messageBody": {
+      "list": [
+        {
+          "string": "1234512345123451234512345123451234512345"
+        },
+        {
+          "dict": [
+            [
+              "029ae9b49e60259958302fab6c9be333775fd7ada72f11643218dcf23e5f37ec92",
+              {
+                "signature": "366a87c63e0aadedfb497b2a7dcb6d4841811e0e6b54b4dd6982207cc6f4a309ee862a0b0c80a15c8cec4f905bf7b03fb2959d38f92cf8a95af64af6f10f5668"
+              }
+            ],
+            [
+              "02b43a1cb4cb6472e1fcd71b237eb9c1378335cd200dd07536594348d9e450967e",
+              {
+                "signature": "9bc1cb0b464ef334c9abfdaaea7808ba5145cf474e9ca0b6ecacd7687b92b1090a8fbee7066819c3f3ae8257902fffeb63b4cd4aa02d6a355db7bd87b99b7ce2"
+              }
+            ]
+          ]
+        }
+      ]
+    },
+    "txId": "700",
+    "indexInTx": 0,
+    "contractId": "test-contract-id"
+  },
+  {
+    "id": "9",
+    "command": "",
+    "messageBody": {
+      "list": [
+        {
+          "string": "1234512345123451234512345123451234512345"
+        },
+        {
+          "dict": [
+            [
+              "029ae9b49e60259958302fab6c9be333775fd7ada72f11643218dcf23e5f37ec92",
+              {
+                "signature": "366a87c63e0aadedfb497b2a7dcb6d4841811e0e6b54b4dd6982207cc6f4a309ee862a0b0c80a15c8cec4f905bf7b03fb2959d38f92cf8a95af64af6f10f5668"
+              }
+            ],
+            [
+              "02b43a1cb4cb6472e1fcd71b237eb9c1378335cd200dd07536594348d9e450967e",
+              {
+                "signature": "9bc1cb0b464ef334c9abfdaaea7808ba5145cf474e9ca0b6ecacd7687b92b1090a8fbee7066819c3f3ae8257902fffeb63b4cd4aa02d6a355db7bd87b99b7ce2"
+              }
+            ]
+          ]
+        }
+      ]
+    },
+    "txId": "800",
+    "indexInTx": 0,
+    "contractId": "test-contract-id"
+  }
+]

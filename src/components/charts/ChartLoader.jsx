@@ -4,7 +4,7 @@ import { observer, inject } from 'mobx-react';
 import { reaction } from 'mobx';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
-import Service from '../../lib/Service';
+import Service from '../../lib/ApiService';
 import TextUtils from '../../lib/TextUtils';
 import Loading from '../Loading';
 import LineChart from './LineChart.jsx';
@@ -59,24 +59,24 @@ const Mappers = {
   transactionsPerDay(data) {
     return data.map((item) => {
       return {
-        x: Date.parse(item.dt),
-        y: Number(item.count),
+        x: Date.parse(item.date),
+        y: Number(item.value),
       };
     });
   },
   blockDifficulty(data) {
     return data.map((item) => {
       return {
-        x: Date.parse(item.dt),
-        y: Number(item.difficulty),
+        x: Date.parse(item.date),
+        y: Number(item.value),
       };
     });
   },
   networkHashRate(data) {
     return data.map((item) => {
       return {
-        x: Date.parse(item.dt),
-        y: Number(item.hashrate),
+        x: Date.parse(item.date),
+        y: Number(item.value),
       };
     });
   },
@@ -101,8 +101,8 @@ const Mappers = {
   zpSupply(data) {
     return data.map((item) => {
       return {
-        x: Date.parse(item.dt),
-        y: Number(item.supply),
+        x: Date.parse(item.date),
+        y: Number(item.value),
       };
     });
   },
