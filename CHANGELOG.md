@@ -2,6 +2,58 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [4.0.0](https://github.com/zenprotocol/explorer/compare/v3.2.1...v4.0.0) (2020-10-22)
+
+
+### ⚠ BREAKING CHANGES
+
+* remove prevPhaseId from RepoVoteIntervals
+
+### Features
+
+* add data to new tables ([c09d16b](https://github.com/zenprotocol/explorer/commit/c09d16be9d2b2566e920e8ad52e4285e9a42081b))
+* add executions of all contracts every 12h ([79b870f](https://github.com/zenprotocol/explorer/commit/79b870f313d0ca85404fe78e38fcfa7a5c5fe56e))
+* calc reward instead f get from node ([5390bdf](https://github.com/zenprotocol/explorer/commit/5390bdf53aff7286e421125e328ba05102878f67))
+* change contracts status column ([5181888](https://github.com/zenprotocol/explorer/commit/5181888aaee3d175ffe5c03acee51ae8f64d823a))
+* change txs representation in all pages ([ca8de18](https://github.com/zenprotocol/explorer/commit/ca8de1810bd85880efd9bb684a25355fd70bbe3f))
+* get batch of blocks from blockchain/blocks api ([1570053](https://github.com/zenprotocol/explorer/commit/15700532f607a09d68e946ef2facf3c69284f927))
+* insert and use difficulty per day ([308c1dd](https://github.com/zenprotocol/explorer/commit/308c1ddc278f95272f06372cd0f5e0c52f01df1a))
+* insert and use zp supply table ([d424bf7](https://github.com/zenprotocol/explorer/commit/d424bf76bd4a65c5093bfb583ca15499cc60d8cd))
+* insert data and display from TxsPerDay table ([06288ec](https://github.com/zenprotocol/explorer/commit/06288ec63e8b7d13fa674347a5e8e443284d3222))
+* move activation column in contracts page ([e712811](https://github.com/zenprotocol/explorer/commit/e712811728eaeaf4891ad8079f625b51a1b87997))
+* prepare for new api by get blocks in batch ([3027062](https://github.com/zenprotocol/explorer/commit/3027062450faed399ac85178b826f5202d0674f6))
+* prevent insert double repo votes to db ([4cd8c48](https://github.com/zenprotocol/explorer/commit/4cd8c484a5bfa840df7d0fb3b1d46afe451d1a6b))
+* prevent insert double votes into the db ([f7aa651](https://github.com/zenprotocol/explorer/commit/f7aa651e103ad655e5cbd1af2e45227258d3aa68))
+* save stats in infos table ([cadf9e3](https://github.com/zenprotocol/explorer/commit/cadf9e30d0b1869dc414e550d8a696c1a8bf04fd))
+* set extra data for contracts ([cc68c73](https://github.com/zenprotocol/explorer/commit/cc68c73fb06be81376ef904a3ad50a9ba079b9b3))
+* show cgp interval 1414 as 1 on testnet ([cc4f710](https://github.com/zenprotocol/explorer/commit/cc4f710349d3eee81921e57fe20bbc9d236f1281))
+* show chart data up to yesterday ([60bf9c1](https://github.com/zenprotocol/explorer/commit/60bf9c12eacd18e1b0f8e2ca8e0d2aebe729b41c))
+* show only positive balances and order ([604958e](https://github.com/zenprotocol/explorer/commit/604958efd20cf2ddc9e9c31fe3a21876a92e9f43))
+* show pkHash in Address page ([e9081c0](https://github.com/zenprotocol/explorer/commit/e9081c04af1537e2604013a81f489a7bbbc524eb))
+* sort contracts table by activation by default ([3689e8c](https://github.com/zenprotocol/explorer/commit/3689e8c3cce5596ff23d5953312b2e106b2e85de))
+* update infos in blocks job ([6eb855e](https://github.com/zenprotocol/explorer/commit/6eb855efd58a3401218a38dff8a77a5c31919991))
+* **cgp:** show mainnet interval 25 as 1st in UI ([f477b91](https://github.com/zenprotocol/explorer/commit/f477b912b3b076ac251c3a78a5d7e40421a169c2))
+
+
+### Bug Fixes
+
+* **cgp:** set 25th interval as 1st in SSR ([d9091e7](https://github.com/zenprotocol/explorer/commit/d9091e7251ea0e7f08e399652184bfcee3f991e6))
+* add repo votes in batches per interval ([91e53f7](https://github.com/zenprotocol/explorer/commit/91e53f70f1cd002fb701d3a5c61b64efaec73f19))
+* add zp reward to issued once per block ([eee2025](https://github.com/zenprotocol/explorer/commit/eee2025beb66f7e9bc477da44e58223f204bbb72))
+* calculate balance from the right lock types ([de98fe1](https://github.com/zenprotocol/explorer/commit/de98fe18ca8dcf308973cdfcdac497e1a50e503f))
+* display transactions count ([9364173](https://github.com/zenprotocol/explorer/commit/936417383c2a10fffc7e934ad7b71bdb1413e404))
+* extra parenthesis in nonce ([e8742d1](https://github.com/zenprotocol/explorer/commit/e8742d15d34b236a642eebce27e6f243679339a9))
+* get the right fields for conract executions ([84771c7](https://github.com/zenprotocol/explorer/commit/84771c7418a5bf66115fd85f4324d7ea8c41effa))
+* return cgpBalance properly from api ([3c8cbfe](https://github.com/zenprotocol/explorer/commit/3c8cbfe62e90c2d580e4c4575d424212eddf6b5c))
+* revert asset and address on reorg ([cce84f0](https://github.com/zenprotocol/explorer/commit/cce84f06f595999a08fa4f2141a729bf076413af))
+* revert charts data on reorg ([d8d6755](https://github.com/zenprotocol/explorer/commit/d8d6755822aca73391203c1da5d6de095ff3be08))
+* **cgp:** wait for nomination winner promise ([07a6824](https://github.com/zenprotocol/explorer/commit/07a6824cd084a06b91452e2582eda759514596fa))
+* save the right hash rate to infos ([edd0f4a](https://github.com/zenprotocol/explorer/commit/edd0f4a19ed36ba81baf693b9ec25c2801314030))
+* **charts:** return results ordered by date ([143385c](https://github.com/zenprotocol/explorer/commit/143385c0dc3433e2f7fd98e64fcc8221f84c73fd))
+
+
+* remove prevPhaseId from RepoVoteIntervals ([c74e5b7](https://github.com/zenprotocol/explorer/commit/c74e5b7efa4a4b7fa47a9e7ec8769c13960ec7e6))
+
 ### [3.2.1](https://github.com/zenprotocol/explorer/compare/v3.2.0...v3.2.1) (2020-08-17)
 
 
