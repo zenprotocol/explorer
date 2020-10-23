@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [4.0.1](https://github.com/zenprotocol/explorer/compare/v4.0.0...v4.0.1) (2020-10-23)
+
+
+### Bug Fixes
+
+* find address even if balance is 0 ([096eea9](https://github.com/zenprotocol/explorer/commit/096eea94120a5a2862a2cd3df2948e21681df14c))
+
 ## [4.0.0](https://github.com/zenprotocol/explorer/compare/v3.2.1...v4.0.0) (2020-10-22)
 
 
