@@ -8,13 +8,14 @@ const BlockchainParser = require('../../../lib/BlockchainParser');
 
 module.exports = {
   findOne: async function ({ address } = {}) {
-    const [assetAmounts, totalTxs, chain] = await Promise.all([
+    const [exists, assetAmounts, totalTxs, chain] = await Promise.all([
+      addressesDAL.addressExists(address),
       addressesDAL.findAllByAddress(address),
       addressTxsDAL.countByAddress(address),
       getChain(),
     ]);
 
-    if (!assetAmounts.length) return null;
+    if (!exists) return null;
 
     const blockchainParser = new BlockchainParser(chain);
 

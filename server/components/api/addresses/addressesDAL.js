@@ -26,13 +26,39 @@ addressesDAL.findByAddressAsset = function ({ address, asset, ...options } = {})
   });
 };
 
+addressesDAL.addressExists = function (address, options) {
+  return this.findAll({
+    where: {
+      address,
+    },
+    limit: 1,
+    ...options,
+  }).then((results) => results.length > 0);
+};
+
+/**
+ * Find all address/asset from the Addresses table
+ * For ZP, return a row even if the balance is 0, for the rest, no
+ * @param {string} address 
+ * @param {Object} options 
+ */
 addressesDAL.findAllByAddress = function (address, options) {
   return this.findAll({
     where: {
       address,
-      balance: {
-        [Op.gt]: 0,
-      },
+      [Op.or]: [
+        {
+          asset: '00',
+        },
+        {
+          asset: {
+            [Op.ne]: '00',
+          },
+          balance: {
+            [Op.gt]: 0,
+          },
+        },
+      ],
     },
     order: [
       [sequelize.literal('CASE WHEN "asset" = \'00\' THEN 0 ELSE 1 END'), 'ASC'],
