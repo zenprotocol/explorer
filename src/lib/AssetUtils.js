@@ -29,12 +29,6 @@ export default {
       name = 'ZP';
     }
 
-    return this.removeLeadingAndTrailingZeros(name);
-  },
-  removeLeadingAndTrailingZeros(asset) {
-    if (typeof asset !== 'string') {
-      return '';
-    }
-    return asset.length > 8 ? asset.replace(/^0+/, '').replace(/0+$/, '') : asset;
+    return name;
   },
 };

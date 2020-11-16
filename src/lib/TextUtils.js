@@ -37,10 +37,19 @@ export default {
   },
   truncateHash(hash) {
     const HASH_TRIM_LENGTH = 6;
-    if (typeof hash !== 'string' || hash.length <= HASH_TRIM_LENGTH * 2) {
+    if (typeof hash !== 'string' || hash.length <= HASH_TRIM_LENGTH * 2 + 3) {
       return hash;
     }
-    return `${hash.slice(0, HASH_TRIM_LENGTH)}...${hash.slice(hash.length - HASH_TRIM_LENGTH)}`;
+  
+    const hashNoPreZeros = hash.replace(/^0+/, '');
+    const difference = hash.length - hashNoPreZeros.length;
+    const zerosCount = difference % 2 === 1 ? 1 : difference > 0 ? 2 : 0;
+    const beginPart = hashNoPreZeros
+      .slice(0, Math.max(0, HASH_TRIM_LENGTH - zerosCount))
+      .padStart(HASH_TRIM_LENGTH, '0');
+    const endPart = hashNoPreZeros.slice(-1 * HASH_TRIM_LENGTH);
+  
+    return `${beginPart}...${endPart}`;
   },
   capitalize(text) {
     if (text && typeof text === 'string') {
