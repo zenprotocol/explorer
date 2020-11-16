@@ -28,11 +28,12 @@ class InfoPage extends Component {
   }
 
   fetchInfos() {
-    this.setState({ isFirstLoad: false });
     this.infoStore.loadInfos();
+    this.setState({ isFirstLoad: false });
   }
 
   componentDidMount() {
+    this.fetchInfos();
     this.reloadOnBlocksCountChange();
   }
   componentWillUnmount() {

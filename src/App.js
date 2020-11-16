@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { inject } from 'mobx-react';
+import { withRouter } from 'react-router-dom';
 import MainRoutes from './MainRoutes.jsx';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
@@ -26,7 +27,10 @@ class App extends Component {
   }
 
   componentDidMount() {
-    this.infoStore.loadInfos();
+    if (!['/', '/blockchain/info'].includes(this.props.location.pathname)) {
+      // infos should load from stats page
+      this.infoStore.loadInfos();
+    }
     this.pollBlocksCount();
     this.pollSyncing();
   }
@@ -75,4 +79,4 @@ App.propTypes = {
   rootStore: PropTypes.object,
 };
 
-export default inject('rootStore')(App);
+export default inject('rootStore')(withRouter(App));
