@@ -1,10 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { Decimal } from 'decimal.js';
 import AssetUtils from '../../lib/AssetUtils';
 import HashLink from '../HashLink';
 import './AssetsBalancesTable.scss';
 
 export default function AssetsBalancesTable({ title, balance = [] }) {
+  const _balance = balance.filter((item) => new Decimal(item.total || 0).greaterThan(0));
+
   return (
     <div className="AssetsBalancesTable">
       <div className="HeadTableContainer">
@@ -25,7 +28,7 @@ export default function AssetsBalancesTable({ title, balance = [] }) {
       <div className="BodyTableContainer">
         <table className="table table-zen">
           <tbody>
-            {balance.map((assetBalance, index) => (
+            {_balance.map((assetBalance, index) => (
               <tr key={index}>
                 <td>
                   <HashLink
