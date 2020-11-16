@@ -85,14 +85,14 @@ class SearchResultsPage extends Component {
   redirectBeforeSearch(search) {
     let redirect = false;
     if (search === '00' || search === 'zp') {
-      this.props.history.push('/assets/00');
+      this.props.history.replace('/assets/00');
       redirect = true;
     } else if (AddressUtils.isComplete(search)) {
       if (AddressUtils.isContract(search)) {
-        this.props.history.push(`/contracts/${search}`);
+        this.props.history.replace(`/contracts/${search}`);
         redirect = true;
       } else {
-        this.props.history.push(`/address/${search}`);
+        this.props.history.replace(`/address/${search}`);
         redirect = true;
       }
     }
