@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [4.0.2](https://github.com/zenprotocol/explorer/compare/v4.0.1...v4.0.2) (2020-11-17)
+
+
+### Bug Fixes
+
+* load new address txs when change address ([4df7b41](https://github.com/zenprotocol/explorer/commit/4df7b414b3553f61da70c1162427546c3f47a5f4))
+* make sure right asset txs are loaded ([b6f7dc1](https://github.com/zenprotocol/explorer/commit/b6f7dc10ede613de60b1fd99ffa1a10c42bf7430))
+* prevent error when browsing between addresses ([9f00f7b](https://github.com/zenprotocol/explorer/commit/9f00f7bce0a136f88f1d5ec912b669cc08d6c4de))
+* take care of null in dal.toJSON ([1b7fa2b](https://github.com/zenprotocol/explorer/commit/1b7fa2b437154e577bb8ec6721706c849ad7b020))
+
 ### [4.0.1](https://github.com/zenprotocol/explorer/compare/v4.0.0...v4.0.1) (2020-10-23)
 
 
