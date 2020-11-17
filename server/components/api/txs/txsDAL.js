@@ -1,21 +1,15 @@
 'use strict';
 
 const tags = require('common-tags');
-const deepMerge = require('deepmerge');
 const dal = require('../../../lib/dal');
 const txsDAL = dal.createDAL('Tx');
-const blocksDAL = require('../blocks/blocksDAL');
 const addressTxsDAL = require('../address-txs/addressTxsDAL');
 const assetTxsDAL = require('../asset-txs/assetTxsDAL');
-const inputsDAL = require('../inputs/inputsDAL');
 const outputsDAL = require('../outputs/outputsDAL');
 const isHash = require('../../../lib/isHash');
-const getFieldsForSelectQuery = require('../../../lib/getFieldsForSelectQuery');
 
 const sequelize = txsDAL.db.sequelize;
 const Op = txsDAL.db.Sequelize.Op;
-
-const LOCK_TYPE_FOR_BALANCE = "\"lockType\" IN ('Coinbase','PK','Contract','Destroy')";
 
 txsDAL.findByHash = async function (hash) {
   return txsDAL.findOne({
@@ -146,7 +140,7 @@ txsDAL.countByAsset = function ({ asset } = {}) {
 txsDAL.findAllTxInputsOutputsAggregated = function ({ txId, asset } = {}) {
   const inputsPromise = sequelize.query(
     tags.oneLine`
-      SELECT MAX(id), address, asset, SUM(amount) AS amount, "isMint"
+      SELECT MAX(id) AS id, address, asset, SUM(amount) AS amount, "isMint"
       FROM "Inputs"
       WHERE "txId" = :txId
         ${asset ? 'AND asset = :asset' : ''}
