@@ -122,7 +122,7 @@ const createDAL = modelName => {
       });
     },
     toJSON(model) {
-      return model.toJSON();
+      return model ? model.toJSON() : null;
     },
     getItemsAndCountResult([count, items] = []) {
       return {

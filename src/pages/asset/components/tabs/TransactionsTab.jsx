@@ -44,7 +44,6 @@ class TransactionsTab extends React.Component {
   }
 
   componentDidMount() {
-    this.forceReload();
     this.reloadOnBlocksCountChange();
   }
   componentWillUnmount() {
@@ -97,5 +96,5 @@ class TransactionsTab extends React.Component {
 }
 
 export default inject('rootStore')(
-  observer(WithSetIdsOnUiStore(observer(TransactionsTab), 'setAssetTxsTableData', ['asset']))
+  observer(WithSetIdsOnUiStore(observer(TransactionsTab), 'setAssetTxsTableData', ['asset'], true))
 );

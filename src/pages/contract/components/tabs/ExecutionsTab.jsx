@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { observer, inject } from 'mobx-react';
-import {reaction} from 'mobx';
+import { reaction } from 'mobx';
 import { Link } from 'react-router-dom';
 import config from '../../../../lib/Config';
 import TextUtils from '../../../../lib/TextUtils';
@@ -21,7 +21,6 @@ class ExecutionsTab extends React.Component {
   }
 
   componentDidMount() {
-    this.forceReload();
     this.reloadOnBlocksCountChange();
   }
   componentWillUnmount() {
@@ -93,5 +92,12 @@ const columns = [
 ];
 
 export default inject('rootStore')(
-  observer(WithSetIdsOnUiStore(observer(ExecutionsTab), 'setContractExecutionsTableData', ['address']))
+  observer(
+    WithSetIdsOnUiStore(
+      observer(ExecutionsTab),
+      'setContractExecutionsTableData',
+      ['address'],
+      true
+    )
+  )
 );

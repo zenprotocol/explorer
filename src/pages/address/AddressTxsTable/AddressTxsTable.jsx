@@ -64,7 +64,6 @@ class AddressTxsTable extends Component {
   }
 
   componentDidMount() {
-    this.forceReload();
     this.reloadOnBlocksCountChange();
   }
   componentWillUnmount() {
@@ -122,7 +121,7 @@ AddressTxsTable.propTypes = {
 export default withRouter(
   inject('rootStore')(
     observer(
-      WithSetIdsOnUiStore(observer(AddressTxsTable), 'setAddressTxsTableData', ['address'])
+      WithSetIdsOnUiStore(observer(AddressTxsTable), 'setAddressTxsTableData', ['address'], true)
     )
   )
 );
