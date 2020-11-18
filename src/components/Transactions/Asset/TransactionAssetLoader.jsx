@@ -13,6 +13,9 @@ class TransactionAssetLoader extends Component {
   }
   render() {
     const { index, address, transactions, total, showAsset } = this.props;
+    if(!transactions || !transactions.length) {
+      return null;
+    }
     if (!this.txAssetsAlreadyLoaded) {
       return <Loading />;
     }

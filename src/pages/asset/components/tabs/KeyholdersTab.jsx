@@ -37,7 +37,7 @@ class KeyholdersTab extends React.Component {
           return (totalIssued ? (Number(value) / totalIssued) * 100 : 0) + '%';
         },
       },
-    ]
+    ];
   }
 
   get tableDataSetter() {
@@ -50,7 +50,6 @@ class KeyholdersTab extends React.Component {
   }
 
   componentDidMount() {
-    this.forceReload();
     this.reloadOnBlocksCountChange();
   }
   componentWillUnmount() {
@@ -69,7 +68,7 @@ class KeyholdersTab extends React.Component {
   render() {
     const assetStore = this.props.rootStore.assetStore;
     const uiStore = this.props.rootStore.uiStore;
-    
+
     return (
       <TabPanel>
         <ItemsTable
@@ -92,5 +91,7 @@ class KeyholdersTab extends React.Component {
   }
 }
 export default inject('rootStore')(
-  observer(WithSetIdsOnUiStore(observer(KeyholdersTab), 'setAssetKeyholdersTableData', ['asset']))
+  observer(
+    WithSetIdsOnUiStore(observer(KeyholdersTab), 'setAssetKeyholdersTableData', ['asset'], true)
+  )
 );

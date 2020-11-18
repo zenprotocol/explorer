@@ -2,7 +2,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { observer, inject } from 'mobx-react';
-import {reaction} from 'mobx';
+import { reaction } from 'mobx';
 import { Link } from 'react-router-dom';
 import config from '../../../../lib/Config';
 import WithSetIdsOnUiStore from '../../../../components/hoc/WithSetIdsOnUiStore';
@@ -22,7 +22,6 @@ class TransactionsTab extends React.Component {
   }
 
   componentDidMount() {
-    this.forceReload();
     this.reloadOnBlocksCountChange();
   }
   componentWillUnmount() {
@@ -53,8 +52,7 @@ class TransactionsTab extends React.Component {
           tableDataSetter={this.tableDataSetter}
           topContent={
             <div>
-              Total of {TextUtils.formatNumber(addressStore.addressTxsCount)} transactions
-              found
+              Total of {TextUtils.formatNumber(addressStore.addressTxsCount)} transactions found
             </div>
           }
         />
@@ -88,5 +86,7 @@ const columns = [
 ];
 
 export default inject('rootStore')(
-  observer(WithSetIdsOnUiStore(observer(TransactionsTab), 'setAddressTxsTableData', ['address']))
+  observer(
+    WithSetIdsOnUiStore(observer(TransactionsTab), 'setAddressTxsTableData', ['address'], true)
+  )
 );

@@ -21,7 +21,6 @@ class AssetsTab extends React.Component {
   }
 
   componentDidMount() {
-    this.forceReload();
     this.reloadOnBlocksCountChange();
   }
   componentWillUnmount() {
@@ -96,5 +95,7 @@ const columns = [
 ];
 
 export default inject('rootStore')(
-  observer(WithSetIdsOnUiStore(observer(AssetsTab), 'setContractAssetsTableData', ['address']))
+  observer(
+    WithSetIdsOnUiStore(observer(AssetsTab), 'setContractAssetsTableData', ['address'], true)
+  )
 );
