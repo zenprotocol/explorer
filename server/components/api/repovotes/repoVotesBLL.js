@@ -192,5 +192,5 @@ async function getCurrentInterval({ interval, phase, currentBlock } = {}) {
 function addDefaultCommitId(candidates = []) {
   return candidates.some((candidate) => candidate.commitId === configDefaultCommitId)
     ? candidates
-    : [{ commitId: configDefaultCommitId, zpAmount: '0' }, ...candidates];
+    : [{ commitId: configDefaultCommitId, amount: '0', zpAmount: '0' }, ...candidates];
 }
