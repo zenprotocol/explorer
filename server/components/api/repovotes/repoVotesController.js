@@ -41,6 +41,14 @@ module.exports = {
       throw new HttpError(httpStatus.NOT_FOUND);
     }
   },
+  prevInterval: async function(req, res) {
+    const result = await votesBLL.findPrevInterval();
+    if (result) {
+      res.status(httpStatus.OK).json(jsonResponse.create(httpStatus.OK, result));
+    } else {
+      throw new HttpError(httpStatus.NOT_FOUND);
+    }
+  },
   currentOrNextInterval: async function(req, res) {
     const result = await votesBLL.findCurrentOrNextInterval();
     if (result) {

@@ -23,6 +23,14 @@ router
   );
 
 router
+  .route('/prev')
+  .get(
+    middleware.parsePhaseParam,
+    wrapAsync(interval1CacheController.prevInterval),
+    wrapAsync(controller.prevInterval)
+  );
+
+router
   .route('/current-or-next')
   .get(
     middleware.parsePhaseParam,

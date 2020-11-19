@@ -35,6 +35,9 @@ module.exports = {
   nextInterval: async function(req, res, next) {
     next();
   },
+  prevInterval: async function(req, res, next) {
+    next();
+  },
   currentOrNextInterval: async function(req, res, next) {
     next();
   },
