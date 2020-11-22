@@ -112,6 +112,22 @@ voteIntervalsDAL.findNext = async function (currentBlock) {
 };
 
 /**
+ * Find an interval by interval number and phase
+ *
+ * @param {number} interval
+ * @param {string} phase
+ * @returns {VoteInterval}
+ */
+voteIntervalsDAL.findInterval = async function (interval = 0, phase = '') {
+  return this.findOne({
+    where: {
+      interval,
+      phase
+    },
+  });
+};
+
+/**
  * Find the on-going interval or the next one
  *
  * @param {number} currentBlock

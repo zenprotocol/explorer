@@ -31,6 +31,14 @@ router
   );
 
 router
+  .route('/interval')
+  .get(
+    middleware.parsePhaseParam,
+    wrapAsync(interval1CacheController.getInterval),
+    wrapAsync(controller.getInterval)
+  );
+
+router
   .route('/current-or-next')
   .get(
     middleware.parsePhaseParam,

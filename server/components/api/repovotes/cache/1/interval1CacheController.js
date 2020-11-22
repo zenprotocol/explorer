@@ -32,6 +32,9 @@ module.exports = {
       next();
     }
   },
+  getInterval: async function(req, res, next) {
+    next();
+  },
   nextInterval: async function(req, res, next) {
     next();
   },

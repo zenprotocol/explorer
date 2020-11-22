@@ -66,6 +66,9 @@ module.exports = {
     const currentBlock = await blocksBLL.getCurrentBlockNumber();
     return intervalsDAL.findPrev(currentBlock);
   },
+  findInterval: async function ({interval, phase}) {
+    return intervalsDAL.findInterval(interval, phase);
+  },
   findCurrentOrNextInterval: async function () {
     const currentBlock = await blocksBLL.getCurrentBlockNumber();
     return intervalsDAL.findCurrentOrNext(currentBlock);
