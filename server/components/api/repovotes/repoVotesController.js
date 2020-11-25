@@ -8,10 +8,9 @@ const votesBLL = require('./repoVotesBLL');
 module.exports = {
   index: async function(req, res) {
     const { interval, phase, page, pageSize } = req.query;
-    const formattedInterval = formatInterval(interval);
 
     const votes = await votesBLL.findAllVotesByInterval({
-      interval: formattedInterval,
+      interval,
       phase,
       page,
       pageSize,
@@ -21,10 +20,9 @@ module.exports = {
   },
   relevantInterval: async function(req, res) {
     const { interval, phase } = req.query;
-    const formattedInterval = formatInterval(interval);
 
     const result = await votesBLL.findIntervalAndTally({
-      interval: formattedInterval,
+      interval,
       phase,
     });
     if (result) {
@@ -68,10 +66,9 @@ module.exports = {
   },
   results: async function(req, res) {
     const { interval, phase, page, pageSize } = req.query;
-    const formattedInterval = formatInterval(interval);
 
     const result = await votesBLL.findAllVoteResults({
-      interval: formattedInterval,
+      interval,
       phase,
       page,
       pageSize,
@@ -84,15 +81,11 @@ module.exports = {
   },
   getCandidates: async function(req, res) {
     const { interval } = req.query;
-    const formattedInterval = formatInterval(interval);
 
     const result = await votesBLL.findContestantWinners({
-      interval: formattedInterval,
+      interval,
     });
     res.status(httpStatus.OK).json(jsonResponse.create(httpStatus.OK, result || []));
   },
 };
 
-function formatInterval(interval) {
-  return isNaN(Number(interval)) || Number(interval) === 0 ? null : Number(interval);
-}

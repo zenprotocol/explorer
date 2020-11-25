@@ -9,7 +9,7 @@ router.route('/').get(wrapAsync(interval1CacheController.index), wrapAsync(contr
 router
   .route('/relevant')
   .get(
-    middleware.parsePhaseParam,
+    middleware.parseQueryParams,
     wrapAsync(interval1CacheController.relevantInterval),
     wrapAsync(controller.relevantInterval)
   );
@@ -17,7 +17,7 @@ router
 router
   .route('/next')
   .get(
-    middleware.parsePhaseParam,
+    middleware.parseQueryParams,
     wrapAsync(interval1CacheController.nextInterval),
     wrapAsync(controller.nextInterval)
   );
@@ -25,7 +25,7 @@ router
 router
   .route('/prev')
   .get(
-    middleware.parsePhaseParam,
+    middleware.parseQueryParams,
     wrapAsync(interval1CacheController.prevInterval),
     wrapAsync(controller.prevInterval)
   );
@@ -33,7 +33,7 @@ router
 router
   .route('/interval')
   .get(
-    middleware.parsePhaseParam,
+    middleware.parseQueryParams,
     wrapAsync(interval1CacheController.getInterval),
     wrapAsync(controller.getInterval)
   );
@@ -41,7 +41,7 @@ router
 router
   .route('/current-or-next')
   .get(
-    middleware.parsePhaseParam,
+    middleware.parseQueryParams,
     wrapAsync(interval1CacheController.currentOrNextInterval),
     wrapAsync(controller.currentOrNextInterval)
   );
@@ -49,7 +49,7 @@ router
 router
   .route('/results')
   .get(
-    middleware.parsePhaseParam,
+    middleware.parseQueryParams,
     wrapAsync(interval1CacheController.results),
     wrapAsync(controller.results)
   );
@@ -57,7 +57,7 @@ router
 router
   .route('/candidates')
   .get(
-    middleware.parsePhaseParam,
+    middleware.parseQueryParams,
     wrapAsync(interval1CacheController.getCandidates),
     wrapAsync(controller.getCandidates)
   );
@@ -65,7 +65,7 @@ router
 router
   .route('/intervals')
   .get(
-    middleware.parsePhaseParam,
+    middleware.parseQueryParams,
     wrapAsync(interval1CacheController.recentIntervals),
     wrapAsync(controller.recentIntervals)
   );
