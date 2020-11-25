@@ -42,15 +42,15 @@ votesDAL.findAllInIntervalByAddress = async function ({
     where: {
       address,
       blockNumber: {
-        [Op.gte]: beginBlock,
-        [Op.lt]: endBlock,
+        [Op.gt]: beginBlock,
+        [Op.lte]: endBlock,
       },
     },
     ...options,
   });
 };
 /**
- * Find all votes for an interval, grouped by execution and filter double votes
+ * Find all votes for an interval, grouped by execution
  */
 votesDAL.findAllByInterval = async function ({ beginBlock, endBlock, limit, offset = 0 } = {}) {
   const sql = tags.oneLine`
@@ -65,8 +65,8 @@ votesDAL.findAllByInterval = async function ({ beginBlock, endBlock, limit, offs
     ON "Snapshots"."blockNumber"  = :beginBlock
     AND "Snapshots"."address" = "RepoVotes"."address"
   WHERE "RepoVotes"."address" IS NOT NULL
-    AND "RepoVotes"."blockNumber" >= :beginBlock
-    AND "RepoVotes"."blockNumber" < :endBlock
+    AND "RepoVotes"."blockNumber" > :beginBlock
+    AND "RepoVotes"."blockNumber" <= :endBlock
   GROUP BY "RepoVotes"."executionId", 
     "RepoVotes"."commitId", 
     "RepoVotes"."blockNumber", 
@@ -88,7 +88,7 @@ votesDAL.findAllByInterval = async function ({ beginBlock, endBlock, limit, offs
 };
 
 /**
- * Count all votes for an interval, grouped by execution and filter double votes
+ * Count all votes for an interval, grouped by execution
  */
 votesDAL.countByInterval = async function ({ beginBlock, endBlock } = {}) {
   const sql = tags.oneLine`
@@ -99,8 +99,8 @@ votesDAL.countByInterval = async function ({ beginBlock, endBlock } = {}) {
       ON "Snapshots"."blockNumber"  = :beginBlock
       AND "Snapshots"."address" = "RepoVotes"."address"
     WHERE "RepoVotes"."address" IS NOT NULL
-      AND "RepoVotes"."blockNumber" >= :beginBlock
-      AND "RepoVotes"."blockNumber" < :endBlock
+      AND "RepoVotes"."blockNumber" > :beginBlock
+      AND "RepoVotes"."blockNumber" <= :endBlock
     GROUP BY "RepoVotes"."executionId", "RepoVotes"."commitId"
   ) AS "Votes";
   `;
@@ -129,8 +129,8 @@ votesDAL.findAllVoteResults = async function ({ beginBlock, endBlock, limit, off
   INNER JOIN "Snapshots" 
     ON "Snapshots"."blockNumber" = :beginBlock
     AND "Snapshots"."address" = "RepoVotes"."address"
-  WHERE "RepoVotes"."blockNumber" >= :beginBlock
-    AND "RepoVotes"."blockNumber" < :endBlock
+  WHERE "RepoVotes"."blockNumber" > :beginBlock
+    AND "RepoVotes"."blockNumber" <= :endBlock
   GROUP BY "RepoVotes"."commitId"
   ORDER BY "zpAmount" DESC
   LIMIT :limit OFFSET :offset;
@@ -155,8 +155,8 @@ votesDAL.countAllVoteResults = async function ({ beginBlock, endBlock } = {}) {
     INNER JOIN "Snapshots" 
       ON "Snapshots"."blockNumber" = :beginBlock
       AND "Snapshots"."address" = "RepoVotes"."address"
-    WHERE "RepoVotes"."blockNumber" >= :beginBlock
-      AND "RepoVotes"."blockNumber" < :endBlock
+    WHERE "RepoVotes"."blockNumber" > :beginBlock
+      AND "RepoVotes"."blockNumber" <= :endBlock
     GROUP BY "RepoVotes"."commitId"
   ) AS "Results"
   `;
@@ -194,8 +194,8 @@ votesDAL.findContestantWinners = async function ({
     INNER JOIN "Snapshots" 
       ON "Snapshots"."blockNumber" = :beginBlock
       AND "Snapshots"."address" = "RepoVotes"."address"
-    WHERE "RepoVotes"."blockNumber" >= :beginBlock
-      AND "RepoVotes"."blockNumber" < :endBlock
+    WHERE "RepoVotes"."blockNumber" > :beginBlock
+      AND "RepoVotes"."blockNumber" <= :endBlock
     GROUP BY "RepoVotes"."commitId"
   ) AS "Results"
   WHERE "amount" >= :threshold
@@ -223,8 +223,8 @@ votesDAL.findCandidateWinner = async function ({ beginBlock, endBlock } = {}) {
   INNER JOIN "Snapshots" 
     ON "Snapshots"."blockNumber" = :beginBlock
     AND "Snapshots"."address" = "RepoVotes"."address"
-  WHERE "RepoVotes"."blockNumber" >= :beginBlock
-    AND "RepoVotes"."blockNumber" < :endBlock
+  WHERE "RepoVotes"."blockNumber" > :beginBlock
+    AND "RepoVotes"."blockNumber" <= :endBlock
   GROUP BY "RepoVotes"."commitId"
   ORDER BY "zpAmount" DESC
   LIMIT 1; 

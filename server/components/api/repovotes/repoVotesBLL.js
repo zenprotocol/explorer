@@ -1,6 +1,5 @@
 'use strict';
 
-const { Decimal } = require('decimal.js');
 const votesDAL = require('./repoVotesDAL');
 const blocksBLL = require('../blocks/blocksBLL');
 const intervalsDAL = require('../repovote-intervals/repoVoteIntervalsDAL');
@@ -67,7 +66,7 @@ module.exports = {
     return intervalsDAL.findPrev(currentBlock);
   },
   findInterval: async function ({interval, phase}) {
-    return intervalsDAL.findInterval(interval, phase);
+    return intervalsDAL.findByIntervalAndPhase(interval, phase);
   },
   findCurrentOrNextInterval: async function () {
     const currentBlock = await blocksBLL.getCurrentBlockNumber();
@@ -179,7 +178,7 @@ async function getCurrentInterval({ interval, phase, currentBlock } = {}) {
   }
 
   const [current, next, prev] = await Promise.all([
-    intervalsDAL.findCurrent(currentBlock),
+    intervalsDAL.findByBlockNumber(currentBlock),
     intervalsDAL.findNext(currentBlock),
     intervalsDAL.findPrev(currentBlock),
   ]);

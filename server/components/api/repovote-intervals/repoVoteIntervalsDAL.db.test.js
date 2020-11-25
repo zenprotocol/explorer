@@ -5,13 +5,13 @@ const truncate = require('../../../../test/lib/truncate');
 const blocksDAL = require('../blocks/blocksDAL');
 const voteIntervalsDAL = require('./repoVoteIntervalsDAL');
 
-test('voteIntervalsDAL.findAllRecent() (DB)', async function(t) {
-  await wrapTest('Given no intervals', async given => {
+test('voteIntervalsDAL.findAllRecent() (DB)', async function (t) {
+  await wrapTest('Given no intervals', async (given) => {
     const intervals = await voteIntervalsDAL.findAllRecent(100);
     t.equal(intervals.length, 0, `${given}: should return an empty array`);
   });
 
-  await wrapTest('Given 1 current interval phase', async given => {
+  await wrapTest('Given 1 current interval phase', async (given) => {
     await voteIntervalsDAL.create({
       interval: 1,
       phase: 'Contestant',
@@ -22,7 +22,7 @@ test('voteIntervalsDAL.findAllRecent() (DB)', async function(t) {
     t.equal(intervals.length, 1, `${given}: should return the interval`);
   });
 
-  await wrapTest('Given 1 past interval phase', async given => {
+  await wrapTest('Given 1 past interval phase', async (given) => {
     await voteIntervalsDAL.create({
       interval: 1,
       phase: 'Contestant',
@@ -33,7 +33,7 @@ test('voteIntervalsDAL.findAllRecent() (DB)', async function(t) {
     t.equal(intervals.length, 1, `${given}: should return the interval`);
   });
 
-  await wrapTest('Given 1 future interval phase', async given => {
+  await wrapTest('Given 1 future interval phase', async (given) => {
     await voteIntervalsDAL.create({
       interval: 1,
       phase: 'Contestant',
@@ -46,7 +46,7 @@ test('voteIntervalsDAL.findAllRecent() (DB)', async function(t) {
 
   await wrapTest(
     'Given 2 intervals with no gap and current block is at the middle',
-    async given => {
+    async (given) => {
       await Promise.all([
         voteIntervalsDAL.create({
           interval: 1,
@@ -64,7 +64,7 @@ test('voteIntervalsDAL.findAllRecent() (DB)', async function(t) {
       const intervals = await voteIntervalsDAL.findAllRecent(200);
       t.equal(intervals.length, 2, `${given}: should return the 2 intervals`);
       t.deepEqual(
-        intervals.map(interval => interval.phase),
+        intervals.map((interval) => interval.phase),
         ['Candidate', 'Contestant'],
         `${given}: should have both intervals`
       );
@@ -110,7 +110,7 @@ test('voteIntervalsDAL.findAllRecent() (DB)', async function(t) {
     },
   ];
 
-  await wrapTest('Given a few intervals in the future, current is contestant', async given => {
+  await wrapTest('Given a few intervals in the future, current is contestant', async (given) => {
     await voteIntervalsDAL.bulkCreate(aFewIntervals);
     const intervals = await voteIntervalsDAL.findAllRecent(150);
     t.equal(
@@ -130,7 +130,7 @@ test('voteIntervalsDAL.findAllRecent() (DB)', async function(t) {
     );
   });
 
-  await wrapTest('Given a few intervals in the future, current is candidate', async given => {
+  await wrapTest('Given a few intervals in the future, current is candidate', async (given) => {
     await voteIntervalsDAL.bulkCreate(aFewIntervals);
     const intervals = await voteIntervalsDAL.findAllRecent(350);
     t.equal(
@@ -145,7 +145,7 @@ test('voteIntervalsDAL.findAllRecent() (DB)', async function(t) {
     );
   });
 
-  await wrapTest('Given a few intervals in the future, current is 2 contestant', async given => {
+  await wrapTest('Given a few intervals in the future, current is 2 contestant', async (given) => {
     await voteIntervalsDAL.bulkCreate(aFewIntervals);
     const intervals = await voteIntervalsDAL.findAllRecent(550);
     t.equal(
@@ -161,25 +161,138 @@ test('voteIntervalsDAL.findAllRecent() (DB)', async function(t) {
   });
 });
 
-test('voteIntervalsDAL.findCurrentOrNext() (DB)', async function(t) {
-  await wrapTest('Given no intervals', async given => {
-    const interval = await voteIntervalsDAL.findCurrentOrNext(1);
+test('voteIntervalsDAL.findByBlockNumber() (DB)', async function (t) {
+  await wrapTest('Given no intervals', async (given) => {
+    const interval = await voteIntervalsDAL.findByBlockNumber(1);
     t.equal(interval, null, `${given}: should return null`);
   });
 
-  await wrapTest('Given only past intervals', async given => {
+  await wrapTest('Given an interval', async (given) => {
     await voteIntervalsDAL.create({
       interval: 1,
       phase: 'Contestant',
       beginBlock: 100,
       endBlock: 200,
     });
-    // tally is already after the interval
-    const interval = await voteIntervalsDAL.findCurrentOrNext(200);
+    t.equal(
+      await voteIntervalsDAL.findByBlockNumber(100),
+      null,
+      `${given}: should return null if block is before interval`
+    );
+    t.equal(
+      (await voteIntervalsDAL.findByBlockNumber(101)).interval,
+      1,
+      `${given}: should return the interval if in range`
+    );
+    t.equal(
+      (await voteIntervalsDAL.findByBlockNumber(200)).interval,
+      1,
+      `${given}: should return the interval if in range`
+    );
+    t.equal(
+      await voteIntervalsDAL.findByBlockNumber(201),
+      null,
+      `${given}: should return null if block is after interval`
+    );
+  });
+});
+
+test('voteIntervalsDAL.findPrev() (DB)', async function (t) {
+  await wrapTest('Given no intervals', async (given) => {
+    const interval = await voteIntervalsDAL.findPrev(100);
     t.equal(interval, null, `${given}: should return null`);
   });
 
-  await wrapTest('Given an on-going interval', async given => {
+  await wrapTest('Given an interval', async (given) => {
+    await voteIntervalsDAL.create({
+      interval: 1,
+      phase: 'Contestant',
+      beginBlock: 100,
+      endBlock: 200,
+    });
+    t.equal(
+      await voteIntervalsDAL.findPrev(100),
+      null,
+      `${given}: should return null if block is before interval`
+    );
+    t.equal(
+      await voteIntervalsDAL.findPrev(101),
+      null,
+      `${given}: should return null if block is during interval`
+    );
+    t.equal(
+      await voteIntervalsDAL.findPrev(200),
+      null,
+      `${given}: should return null if block is during interval`
+    );
+    t.equal(
+      (await voteIntervalsDAL.findPrev(201)).interval,
+      1,
+      `${given}: should return the interval if block is after`
+    );
+  });
+});
+
+test('voteIntervalsDAL.findNext() (DB)', async function (t) {
+  await wrapTest('Given no intervals', async (given) => {
+    const interval = await voteIntervalsDAL.findNext(100);
+    t.equal(interval, null, `${given}: should return null`);
+  });
+
+  await wrapTest('Given an interval', async (given) => {
+    await voteIntervalsDAL.create({
+      interval: 1,
+      phase: 'Contestant',
+      beginBlock: 100,
+      endBlock: 200,
+    });
+    t.equal(
+      (await voteIntervalsDAL.findNext(100)).interval,
+      1,
+      `${given}: should return the interval if block is before the interval`
+    );
+    t.equal(
+      await voteIntervalsDAL.findNext(101),
+      null,
+      `${given}: should return null if block is during interval`
+    );
+    t.equal(
+      await voteIntervalsDAL.findNext(201),
+      null,
+      `${given}: should return null if block is after the interval`
+    );
+  });
+});
+
+test('voteIntervalsDAL.findCurrentOrNext() (DB)', async function (t) {
+  await wrapTest('Given no intervals', async (given) => {
+    const interval = await voteIntervalsDAL.findCurrentOrNext(1);
+    t.equal(interval, null, `${given}: should return null`);
+  });
+
+  await wrapTest('Given only past intervals', async (given) => {
+    await voteIntervalsDAL.create({
+      interval: 1,
+      phase: 'Contestant',
+      beginBlock: 100,
+      endBlock: 200,
+    });
+    const interval = await voteIntervalsDAL.findCurrentOrNext(201);
+    t.equal(interval, null, `${given}: should return null`);
+  });
+
+  await wrapTest('Given an on-going interval', async (given) => {
+    await voteIntervalsDAL.create({
+      interval: 1,
+      phase: 'Contestant',
+      beginBlock: 100,
+      endBlock: 200,
+    });
+    const interval = await voteIntervalsDAL.findCurrentOrNext(101);
+    t.equal(interval.interval, 1, `${given}: should return the interval`);
+  });
+
+  await wrapTest('Given a future interval', async (given) => {
     await voteIntervalsDAL.create({
       interval: 1,
       phase: 'Contestant',
@@ -190,18 +303,7 @@ test('voteIntervalsDAL.findCurrentOrNext() (DB)', async function(t) {
     t.equal(interval.interval, 1, `${given}: should return the interval`);
   });
 
-  await wrapTest('Given a future interval', async given => {
-    await voteIntervalsDAL.create({
-      interval: 1,
-      phase: 'Contestant',
-      beginBlock: 100,
-      endBlock: 200,
-    });
-    const interval = await voteIntervalsDAL.findCurrentOrNext(99);
-    t.equal(interval.interval, 1, `${given}: should return the interval`);
-  });
-
-  await wrapTest('Given both an on-going and a future interval', async given => {
+  await wrapTest('Given both an on-going and a future interval', async (given) => {
     await voteIntervalsDAL.create({
       interval: 1,
       phase: 'Contestant',
@@ -221,7 +323,7 @@ test('voteIntervalsDAL.findCurrentOrNext() (DB)', async function(t) {
     );
   });
 
-  await wrapTest('Given current block is between intervals', async given => {
+  await wrapTest('Given current block is between intervals', async (given) => {
     await voteIntervalsDAL.create({
       interval: 1,
       phase: 'Contestant',

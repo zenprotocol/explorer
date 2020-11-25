@@ -26,7 +26,7 @@ voteIntervalsDAL.findAllWithoutSnapshot = async function (height) {
  * Find a specific voteInterval
  *
  * @param {number} interval
- * @param {(Contestant|Candidate)} phase
+ * @param {('Contestant'|'Candidate')} phase
  * @returns {VoteInterval}
  */
 voteIntervalsDAL.findByIntervalAndPhase = async function (interval, phase) {
@@ -40,37 +40,17 @@ voteIntervalsDAL.findByIntervalAndPhase = async function (interval, phase) {
 
 /**
  * Find an interval which contains the given block number
+ * if blockNumber = current block it means that it finds the current interval
  * @param {number} blockNumber
  */
 voteIntervalsDAL.findByBlockNumber = async function (blockNumber) {
   return this.findOne({
     where: {
       beginBlock: {
-        [Op.lte]: blockNumber,
+        [Op.lt]: blockNumber,
       },
       endBlock: {
-        [Op.gt]: blockNumber,
-      },
-    },
-  });
-};
-
-/**
- * Find the on-going interval
- *
- * @param {number} currentBlock
- * @returns {VoteInterval}
- */
-voteIntervalsDAL.findCurrent = async function (currentBlock) {
-  return this.findOne({
-    where: {
-      [Op.and]: {
-        beginBlock: {
-          [Op.lte]: currentBlock,
-        },
-        endBlock: {
-          [Op.gt]: currentBlock,
-        },
+        [Op.gte]: blockNumber,
       },
     },
     order: [['beginBlock', 'ASC']],
@@ -87,7 +67,7 @@ voteIntervalsDAL.findPrev = async function (currentBlock) {
   return this.findOne({
     where: {
       endBlock: {
-        [Op.lte]: currentBlock,
+        [Op.lt]: currentBlock,
       },
     },
     order: [['endBlock', 'DESC']],
@@ -104,26 +84,10 @@ voteIntervalsDAL.findNext = async function (currentBlock) {
   return this.findOne({
     where: {
       beginBlock: {
-        [Op.gt]: currentBlock,
+        [Op.gte]: currentBlock,
       },
     },
     order: [['beginBlock', 'ASC']],
-  });
-};
-
-/**
- * Find an interval by interval number and phase
- *
- * @param {number} interval
- * @param {string} phase
- * @returns {VoteInterval}
- */
-voteIntervalsDAL.findInterval = async function (interval = 0, phase = '') {
-  return this.findOne({
-    where: {
-      interval,
-      phase
-    },
   });
 };
 
@@ -137,7 +101,7 @@ voteIntervalsDAL.findCurrentOrNext = async function (currentBlock) {
   return this.findOne({
     where: {
       endBlock: {
-        [Op.gt]: currentBlock,
+        [Op.gte]: currentBlock,
       },
     },
     order: [['beginBlock', 'ASC']],
@@ -154,7 +118,7 @@ voteIntervalsDAL.findAllRecent = async function (currentBlock = 0) {
     this.findAll({
       where: {
         beginBlock: {
-          [Op.lte]: currentBlock, // including current
+          [Op.lt]: currentBlock, // including current
         },
       },
       order: [['beginBlock', 'DESC']],
@@ -162,7 +126,7 @@ voteIntervalsDAL.findAllRecent = async function (currentBlock = 0) {
     this.findAll({
       where: {
         beginBlock: {
-          [Op.gt]: currentBlock,
+          [Op.gte]: currentBlock, 
         },
       },
       order: [['beginBlock', 'ASC']],

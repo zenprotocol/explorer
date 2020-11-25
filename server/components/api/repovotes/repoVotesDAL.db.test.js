@@ -114,9 +114,9 @@ test('votesDAL.findAllVoteResults() (DB)', async function (t) {
 
   await wrapTest('Given each vote for different commit', async (given) => {
     await createDemoData();
-    await addVote({ address: 'tzn11', blockNumber: 5, commitId: '1' });
-    await addVote({ address: 'tzn12', blockNumber: 6, commitId: '2' });
-    await addVote({ address: 'tzn13', blockNumber: 7, commitId: '3' });
+    await addVote({ address: 'tzn11', blockNumber: 6, commitId: '1' });
+    await addVote({ address: 'tzn12', blockNumber: 7, commitId: '2' });
+    await addVote({ address: 'tzn13', blockNumber: 8, commitId: '3' });
 
     const [results, count] = await Promise.all([
       votesDAL.findAllVoteResults({
@@ -151,9 +151,9 @@ test('votesDAL.findAllVoteResults() (DB)', async function (t) {
 
   await wrapTest('Given some votes for different commits', async (given) => {
     await createDemoData();
-    await addVote({ address: 'tzn11', blockNumber: 5, commitId: '1' });
-    await addVote({ address: 'tzn12', blockNumber: 6, commitId: '1' });
-    await addVote({ address: 'tzn13', blockNumber: 7, commitId: '2' });
+    await addVote({ address: 'tzn11', blockNumber: 6, commitId: '1' });
+    await addVote({ address: 'tzn12', blockNumber: 7, commitId: '1' });
+    await addVote({ address: 'tzn13', blockNumber: 8, commitId: '2' });
 
     const [results, count] = await Promise.all([
       votesDAL.findAllVoteResults({
@@ -199,9 +199,9 @@ test('votesDAL.findContestantWinners() (DB)', async function (t) {
 
   await wrapTest('Given each vote for different', async (given) => {
     await createDemoData();
-    await addVote({ address: 'tzn11', blockNumber: 5, commitId: '1' });
-    await addVote({ address: 'tzn12', blockNumber: 6, commitId: '2' });
-    await addVote({ address: 'tzn13', blockNumber: 7, commitId: '3' });
+    await addVote({ address: 'tzn11', blockNumber: 6, commitId: '1' });
+    await addVote({ address: 'tzn12', blockNumber: 7, commitId: '2' });
+    await addVote({ address: 'tzn13', blockNumber: 8, commitId: '3' });
 
     const winners = await votesDAL.findContestantWinners({
       beginBlock: SNAPSHOT_BLOCK_CONTESTANT,
@@ -213,9 +213,9 @@ test('votesDAL.findContestantWinners() (DB)', async function (t) {
 
   await wrapTest('Given 2 commits', async (given) => {
     await createDemoData();
-    await addVote({ address: 'tzn11', blockNumber: 5, commitId: '1' });
-    await addVote({ address: 'tzn12', blockNumber: 6, commitId: '1' });
-    await addVote({ address: 'tzn13', blockNumber: 7, commitId: '2' });
+    await addVote({ address: 'tzn11', blockNumber: 6, commitId: '1' });
+    await addVote({ address: 'tzn12', blockNumber: 7, commitId: '1' });
+    await addVote({ address: 'tzn13', blockNumber: 8, commitId: '2' });
 
     const winners = await votesDAL.findContestantWinners({
       beginBlock: SNAPSHOT_BLOCK_CONTESTANT,
@@ -251,9 +251,9 @@ test('votesDAL.findCandidateWinner() (DB)', async function (t) {
   await wrapTest('Given each vote for different', async (given) => {
     await createDemoData();
 
-    await addVote({ address: 'tzn11', blockNumber: 15, commitId: '1' });
-    await addVote({ address: 'tzn12', blockNumber: 16, commitId: '2' });
-    await addVote({ address: 'tzn13', blockNumber: 17, commitId: '3' });
+    await addVote({ address: 'tzn11', blockNumber: 16, commitId: '1' });
+    await addVote({ address: 'tzn12', blockNumber: 17, commitId: '2' });
+    await addVote({ address: 'tzn13', blockNumber: 18, commitId: '3' });
 
     const winner = await votesDAL.findCandidateWinner({
       beginBlock: SNAPSHOT_BLOCK_CANDIDATE,
@@ -270,9 +270,9 @@ test('votesDAL.findCandidateWinner() (DB)', async function (t) {
   await wrapTest('Given 2 commits', async (given) => {
     await createDemoData();
 
-    await addVote({ address: 'tzn11', blockNumber: 15, commitId: '1' });
-    await addVote({ address: 'tzn12', blockNumber: 16, commitId: '1' });
-    await addVote({ address: 'tzn13', blockNumber: 17, commitId: '2' });
+    await addVote({ address: 'tzn11', blockNumber: 16, commitId: '1' });
+    await addVote({ address: 'tzn12', blockNumber: 17, commitId: '1' });
+    await addVote({ address: 'tzn13', blockNumber: 18, commitId: '2' });
 
     const winner = await votesDAL.findCandidateWinner({
       beginBlock: SNAPSHOT_BLOCK_CANDIDATE,

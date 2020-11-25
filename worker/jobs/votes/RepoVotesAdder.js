@@ -86,7 +86,7 @@ class VotesAdder {
 
       // first check the intervals we already have
       const relevantInterval = relevantIntervals.find(
-        (i) => execution.blockNumber >= i.beginBlock && execution.blockNumber < i.endBlock
+        (i) => execution.blockNumber > i.beginBlock && execution.blockNumber <= i.endBlock
       );
 
       if (relevantInterval) {
@@ -130,7 +130,7 @@ class VotesAdder {
 
     // make sure the message body is properly formatted with an interval, commitId and dict
     if (this.validateMessageBody(execution.messageBody)) {
-      const voteInterval = await repoVoteIntervalsDAL.findCurrent(execution.blockNumber);
+      const voteInterval = await repoVoteIntervalsDAL.findByBlockNumber(execution.blockNumber);
       const commitId = execution.messageBody.list[0].string;
 
       if (
