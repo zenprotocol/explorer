@@ -275,7 +275,7 @@ function DuringVoteInfo({ currentBlock, relevantInterval }) {
         {relevantInterval.phase === 'Contestant' && (
           <InfoBox
             title="Threshold"
-            content={`${TextUtils.formatNumber(relevantInterval.threshold)} ZP`}
+            content={`${AssetUtils.getAmountString('00', relevantInterval.threshold)}`}
             iconClass="fal fa-coins fa-fw"
           />
         )}
