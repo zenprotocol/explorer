@@ -41,7 +41,7 @@ module.exports = {
   prevInterval: async function(req, res, next) {
     next();
   },
-  currentOrNextInterval: async function(req, res, next) {
+  currentNextOrPrev: async function(req, res, next) {
     next();
   },
   results: async function(req, res, next) {

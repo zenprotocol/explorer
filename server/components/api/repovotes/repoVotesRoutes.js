@@ -39,11 +39,11 @@ router
   );
 
 router
-  .route('/current-or-next')
+  .route('/current-next-or-prev')
   .get(
     middleware.parseQueryParams,
-    wrapAsync(interval1CacheController.currentOrNextInterval),
-    wrapAsync(controller.currentOrNextInterval)
+    wrapAsync(interval1CacheController.currentNextOrPrev),
+    wrapAsync(controller.currentNextOrPrev)
   );
 
 router

@@ -264,9 +264,9 @@ test('voteIntervalsDAL.findNext() (DB)', async function (t) {
   });
 });
 
-test('voteIntervalsDAL.findCurrentOrNext() (DB)', async function (t) {
+test('voteIntervalsDAL.findCurrentNextOrPrev() (DB)', async function (t) {
   await wrapTest('Given no intervals', async (given) => {
-    const interval = await voteIntervalsDAL.findCurrentOrNext(1);
+    const interval = await voteIntervalsDAL.findCurrentNextOrPrev(1);
     t.equal(interval, null, `${given}: should return null`);
   });
 
@@ -277,8 +277,8 @@ test('voteIntervalsDAL.findCurrentOrNext() (DB)', async function (t) {
       beginBlock: 100,
       endBlock: 200,
     });
-    const interval = await voteIntervalsDAL.findCurrentOrNext(201);
-    t.equal(interval, null, `${given}: should return null`);
+    const interval = await voteIntervalsDAL.findCurrentNextOrPrev(201);
+    t.equal(interval.interval, 1, `${given}: should return prev interval`);
   });
 
   await wrapTest('Given an on-going interval', async (given) => {
@@ -288,7 +288,7 @@ test('voteIntervalsDAL.findCurrentOrNext() (DB)', async function (t) {
       beginBlock: 100,
       endBlock: 200,
     });
-    const interval = await voteIntervalsDAL.findCurrentOrNext(101);
+    const interval = await voteIntervalsDAL.findCurrentNextOrPrev(101);
     t.equal(interval.interval, 1, `${given}: should return the interval`);
   });
 
@@ -299,11 +299,11 @@ test('voteIntervalsDAL.findCurrentOrNext() (DB)', async function (t) {
       beginBlock: 100,
       endBlock: 200,
     });
-    const interval = await voteIntervalsDAL.findCurrentOrNext(100);
+    const interval = await voteIntervalsDAL.findCurrentNextOrPrev(100);
     t.equal(interval.interval, 1, `${given}: should return the interval`);
   });
 
-  await wrapTest('Given both an on-going and a future interval', async (given) => {
+  await wrapTest('Given an on-going, future and past intervals', async (given) => {
     await voteIntervalsDAL.create({
       interval: 1,
       phase: 'Contestant',
@@ -316,9 +316,21 @@ test('voteIntervalsDAL.findCurrentOrNext() (DB)', async function (t) {
       beginBlock: 300,
       endBlock: 400,
     });
-    const interval = await voteIntervalsDAL.findCurrentOrNext(150);
+    await voteIntervalsDAL.create({
+      interval: 2,
+      phase: 'Contestant',
+      beginBlock: 500,
+      endBlock: 600,
+    });
+    await voteIntervalsDAL.create({
+      interval: 2,
+      phase: 'Candidate',
+      beginBlock: 700,
+      endBlock: 800,
+    });
+    const interval = await voteIntervalsDAL.findCurrentNextOrPrev(550);
     t.assert(
-      interval.interval === 1 && interval.phase === 'Contestant',
+      interval.interval === 2 && interval.phase === 'Contestant' && interval.beginBlock === 500,
       `${given}: should return the on-going interval`
     );
   });
@@ -336,7 +348,7 @@ test('voteIntervalsDAL.findCurrentOrNext() (DB)', async function (t) {
       beginBlock: 300,
       endBlock: 400,
     });
-    const interval = await voteIntervalsDAL.findCurrentOrNext(250);
+    const interval = await voteIntervalsDAL.findCurrentNextOrPrev(250);
     t.assert(
       interval.interval === 1 && interval.phase === 'Candidate',
       `${given}: should return the next interval`

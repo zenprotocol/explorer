@@ -92,20 +92,26 @@ voteIntervalsDAL.findNext = async function (currentBlock) {
 };
 
 /**
- * Find the on-going interval or the next one
+ * Find an interval by this order:
+ * 1. current
+ * 2. next interval if no on-going one
+ * 3. past interval
  *
  * @param {number} currentBlock
  * @returns {VoteInterval}
  */
-voteIntervalsDAL.findCurrentOrNext = async function (currentBlock) {
-  return this.findOne({
-    where: {
-      endBlock: {
-        [Op.gte]: currentBlock,
+voteIntervalsDAL.findCurrentNextOrPrev = async function (currentBlock) {
+  return Promise.all([
+    this.findPrev(currentBlock),
+    this.findOne({
+      where: {
+        endBlock: {
+          [Op.gte]: currentBlock,
+        },
       },
-    },
-    order: [['beginBlock', 'ASC']],
-  });
+      order: [['beginBlock', 'ASC']],
+    }),
+  ]).then(([prev, curOrNext]) => (curOrNext ? curOrNext : prev));
 };
 
 /**
@@ -126,7 +132,7 @@ voteIntervalsDAL.findAllRecent = async function (currentBlock = 0) {
     this.findAll({
       where: {
         beginBlock: {
-          [Op.gte]: currentBlock, 
+          [Op.gte]: currentBlock,
         },
       },
       order: [['beginBlock', 'ASC']],

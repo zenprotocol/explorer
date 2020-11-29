@@ -68,9 +68,9 @@ module.exports = {
   findInterval: async function ({interval, phase}) {
     return intervalsDAL.findByIntervalAndPhase(interval, phase);
   },
-  findCurrentOrNextInterval: async function () {
+  currentNextOrPrev: async function () {
     const currentBlock = await blocksBLL.getCurrentBlockNumber();
-    return intervalsDAL.findCurrentOrNext(currentBlock);
+    return intervalsDAL.findCurrentNextOrPrev(currentBlock);
   },
   findAllVotesByInterval: async function ({
     interval,

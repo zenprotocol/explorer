@@ -56,8 +56,8 @@ module.exports = {
       throw new HttpError(httpStatus.NOT_FOUND);
     }
   },
-  currentOrNextInterval: async function(req, res) {
-    const result = await votesBLL.findCurrentOrNextInterval();
+  currentNextOrPrev: async function(req, res) {
+    const result = await votesBLL.currentNextOrPrev();
     if (result) {
       res.status(httpStatus.OK).json(jsonResponse.create(httpStatus.OK, result));
     } else {
