@@ -161,9 +161,9 @@ test('voteIntervalsDAL.findAllRecent() (DB)', async function (t) {
   });
 });
 
-test('voteIntervalsDAL.findByBlockNumber() (DB)', async function (t) {
+test('voteIntervalsDAL.findByVoteBlockNumber() (DB)', async function (t) {
   await wrapTest('Given no intervals', async (given) => {
-    const interval = await voteIntervalsDAL.findByBlockNumber(1);
+    const interval = await voteIntervalsDAL.findByVoteBlockNumber(1);
     t.equal(interval, null, `${given}: should return null`);
   });
 
@@ -175,22 +175,64 @@ test('voteIntervalsDAL.findByBlockNumber() (DB)', async function (t) {
       endBlock: 200,
     });
     t.equal(
-      await voteIntervalsDAL.findByBlockNumber(100),
+      await voteIntervalsDAL.findByVoteBlockNumber(100),
       null,
-      `${given}: should return null if block is before interval`
+      `${given}: should return null if block is at beginBlock`
     );
     t.equal(
-      (await voteIntervalsDAL.findByBlockNumber(101)).interval,
+      (await voteIntervalsDAL.findByVoteBlockNumber(101)).interval,
       1,
       `${given}: should return the interval if in range`
     );
     t.equal(
-      (await voteIntervalsDAL.findByBlockNumber(200)).interval,
+      (await voteIntervalsDAL.findByVoteBlockNumber(200)).interval,
+      1,
+      `${given}: should return the interval if block is at endBlock`
+    );
+    t.equal(
+      await voteIntervalsDAL.findByVoteBlockNumber(201),
+      null,
+      `${given}: should return null if block is after interval`
+    );
+  });
+});
+
+// findCurrent should get the interval starting when currentBlock = beginBlock
+test('voteIntervalsDAL.findCurrent() (DB)', async function (t) {
+  await wrapTest('Given no intervals', async (given) => {
+    const interval = await voteIntervalsDAL.findCurrent(1);
+    t.equal(interval, null, `${given}: should return null`);
+  });
+
+  await wrapTest('Given an interval', async (given) => {
+    await voteIntervalsDAL.create({
+      interval: 1,
+      phase: 'Contestant',
+      beginBlock: 100,
+      endBlock: 200,
+    });
+    t.equal(
+      await voteIntervalsDAL.findCurrent(99),
+      null,
+      `${given}: should return null if currentBlock is before beginBlock`
+    );
+    t.equal(
+      (await voteIntervalsDAL.findCurrent(100)).interval,
+      1,
+      `${given}: should return the interval if currentBlock is at beginBlock`
+    );
+    t.equal(
+      (await voteIntervalsDAL.findCurrent(101)).interval,
       1,
       `${given}: should return the interval if in range`
     );
     t.equal(
-      await voteIntervalsDAL.findByBlockNumber(201),
+      await voteIntervalsDAL.findCurrent(200),
+      null,
+      `${given}: should return null if currentBlock is at endBlock`
+    );
+    t.equal(
+      await voteIntervalsDAL.findCurrent(201),
       null,
       `${given}: should return null if block is after interval`
     );
@@ -211,9 +253,14 @@ test('voteIntervalsDAL.findPrev() (DB)', async function (t) {
       endBlock: 200,
     });
     t.equal(
-      await voteIntervalsDAL.findPrev(100),
+      await voteIntervalsDAL.findPrev(99),
       null,
       `${given}: should return null if block is before interval`
+    );
+    t.equal(
+      await voteIntervalsDAL.findPrev(100),
+      null,
+      `${given}: should return null if block is at beginBlock`
     );
     t.equal(
       await voteIntervalsDAL.findPrev(101),
@@ -221,9 +268,9 @@ test('voteIntervalsDAL.findPrev() (DB)', async function (t) {
       `${given}: should return null if block is during interval`
     );
     t.equal(
-      await voteIntervalsDAL.findPrev(200),
-      null,
-      `${given}: should return null if block is during interval`
+      (await voteIntervalsDAL.findPrev(200)).interval,
+      1,
+      `${given}: should return the interval if block is at endBlock`
     );
     t.equal(
       (await voteIntervalsDAL.findPrev(201)).interval,
@@ -247,9 +294,14 @@ test('voteIntervalsDAL.findNext() (DB)', async function (t) {
       endBlock: 200,
     });
     t.equal(
-      (await voteIntervalsDAL.findNext(100)).interval,
+      (await voteIntervalsDAL.findNext(99)).interval,
       1,
       `${given}: should return the interval if block is before the interval`
+    );
+    t.equal(
+      await voteIntervalsDAL.findNext(100),
+      null,
+      `${given}: should return null if block is at beginBlock`
     );
     t.equal(
       await voteIntervalsDAL.findNext(101),
@@ -299,7 +351,7 @@ test('voteIntervalsDAL.findCurrentNextOrPrev() (DB)', async function (t) {
       beginBlock: 100,
       endBlock: 200,
     });
-    const interval = await voteIntervalsDAL.findCurrentNextOrPrev(100);
+    const interval = await voteIntervalsDAL.findCurrentNextOrPrev(99);
     t.equal(interval.interval, 1, `${given}: should return the interval`);
   });
 

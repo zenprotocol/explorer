@@ -93,7 +93,7 @@ class VotesAdder {
         relevantInterval.executions.push(execution);
       } else {
         // try to find a new interval for the execution
-        const interval = await repoVoteIntervalsDAL.findByBlockNumber(execution.blockNumber);
+        const interval = await repoVoteIntervalsDAL.findByVoteBlockNumber(execution.blockNumber);
 
         if (interval) {
           interval.executions = [execution];
@@ -130,7 +130,7 @@ class VotesAdder {
 
     // make sure the message body is properly formatted with an interval, commitId and dict
     if (this.validateMessageBody(execution.messageBody)) {
-      const voteInterval = await repoVoteIntervalsDAL.findByBlockNumber(execution.blockNumber);
+      const voteInterval = await repoVoteIntervalsDAL.findByVoteBlockNumber(execution.blockNumber);
       const commitId = execution.messageBody.list[0].string;
 
       if (

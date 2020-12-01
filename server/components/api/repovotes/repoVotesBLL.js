@@ -178,7 +178,7 @@ async function getCurrentInterval({ interval, phase, currentBlock } = {}) {
   }
 
   const [current, next, prev] = await Promise.all([
-    intervalsDAL.findByBlockNumber(currentBlock),
+    intervalsDAL.findCurrent(currentBlock),
     intervalsDAL.findNext(currentBlock),
     intervalsDAL.findPrev(currentBlock),
   ]);
