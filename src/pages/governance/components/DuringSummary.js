@@ -133,7 +133,7 @@ class SummaryCandidate extends React.Component {
               {first.map((candidate) => (
                 <tr key={candidate.commitId}>
                   <td>
-                    <CommitLink hash={candidate.commitId} />
+                    <CommitLink commitId={candidate.commitId} />
                   </td>
                   <td>{AssetUtils.getAmountString('00', candidate.amount)}</td>
                 </tr>
@@ -154,7 +154,7 @@ class SummaryCandidate extends React.Component {
                 rest.map((candidate) => (
                   <tr key={candidate.commitId}>
                     <td>
-                      <CommitLink hash={candidate.commitId} />
+                      <CommitLink commitId={candidate.commitId} />
                     </td>
                     <td>{AssetUtils.getAmountString('00', candidate.amount)}</td>
                   </tr>
