@@ -35,19 +35,18 @@ export default {
     let fraction = parts.length > 1 ? '.' + parts[1].substring(0, 8) : '';
     return whole.toString().replace(/\B(?=(\d{3})+(?!\d))/g, delimiter) + fraction;
   },
-  truncateHash(hash) {
-    const HASH_TRIM_LENGTH = 6;
-    if (typeof hash !== 'string' || hash.length <= HASH_TRIM_LENGTH * 2 + 3) {
+  truncateHash(hash, trimLength = 6) {
+    if (typeof hash !== 'string' || hash.length <= trimLength * 2 + 3) {
       return hash;
     }
   
-    const hashNoPreZeros = hash.replace(/^0+/, '');
+    const hashNoPreZeros = hash.replace(/^0{0,12}/, ''); // at most 12 zeros from start
     const difference = hash.length - hashNoPreZeros.length;
     const zerosCount = difference % 2 === 1 ? 1 : difference > 0 ? 2 : 0;
     const beginPart = hashNoPreZeros
-      .slice(0, Math.max(0, HASH_TRIM_LENGTH - zerosCount))
-      .padStart(HASH_TRIM_LENGTH, '0');
-    const endPart = hashNoPreZeros.slice(-1 * HASH_TRIM_LENGTH);
+      .slice(0, Math.max(0, trimLength - zerosCount))
+      .padStart(trimLength, '0');
+    const endPart = hash.slice(-1 * trimLength);
   
     return `${beginPart}...${endPart}`;
   },
