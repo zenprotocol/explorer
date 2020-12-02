@@ -202,9 +202,14 @@ class GovernancePage extends React.Component {
 
   renderTabs() {
     if (!this.relevantLoaded) return null;
+    const { relevantInterval } = this.repoVoteStore;
     return this.voteStatus !== voteStatus.before ? (
       <section>
-        <VotingTabs {...this.props} isIntermediate={this.voteStatus === voteStatus.during} />
+        <VotingTabs
+          {...this.props}
+          isIntermediate={this.voteStatus === voteStatus.during}
+          isContestant={relevantInterval.phase === 'Contestant'}
+        />
       </section>
     ) : null;
   }
@@ -341,18 +346,21 @@ AfterVoteInfo.propTypes = {
   relevantInterval: PropTypes.object,
 };
 
-function VotingTabs({ match, isIntermediate }) {
+function VotingTabs({ match, isIntermediate, isContestant }) {
   const currentPath = match.path;
   return (
     <Tabs>
       <TabHead>
         <Tab id="votes">VOTES</Tab>
-        <Tab id="tally">{isIntermediate && 'INTERMEDIATE '}RESULTS</Tab>
+        <Tab id={`results/${isContestant ? 'contestant' : 'candidate'}`}>
+          {isIntermediate && 'INTERMEDIATE '}RESULTS
+        </Tab>
       </TabHead>
       <TabBody>
         <Switch>
           <Route path={`${currentPath}/votes`} component={VotesTab} />
-          <Route path={`${currentPath}/tally`} component={ResultsTab} />
+          <Route path={`${currentPath}/results/:phase`} component={ResultsTab} />
+          <Redirect from={`${currentPath}/results`} to={`${currentPath}/results/contestant`} />
           <Redirect from={`${currentPath}`} to={`${currentPath}/votes`} />
         </Switch>
       </TabBody>
@@ -362,6 +370,7 @@ function VotingTabs({ match, isIntermediate }) {
 VotingTabs.propTypes = {
   match: PropTypes.any,
   isIntermediate: PropTypes.bool,
+  isContestant: PropTypes.bool,
 };
 
 function IntervalsDropDown({ relevantInterval, intervals, onIntervalChange }) {

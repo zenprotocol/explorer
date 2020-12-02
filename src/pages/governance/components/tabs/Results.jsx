@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
+import { Decimal } from 'decimal.js';
+import classNames from 'classnames';
 import config from '../../../../lib/Config';
 import WithSetIdsOnUiStore from '../../../../components/hoc/WithSetIdsOnUiStore';
 import TextUtils from '../../../../lib/TextUtils';
@@ -8,6 +10,13 @@ import { ItemsTable } from '../../../../components/ItemsTable';
 import CommitLink from '../CommitLink';
 
 class ResultsTab extends Component {
+  constructor() {
+    super();
+    this.getTrProps = this.getTrProps.bind(this);
+  }
+  get phaseParam() {
+    return String(this.props.match.params.phase).toLowerCase();
+  }
   componentDidMount() {
     this.poll();
   }
@@ -23,9 +32,24 @@ class ResultsTab extends Component {
       30000
     );
   }
+  getTrProps(state, rowInfo, column, instance, trProps) {
+    if (!rowInfo || !rowInfo.original) return {};
+
+    const { repoVoteStore } = this.props.rootStore;
+
+    return {
+      ...trProps,
+      className: classNames(trProps.className, {
+        'above-threshold': new Decimal(rowInfo.original.amount).gte(
+          repoVoteStore.relevantInterval.threshold
+        ),
+      }),
+    };
+  }
   render() {
     const uiStore = this.props.rootStore.uiStore;
     const repoVoteStore = this.props.rootStore.repoVoteStore;
+    const isContestant = this.phaseParam === 'contestant';
     return (
       <TabPanel>
         <ItemsTable
@@ -42,6 +66,16 @@ class ResultsTab extends Component {
               minWidth: config.ui.table.minCellWidth,
               Cell: ({ value }) => `${TextUtils.formatNumber(value)} ZP`,
             },
+            {
+              Header: 'ABOVE THRESHOLD',
+              accessor: 'amount',
+              minWidth: config.ui.table.minCellWidth,
+              show: isContestant,
+              Cell: ({ value }) =>
+                isContestant && new Decimal(value).gte(repoVoteStore.relevantInterval.threshold)
+                  ? 'YES'
+                  : 'NO',
+            },
           ]}
           loading={repoVoteStore.loading.results}
           itemsCount={repoVoteStore.resultsCount}
@@ -52,6 +86,7 @@ class ResultsTab extends Component {
           topContent={
             <div>Total commit IDs: {TextUtils.formatNumber(repoVoteStore.resultsCount)}</div>
           }
+          getTrProps={this.getTrProps}
         />
       </TabPanel>
     );

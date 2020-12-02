@@ -55,6 +55,7 @@ votesDAL.findAllInIntervalByAddress = async function ({
 votesDAL.findAllByInterval = async function ({ beginBlock, endBlock, limit, offset = 0 } = {}) {
   const sql = tags.oneLine`
   SELECT "RepoVotes"."commitId",
+    sum("Snapshots"."amount") as "amount",
     (sum("Snapshots"."amount") / 100000000) AS "zpAmount",
     "RepoVotes"."blockNumber",
     "RepoVotes"."txHash",
@@ -124,7 +125,9 @@ votesDAL.countByInterval = async function ({ beginBlock, endBlock } = {}) {
  */
 votesDAL.findAllVoteResults = async function ({ beginBlock, endBlock, limit, offset = 0 } = {}) {
   const sql = tags.oneLine`
-  SELECT "RepoVotes"."commitId", (sum("Snapshots"."amount") / 100000000) AS "zpAmount"
+  SELECT "RepoVotes"."commitId", 
+    sum("Snapshots"."amount") as "amount", 
+    (sum("Snapshots"."amount") / 100000000) AS "zpAmount"
   FROM "RepoVotes"
   INNER JOIN "Snapshots" 
     ON "Snapshots"."blockNumber" = :beginBlock
@@ -218,7 +221,9 @@ votesDAL.findContestantWinners = async function ({
  */
 votesDAL.findCandidateWinner = async function ({ beginBlock, endBlock } = {}) {
   const sql = tags.oneLine`
-  SELECT "RepoVotes"."commitId", (sum("Snapshots"."amount") / 100000000) AS "zpAmount"
+  SELECT "RepoVotes"."commitId", 
+    sum("Snapshots"."amount") as "amount", 
+    (sum("Snapshots"."amount") / 100000000) AS "zpAmount"
   FROM "RepoVotes"
   INNER JOIN "Snapshots" 
     ON "Snapshots"."blockNumber" = :beginBlock

@@ -61,4 +61,12 @@
       }
     }
   }
+
+  .GenericTable .ReactTable .rt-tbody .rt-tr {
+    &.above-threshold {
+      .rt-td {
+        font-weight: 500;
+      }
+    }
+  }
 }
