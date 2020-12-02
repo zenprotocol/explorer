@@ -22,8 +22,8 @@ export default class HashLink extends Component {
   }
 
   render() {
-    const { url, hash, copy, truncate, value, external } = this.props;
-    const truncatedHash = truncate ? truncateHash(hash) : hash;
+    const { url, hash, copy, truncate, value, external, truncateFunc } = this.props;
+    const truncatedHash = truncate ? truncateFunc(hash) : hash;
     const anchorHash = !url ? (
       truncatedHash
     ) : external ? (
@@ -88,10 +88,6 @@ export default class HashLink extends Component {
   }
 }
 
-function truncateHash(hash) {
-  return TextUtils.truncateHash(hash);
-}
-
 HashLink.propTypes = {
   url: PropTypes.string,
   hash: PropTypes.any.isRequired,
@@ -99,8 +95,10 @@ HashLink.propTypes = {
   copy: PropTypes.bool,
   truncate: PropTypes.bool,
   external: PropTypes.bool,
+  truncateFunc: PropTypes.func,
 };
 HashLink.defaultProps = {
   copy: true,
   truncate: true,
+  truncateFunc: TextUtils.truncateHash,
 };
