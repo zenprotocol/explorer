@@ -218,6 +218,7 @@ votesDAL.findContestantWinners = async function ({
 
 /**
  * The winner is the vote result with the highest amount, no need to use the threshold
+ * handles TIE
  */
 votesDAL.findCandidateWinner = async function ({ beginBlock, endBlock } = {}) {
   const sql = tags.oneLine`
@@ -232,7 +233,7 @@ votesDAL.findCandidateWinner = async function ({ beginBlock, endBlock } = {}) {
     AND "RepoVotes"."blockNumber" <= :endBlock
   GROUP BY "RepoVotes"."commitId"
   ORDER BY "zpAmount" DESC
-  LIMIT 1; 
+  LIMIT 2; 
   `;
 
   return sequelize
@@ -243,7 +244,40 @@ votesDAL.findCandidateWinner = async function ({ beginBlock, endBlock } = {}) {
       },
       type: sequelize.QueryTypes.SELECT,
     })
-    .then((results) => (results.length ? results[0] : null));
+    .then((results) => {
+      if (!results.length) {
+        return null;
+      }
+
+      // TIE
+      if (results.length === 2 && results[0].amount === results[1].amount) {
+        return null;
+      }
+
+      return results[0];
+    });
+};
+
+votesDAL.findZpParticipated = async function ({ beginBlock, endBlock } = {}) {
+  const sql = tags.oneLine`
+  SELECT sum("Snapshots"."amount") AS "amount"
+  FROM "RepoVotes"
+  INNER JOIN "Snapshots" 
+    ON "Snapshots"."blockNumber" = :beginBlock
+    AND "Snapshots"."address" = "RepoVotes"."address"
+  WHERE "RepoVotes"."blockNumber" > :beginBlock
+    AND "RepoVotes"."blockNumber" <= :endBlock
+  `;
+
+  return sequelize
+    .query(sql, {
+      replacements: {
+        beginBlock,
+        endBlock,
+      },
+      type: sequelize.QueryTypes.SELECT,
+    })
+    .then((result) => (result.length && result[0].amount ? result[0].amount : '0'));
 };
 
 module.exports = votesDAL;

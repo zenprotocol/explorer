@@ -46,15 +46,17 @@
     "afterTallyBlocks": 1000,
     "defaultCommitId": "0000000000000000000000000000000000000000"
   },
+  "coinbaseMaturity": {
+    "main": 100,
+    "test": 10
+  },
   "cgp": {
     "main": {
-      "coinbaseMaturity": 100,
       "afterTallyBlocks": 1000,
       "intervalLength": 10000,
       "thresholdPercentage": 3
     },
     "test": {
-      "coinbaseMaturity": 10,
       "afterTallyBlocks": 10,
       "intervalLength": 100,
       "thresholdPercentage": 3

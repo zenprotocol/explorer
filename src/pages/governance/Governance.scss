@@ -3,6 +3,10 @@
 .Governance {
   .table-zen {
     margin-bottom: 0;
+
+    .inner-header {
+      font-weight: 500;
+    }
   }
 
   %message-shared {
@@ -26,6 +30,10 @@
 
   .after-tally-message {
     @extend %message-shared;
+  }
+
+  .col.winner {
+    min-width: 250px;
   }
 
   .table-bg-wrapper {

@@ -4,6 +4,7 @@ const votesDAL = require('./repoVotesDAL');
 const blocksBLL = require('../blocks/blocksBLL');
 const intervalsDAL = require('../repovote-intervals/repoVoteIntervalsDAL');
 const createQueryObject = require('../../../lib/createQueryObject');
+const getChain = require('../../../lib/getChain');
 const config = require('../../../config/Config');
 
 const configAfterTallyBlocks = config.get('governance:afterTallyBlocks');
@@ -13,7 +14,11 @@ const AFTER_TALLY_BLOCKS = configAfterTallyBlocks ? Number(configAfterTallyBlock
 
 module.exports = {
   findIntervalAndTally: async function ({ interval, phase } = {}) {
-    const currentBlock = await blocksBLL.getCurrentBlockNumber();
+    const [currentBlock, chain] = await Promise.all([
+      blocksBLL.getCurrentBlockNumber(),
+      getChain(),
+    ]);
+    const configCoinbaseMaturity = config.get(`coinbaseMaturity:${chain}`);
     const currentInterval = await getCurrentInterval({
       interval,
       phase,
@@ -40,19 +45,29 @@ module.exports = {
       beginBlock: candidateInterval.beginBlock,
       endBlock: candidateInterval.endBlock,
     });
+    const zpParticipatedPromise = votesDAL.findZpParticipated({
+      beginBlock: currentInterval.beginBlock,
+      endBlock: currentInterval.endBlock,
+    });
 
     const winnerPromise =
       _phase === 'Contestant' ? contestantWinnersPromise : candidateWinnerPromise;
 
     const candidatesPromise = contestantWinnersPromise.then(addDefaultCommitId);
 
-    const [winner, candidates] = await Promise.all([winnerPromise, candidatesPromise]);
+    const [winner, candidates, zpParticipated] = await Promise.all([
+      winnerPromise,
+      candidatesPromise,
+      zpParticipatedPromise,
+    ]);
     return {
       interval: currentInterval.interval,
       phase: currentInterval.phase,
-      beginBlock: currentInterval ? currentInterval.beginBlock : null,
-      endBlock: currentInterval ? currentInterval.endBlock : null,
+      beginBlock: currentInterval.beginBlock,
+      endBlock: currentInterval.endBlock,
       threshold: currentInterval.threshold,
+      zpParticipated,
+      coinbaseMaturity: currentInterval.endBlock + configCoinbaseMaturity,
       winner,
       candidates,
     };
@@ -65,7 +80,7 @@ module.exports = {
     const currentBlock = await blocksBLL.getCurrentBlockNumber();
     return intervalsDAL.findPrev(currentBlock);
   },
-  findInterval: async function ({interval, phase}) {
+  findInterval: async function ({ interval, phase }) {
     return intervalsDAL.findByIntervalAndPhase(interval, phase);
   },
   currentNextOrPrev: async function () {

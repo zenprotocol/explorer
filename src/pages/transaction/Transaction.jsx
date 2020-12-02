@@ -13,8 +13,8 @@ import HashLink from '../../components/HashLink';
 import './Transaction.scss';
 
 class TransactionPage extends Component {
-  constructor(props) {
-    super(props);
+  constructor() {
+    super();
 
     this.state = {
       hash: '',
@@ -133,7 +133,8 @@ class TransactionPage extends Component {
                         Maturity:{' '}
                         {getCoinbaseMaturity(
                           this.blockStore.blocksCount,
-                          transaction.Block.blockNumber
+                          transaction.Block.blockNumber,
+                          this.rootStore.infoStore.infos.chain
                         )}
                       </td>
                     </tr>
@@ -156,9 +157,10 @@ TransactionPage.propTypes = {
   rootStore: PropTypes.object,
 };
 
-function getCoinbaseMaturity(latestBlock, txBlock) {
-  const difference = Math.min(latestBlock - txBlock, 100);
-  return 100 - difference;
+function getCoinbaseMaturity(latestBlock, txBlock, chain) {
+  const maturity = chain === 'main' ? 100 : 10;
+  const difference = Math.min(latestBlock - txBlock, maturity);
+  return maturity - difference;
 }
 
 const NotFoundDisplay = () => {

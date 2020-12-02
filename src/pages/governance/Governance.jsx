@@ -18,8 +18,9 @@ import RouterUtils from '../../lib/RouterUtils';
 import ItemNotFound from '../../components/ItemNotFound';
 import Loading from '../../components/Loading';
 import Dropdown from '../../components/Dropdown';
-import CommitLink from './components/CommitLink';
 import PageDescription from './components/PageDescription';
+import DuringSummary from './components/DuringSummary';
+import WinnerSummary from './components/WinnerSummary';
 import './Governance.scss';
 
 class GovernancePage extends React.Component {
@@ -196,6 +197,16 @@ class GovernancePage extends React.Component {
             <AfterVoteInfo relevantInterval={relevantInterval} />
           )}
         </section>
+        {this.voteStatus === voteStatus.during && (
+          <section>
+            <DuringSummary {...relevantInterval} currentBlock={this.currentBlock} />
+          </section>
+        )}
+        {this.voteStatus === voteStatus.after && (
+          <section>
+            <WinnerSummary {...relevantInterval} currentBlock={this.currentBlock} />
+          </section>
+        )}
       </div>
     );
   }
@@ -297,11 +308,7 @@ DuringVoteInfo.propTypes = {
 };
 
 function AfterVoteInfo({ relevantInterval }) {
-  const { winner, beginBlock, endBlock, interval } = relevantInterval;
-  const winnerArr = Array.isArray(winner) ? winner : winner ? [winner] : [];
-  const winnerJsx = winnerArr.map((item) =>
-    item && item.commitId ? <CommitLink commitId={item.commitId} key={item.commitId} /> : null
-  );
+  const { beginBlock, endBlock } = relevantInterval;
 
   return (
     <div className="container">
@@ -323,21 +330,6 @@ function AfterVoteInfo({ relevantInterval }) {
             iconClass="fal fa-coins fa-fw"
           />
         )}
-      </div>
-      <div className="row">
-        <div className="col border border-dark text-center after-tally-message">
-          {winnerArr.length ? (
-            <>
-              {TextUtils.getOrdinal(interval).toUpperCase()} SEMESTER{' '}
-              {winnerArr.length > 1 ? 'WINNERS ' : 'WINNER '}
-              COMMIT {winnerArr.length > 1 ? 'IDS ' : 'ID '}:
-              <br />
-              <React.Fragment>{winnerJsx}</React.Fragment>
-            </>
-          ) : (
-            'NO WINNERS IN THIS SEMESTER'
-          )}
-        </div>
       </div>
     </div>
   );

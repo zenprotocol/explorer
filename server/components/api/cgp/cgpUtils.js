@@ -14,7 +14,7 @@ function getThresholdPercentage(chain) {
 }
 
 function getCoinbaseMaturity(chain) {
-  return config.get(`cgp:${chain}:coinbaseMaturity`);
+  return config.get(`coinbaseMaturity:${chain}`);
 }
 
 function getIntervalByBlockNumber(chain, blockNumber) {
