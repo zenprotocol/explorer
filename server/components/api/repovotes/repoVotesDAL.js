@@ -136,7 +136,7 @@ votesDAL.findAllVoteResults = async function ({ beginBlock, endBlock, limit, off
     AND "RepoVotes"."blockNumber" <= :endBlock
   GROUP BY "RepoVotes"."commitId"
   ORDER BY "zpAmount" DESC
-  LIMIT :limit OFFSET :offset;
+  ${limit ? 'LIMIT :limit' : ''} OFFSET :offset;
   `;
 
   return sequelize.query(sql, {

@@ -51,7 +51,26 @@ module.exports = {
     const winnerPromise =
       currentInterval.phase === 'Contestant' ? contestantWinnersPromise : candidateWinnerPromise;
 
-    const candidatesPromise = contestantWinnersPromise.then(addDefaultCommitId);
+    const candidatesPromise =
+      currentInterval.phase === 'Candidate'
+        ? Promise.all([
+            contestantWinnersPromise.then(addDefaultCommitId),
+            votesDAL.findAllVoteResults(currentInterval),
+          ]).then(([contestantWinners, currentResults]) =>
+            // combine contestant winners with the current amount from the current results
+            contestantWinners.map((contestant) => {
+              const matchingResult = currentResults.find(
+                (result) => result.commitId === contestant.commitId
+              ) || { amount: '0', zpAmount: '0' };
+
+              return {
+                ...contestant,
+                amount: matchingResult.amount,
+                zpAmount: matchingResult.zpAmount,
+              };
+            })
+          )
+        : Promise.resolve([]);
 
     const [winner, candidates, zpParticipated] = await Promise.all([
       winnerPromise,
