@@ -219,6 +219,8 @@ votesDAL.findContestantWinners = async function ({
 /**
  * The winner is the vote result with the highest amount, no need to use the threshold
  * handles TIE
+ * 
+ * @returns {{commitId: string, amount: string, zpAmount: string}}
  */
 votesDAL.findCandidateWinner = async function ({ beginBlock, endBlock } = {}) {
   const sql = tags.oneLine`

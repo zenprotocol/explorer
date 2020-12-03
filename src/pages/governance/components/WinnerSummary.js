@@ -2,48 +2,20 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import AssetUtils from '../../../lib/AssetUtils';
 import TextUtils from '../../../lib/TextUtils';
+import { defaultCommitId } from '../constants';
 import ThresholdRow from './ThresholdRow';
 import CommitLink from './CommitLink';
 
 export default function WinnerSummary(props) {
   const { phase } = props;
   return phase === 'Contestant' ? (
-    <SummaryContestantContainer {...props} />
+    <SummaryContestant {...props} />
   ) : (
-    <SummaryCandidateContainer {...props} />
+    <SummaryCandidate {...props} />
   );
 }
 WinnerSummary.propTypes = {
   phase: PropTypes.string,
-};
-
-function SummaryContestantContainer(props) {
-  return (
-    <div className="row">
-      {props.winner && props.winner.length ? (
-        <SummaryContestant {...props} />
-      ) : (
-        <NoWinner {...props} type="contestants" addRows={<ThresholdRow {...props} inOneColumn />} />
-      )}
-    </div>
-  );
-}
-SummaryContestantContainer.propTypes = {
-  winner: PropTypes.array,
-};
-function SummaryCandidateContainer(props) {
-  return (
-    <div className="row">
-      {props.winner !== null ? (
-        <SummaryCandidate {...props} />
-      ) : (
-        <NoWinner {...props} type="candidates" />
-      )}
-    </div>
-  );
-}
-SummaryCandidateContainer.propTypes = {
-  winner: PropTypes.object,
 };
 
 function SummaryContestant({
@@ -52,30 +24,38 @@ function SummaryContestant({
   zpParticipated,
   coinbaseMaturity,
   threshold,
+  phase,
 }) {
+  const hasWinner = Boolean(winner && winner.length);
   return (
-    <div className="col winner">
-      <table className="table table-zen">
-        <thead>
-          <tr>
-            <th scope="col" colSpan="2">
-              CONTESTANTS PHASE SUMMARY
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          <UnconfirmedRow currentBlock={currentBlock} coinbaseMaturity={coinbaseMaturity} />
-          <ThresholdRow threshold={threshold} />
-          <tr>
-            <td>TOTAL ZP VOTED</td>
-            <td>{AssetUtils.getAmountString('00', zpParticipated)}</td>
-          </tr>
-          <tr>
-            <td>TOTAL CONTESTANTS</td>
-            <td>{winner.length}</td>
-          </tr>
-        </tbody>
-      </table>
+    <div className="row">
+      <div className="col winner">
+        <table className="table table-zen">
+          <thead>
+            <tr>
+              <th scope="col" colSpan="2">
+                CONTESTANTS PHASE SUMMARY
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <UnconfirmedRow currentBlock={currentBlock} coinbaseMaturity={coinbaseMaturity} />
+            <ThresholdRow threshold={threshold} />
+            <tr>
+              <td>TOTAL ZP VOTED</td>
+              <td>{AssetUtils.getAmountString('00', zpParticipated)}</td>
+            </tr>
+            {hasWinner ? (
+              <tr>
+                <td>TOTAL CONTESTANTS</td>
+                <td>{winner.length}</td>
+              </tr>
+            ) : (
+              <NoWinnerRow phase={phase} zpParticipated={zpParticipated} />
+            )}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 }
@@ -85,40 +65,56 @@ SummaryContestant.propTypes = {
   threshold: PropTypes.string,
   currentBlock: PropTypes.number,
   coinbaseMaturity: PropTypes.number,
+  phase: PropTypes.string,
 };
 
 function SummaryCandidate(props) {
   const { winner, zpParticipated } = props;
-  if (!winner) return null;
+  const hasWinner = !!winner;
 
   return (
-    <div className="col winner">
-      <table className="table table-zen">
-        <thead>
-          <tr>
-            <th scope="col" colSpan="2">
-              CANDIDATES PHASE SUMMARY
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          <UnconfirmedRow {...props} />
-          <tr>
-            <td>TOTAL ZP VOTED</td>
-            <td>{AssetUtils.getAmountString('00', zpParticipated)}</td>
-          </tr>
-          <tr>
-            <td>ZP VOTED FOR WINNER</td>
-            <td>{AssetUtils.getAmountString('00', winner.amount)}</td>
-          </tr>
-          <tr>
-            <td>WINNER COMMIT</td>
-            <td>
-              <CommitLink commitId={winner.commitId} />
-            </td>
-          </tr>
-        </tbody>
-      </table>
+    <div className="row">
+      <div className="col winner">
+        <table className="table table-zen">
+          <thead>
+            <tr>
+              <th scope="col" colSpan="2">
+                CANDIDATES PHASE SUMMARY
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <UnconfirmedRow {...props} />
+            <tr>
+              <td>TOTAL ZP VOTED</td>
+              <td>{AssetUtils.getAmountString('00', zpParticipated)}</td>
+            </tr>
+            {hasWinner ? (
+              <>
+                <tr>
+                  <td>ZP VOTED FOR WINNER</td>
+                  <td>{AssetUtils.getAmountString('00', winner.amount)}</td>
+                </tr>
+                <tr>
+                  <td>WINNER COMMIT</td>
+                  <td>
+                    <CommitLink commitId={winner.commitId} />
+                  </td>
+                </tr>
+              </>
+            ) : (
+              <>
+                <NoWinnerRow {...props} />
+                <tr>
+                  <td colSpan="2">
+                    No changes to the protocol: <CommitLink commitId={defaultCommitId} />
+                  </td>
+                </tr>
+              </>
+            )}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 }
@@ -139,33 +135,18 @@ UnconfirmedRow.propTypes = {
   coinbaseMaturity: PropTypes.number,
 };
 
-function NoWinner({ type, zpParticipated, addRows }) {
+function NoWinnerRow({ phase, zpParticipated }) {
   return (
-    <div className="col winner">
-      <table className="table table-zen">
-        <thead>
-          <tr>
-            <th scope="col" colSpan="2">
-              {type.toUpperCase()} SUMMARY
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td colSpan="2">
-              {/* payout - if no result but people voted it means tie */}
-              NO WINNER{type === 'candidates' && zpParticipated > 0 && ' - TIE'}
-            </td>
-          </tr>
-          {addRows}
-        </tbody>
-      </table>
-    </div>
+    <tr>
+      <td colSpan="2">
+        {/* payout - if no result but people voted it means tie */}
+        NO WINNER{phase === 'Candidate' && zpParticipated > 0 && ' - TIE'}
+      </td>
+    </tr>
   );
 }
 
-NoWinner.propTypes = {
-  type: PropTypes.oneOf(['contestants', 'candidates']),
+NoWinnerRow.propTypes = {
+  phase: PropTypes.oneOf(['Contestant', 'Candidate']),
   zpParticipated: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-  addRows: PropTypes.any,
 };
