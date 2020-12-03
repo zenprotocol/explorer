@@ -5,8 +5,6 @@ export default class RepoVoteStore {
   constructor(rootStore, initialState = {}) {
     this.rootStore = rootStore;
     this.relevantInterval = initialState.relevantInterval || {};
-    this.currentOrNextInterval = initialState.currentInterval || {};
-    this.nextInterval = initialState.nextInterval || {};
     this.votes = initialState.votes || [];
     this.votesCount = initialState.votesCount || 0;
     this.results = initialState.results || [];
@@ -14,8 +12,6 @@ export default class RepoVoteStore {
     this.recentIntervals = initialState.recentIntervals || [];
     this.loading = {
       relevantInterval: false,
-      currentOrNextInterval: false,
-      nextInterval: false,
       votes: false,
       results: false,
       recentIntervals: false,
@@ -43,56 +39,6 @@ export default class RepoVoteStore {
       .then(() => {
         runInAction(() => {
           this.loading.relevantInterval = false;
-        });
-      });
-  }
-
-  loadCurrentOrNextInterval() {
-    this.loading.currentOrNextInterval = true;
-
-    return Service.votes
-      .findCurrentOrNext()
-      .then(({ data }) => {
-        runInAction(() => {
-          this.currentOrNextInterval = data;
-        });
-      })
-      .catch(error => {
-        runInAction(() => {
-          this.currentOrNextInterval = {};
-          if (error.status === 404) {
-            this.currentOrNextInterval.status = 404;
-          }
-        });
-      })
-      .then(() => {
-        runInAction(() => {
-          this.loading.currentOrNextInterval = false;
-        });
-      });
-  }
-
-  loadNextInterval(params = {}) {
-    this.loading.nextInterval = true;
-
-    return Service.votes
-      .findNext(params)
-      .then(({ data }) => {
-        runInAction(() => {
-          this.nextInterval = data;
-        });
-      })
-      .catch(error => {
-        runInAction(() => {
-          this.nextInterval = {};
-          if (error.status === 404) {
-            this.nextInterval.status = 404;
-          }
-        });
-      })
-      .then(() => {
-        runInAction(() => {
-          this.loading.nextInterval = false;
         });
       });
   }
@@ -170,18 +116,14 @@ export default class RepoVoteStore {
 
 decorate(RepoVoteStore, {
   relevantInterval: observable,
-  currentOrNextInterval: observable,
   votes: observable,
   votesCount: observable,
-  nextInterval: observable,
   results: observable,
   resultsCount: observable,
   recentIntervals: observable,
   loading: observable,
   loadRelevantInterval: action,
-  loadCurrentOrNextInterval: action,
   loadVotes: action,
-  loadNextInterval: action,
   loadResults: action,
   loadRecentIntervals: action,
 });

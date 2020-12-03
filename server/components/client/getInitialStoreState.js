@@ -157,14 +157,10 @@ async function getInfoStoreData() {
 async function getRepoVoteStoreData(req) {
   const [
     relevantInterval,
-    currentInterval,
-    nextInterval,
     recentIntervals,
     chain,
   ] = await Promise.all([
     repoVotesBLL.findIntervalAndTally(req.params),
-    repoVotesBLL.findIntervalAndTally(),
-    repoVotesBLL.findNextInterval(),
     repoVotesBLL.findRecentIntervals(),
     getChain(),
   ]);
@@ -172,8 +168,6 @@ async function getRepoVoteStoreData(req) {
   const shouldUseCache = (relevantInterval || {}).interval == 1 && chain === 'main';
   return {
     relevantInterval: shouldUseCache ? interval1Cache : relevantInterval,
-    currentInterval,
-    nextInterval,
     recentIntervals,
   };
 }

@@ -34,8 +34,6 @@ module.exports = {
       intervalsDAL.findByIntervalAndPhase(currentInterval.interval, 'Candidate'),
     ]);
 
-    const _phase = phase || currentInterval.phase;
-
     const contestantWinnersPromise = votesDAL.findContestantWinners({
       beginBlock: contestantInterval.beginBlock,
       endBlock: contestantInterval.endBlock,
@@ -51,7 +49,7 @@ module.exports = {
     });
 
     const winnerPromise =
-      _phase === 'Contestant' ? contestantWinnersPromise : candidateWinnerPromise;
+      currentInterval.phase === 'Contestant' ? contestantWinnersPromise : candidateWinnerPromise;
 
     const candidatesPromise = contestantWinnersPromise.then(addDefaultCommitId);
 
