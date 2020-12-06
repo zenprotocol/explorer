@@ -29,6 +29,7 @@ export default function GenericTable(props) {
     pivotBy,
     expanded,
     getTrProps,
+    minRows,
   } = props;
   return (
     <div className="GenericTable">
@@ -49,6 +50,7 @@ export default function GenericTable(props) {
         pages={pages}
         page={page}
         pageSize={pageSize}
+        minRows={minRows}
         onPageChange={onPageChange}
         onSortedChange={onSortedChange}
         PaginationComponent={PaginationComponent}
@@ -100,6 +102,7 @@ GenericTable.propTypes = {
   pivotBy: PropTypes.array,
   expanded: PropTypes.object,
   getTrProps: PropTypes.func,
+  minRows: PropTypes.number,
 };
 
 GenericTable.defaultProps = {

@@ -9,8 +9,8 @@ import Dropdown from '../Dropdown';
 import './ItemsTable.scss';
 
 class ItemsTable extends Component {
-  constructor(props) {
-    super(props);
+  constructor() {
+    super();
 
     this.state = {
       windowWidth: 1000,
@@ -110,6 +110,7 @@ class ItemsTable extends Component {
       defaultSorted,
       defaultSortDesc,
       getTrProps,
+      ...rest
     } = this.props;
     const numOfPages = Math.ceil(itemsCount / pageSize);
     const showPageSizes = itemsCount > config.ui.table.pageSizes[0];
@@ -176,6 +177,7 @@ class ItemsTable extends Component {
             const finalTrProps = typeof getTrProps === 'function' ? getTrProps(state, rowInfo, column, instance, trProps) : trProps;
             return finalTrProps;
           }}
+          {...rest}
         />
       </div>
     );
@@ -186,6 +188,7 @@ ItemsTable.defaultProps = {
   pageSize: config.ui.table.defaultPageSize,
   curPage: 0,
   tableDataSetter: () => {},
+  minRows: 0,
 };
 
 ItemsTable.propTypes = {
@@ -202,6 +205,7 @@ ItemsTable.propTypes = {
   defaultSorted: PropTypes.array,
   defaultSortDesc: PropTypes.bool,
   getTrProps: PropTypes.func,
+  minRows: PropTypes.number,
 };
 
 export default observer(ItemsTable);
