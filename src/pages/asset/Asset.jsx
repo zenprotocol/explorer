@@ -111,7 +111,7 @@ class AssetPage extends Component {
             <tbody>
               {!AssetUtils.isZP(asset.asset) && (
                 <tr>
-                  <td>CONTRACT HASH</td>
+                  <td>CONTRACT ID</td>
                   <td>
                     <HashLink hash={contract.id} url={`/contracts/${contract.address}`} />
                   </td>
