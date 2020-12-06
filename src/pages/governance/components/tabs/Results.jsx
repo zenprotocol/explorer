@@ -40,8 +40,8 @@ class ResultsTab extends Component {
     return {
       ...trProps,
       className: classNames(trProps.className, {
-        'above-threshold': new Decimal(rowInfo.original.amount).gte(
-          repoVoteStore.relevantInterval.threshold
+        'above-threshold': new Decimal(rowInfo.original.amount || -1).gte(
+          repoVoteStore.relevantInterval.threshold || 0
         ),
       }),
     };
@@ -72,7 +72,8 @@ class ResultsTab extends Component {
               minWidth: config.ui.table.minCellWidth,
               show: isContestant,
               Cell: ({ value }) =>
-                isContestant && new Decimal(value).gte(repoVoteStore.relevantInterval.threshold)
+                isContestant &&
+                new Decimal(value || -1).gte(repoVoteStore.relevantInterval.threshold || 0)
                   ? 'YES'
                   : 'NO',
             },

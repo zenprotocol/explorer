@@ -48,7 +48,7 @@ class ResultsTab extends Component {
       className: classNames(trProps.className, {
         'above-threshold':
           this.typeParam === 'nomination' &&
-          new Decimal(rowInfo.original.amount).gte(cgpStore.relevantInterval.threshold),
+          new Decimal(rowInfo.original.amount || -1).gte(cgpStore.relevantInterval.threshold || 0),
       }),
     };
   }
@@ -109,7 +109,7 @@ class ResultsTab extends Component {
               accessor: 'amount',
               minWidth: config.ui.table.minCellWidth,
               show: isNomination,
-              Cell: ({value}) => isNomination && new Decimal(value).gte(cgpStore.relevantInterval.threshold) ? 'YES' : 'NO',
+              Cell: ({value}) => isNomination && new Decimal(value || -1).gte(cgpStore.relevantInterval.threshold || 0) ? 'YES' : 'NO',
             },
           ]}
           loading={cgpStore.loading.results}
