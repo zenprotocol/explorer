@@ -5,6 +5,7 @@ const Config = require('../config/Config');
 const NetworkError = require('./NetworkError');
 const request = axios.create({
   baseURL: Config.get('zp:node'),
+  timeout: 30000,
 });
 
 const Endpoints = {

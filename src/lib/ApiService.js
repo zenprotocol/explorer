@@ -1,6 +1,7 @@
 const axios = require('axios');
 const request = axios.create({
   baseURL: process.env.NODE_ENV === 'development' ? 'http://localhost:3000' : '',
+  timeout: 10000,
 });
 const CancelToken = axios.CancelToken;
 
