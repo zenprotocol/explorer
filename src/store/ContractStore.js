@@ -57,6 +57,7 @@ export default class ContractStore {
       return Promise.resolve(this.contract);
     }
 
+    this.contract = {};
     this.loading.contract = true;
 
     return Service.contracts
