@@ -36,7 +36,8 @@
     text-align: left;
     padding: $table-header-padding-y $content-padding-x;
     border-right-color: transparent;
-    white-space: normal;
+    white-space: nowrap;
+    overflow: visible;
 
     // column title
     > div {
@@ -142,8 +143,8 @@
     // }
     .rt-thead .rt-th,
     .rt-td {
-      padding-left: $content-padding-x-lg;
-      padding-right: $content-padding-x-lg;
+      padding-left: $table-padding-x-md;
+      padding-right: $table-padding-x-md;
     }
   }
 }

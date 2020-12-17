@@ -1,5 +1,5 @@
 export default {
-  getSafeProperty(object, accessor) {
+  getSafeProp(object, accessor) {
     if (typeof object !== 'object' || !accessor || typeof accessor !== 'string') {
       return null;
     }

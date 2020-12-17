@@ -55,15 +55,13 @@ export default class HashLink extends Component {
       </div>
     );
 
-    const showCopy = copy;
-
     return (
       <div
-        className={classNames('HashLink break-word', { copyable: showCopy })}
-        title={showCopy ? valueToCopy : ''}
+        className={classNames('HashLink break-word', { copyable: copy })}
+        title={copy ? valueToCopy : ''}
       >
         {anchorHash}
-        {showCopy && valueToCopy ? anchorCopy : null}
+        {copy && valueToCopy ? anchorCopy : null}
       </div>
     );
   }
