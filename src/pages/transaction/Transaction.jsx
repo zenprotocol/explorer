@@ -28,6 +28,10 @@ class TransactionPage extends Component {
     return this.props.rootStore.blockStore;
   }
 
+  get infoStore() {
+    return this.props.rootStore.infoStore;
+  }
+
   get transactionStore() {
     return this.props.rootStore.transactionStore;
   }
@@ -35,7 +39,7 @@ class TransactionPage extends Component {
   componentDidMount() {
     const { hash } = RouterUtils.getRouteParams(this.props);
     this.setState({ hash: Number(hash) });
-    this.transactionStore.fetchTransaction(hash).then(transaction => {
+    this.transactionStore.fetchTransaction(hash).then((transaction) => {
       if (!transaction) {
         // In case the tx is new and will be included soon in a block
         this.setState({ polling: true });
@@ -51,7 +55,7 @@ class TransactionPage extends Component {
   pollForTx(hash) {
     clearTimeout(this.txPollingTimeout);
     this.txPollingTimeout = setTimeout(() => {
-      this.transactionStore.fetchTransaction(hash).then(transaction => {
+      this.transactionStore.fetchTransaction(hash).then((transaction) => {
         if (!transaction) {
           this.pollForTx(hash);
         } else {
@@ -122,9 +126,7 @@ class TransactionPage extends Component {
                   </tr>
                   <tr>
                     <td>Confirmations</td>
-                    <td className="no-text-transform">
-                      {TextUtils.formatNumber(confirmations)}
-                    </td>
+                    <td className="no-text-transform">{TextUtils.formatNumber(confirmations)}</td>
                   </tr>
                   {transaction.isCoinbase && (
                     <tr>
@@ -134,7 +136,7 @@ class TransactionPage extends Component {
                         {getCoinbaseMaturity(
                           this.blockStore.blocksCount,
                           transaction.Block.blockNumber,
-                          this.rootStore.infoStore.infos.chain
+                          this.infoStore.infos.chain
                         )}
                       </td>
                     </tr>
