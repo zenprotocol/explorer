@@ -642,7 +642,7 @@ function defaultValuesFactory(initialState) {
      * Get a default value from state, supplied default or common default by that order
      */
     get(accessor, defaultVal) {
-      const stateVal = ObjectUtils.getSafeProperty(initialState, accessor);
+      const stateVal = ObjectUtils.getSafeProp(initialState, accessor);
       return stateVal || defaultVal || getDefaultByAccessor(accessor);
     },
   };

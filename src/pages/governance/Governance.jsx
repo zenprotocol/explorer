@@ -128,7 +128,7 @@ class GovernancePage extends React.Component {
 
     const isContestantsPhase =
       (
-        ObjectUtils.getSafeProperty(this.repoVoteStore, 'relevantInterval.phase') || ''
+        ObjectUtils.getSafeProp(this.repoVoteStore, 'relevantInterval.phase') || ''
       ).toLowerCase() === 'contestant';
 
     return (
