@@ -6,6 +6,7 @@ import { Route, Switch, Redirect, Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
 import RouterUtils from '../../lib/RouterUtils';
 import TextUtils from '../../lib/TextUtils';
+import ObjectUtils from '../../lib/ObjectUtils';
 import Loading from '../../components/Loading';
 import HashLink from '../../components/HashLink';
 import ItemNotFound from '../../components/ItemNotFound';
@@ -63,6 +64,9 @@ class ContractPage extends Component {
 
   render() {
     const is404 = this.contractStore.contract.status === 404;
+    const { id, metadata } = this.contractStore.contract;
+
+    const name = ObjectUtils.getSafeProp(metadata, 'shortName');
 
     return (
       <Page className="Contract">
@@ -71,11 +75,16 @@ class ContractPage extends Component {
         </Helmet>
         <section>
           <PageTitle
-            title="Contract"
+            title={'Contract' + (name ? ` - ${name}` : '')}
             subtitle={
               <div>
-                <strong>Contract address</strong>:{' '}
-                <HashLink hash={this.addressProp} truncate={false} copy={true} />
+                <div className="mb-1">
+                  <strong>Address</strong>:{' '}
+                  <HashLink hash={this.addressProp} truncate={false} copy={true} />
+                </div>
+                <div>
+                  <strong>ID</strong>: <HashLink hash={id} truncate={false} />
+                </div>
               </div>
             }
           />
@@ -95,6 +104,8 @@ class ContractPage extends Component {
     if (!contract.id) {
       return null;
     }
+    const name = ObjectUtils.getSafeProp(contract, 'metadata.name');
+
     return (
       <div className="row">
         <div className="col-lg-6">
@@ -107,12 +118,13 @@ class ContractPage extends Component {
               </tr>
             </thead>
             <tbody>
-              <tr>
-                <td>CONTRACT ID</td>
-                <td>
-                  <HashLink hash={contract.id} />
-                </td>
-              </tr>
+              {name ? (
+                <tr>
+                  <td>NAME</td>
+                  <td>{name}</td>
+                </tr>
+              ) : null}
+
               <tr>
                 <td>STATUS</td>
                 <td>

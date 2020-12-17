@@ -5,6 +5,7 @@ import { reaction } from 'mobx';
 import { Link } from 'react-router-dom';
 import config from '../../../../lib/Config';
 import TextUtils from '../../../../lib/TextUtils';
+import ObjectUtils from '../../../../lib/ObjectUtils';
 import HashLink from '../../../../components/HashLink';
 import { ItemsTableWithUrlPagination } from '../../../../components/ItemsTable';
 import PageTitle from '../../../../components/PageTitle';
@@ -16,7 +17,14 @@ class ContractsTable extends Component {
         Header: 'Name',
         accessor: 'id',
         minWidth: config.ui.table.minCellWidth,
-        Cell: (data) => <HashLink url={`/contracts/${data.original.address}`} hash={data.value} />,
+        Cell: (data) => (
+          <HashLink
+            url={`/contracts/${data.original.address}`}
+            hash={ObjectUtils.getSafeProp(data, 'original.metadata.shortName')}
+            value={data.value}
+            truncate={false}
+          />
+        ),
       },
       {
         Header: 'Address',

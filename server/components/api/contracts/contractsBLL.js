@@ -2,28 +2,35 @@
 
 const contractsDAL = require('./contractsDAL');
 const createQueryObject = require('../../../lib/createQueryObject');
+const getContractName = require('../../../lib/getContractName');
 
 module.exports = {
-  findAll: async function({ page = 0, pageSize = 10, sorted, blockNumber } = {}) {
+  findAll: async function ({ page = 0, pageSize = 10, sorted, blockNumber } = {}) {
     const sortBy =
       sorted && sorted != '[]' ? JSON.parse(sorted) : [{ id: 'lastActivationBlock', desc: true }];
     const query = createQueryObject({ page, pageSize, sorted: sortBy });
-    return await contractsDAL.findAllWithAssetsCountTxCountAndCountOrderByNewest({
+    const result = await contractsDAL.findAllWithAssetsCountTxCountAndCountOrderByNewest({
       ...query,
       blockNumber,
     });
+
+    return {
+      count: result.count,
+      items: result.items.map(addMetaDataToContract),
+    };
   },
-  findByAddress: async function({ address } = {}) {
+  findByAddress: async function ({ address } = {}) {
     if (!address) {
       return null;
     }
 
-    return await contractsDAL.findByAddress(address);
+    const contract = await contractsDAL.findByAddress(address);
+    return contract ? addMetaDataToContract(contract.toJSON()) : null;
   },
-  findActivationTxs: async function({ contract } = {}) {
+  findActivationTxs: async function ({ contract } = {}) {
     return await contractsDAL.getActivationTxs(contract);
   },
-  assets: async function({ address, page = 0, pageSize = 10 } = {}) {
+  assets: async function ({ address, page = 0, pageSize = 10 } = {}) {
     if (!address) {
       return [];
     }
@@ -36,7 +43,7 @@ module.exports = {
       return [];
     }
   },
-  executions: async function({ address, page = 0, pageSize = 10 } = {}) {
+  executions: async function ({ address, page = 0, pageSize = 10 } = {}) {
     if (!address) {
       return [];
     }
@@ -50,3 +57,7 @@ module.exports = {
     }
   },
 };
+
+function addMetaDataToContract(contract) {
+  return { ...contract, metadata: getContractName(contract.id) };
+}
