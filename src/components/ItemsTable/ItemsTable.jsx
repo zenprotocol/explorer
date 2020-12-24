@@ -110,7 +110,7 @@ class ItemsTable extends Component {
       defaultSorted,
       defaultSortDesc,
       getTrProps,
-      ...rest
+      minRows,
     } = this.props;
     const numOfPages = Math.ceil(itemsCount / pageSize);
     const showPageSizes = itemsCount > config.ui.table.pageSizes[0];
@@ -152,6 +152,7 @@ class ItemsTable extends Component {
           defaultSortDesc={defaultSortDesc}
           SubComponent={SubComponent}
           expanded={this.state.expanded}
+          minRows={minRows}
           getTrProps={(state, rowInfo, column, instance) => {
             const expanded = rowInfo && state.expanded[rowInfo.index] === true;
             const trProps = {
@@ -177,7 +178,6 @@ class ItemsTable extends Component {
             const finalTrProps = typeof getTrProps === 'function' ? getTrProps(state, rowInfo, column, instance, trProps) : trProps;
             return finalTrProps;
           }}
-          {...rest}
         />
       </div>
     );
