@@ -17,6 +17,7 @@ const {
 } = require('../../../server/components/api/cgp/modules/getBallotContent');
 const QueueError = require('../../lib/QueueError');
 const db = require('../../../server/db/sequelize/models');
+const snapshotsDAL = require('../../../server/components/api/snapshots/snapshotsDAL');
 
 class CgpVotesAdder {
   constructor({
@@ -106,6 +107,7 @@ class CgpVotesAdder {
     const tx = await txsDAL.findById(execution.txId);
     const executionBlockNumber = execution.blockNumber;
     const interval = cgpUtils.getIntervalByBlockNumber(this.chain, executionBlockNumber);
+
     if (!this.verifyExecutionInSnapshotRange({ interval, executionBlockNumber, execution })) {
       logger.info(
         `Execution with id ${execution.id} is not in the voting range or not in the right phase, blockNumber=${executionBlockNumber}, type=${execution.command}`
@@ -132,7 +134,19 @@ class CgpVotesAdder {
             const signature = element[1].signature;
             const address = this.blockchainParser.getAddressFromPublicKey(publicKey);
 
-            if (
+            if(!await this.verifyIntervalHasSnapshot({interval})) {
+              // critical! one of the executions does not yet have a snapshot. exit job
+              throw new Error('No snapshot');
+            }
+            else if (
+              !(await this.verifyAddressHadSnapshotBalance({ interval, address }))
+            ) {
+              logger.info(
+                `Address ${address} did not have balance at snapshot of interval ${interval}. executionId:${execution.id} blockNumber=${executionBlockNumber} type=${type}`
+              );
+              // do not break, other votes in this execution might be valid
+            } 
+            else if (
               !(await this.validateDoubleVotesInDb({ interval, phase, type, address, votesToAdd }))
             ) {
               logger.info(
@@ -223,6 +237,16 @@ class CgpVotesAdder {
     return execution.command === 'Nomination'
       ? executionBlockNumber > snapshot && executionBlockNumber <= snapshot + (tally - snapshot) / 2
       : executionBlockNumber > snapshot + (tally - snapshot) / 2 && executionBlockNumber <= tally;
+  }
+
+  async verifyIntervalHasSnapshot({ interval } = {}) {
+    const { snapshot } = cgpUtils.getIntervalBlocks(this.chain, interval);
+    return snapshotsDAL.exists(snapshot);
+  }
+  
+  async verifyAddressHadSnapshotBalance({ interval, address } = {}) {
+    const { snapshot } = cgpUtils.getIntervalBlocks(this.chain, interval);
+    return snapshotsDAL.addressHasBalance(snapshot, address);
   }
 
   verifySignature({ publicKey, signature, interval, ballot, phase } = {}) {

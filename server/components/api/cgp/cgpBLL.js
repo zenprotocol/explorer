@@ -202,7 +202,7 @@ module.exports = {
     });
 
     return await Promise.all([
-      cgpDAL.countAllVoteResults({ snapshot: relevant.snapshot, beginBlock, endBlock, type }),
+      cgpDAL.countAllVoteResults({ beginBlock, endBlock, type }),
       cgpDAL
         .findAllVoteResults(
           Object.assign(
@@ -227,7 +227,7 @@ module.exports = {
     const { beginBlock, endBlock } = cgpUtils.getPhaseBlocks({ chain, interval, type });
 
     return await Promise.all([
-      cgpDAL.countAllBallots({ type, snapshot, beginBlock, endBlock }),
+      cgpDAL.countAllBallots({ type, beginBlock, endBlock }),
       cgpDAL.findAllBallots(
         Object.assign(
           {},

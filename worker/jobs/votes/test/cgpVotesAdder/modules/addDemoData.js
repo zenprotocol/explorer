@@ -16,6 +16,7 @@ async function addDemoData({
   executionsBlockNumber = 91,
   cgpFundZp = 1000,
   blockchainParser,
+  takeSnapshot = true,
 }) {
   await createDemoBlocksFromTo(1, lastBlockNumber);
 
@@ -48,6 +49,8 @@ async function addDemoData({
     '02bf97e00a4fe4f115921ac8b407866c66337281021d6ddf525f845005c582c451',
     '02bc3699a0f36fb2352c41c719b9c944ccf8bc9bfae52206847adfd713a0e26d28',
     '032f64e7f4d053ff2e24d1fc41075605cda80b68decd222ed47374cfce382395cd',
+    '02a8ea49e091ebdab34694d79851edd1ae0042f02f45e8addeedd636eb1bc7f94c', // extra address to use
+    '038a20015c9309fb623ee2c9fee2cfb22d6a0fc89e437a8926733b15efd13b1556', // extra address to use
   ].map((pk) => blockchainParser.getAddressFromPublicKey(pk));
 
   for (let i = 0; i < Addresses.length; i++) {
@@ -81,8 +84,10 @@ async function addDemoData({
   }
 
   await addExecutions({ executions, executionsBlockNumber });
-  const snapshotsTaker = new SnapshotsTaker({ chain: 'test' });
-  await snapshotsTaker.doJob();
+  if(takeSnapshot) {
+    const snapshotsTaker = new SnapshotsTaker({ chain: 'test' });
+    await snapshotsTaker.doJob();
+  }
 }
 
 async function addExecutions({ executionsBlockNumber = 91, executions = [] }) {

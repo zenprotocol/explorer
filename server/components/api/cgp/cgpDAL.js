@@ -133,14 +133,11 @@ cgpDAL.findAllVotesInInterval = async function ({
 /**
  * Count all votes in an interval, grouped by execution and filter double votes
  */
-cgpDAL.countVotesInInterval = async function ({ snapshot, beginBlock, endBlock, type } = {}) {
+cgpDAL.countVotesInInterval = async function ({ beginBlock, endBlock, type } = {}) {
   const sql = tags.oneLine`
   SELECT COUNT(1) FROM
   (SELECT "CgpVotes"."ballot"
   FROM "CgpVotes"
-  INNER JOIN "Snapshots" 
-    ON "Snapshots"."blockNumber" = :snapshot
-    AND "CgpVotes"."address" = "Snapshots"."address"
   WHERE "CgpVotes"."address" IS NOT NULL
     AND "CgpVotes"."type" = :type
     AND "CgpVotes"."blockNumber" > :beginBlock
@@ -152,7 +149,6 @@ cgpDAL.countVotesInInterval = async function ({ snapshot, beginBlock, endBlock, 
   return sequelize
     .query(sql, {
       replacements: {
-        snapshot,
         beginBlock,
         endBlock,
         type,
@@ -205,14 +201,11 @@ cgpDAL.findAllVoteResults = async function ({
   });
 };
 
-cgpDAL.countAllVoteResults = async function ({ snapshot, beginBlock, endBlock, type } = {}) {
+cgpDAL.countAllVoteResults = async function ({ beginBlock, endBlock, type } = {}) {
   const sql = tags.oneLine`
   SELECT count(1) FROM (
     SELECT "CgpVotes"."ballot"
     FROM "CgpVotes"
-    INNER JOIN "Snapshots" 
-    ON "Snapshots"."blockNumber" = :snapshot
-    AND "CgpVotes"."address" = "Snapshots"."address"
     WHERE "CgpVotes"."type" = :type 
       AND "CgpVotes"."blockNumber" > :beginBlock
       AND "CgpVotes"."blockNumber" <= :endBlock
@@ -223,7 +216,6 @@ cgpDAL.countAllVoteResults = async function ({ snapshot, beginBlock, endBlock, t
   return sequelize
     .query(sql, {
       replacements: {
-        snapshot,
         beginBlock,
         endBlock,
         type,
@@ -269,14 +261,11 @@ cgpDAL.findAllBallots = async function ({
     type: sequelize.QueryTypes.SELECT,
   });
 };
-cgpDAL.countAllBallots = async function ({ type, snapshot, beginBlock, endBlock }) {
+cgpDAL.countAllBallots = async function ({ type, beginBlock, endBlock }) {
   const sql = tags.oneLine`
   SELECT count(*) FROM (
     SELECT "CgpVotes"."ballot"
     FROM "CgpVotes"
-    INNER JOIN "Snapshots" 
-    ON "Snapshots"."blockNumber" = :snapshot
-    AND "CgpVotes"."address" = "Snapshots"."address"
     WHERE "CgpVotes"."type" = :type
       AND "CgpVotes"."blockNumber" > :beginBlock
       AND "CgpVotes"."blockNumber" <= :endBlock
@@ -288,7 +277,6 @@ cgpDAL.countAllBallots = async function ({ type, snapshot, beginBlock, endBlock 
     .query(sql, {
       replacements: {
         type,
-        snapshot,
         beginBlock,
         endBlock,
       },
