@@ -66,7 +66,7 @@ class ContractPage extends Component {
     const is404 = this.contractStore.contract.status === 404;
     const { id, metadata } = this.contractStore.contract;
 
-    const name = ObjectUtils.getSafeProp(metadata, 'shortName');
+    const shortName = ObjectUtils.getSafeProp(metadata, 'shortName');
 
     return (
       <Page className="Contract">
@@ -75,7 +75,7 @@ class ContractPage extends Component {
         </Helmet>
         <section>
           <PageTitle
-            title={'Contract' + (name ? ` - ${name}` : '')}
+            title={'Contract' + (shortName ? ` - ${shortName}` : '')}
             subtitle={
               <div>
                 <div className="mb-1">
@@ -120,7 +120,7 @@ class ContractPage extends Component {
             <tbody>
               {name ? (
                 <tr>
-                  <td>NAME</td>
+                  <td>FULL NAME</td>
                   <td>{name}</td>
                 </tr>
               ) : null}

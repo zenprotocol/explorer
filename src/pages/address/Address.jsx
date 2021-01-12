@@ -117,11 +117,19 @@ class AddressPage extends Component {
                   </thead>
                   <tbody>
                     <tr>
-                      <td>BALANCE</td>
+                      <td>ZP BALANCE</td>
                       <td>{AssetUtils.getAmountString('00', zpBalance.balance)}</td>
                     </tr>
                     <tr>
-                      <td>TRANSACTIONS</td>
+                      <td>TOTAL ASSETS</td>
+                      <td>
+                        {this.addressStore.address.assetAmounts
+                          ? TextUtils.formatNumber(this.addressStore.address.assetAmounts.length)
+                          : '0'}
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>TOTAL TRANSACTIONS</td>
                       <td>{TextUtils.formatNumber(this.addressStore.address.totalTxs)}</td>
                     </tr>
                     <tr>
@@ -131,14 +139,6 @@ class AddressPage extends Component {
                     <tr>
                       <td>TOTAL SENT</td>
                       <td>{AssetUtils.getAmountString('00', zpBalance.inputSum)}</td>
-                    </tr>
-                    <tr>
-                      <td>NO. ASSET TYPES</td>
-                      <td>
-                        {this.addressStore.address.assetAmounts
-                          ? TextUtils.formatNumber(this.addressStore.address.assetAmounts.length)
-                          : ''}
-                      </td>
                     </tr>
                   </tbody>
                 </table>
