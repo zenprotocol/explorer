@@ -255,19 +255,16 @@ test('cgpDAL.countVotesInInterval() (DB)', async function (t) {
     await createDemoData();
 
     const nominationVotes = await cgpDAL.countVotesInInterval({
-      snapshot: 90,
       beginBlock: 90,
       endBlock: 95,
       type: 'nomination',
     });
     const allocationVotes = await cgpDAL.countVotesInInterval({
-      snapshot: 90,
       beginBlock: 95,
       endBlock: 100,
       type: 'allocation',
     });
     const payoutVotes = await cgpDAL.countVotesInInterval({
-      snapshot: 90,
       beginBlock: 95,
       endBlock: 100,
       type: 'payout',
@@ -288,19 +285,16 @@ test('cgpDAL.countVotesInInterval() (DB)', async function (t) {
     await addVote({ address: 'tzn13', blockNumber: 98, type: 'allocation', ballot: '4' });
 
     const nominationVotes = await cgpDAL.countVotesInInterval({
-      snapshot: 90,
       beginBlock: 90,
       endBlock: 95,
       type: 'nomination',
     });
     const allocationVotes = await cgpDAL.countVotesInInterval({
-      snapshot: 90,
       beginBlock: 95,
       endBlock: 100,
       type: 'allocation',
     });
     const payoutVotes = await cgpDAL.countVotesInInterval({
-      snapshot: 90,
       beginBlock: 95,
       endBlock: 100,
       type: 'payout',
@@ -499,19 +493,16 @@ test('cgpDAL.countAllVoteResults() (DB)', async function (t) {
     await createDemoData();
     const [nomination, allocation, payout] = await Promise.all([
       cgpDAL.countAllVoteResults({
-        snapshot: 90,
         beginBlock: 90,
         endBlock: 95,
         type: 'nomination',
       }),
       cgpDAL.countAllVoteResults({
-        snapshot: 90,
         beginBlock: 95,
         endBlock: 100,
         type: 'allocation',
       }),
       cgpDAL.countAllVoteResults({
-        snapshot: 90,
         beginBlock: 95,
         endBlock: 100,
         type: 'payout',
@@ -531,19 +522,16 @@ test('cgpDAL.countAllVoteResults() (DB)', async function (t) {
 
     const [nomination, allocation, payout] = await Promise.all([
       cgpDAL.countAllVoteResults({
-        snapshot: 90,
         beginBlock: 90,
         endBlock: 95,
         type: 'nomination',
       }),
       cgpDAL.countAllVoteResults({
-        snapshot: 90,
         beginBlock: 95,
         endBlock: 100,
         type: 'allocation',
       }),
       cgpDAL.countAllVoteResults({
-        snapshot: 90,
         beginBlock: 95,
         endBlock: 100,
         type: 'payout',

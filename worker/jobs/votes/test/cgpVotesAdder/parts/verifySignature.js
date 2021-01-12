@@ -12,13 +12,17 @@ const getValidMessageBody = require('../modules/getValidMessageBody');
 const blockchainParser = new BlockchainParser('test');
 
 module.exports = async function part({ t, before, after }) {
-  await wrapTest('Given an allocation vote with wrong interval', async given => {
+  await wrapTest('Given an allocation vote with wrong interval', async (given) => {
     const cgpVotesAdder = new CgpVotesAdder({
       blockchainParser,
       chain: 'test',
       ...cgpAdderParams,
     });
     before();
+    td.replace(cgpVotesAdder, 'verifyIntervalHasSnapshot');
+    td.replace(cgpVotesAdder, 'verifyAddressHadSnapshotBalance');
+    td.when(cgpVotesAdder.verifyIntervalHasSnapshot(td.matchers.anything())).thenReturn(true);
+    td.when(cgpVotesAdder.verifyAddressHadSnapshotBalance(td.matchers.anything())).thenReturn(true);
 
     await addDemoData({
       blockchainParser,
@@ -65,19 +69,13 @@ module.exports = async function part({ t, before, after }) {
     after();
   });
 
-  await wrapTest('Given an allocation vote with one bad signature', async given => {
+  await wrapTest('Given an allocation vote with one bad signature', async (given) => {
     const cgpVotesAdder = new CgpVotesAdder({
       blockchainParser,
       chain: 'test',
       ...cgpAdderParams,
     });
     before();
-    // the execution was made in interval 623
-    td.replace(cgpUtils, 'getIntervalByBlockNumber');
-    td.when(
-      cgpUtils.getIntervalByBlockNumber(td.matchers.anything(), td.matchers.anything())
-    ).thenResolve(623);
-
     const messageBody = getValidMessageBody('Allocation');
     messageBody.dict[0][1].dict[0][1].signature = '496ac2e8a274534aec0ad8a';
 
