@@ -20,6 +20,8 @@ const {
   ExtensionSacrifice,
   Destroy,
   V0,
+  Inputs,
+  Outputs,
 } = require('@zen/zenjs');
 
 // number should be a string
@@ -87,8 +89,8 @@ function parseContract(contract) {
 }
 
 function parseTx(tx) {
-  let outputs = tx.outputs.map(parseOutput);
-  let inputs = tx.inputs.map(parseInput);
+  let outputs = new Outputs(tx.outputs.map(parseOutput));
+  let inputs = new Inputs(tx.inputs.map(parseInput));
   let contract = tx.contract ? parseContract(tx.contract) : undefined;
   const version = tx.version;
   return new Transaction(version, inputs, outputs, contract);

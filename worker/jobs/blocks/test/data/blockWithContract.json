@@ -23,7 +23,7 @@
           },
           "spend": {
             "asset": "00",
-            "amount": 5001966124
+            "amount": "5001966124"
           }
         }
       ]
@@ -48,7 +48,7 @@
           },
           "spend": {
             "asset": "00000000f24db32aa1881956646d3ccbb647df71455de10cf98b635810e8870906a56b63",
-            "amount": 1000
+            "amount": "1000"
           }
         },
         {
@@ -60,7 +60,7 @@
           },
           "spend": {
             "asset": "00000000f24db32aa1881956646d3ccbb647df71455de10cf98b635810e8870906a56b63",
-            "amount": 987000
+            "amount": "987000"
           }
         }
       ]
@@ -80,14 +80,14 @@
           "lock": "ActivationSacrifice",
           "spend": {
             "asset": "00",
-            "amount": 1784000
+            "amount": "1784000"
           }
         },
         {
           "lock": "Fee",
           "spend": {
             "asset": "00",
-            "amount": 1960761
+            "amount": "1960761"
           }
         },
         {
@@ -99,7 +99,7 @@
           },
           "spend": {
             "asset": "00",
-            "amount": 72696255239
+            "amount": "72696255239"
           }
         }
       ],

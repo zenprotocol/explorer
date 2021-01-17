@@ -272,7 +272,7 @@ test('BlocksAdder.doJob()', async function (t) {
               },
               spend: {
                 asset: '00',
-                amount: 5000000000,
+                amount: '5000000000',
               },
             },
           ],
@@ -290,7 +290,7 @@ test('BlocksAdder.doJob()', async function (t) {
               },
               spend: {
                 asset: '00',
-                amount: 5000000000,
+                amount: '5000000000',
               },
             },
           ],
@@ -323,7 +323,7 @@ test('BlocksAdder.doJob()', async function (t) {
               },
               spend: {
                 asset: '00',
-                amount: 5000000000,
+                amount: '5000000000',
               },
             },
           ],
@@ -341,7 +341,7 @@ test('BlocksAdder.doJob()', async function (t) {
               },
               spend: {
                 asset: '00',
-                amount: 100000000,
+                amount: '100000000',
               },
             },
           ],
@@ -541,7 +541,7 @@ test('BlocksAdder.doJob()', async function (t) {
               },
               spend: {
                 asset: '00',
-                amount: 5000000000,
+                amount: '5000000000',
               },
             },
           ],
@@ -574,7 +574,7 @@ test('BlocksAdder.doJob()', async function (t) {
               },
               spend: {
                 asset: '00',
-                amount: 5000000000,
+                amount: '5000000000',
               },
             },
           ],
@@ -599,7 +599,7 @@ test('BlocksAdder.doJob()', async function (t) {
               },
               spend: {
                 asset: '00',
-                amount: 100000000,
+                amount: '100000000',
               },
             },
             {
@@ -611,7 +611,7 @@ test('BlocksAdder.doJob()', async function (t) {
               },
               spend: {
                 asset: '00',
-                amount: 4900000000,
+                amount: '4900000000',
               },
             },
           ],
@@ -716,7 +716,7 @@ test('BlocksAdder.doJob()', async function (t) {
               },
               spend: {
                 asset: '00',
-                amount: 5000000000,
+                amount: '5000000000',
               },
             },
           ],
@@ -741,7 +741,7 @@ test('BlocksAdder.doJob()', async function (t) {
             {
               mint: {
                 asset: ASSET_ID,
-                amount: 100000000,
+                amount: '100000000',
               },
             },
           ],
@@ -756,7 +756,7 @@ test('BlocksAdder.doJob()', async function (t) {
               },
               spend: {
                 asset: '00',
-                amount: 5000000000,
+                amount: '5000000000',
               },
             },
           ],
@@ -789,14 +789,14 @@ test('BlocksAdder.doJob()', async function (t) {
               },
               spend: {
                 asset: '00',
-                amount: 5000000000,
+                amount: '5000000000',
               },
             },
             {
               lock: 'Destroy',
               spend: {
                 asset: ASSET_ID,
-                amount: 100000000,
+                amount: '100000000',
               },
             },
           ],
@@ -881,7 +881,7 @@ test('BlocksAdder.doJob()', async function (t) {
                 },
                 spend: {
                   asset: '00',
-                  amount: 5000000000,
+                  amount: '5000000000',
                 },
               },
             ],
@@ -906,7 +906,7 @@ test('BlocksAdder.doJob()', async function (t) {
               {
                 mint: {
                   asset: ASSET_ID,
-                  amount: 100000000,
+                  amount: '100000000',
                 },
               },
             ],
@@ -921,14 +921,14 @@ test('BlocksAdder.doJob()', async function (t) {
                 },
                 spend: {
                   asset: '00',
-                  amount: 5000000000,
+                  amount: '5000000000',
                 },
               },
               {
                 lock: 'Destroy',
                 spend: {
                   asset: ASSET_ID,
-                  amount: 100000000,
+                  amount: '100000000',
                 },
               },
             ],
@@ -954,7 +954,8 @@ test('BlocksAdder.doJob()', async function (t) {
         blockchainParser: new BlockchainParser(),
         genesisTotalZp: '20000000',
         chain: 'main',
-        cgpFundContractId: '00000000cdaa2a511cd2e1d07555b00314d1be40a649d3b6f419eb1e4e7a8e63240a36d1',
+        cgpFundContractId:
+          '00000000cdaa2a511cd2e1d07555b00314d1be40a649d3b6f419eb1e4e7a8e63240a36d1',
       });
 
       try {
@@ -1008,7 +1009,7 @@ test('BlocksAdder.doJob()', async function (t) {
               },
               spend: {
                 asset: '00',
-                amount: 5000000000,
+                amount: '5000000000',
               },
             },
           ],
@@ -1119,7 +1120,7 @@ test('BlocksAdder.doJob()', async function (t) {
                 },
                 spend: {
                   asset: '00',
-                  amount: 5000000000,
+                  amount: '5000000000',
                 },
               },
             ],
@@ -1152,7 +1153,7 @@ test('BlocksAdder.doJob()', async function (t) {
               {
                 mint: {
                   asset: CONTRACT_ID,
-                  amount: 100000000,
+                  amount: '100000000',
                 },
               },
               {
@@ -1173,7 +1174,7 @@ test('BlocksAdder.doJob()', async function (t) {
                 },
                 spend: {
                   asset: '00',
-                  amount: 5000000000,
+                  amount: '5000000000',
                 },
               },
               {
@@ -1184,7 +1185,7 @@ test('BlocksAdder.doJob()', async function (t) {
                 },
                 spend: {
                   asset: '00',
-                  amount: 5000000000,
+                  amount: '5000000000',
                 },
               },
             ],
@@ -1210,7 +1211,8 @@ test('BlocksAdder.doJob()', async function (t) {
         blockchainParser: new BlockchainParser(),
         genesisTotalZp: '20000000',
         chain: 'main',
-        cgpFundContractId: '00000000cdaa2a511cd2e1d07555b00314d1be40a649d3b6f419eb1e4e7a8e63240a36d1',
+        cgpFundContractId:
+          '00000000cdaa2a511cd2e1d07555b00314d1be40a649d3b6f419eb1e4e7a8e63240a36d1',
       });
 
       try {
@@ -1249,7 +1251,8 @@ test('BlocksAdder.doJob()', async function (t) {
         blockchainParser: new BlockchainParser(),
         genesisTotalZp: '20000000',
         chain: 'main',
-        cgpFundContractId: '00000000cdaa2a511cd2e1d07555b00314d1be40a649d3b6f419eb1e4e7a8e63240a36d1',
+        cgpFundContractId:
+          '00000000cdaa2a511cd2e1d07555b00314d1be40a649d3b6f419eb1e4e7a8e63240a36d1',
       });
 
       try {

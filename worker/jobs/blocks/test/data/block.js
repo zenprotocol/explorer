@@ -1,7 +1,13 @@
-module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyInput, falsyOutput} = {}) {
+module.exports = function ({
+  blockNumber = 1,
+  falsyBlock,
+  falsyTransaction,
+  falsyInput,
+  falsyOutput,
+} = {}) {
   return {
     hash: 'cb746bfdbc472602064dbc04e66326a8edf11a3c64d08ddfa90257e86e866b0f',
-    [falsyBlock? 'wrongKey' : 'header']: {
+    [falsyBlock ? 'wrongKey' : 'header']: {
       version: 0,
       parent: '0000002863af18b0e69d66b1412c283b782435a7734611086d4b1167d8d98b2b',
       blockNumber: blockNumber,
@@ -24,31 +30,35 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '00',
-              amount: 5000007142,
+              amount: '5000007142',
             },
           },
         ],
       },
       '0c8f6252e2b6a5e7646977c9dc03586f0e46143adaaa6e08b616ce996157e369': {
-        [falsyTransaction? 'wrongKey' : 'version']: 0,
+        [falsyTransaction ? 'wrongKey' : 'version']: 0,
         inputs: [
           {
             outpoint: {
-              [falsyInput? 'wrongKey' : 'txHash']: '1f6172b8f507e41dfb72d4a4f31076700a5f5ada9feb1ac3a009138d3fb21f3d',
+              [falsyInput
+                ? 'wrongKey'
+                : 'txHash']: '1f6172b8f507e41dfb72d4a4f31076700a5f5ada9feb1ac3a009138d3fb21f3d',
               index: 1,
             },
           },
         ],
         outputs: [
           {
-            [falsyOutput? 'wrongKey' : 'lock']: {
+            [falsyOutput ? 'wrongKey' : 'lock']: {
               PK: {
-                [falsyOutput? 'wrongKey' : 'hash']: '4903fb981f797ec622916991e5fbcbb58d78063fd00e6948323d2ec07dcf5ac1',
+                [falsyOutput
+                  ? 'wrongKey'
+                  : 'hash']: '4903fb981f797ec622916991e5fbcbb58d78063fd00e6948323d2ec07dcf5ac1',
               },
             },
-            [falsyOutput? 'wrongKey' : 'spend']: {
+            [falsyOutput ? 'wrongKey' : 'spend']: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 3340,
+              amount: '3340',
             },
           },
           {
@@ -59,7 +69,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9999340610,
+              amount: '9999340610',
             },
           },
         ],
@@ -83,7 +93,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 3340,
+              amount: '3340',
             },
           },
           {
@@ -94,7 +104,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9999440609,
+              amount: '9999440609',
             },
           },
         ],
@@ -118,7 +128,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 3350,
+              amount: '3350',
             },
           },
           {
@@ -129,7 +139,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9999437259,
+              amount: '9999437259',
             },
           },
         ],
@@ -153,7 +163,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 3360,
+              amount: '3360',
             },
           },
           {
@@ -164,7 +174,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9999433899,
+              amount: '9999433899',
             },
           },
         ],
@@ -188,7 +198,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 3370,
+              amount: '3370',
             },
           },
           {
@@ -199,7 +209,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9999430529,
+              amount: '9999430529',
             },
           },
         ],
@@ -223,7 +233,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 3350,
+              amount: '3350',
             },
           },
           {
@@ -234,7 +244,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9994432270,
+              amount: '9994432270',
             },
           },
         ],
@@ -258,7 +268,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 3360,
+              amount: '3360',
             },
           },
           {
@@ -269,7 +279,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9994428910,
+              amount: '9994428910',
             },
           },
         ],
@@ -293,7 +303,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 3370,
+              amount: '3370',
             },
           },
           {
@@ -304,7 +314,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9994425540,
+              amount: '9994425540',
             },
           },
         ],
@@ -328,7 +338,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 3380,
+              amount: '3380',
             },
           },
           {
@@ -339,7 +349,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9994422160,
+              amount: '9994422160',
             },
           },
         ],
@@ -363,7 +373,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 3390,
+              amount: '3390',
             },
           },
           {
@@ -374,7 +384,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9994418770,
+              amount: '9994418770',
             },
           },
         ],
@@ -398,7 +408,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 3400,
+              amount: '3400',
             },
           },
           {
@@ -409,7 +419,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9994415370,
+              amount: '9994415370',
             },
           },
         ],
@@ -433,7 +443,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 3410,
+              amount: '3410',
             },
           },
           {
@@ -444,7 +454,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9994411960,
+              amount: '9994411960',
             },
           },
         ],
@@ -468,7 +478,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 3420,
+              amount: '3420',
             },
           },
           {
@@ -479,7 +489,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9994408540,
+              amount: '9994408540',
             },
           },
         ],
@@ -503,7 +513,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 3430,
+              amount: '3430',
             },
           },
           {
@@ -514,7 +524,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9994405110,
+              amount: '9994405110',
             },
           },
         ],
@@ -538,7 +548,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 3440,
+              amount: '3440',
             },
           },
           {
@@ -549,7 +559,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9994401670,
+              amount: '9994401670',
             },
           },
         ],
@@ -573,7 +583,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 3350,
+              amount: '3350',
             },
           },
           {
@@ -584,7 +594,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9999337260,
+              amount: '9999337260',
             },
           },
         ],
@@ -608,7 +618,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 3360,
+              amount: '3360',
             },
           },
           {
@@ -619,7 +629,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9999333900,
+              amount: '9999333900',
             },
           },
         ],
@@ -643,7 +653,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 3450,
+              amount: '3450',
             },
           },
           {
@@ -654,7 +664,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9994398220,
+              amount: '9994398220',
             },
           },
         ],
@@ -678,7 +688,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 3380,
+              amount: '3380',
             },
           },
           {
@@ -689,7 +699,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9999427149,
+              amount: '9999427149',
             },
           },
         ],
@@ -713,7 +723,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 3390,
+              amount: '3390',
             },
           },
           {
@@ -724,7 +734,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9999423759,
+              amount: '9999423759',
             },
           },
         ],
@@ -748,7 +758,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 3400,
+              amount: '3400',
             },
           },
           {
@@ -759,7 +769,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9999420359,
+              amount: '9999420359',
             },
           },
         ],
@@ -783,7 +793,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 3410,
+              amount: '3410',
             },
           },
           {
@@ -794,7 +804,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9999416949,
+              amount: '9999416949',
             },
           },
         ],
@@ -818,7 +828,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 3420,
+              amount: '3420',
             },
           },
           {
@@ -829,7 +839,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9999413529,
+              amount: '9999413529',
             },
           },
         ],
@@ -853,7 +863,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 3430,
+              amount: '3430',
             },
           },
           {
@@ -864,7 +874,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9999410099,
+              amount: '9999410099',
             },
           },
         ],
@@ -888,7 +898,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 3440,
+              amount: '3440',
             },
           },
           {
@@ -899,7 +909,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9999406659,
+              amount: '9999406659',
             },
           },
         ],
@@ -923,7 +933,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 3450,
+              amount: '3450',
             },
           },
           {
@@ -934,7 +944,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9999403209,
+              amount: '9999403209',
             },
           },
         ],
@@ -958,7 +968,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 3460,
+              amount: '3460',
             },
           },
           {
@@ -969,7 +979,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9999399749,
+              amount: '9999399749',
             },
           },
         ],
@@ -993,7 +1003,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 3470,
+              amount: '3470',
             },
           },
           {
@@ -1004,7 +1014,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9999396279,
+              amount: '9999396279',
             },
           },
         ],
@@ -1028,7 +1038,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 3480,
+              amount: '3480',
             },
           },
           {
@@ -1039,7 +1049,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9999392799,
+              amount: '9999392799',
             },
           },
         ],
@@ -1063,7 +1073,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 3490,
+              amount: '3490',
             },
           },
           {
@@ -1074,7 +1084,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9999389309,
+              amount: '9999389309',
             },
           },
         ],
@@ -1098,7 +1108,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 3500,
+              amount: '3500',
             },
           },
           {
@@ -1109,7 +1119,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9999385809,
+              amount: '9999385809',
             },
           },
         ],
@@ -1133,7 +1143,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 3510,
+              amount: '3510',
             },
           },
           {
@@ -1144,7 +1154,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9999382299,
+              amount: '9999382299',
             },
           },
         ],
@@ -1168,7 +1178,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 3520,
+              amount: '3520',
             },
           },
           {
@@ -1179,7 +1189,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9999378779,
+              amount: '9999378779',
             },
           },
         ],
@@ -1203,7 +1213,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 3530,
+              amount: '3530',
             },
           },
           {
@@ -1214,7 +1224,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9999375249,
+              amount: '9999375249',
             },
           },
         ],
@@ -1238,7 +1248,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 3540,
+              amount: '3540',
             },
           },
           {
@@ -1249,7 +1259,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9999371709,
+              amount: '9999371709',
             },
           },
         ],
@@ -1273,7 +1283,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 3550,
+              amount: '3550',
             },
           },
           {
@@ -1284,7 +1294,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9999368159,
+              amount: '9999368159',
             },
           },
         ],
@@ -1308,7 +1318,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 3560,
+              amount: '3560',
             },
           },
           {
@@ -1319,7 +1329,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9999364599,
+              amount: '9999364599',
             },
           },
         ],
@@ -1343,7 +1353,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 3570,
+              amount: '3570',
             },
           },
           {
@@ -1354,7 +1364,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9999361029,
+              amount: '9999361029',
             },
           },
         ],
@@ -1378,7 +1388,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 3580,
+              amount: '3580',
             },
           },
           {
@@ -1389,7 +1399,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9999357449,
+              amount: '9999357449',
             },
           },
         ],
@@ -1413,7 +1423,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 3590,
+              amount: '3590',
             },
           },
           {
@@ -1424,7 +1434,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9999353859,
+              amount: '9999353859',
             },
           },
         ],
@@ -1448,7 +1458,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 3600,
+              amount: '3600',
             },
           },
           {
@@ -1459,7 +1469,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9999350259,
+              amount: '9999350259',
             },
           },
         ],
@@ -1483,7 +1493,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 3610,
+              amount: '3610',
             },
           },
           {
@@ -1494,7 +1504,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9999346649,
+              amount: '9999346649',
             },
           },
         ],
@@ -1518,7 +1528,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 3620,
+              amount: '3620',
             },
           },
           {
@@ -1529,7 +1539,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9999343029,
+              amount: '9999343029',
             },
           },
         ],
@@ -1553,7 +1563,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 3630,
+              amount: '3630',
             },
           },
           {
@@ -1564,7 +1574,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9999339399,
+              amount: '9999339399',
             },
           },
         ],
@@ -1588,7 +1598,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 3640,
+              amount: '3640',
             },
           },
           {
@@ -1599,7 +1609,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9999335759,
+              amount: '9999335759',
             },
           },
         ],
@@ -1623,7 +1633,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 3650,
+              amount: '3650',
             },
           },
           {
@@ -1634,7 +1644,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9999332109,
+              amount: '9999332109',
             },
           },
         ],
@@ -1658,7 +1668,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 3660,
+              amount: '3660',
             },
           },
           {
@@ -1669,7 +1679,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9999328449,
+              amount: '9999328449',
             },
           },
         ],
@@ -1693,7 +1703,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 3670,
+              amount: '3670',
             },
           },
           {
@@ -1704,7 +1714,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9999324779,
+              amount: '9999324779',
             },
           },
         ],
@@ -1728,7 +1738,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 3680,
+              amount: '3680',
             },
           },
           {
@@ -1739,7 +1749,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9999321099,
+              amount: '9999321099',
             },
           },
         ],
@@ -1763,7 +1773,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 3690,
+              amount: '3690',
             },
           },
           {
@@ -1774,7 +1784,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9999317409,
+              amount: '9999317409',
             },
           },
         ],
@@ -1798,7 +1808,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 3700,
+              amount: '3700',
             },
           },
           {
@@ -1809,7 +1819,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9999313709,
+              amount: '9999313709',
             },
           },
         ],
@@ -1833,7 +1843,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 3710,
+              amount: '3710',
             },
           },
           {
@@ -1844,7 +1854,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9999309999,
+              amount: '9999309999',
             },
           },
         ],
@@ -1868,7 +1878,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 3720,
+              amount: '3720',
             },
           },
           {
@@ -1879,7 +1889,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9999306279,
+              amount: '9999306279',
             },
           },
         ],
@@ -1903,7 +1913,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 3730,
+              amount: '3730',
             },
           },
           {
@@ -1914,7 +1924,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9999302549,
+              amount: '9999302549',
             },
           },
         ],
@@ -1938,7 +1948,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 3740,
+              amount: '3740',
             },
           },
           {
@@ -1949,7 +1959,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9999298809,
+              amount: '9999298809',
             },
           },
         ],
@@ -1973,7 +1983,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 3460,
+              amount: '3460',
             },
           },
           {
@@ -1984,7 +1994,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9994394760,
+              amount: '9994394760',
             },
           },
         ],
@@ -2008,7 +2018,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 3470,
+              amount: '3470',
             },
           },
           {
@@ -2019,7 +2029,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9994391290,
+              amount: '9994391290',
             },
           },
         ],
@@ -2043,7 +2053,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 3480,
+              amount: '3480',
             },
           },
           {
@@ -2054,7 +2064,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9994387810,
+              amount: '9994387810',
             },
           },
         ],
@@ -2078,7 +2088,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 3490,
+              amount: '3490',
             },
           },
           {
@@ -2089,7 +2099,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9994384320,
+              amount: '9994384320',
             },
           },
         ],
@@ -2113,7 +2123,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 3500,
+              amount: '3500',
             },
           },
           {
@@ -2124,7 +2134,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9994380820,
+              amount: '9994380820',
             },
           },
         ],
@@ -2148,7 +2158,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 3510,
+              amount: '3510',
             },
           },
           {
@@ -2159,7 +2169,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9994377310,
+              amount: '9994377310',
             },
           },
         ],
@@ -2183,7 +2193,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 3520,
+              amount: '3520',
             },
           },
           {
@@ -2194,7 +2204,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9994373790,
+              amount: '9994373790',
             },
           },
         ],
@@ -2218,7 +2228,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 3530,
+              amount: '3530',
             },
           },
           {
@@ -2229,7 +2239,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9994370260,
+              amount: '9994370260',
             },
           },
         ],
@@ -2253,7 +2263,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 3540,
+              amount: '3540',
             },
           },
           {
@@ -2264,7 +2274,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9994366720,
+              amount: '9994366720',
             },
           },
         ],
@@ -2288,7 +2298,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 3550,
+              amount: '3550',
             },
           },
           {
@@ -2299,7 +2309,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9994363170,
+              amount: '9994363170',
             },
           },
         ],
@@ -2323,7 +2333,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 3560,
+              amount: '3560',
             },
           },
           {
@@ -2334,7 +2344,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9994359610,
+              amount: '9994359610',
             },
           },
         ],
@@ -2358,7 +2368,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 3570,
+              amount: '3570',
             },
           },
           {
@@ -2369,7 +2379,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9994356040,
+              amount: '9994356040',
             },
           },
         ],
@@ -2393,7 +2403,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 3580,
+              amount: '3580',
             },
           },
           {
@@ -2404,7 +2414,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9994352460,
+              amount: '9994352460',
             },
           },
         ],
@@ -2428,7 +2438,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 3590,
+              amount: '3590',
             },
           },
           {
@@ -2439,7 +2449,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9994348870,
+              amount: '9994348870',
             },
           },
         ],
@@ -2463,7 +2473,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 3600,
+              amount: '3600',
             },
           },
           {
@@ -2474,7 +2484,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9994345270,
+              amount: '9994345270',
             },
           },
         ],
@@ -2498,7 +2508,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 3610,
+              amount: '3610',
             },
           },
           {
@@ -2509,7 +2519,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9994341660,
+              amount: '9994341660',
             },
           },
         ],
@@ -2533,7 +2543,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 3620,
+              amount: '3620',
             },
           },
           {
@@ -2544,7 +2554,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9994338040,
+              amount: '9994338040',
             },
           },
         ],
@@ -2568,7 +2578,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 3630,
+              amount: '3630',
             },
           },
           {
@@ -2579,7 +2589,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9994334410,
+              amount: '9994334410',
             },
           },
         ],
@@ -2603,7 +2613,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 3640,
+              amount: '3640',
             },
           },
           {
@@ -2614,7 +2624,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9994330770,
+              amount: '9994330770',
             },
           },
         ],
@@ -2638,7 +2648,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 3650,
+              amount: '3650',
             },
           },
           {
@@ -2649,7 +2659,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9994327120,
+              amount: '9994327120',
             },
           },
         ],
@@ -2673,7 +2683,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 3660,
+              amount: '3660',
             },
           },
           {
@@ -2684,7 +2694,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9994323460,
+              amount: '9994323460',
             },
           },
         ],
@@ -2708,7 +2718,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 3670,
+              amount: '3670',
             },
           },
           {
@@ -2719,7 +2729,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9994319790,
+              amount: '9994319790',
             },
           },
         ],
@@ -2743,7 +2753,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 3680,
+              amount: '3680',
             },
           },
           {
@@ -2754,7 +2764,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9994316110,
+              amount: '9994316110',
             },
           },
         ],
@@ -2778,7 +2788,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 3690,
+              amount: '3690',
             },
           },
           {
@@ -2789,7 +2799,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9994312420,
+              amount: '9994312420',
             },
           },
         ],
@@ -2813,7 +2823,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 3700,
+              amount: '3700',
             },
           },
           {
@@ -2824,7 +2834,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9994308720,
+              amount: '9994308720',
             },
           },
         ],
@@ -2848,7 +2858,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 3710,
+              amount: '3710',
             },
           },
           {
@@ -2859,7 +2869,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9994305010,
+              amount: '9994305010',
             },
           },
         ],
@@ -2883,7 +2893,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 3720,
+              amount: '3720',
             },
           },
           {
@@ -2894,7 +2904,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9994301290,
+              amount: '9994301290',
             },
           },
         ],
@@ -2918,7 +2928,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 3730,
+              amount: '3730',
             },
           },
           {
@@ -2929,7 +2939,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9994297560,
+              amount: '9994297560',
             },
           },
         ],
@@ -2953,7 +2963,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 3740,
+              amount: '3740',
             },
           },
           {
@@ -2964,7 +2974,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9994293820,
+              amount: '9994293820',
             },
           },
         ],
@@ -2988,7 +2998,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 3750,
+              amount: '3750',
             },
           },
           {
@@ -2999,7 +3009,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9994290070,
+              amount: '9994290070',
             },
           },
         ],
@@ -3023,7 +3033,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 3760,
+              amount: '3760',
             },
           },
           {
@@ -3034,7 +3044,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9994286310,
+              amount: '9994286310',
             },
           },
         ],
@@ -3058,7 +3068,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 3770,
+              amount: '3770',
             },
           },
           {
@@ -3069,7 +3079,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9994282540,
+              amount: '9994282540',
             },
           },
         ],
@@ -3093,7 +3103,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 3780,
+              amount: '3780',
             },
           },
           {
@@ -3104,7 +3114,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9994278760,
+              amount: '9994278760',
             },
           },
         ],
@@ -3128,7 +3138,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 3790,
+              amount: '3790',
             },
           },
           {
@@ -3139,7 +3149,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9994274970,
+              amount: '9994274970',
             },
           },
         ],
@@ -3163,7 +3173,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 3800,
+              amount: '3800',
             },
           },
           {
@@ -3174,7 +3184,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9994271170,
+              amount: '9994271170',
             },
           },
         ],
@@ -3198,7 +3208,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 3810,
+              amount: '3810',
             },
           },
           {
@@ -3209,7 +3219,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9994267360,
+              amount: '9994267360',
             },
           },
         ],
@@ -3233,7 +3243,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 3820,
+              amount: '3820',
             },
           },
           {
@@ -3244,7 +3254,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9994263540,
+              amount: '9994263540',
             },
           },
         ],
@@ -3268,7 +3278,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 3830,
+              amount: '3830',
             },
           },
           {
@@ -3279,7 +3289,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9994259710,
+              amount: '9994259710',
             },
           },
         ],
@@ -3303,7 +3313,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 3840,
+              amount: '3840',
             },
           },
           {
@@ -3314,7 +3324,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9994255870,
+              amount: '9994255870',
             },
           },
         ],
@@ -3338,7 +3348,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 3850,
+              amount: '3850',
             },
           },
           {
@@ -3349,7 +3359,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9994252020,
+              amount: '9994252020',
             },
           },
         ],
@@ -3373,7 +3383,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 3860,
+              amount: '3860',
             },
           },
           {
@@ -3384,7 +3394,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9994248160,
+              amount: '9994248160',
             },
           },
         ],
@@ -3408,7 +3418,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 3870,
+              amount: '3870',
             },
           },
           {
@@ -3419,7 +3429,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9994244290,
+              amount: '9994244290',
             },
           },
         ],
@@ -3443,7 +3453,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 3880,
+              amount: '3880',
             },
           },
           {
@@ -3454,7 +3464,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9994240410,
+              amount: '9994240410',
             },
           },
         ],
@@ -3478,7 +3488,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 3890,
+              amount: '3890',
             },
           },
           {
@@ -3489,7 +3499,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9994236520,
+              amount: '9994236520',
             },
           },
         ],
@@ -3513,7 +3523,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 3900,
+              amount: '3900',
             },
           },
           {
@@ -3524,7 +3534,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9994232620,
+              amount: '9994232620',
             },
           },
         ],
@@ -3548,7 +3558,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 3910,
+              amount: '3910',
             },
           },
           {
@@ -3559,7 +3569,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9994228710,
+              amount: '9994228710',
             },
           },
         ],
@@ -3583,7 +3593,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 3920,
+              amount: '3920',
             },
           },
           {
@@ -3594,7 +3604,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9994224790,
+              amount: '9994224790',
             },
           },
         ],
@@ -3618,7 +3628,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 3930,
+              amount: '3930',
             },
           },
           {
@@ -3629,7 +3639,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9994220860,
+              amount: '9994220860',
             },
           },
         ],
@@ -3653,7 +3663,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 3940,
+              amount: '3940',
             },
           },
           {
@@ -3664,7 +3674,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9994216920,
+              amount: '9994216920',
             },
           },
         ],
@@ -3688,7 +3698,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 3750,
+              amount: '3750',
             },
           },
           {
@@ -3699,7 +3709,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9999295059,
+              amount: '9999295059',
             },
           },
         ],
@@ -3723,7 +3733,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 3760,
+              amount: '3760',
             },
           },
           {
@@ -3734,7 +3744,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9999291299,
+              amount: '9999291299',
             },
           },
         ],
@@ -3758,7 +3768,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 3770,
+              amount: '3770',
             },
           },
           {
@@ -3769,7 +3779,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9999287529,
+              amount: '9999287529',
             },
           },
         ],
@@ -3793,7 +3803,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 3780,
+              amount: '3780',
             },
           },
           {
@@ -3804,7 +3814,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9999283749,
+              amount: '9999283749',
             },
           },
         ],
@@ -3828,7 +3838,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 3790,
+              amount: '3790',
             },
           },
           {
@@ -3839,7 +3849,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9999279959,
+              amount: '9999279959',
             },
           },
         ],
@@ -3863,7 +3873,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 3800,
+              amount: '3800',
             },
           },
           {
@@ -3874,7 +3884,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9999276159,
+              amount: '9999276159',
             },
           },
         ],
@@ -3898,7 +3908,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 3810,
+              amount: '3810',
             },
           },
           {
@@ -3909,7 +3919,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9999272349,
+              amount: '9999272349',
             },
           },
         ],
@@ -3933,7 +3943,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 3820,
+              amount: '3820',
             },
           },
           {
@@ -3944,7 +3954,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9999268529,
+              amount: '9999268529',
             },
           },
         ],
@@ -3968,7 +3978,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 3830,
+              amount: '3830',
             },
           },
           {
@@ -3979,7 +3989,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9999264699,
+              amount: '9999264699',
             },
           },
         ],
@@ -4003,7 +4013,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 3840,
+              amount: '3840',
             },
           },
           {
@@ -4014,7 +4024,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9999260859,
+              amount: '9999260859',
             },
           },
         ],
@@ -4038,7 +4048,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 3850,
+              amount: '3850',
             },
           },
           {
@@ -4049,7 +4059,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9999257009,
+              amount: '9999257009',
             },
           },
         ],
@@ -4073,7 +4083,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 3860,
+              amount: '3860',
             },
           },
           {
@@ -4084,7 +4094,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9999253149,
+              amount: '9999253149',
             },
           },
         ],
@@ -4108,7 +4118,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 3870,
+              amount: '3870',
             },
           },
           {
@@ -4119,7 +4129,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9999249279,
+              amount: '9999249279',
             },
           },
         ],
@@ -4143,7 +4153,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 3880,
+              amount: '3880',
             },
           },
           {
@@ -4154,7 +4164,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9999245399,
+              amount: '9999245399',
             },
           },
         ],
@@ -4178,7 +4188,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 3890,
+              amount: '3890',
             },
           },
           {
@@ -4189,7 +4199,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9999241509,
+              amount: '9999241509',
             },
           },
         ],
@@ -4213,7 +4223,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 3900,
+              amount: '3900',
             },
           },
           {
@@ -4224,7 +4234,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9999237609,
+              amount: '9999237609',
             },
           },
         ],
@@ -4248,7 +4258,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 3910,
+              amount: '3910',
             },
           },
           {
@@ -4259,7 +4269,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9999233699,
+              amount: '9999233699',
             },
           },
         ],
@@ -4283,7 +4293,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 3920,
+              amount: '3920',
             },
           },
           {
@@ -4294,7 +4304,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9999229779,
+              amount: '9999229779',
             },
           },
         ],
@@ -4318,7 +4328,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 3930,
+              amount: '3930',
             },
           },
           {
@@ -4329,7 +4339,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9999225849,
+              amount: '9999225849',
             },
           },
         ],
@@ -4353,7 +4363,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 3940,
+              amount: '3940',
             },
           },
           {
@@ -4364,7 +4374,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9999221909,
+              amount: '9999221909',
             },
           },
         ],
@@ -4388,7 +4398,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 3950,
+              amount: '3950',
             },
           },
           {
@@ -4399,7 +4409,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9999217959,
+              amount: '9999217959',
             },
           },
         ],
@@ -4423,7 +4433,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 3960,
+              amount: '3960',
             },
           },
           {
@@ -4434,7 +4444,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9999213999,
+              amount: '9999213999',
             },
           },
         ],
@@ -4458,7 +4468,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 3970,
+              amount: '3970',
             },
           },
           {
@@ -4469,7 +4479,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9999210029,
+              amount: '9999210029',
             },
           },
         ],
@@ -4493,7 +4503,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 3980,
+              amount: '3980',
             },
           },
           {
@@ -4504,7 +4514,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9999206049,
+              amount: '9999206049',
             },
           },
         ],
@@ -4528,7 +4538,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 3990,
+              amount: '3990',
             },
           },
           {
@@ -4539,7 +4549,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9999202059,
+              amount: '9999202059',
             },
           },
         ],
@@ -4563,7 +4573,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 4000,
+              amount: '4000',
             },
           },
           {
@@ -4574,7 +4584,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9999198059,
+              amount: '9999198059',
             },
           },
         ],
@@ -4598,7 +4608,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 4010,
+              amount: '4010',
             },
           },
           {
@@ -4609,7 +4619,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9999194049,
+              amount: '9999194049',
             },
           },
         ],
@@ -4633,7 +4643,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 4020,
+              amount: '4020',
             },
           },
           {
@@ -4644,7 +4654,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9999190029,
+              amount: '9999190029',
             },
           },
         ],
@@ -4668,7 +4678,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 4030,
+              amount: '4030',
             },
           },
           {
@@ -4679,7 +4689,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9999185999,
+              amount: '9999185999',
             },
           },
         ],
@@ -4703,7 +4713,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 4040,
+              amount: '4040',
             },
           },
           {
@@ -4714,7 +4724,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9999181959,
+              amount: '9999181959',
             },
           },
         ],
@@ -4738,7 +4748,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 4050,
+              amount: '4050',
             },
           },
           {
@@ -4749,7 +4759,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9999177909,
+              amount: '9999177909',
             },
           },
         ],
@@ -4773,7 +4783,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 4060,
+              amount: '4060',
             },
           },
           {
@@ -4784,7 +4794,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9999173849,
+              amount: '9999173849',
             },
           },
         ],
@@ -4808,7 +4818,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 4070,
+              amount: '4070',
             },
           },
           {
@@ -4819,7 +4829,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9999169779,
+              amount: '9999169779',
             },
           },
         ],
@@ -4843,7 +4853,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 4080,
+              amount: '4080',
             },
           },
           {
@@ -4854,7 +4864,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9999165699,
+              amount: '9999165699',
             },
           },
         ],
@@ -4878,7 +4888,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 4090,
+              amount: '4090',
             },
           },
           {
@@ -4889,7 +4899,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9999161609,
+              amount: '9999161609',
             },
           },
         ],
@@ -4913,7 +4923,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 4100,
+              amount: '4100',
             },
           },
           {
@@ -4924,7 +4934,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9999157509,
+              amount: '9999157509',
             },
           },
         ],
@@ -4948,7 +4958,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 4110,
+              amount: '4110',
             },
           },
           {
@@ -4959,7 +4969,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9999153399,
+              amount: '9999153399',
             },
           },
         ],
@@ -4983,7 +4993,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 4120,
+              amount: '4120',
             },
           },
           {
@@ -4994,7 +5004,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9999149279,
+              amount: '9999149279',
             },
           },
         ],
@@ -5018,7 +5028,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 4130,
+              amount: '4130',
             },
           },
           {
@@ -5029,7 +5039,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9999145149,
+              amount: '9999145149',
             },
           },
         ],
@@ -5053,7 +5063,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 4140,
+              amount: '4140',
             },
           },
           {
@@ -5064,7 +5074,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9999141009,
+              amount: '9999141009',
             },
           },
         ],
@@ -5088,7 +5098,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 4150,
+              amount: '4150',
             },
           },
           {
@@ -5099,7 +5109,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9999136859,
+              amount: '9999136859',
             },
           },
         ],
@@ -5123,7 +5133,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 4160,
+              amount: '4160',
             },
           },
           {
@@ -5134,7 +5144,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9999132699,
+              amount: '9999132699',
             },
           },
         ],
@@ -5158,7 +5168,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 4170,
+              amount: '4170',
             },
           },
           {
@@ -5169,7 +5179,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9999128529,
+              amount: '9999128529',
             },
           },
         ],
@@ -5193,7 +5203,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 4180,
+              amount: '4180',
             },
           },
           {
@@ -5204,7 +5214,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9999124349,
+              amount: '9999124349',
             },
           },
         ],
@@ -5228,7 +5238,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 4190,
+              amount: '4190',
             },
           },
           {
@@ -5239,7 +5249,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9999120159,
+              amount: '9999120159',
             },
           },
         ],
@@ -5263,7 +5273,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 4200,
+              amount: '4200',
             },
           },
           {
@@ -5274,7 +5284,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9999115959,
+              amount: '9999115959',
             },
           },
         ],
@@ -5298,7 +5308,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 4210,
+              amount: '4210',
             },
           },
           {
@@ -5309,7 +5319,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9999111749,
+              amount: '9999111749',
             },
           },
         ],
@@ -5333,7 +5343,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 4220,
+              amount: '4220',
             },
           },
           {
@@ -5344,7 +5354,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9999107529,
+              amount: '9999107529',
             },
           },
         ],
@@ -5368,7 +5378,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 4230,
+              amount: '4230',
             },
           },
           {
@@ -5379,7 +5389,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9999103299,
+              amount: '9999103299',
             },
           },
         ],
@@ -5403,7 +5413,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 4240,
+              amount: '4240',
             },
           },
           {
@@ -5414,7 +5424,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9999099059,
+              amount: '9999099059',
             },
           },
         ],
@@ -5438,7 +5448,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 4250,
+              amount: '4250',
             },
           },
           {
@@ -5449,7 +5459,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9999094809,
+              amount: '9999094809',
             },
           },
         ],
@@ -5473,7 +5483,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 4260,
+              amount: '4260',
             },
           },
           {
@@ -5484,7 +5494,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9999090549,
+              amount: '9999090549',
             },
           },
         ],
@@ -5508,7 +5518,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 4270,
+              amount: '4270',
             },
           },
           {
@@ -5519,7 +5529,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9999086279,
+              amount: '9999086279',
             },
           },
         ],
@@ -5543,7 +5553,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 4280,
+              amount: '4280',
             },
           },
           {
@@ -5554,7 +5564,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9999081999,
+              amount: '9999081999',
             },
           },
         ],
@@ -5578,7 +5588,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 4290,
+              amount: '4290',
             },
           },
           {
@@ -5589,7 +5599,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9999077709,
+              amount: '9999077709',
             },
           },
         ],
@@ -5613,7 +5623,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 4300,
+              amount: '4300',
             },
           },
           {
@@ -5624,7 +5634,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9999073409,
+              amount: '9999073409',
             },
           },
         ],
@@ -5648,7 +5658,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 4310,
+              amount: '4310',
             },
           },
           {
@@ -5659,7 +5669,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9999069099,
+              amount: '9999069099',
             },
           },
         ],
@@ -5683,7 +5693,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 4320,
+              amount: '4320',
             },
           },
           {
@@ -5694,7 +5704,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9999064779,
+              amount: '9999064779',
             },
           },
         ],
@@ -5718,7 +5728,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 4330,
+              amount: '4330',
             },
           },
           {
@@ -5729,7 +5739,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9999060449,
+              amount: '9999060449',
             },
           },
         ],
@@ -5753,7 +5763,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 4340,
+              amount: '4340',
             },
           },
           {
@@ -5764,7 +5774,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9999056109,
+              amount: '9999056109',
             },
           },
         ],
@@ -5788,7 +5798,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 4350,
+              amount: '4350',
             },
           },
           {
@@ -5799,7 +5809,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9999051759,
+              amount: '9999051759',
             },
           },
         ],
@@ -5823,7 +5833,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 4360,
+              amount: '4360',
             },
           },
           {
@@ -5834,7 +5844,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9999047399,
+              amount: '9999047399',
             },
           },
         ],
@@ -5858,7 +5868,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 4370,
+              amount: '4370',
             },
           },
           {
@@ -5869,7 +5879,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9999043029,
+              amount: '9999043029',
             },
           },
         ],
@@ -5893,7 +5903,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 4380,
+              amount: '4380',
             },
           },
           {
@@ -5904,7 +5914,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9999038649,
+              amount: '9999038649',
             },
           },
         ],
@@ -5928,7 +5938,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 4390,
+              amount: '4390',
             },
           },
           {
@@ -5939,7 +5949,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9999034259,
+              amount: '9999034259',
             },
           },
         ],
@@ -5963,7 +5973,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 4400,
+              amount: '4400',
             },
           },
           {
@@ -5974,7 +5984,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9999029859,
+              amount: '9999029859',
             },
           },
         ],
@@ -5998,7 +6008,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 4410,
+              amount: '4410',
             },
           },
           {
@@ -6009,7 +6019,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9999025449,
+              amount: '9999025449',
             },
           },
         ],
@@ -6033,7 +6043,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 4420,
+              amount: '4420',
             },
           },
           {
@@ -6044,7 +6054,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9999021029,
+              amount: '9999021029',
             },
           },
         ],
@@ -6068,7 +6078,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 4430,
+              amount: '4430',
             },
           },
           {
@@ -6079,7 +6089,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9999016599,
+              amount: '9999016599',
             },
           },
         ],
@@ -6103,7 +6113,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 4440,
+              amount: '4440',
             },
           },
           {
@@ -6114,7 +6124,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9999012159,
+              amount: '9999012159',
             },
           },
         ],
@@ -6138,7 +6148,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 4450,
+              amount: '4450',
             },
           },
           {
@@ -6149,7 +6159,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9999007709,
+              amount: '9999007709',
             },
           },
         ],
@@ -6173,7 +6183,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 4460,
+              amount: '4460',
             },
           },
           {
@@ -6184,7 +6194,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9999003249,
+              amount: '9999003249',
             },
           },
         ],
@@ -6208,7 +6218,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 4470,
+              amount: '4470',
             },
           },
           {
@@ -6219,7 +6229,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9998998779,
+              amount: '9998998779',
             },
           },
         ],
@@ -6243,7 +6253,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 4480,
+              amount: '4480',
             },
           },
           {
@@ -6254,7 +6264,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9998994299,
+              amount: '9998994299',
             },
           },
         ],
@@ -6278,7 +6288,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 4490,
+              amount: '4490',
             },
           },
           {
@@ -6289,7 +6299,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9998989809,
+              amount: '9998989809',
             },
           },
         ],
@@ -6313,7 +6323,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 4500,
+              amount: '4500',
             },
           },
           {
@@ -6324,7 +6334,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9998985309,
+              amount: '9998985309',
             },
           },
         ],
@@ -6348,7 +6358,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 4510,
+              amount: '4510',
             },
           },
           {
@@ -6359,7 +6369,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9998980799,
+              amount: '9998980799',
             },
           },
         ],
@@ -6383,7 +6393,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 4520,
+              amount: '4520',
             },
           },
           {
@@ -6394,7 +6404,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9998976279,
+              amount: '9998976279',
             },
           },
         ],
@@ -6418,7 +6428,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 4530,
+              amount: '4530',
             },
           },
           {
@@ -6429,7 +6439,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9998971749,
+              amount: '9998971749',
             },
           },
         ],
@@ -6453,7 +6463,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 4540,
+              amount: '4540',
             },
           },
           {
@@ -6464,7 +6474,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9998967209,
+              amount: '9998967209',
             },
           },
         ],
@@ -6488,7 +6498,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 4550,
+              amount: '4550',
             },
           },
           {
@@ -6499,7 +6509,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9998962659,
+              amount: '9998962659',
             },
           },
         ],
@@ -6523,7 +6533,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 4560,
+              amount: '4560',
             },
           },
           {
@@ -6534,7 +6544,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9998958099,
+              amount: '9998958099',
             },
           },
         ],
@@ -6558,7 +6568,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 4570,
+              amount: '4570',
             },
           },
           {
@@ -6569,7 +6579,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9998953529,
+              amount: '9998953529',
             },
           },
         ],
@@ -6593,7 +6603,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 4580,
+              amount: '4580',
             },
           },
           {
@@ -6604,7 +6614,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9998948949,
+              amount: '9998948949',
             },
           },
         ],
@@ -6628,7 +6638,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 4590,
+              amount: '4590',
             },
           },
           {
@@ -6639,7 +6649,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9998944359,
+              amount: '9998944359',
             },
           },
         ],
@@ -6663,7 +6673,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 4600,
+              amount: '4600',
             },
           },
           {
@@ -6674,7 +6684,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9998939759,
+              amount: '9998939759',
             },
           },
         ],
@@ -6698,7 +6708,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 4610,
+              amount: '4610',
             },
           },
           {
@@ -6709,7 +6719,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9998935149,
+              amount: '9998935149',
             },
           },
         ],
@@ -6733,7 +6743,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 4620,
+              amount: '4620',
             },
           },
           {
@@ -6744,7 +6754,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9998930529,
+              amount: '9998930529',
             },
           },
         ],
@@ -6768,7 +6778,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 4630,
+              amount: '4630',
             },
           },
           {
@@ -6779,7 +6789,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9998925899,
+              amount: '9998925899',
             },
           },
         ],
@@ -6803,7 +6813,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 4640,
+              amount: '4640',
             },
           },
           {
@@ -6814,7 +6824,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9998921259,
+              amount: '9998921259',
             },
           },
         ],
@@ -6838,7 +6848,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 4650,
+              amount: '4650',
             },
           },
           {
@@ -6849,7 +6859,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9998916609,
+              amount: '9998916609',
             },
           },
         ],
@@ -6873,7 +6883,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 4660,
+              amount: '4660',
             },
           },
           {
@@ -6884,7 +6894,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9998911949,
+              amount: '9998911949',
             },
           },
         ],
@@ -6908,7 +6918,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 4670,
+              amount: '4670',
             },
           },
           {
@@ -6919,7 +6929,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9998907279,
+              amount: '9998907279',
             },
           },
         ],
@@ -6943,7 +6953,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 4680,
+              amount: '4680',
             },
           },
           {
@@ -6954,7 +6964,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9998902599,
+              amount: '9998902599',
             },
           },
         ],
@@ -6978,7 +6988,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 4690,
+              amount: '4690',
             },
           },
           {
@@ -6989,7 +6999,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9998897909,
+              amount: '9998897909',
             },
           },
         ],
@@ -7013,7 +7023,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 4700,
+              amount: '4700',
             },
           },
           {
@@ -7024,7 +7034,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9998893209,
+              amount: '9998893209',
             },
           },
         ],
@@ -7048,7 +7058,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 4710,
+              amount: '4710',
             },
           },
           {
@@ -7059,7 +7069,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9998888499,
+              amount: '9998888499',
             },
           },
         ],
@@ -7083,7 +7093,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 4720,
+              amount: '4720',
             },
           },
           {
@@ -7094,7 +7104,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9998883779,
+              amount: '9998883779',
             },
           },
         ],
@@ -7118,7 +7128,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 4730,
+              amount: '4730',
             },
           },
           {
@@ -7129,7 +7139,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9998879049,
+              amount: '9998879049',
             },
           },
         ],
@@ -7153,7 +7163,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 4740,
+              amount: '4740',
             },
           },
           {
@@ -7164,7 +7174,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9998874309,
+              amount: '9998874309',
             },
           },
         ],
@@ -7188,7 +7198,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 4750,
+              amount: '4750',
             },
           },
           {
@@ -7199,7 +7209,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9998869559,
+              amount: '9998869559',
             },
           },
         ],
@@ -7223,7 +7233,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 4760,
+              amount: '4760',
             },
           },
           {
@@ -7234,7 +7244,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9998864799,
+              amount: '9998864799',
             },
           },
         ],
@@ -7258,7 +7268,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 4770,
+              amount: '4770',
             },
           },
           {
@@ -7269,7 +7279,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9998860029,
+              amount: '9998860029',
             },
           },
         ],
@@ -7293,7 +7303,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 4780,
+              amount: '4780',
             },
           },
           {
@@ -7304,7 +7314,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9998855249,
+              amount: '9998855249',
             },
           },
         ],
@@ -7328,7 +7338,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 4790,
+              amount: '4790',
             },
           },
           {
@@ -7339,7 +7349,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9998850459,
+              amount: '9998850459',
             },
           },
         ],
@@ -7363,7 +7373,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 4800,
+              amount: '4800',
             },
           },
           {
@@ -7374,7 +7384,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9998845659,
+              amount: '9998845659',
             },
           },
         ],
@@ -7398,7 +7408,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 4810,
+              amount: '4810',
             },
           },
           {
@@ -7409,7 +7419,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9998840849,
+              amount: '9998840849',
             },
           },
         ],
@@ -7433,7 +7443,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 4820,
+              amount: '4820',
             },
           },
           {
@@ -7444,7 +7454,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9998836029,
+              amount: '9998836029',
             },
           },
         ],
@@ -7468,7 +7478,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 4830,
+              amount: '4830',
             },
           },
           {
@@ -7479,7 +7489,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9998831199,
+              amount: '9998831199',
             },
           },
         ],
@@ -7503,7 +7513,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 4840,
+              amount: '4840',
             },
           },
           {
@@ -7514,7 +7524,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9998826359,
+              amount: '9998826359',
             },
           },
         ],
@@ -7538,7 +7548,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 4850,
+              amount: '4850',
             },
           },
           {
@@ -7549,7 +7559,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9998821509,
+              amount: '9998821509',
             },
           },
         ],
@@ -7573,7 +7583,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 4860,
+              amount: '4860',
             },
           },
           {
@@ -7584,7 +7594,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9998816649,
+              amount: '9998816649',
             },
           },
         ],
@@ -7608,7 +7618,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 4870,
+              amount: '4870',
             },
           },
           {
@@ -7619,7 +7629,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9998811779,
+              amount: '9998811779',
             },
           },
         ],
@@ -7643,7 +7653,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 4880,
+              amount: '4880',
             },
           },
           {
@@ -7654,7 +7664,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9998806899,
+              amount: '9998806899',
             },
           },
         ],
@@ -7678,7 +7688,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 4890,
+              amount: '4890',
             },
           },
           {
@@ -7689,7 +7699,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9998802009,
+              amount: '9998802009',
             },
           },
         ],
@@ -7713,7 +7723,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 4900,
+              amount: '4900',
             },
           },
           {
@@ -7724,7 +7734,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9998797109,
+              amount: '9998797109',
             },
           },
         ],
@@ -7748,7 +7758,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 4910,
+              amount: '4910',
             },
           },
           {
@@ -7759,7 +7769,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9998792199,
+              amount: '9998792199',
             },
           },
         ],
@@ -7783,7 +7793,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 4920,
+              amount: '4920',
             },
           },
           {
@@ -7794,7 +7804,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9998787279,
+              amount: '9998787279',
             },
           },
         ],
@@ -7818,7 +7828,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 4930,
+              amount: '4930',
             },
           },
           {
@@ -7829,7 +7839,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9998782349,
+              amount: '9998782349',
             },
           },
         ],
@@ -7853,7 +7863,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 4940,
+              amount: '4940',
             },
           },
           {
@@ -7864,7 +7874,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9998777409,
+              amount: '9998777409',
             },
           },
         ],
@@ -7888,7 +7898,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 4950,
+              amount: '4950',
             },
           },
           {
@@ -7899,7 +7909,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9998772459,
+              amount: '9998772459',
             },
           },
         ],
@@ -7923,7 +7933,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 4960,
+              amount: '4960',
             },
           },
           {
@@ -7934,7 +7944,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9998767499,
+              amount: '9998767499',
             },
           },
         ],
@@ -7958,7 +7968,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 4970,
+              amount: '4970',
             },
           },
           {
@@ -7969,7 +7979,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9998762529,
+              amount: '9998762529',
             },
           },
         ],
@@ -7993,7 +8003,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 4980,
+              amount: '4980',
             },
           },
           {
@@ -8004,7 +8014,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9998757549,
+              amount: '9998757549',
             },
           },
         ],
@@ -8028,7 +8038,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 4990,
+              amount: '4990',
             },
           },
           {
@@ -8039,7 +8049,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9998752559,
+              amount: '9998752559',
             },
           },
         ],
@@ -8063,7 +8073,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 5000,
+              amount: '5000',
             },
           },
           {
@@ -8074,7 +8084,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9998747559,
+              amount: '9998747559',
             },
           },
         ],
@@ -8098,7 +8108,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 5010,
+              amount: '5010',
             },
           },
           {
@@ -8109,7 +8119,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9998742549,
+              amount: '9998742549',
             },
           },
         ],
@@ -8133,7 +8143,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 5020,
+              amount: '5020',
             },
           },
           {
@@ -8144,7 +8154,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9998737529,
+              amount: '9998737529',
             },
           },
         ],
@@ -8168,7 +8178,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 5030,
+              amount: '5030',
             },
           },
           {
@@ -8179,7 +8189,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9998732499,
+              amount: '9998732499',
             },
           },
         ],
@@ -8203,7 +8213,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 5040,
+              amount: '5040',
             },
           },
           {
@@ -8214,7 +8224,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9998727459,
+              amount: '9998727459',
             },
           },
         ],
@@ -8238,7 +8248,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 5050,
+              amount: '5050',
             },
           },
           {
@@ -8249,7 +8259,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9998722409,
+              amount: '9998722409',
             },
           },
         ],
@@ -8273,7 +8283,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 5060,
+              amount: '5060',
             },
           },
           {
@@ -8284,7 +8294,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9998717349,
+              amount: '9998717349',
             },
           },
         ],
@@ -8308,7 +8318,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 5070,
+              amount: '5070',
             },
           },
           {
@@ -8319,7 +8329,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9998712279,
+              amount: '9998712279',
             },
           },
         ],
@@ -8343,7 +8353,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 5080,
+              amount: '5080',
             },
           },
           {
@@ -8354,7 +8364,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9998707199,
+              amount: '9998707199',
             },
           },
         ],
@@ -8378,7 +8388,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 5090,
+              amount: '5090',
             },
           },
           {
@@ -8389,7 +8399,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9998702109,
+              amount: '9998702109',
             },
           },
         ],
@@ -8413,7 +8423,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 5100,
+              amount: '5100',
             },
           },
           {
@@ -8424,7 +8434,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9998697009,
+              amount: '9998697009',
             },
           },
         ],
@@ -8448,7 +8458,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 5110,
+              amount: '5110',
             },
           },
           {
@@ -8459,7 +8469,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9998691899,
+              amount: '9998691899',
             },
           },
         ],
@@ -8483,7 +8493,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 5120,
+              amount: '5120',
             },
           },
           {
@@ -8494,7 +8504,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9998686779,
+              amount: '9998686779',
             },
           },
         ],
@@ -8518,7 +8528,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 5130,
+              amount: '5130',
             },
           },
           {
@@ -8529,7 +8539,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9998681649,
+              amount: '9998681649',
             },
           },
         ],
@@ -8553,7 +8563,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 5140,
+              amount: '5140',
             },
           },
           {
@@ -8564,7 +8574,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9998676509,
+              amount: '9998676509',
             },
           },
         ],
@@ -8588,7 +8598,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 5150,
+              amount: '5150',
             },
           },
           {
@@ -8599,7 +8609,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9998671359,
+              amount: '9998671359',
             },
           },
         ],
@@ -8623,7 +8633,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 5160,
+              amount: '5160',
             },
           },
           {
@@ -8634,7 +8644,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9998666199,
+              amount: '9998666199',
             },
           },
         ],
@@ -8658,7 +8668,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 5170,
+              amount: '5170',
             },
           },
           {
@@ -8669,7 +8679,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9998661029,
+              amount: '9998661029',
             },
           },
         ],
@@ -8693,7 +8703,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 5180,
+              amount: '5180',
             },
           },
           {
@@ -8704,7 +8714,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9998655849,
+              amount: '9998655849',
             },
           },
         ],
@@ -8728,7 +8738,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 5190,
+              amount: '5190',
             },
           },
           {
@@ -8739,7 +8749,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9998650659,
+              amount: '9998650659',
             },
           },
         ],
@@ -8763,7 +8773,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 5200,
+              amount: '5200',
             },
           },
           {
@@ -8774,7 +8784,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9998645459,
+              amount: '9998645459',
             },
           },
         ],
@@ -8798,7 +8808,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 5210,
+              amount: '5210',
             },
           },
           {
@@ -8809,7 +8819,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9998640249,
+              amount: '9998640249',
             },
           },
         ],
@@ -8833,7 +8843,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 5220,
+              amount: '5220',
             },
           },
           {
@@ -8844,7 +8854,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9998635029,
+              amount: '9998635029',
             },
           },
         ],
@@ -8868,7 +8878,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 5230,
+              amount: '5230',
             },
           },
           {
@@ -8879,7 +8889,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9998629799,
+              amount: '9998629799',
             },
           },
         ],
@@ -8903,7 +8913,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 5240,
+              amount: '5240',
             },
           },
           {
@@ -8914,7 +8924,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9998624559,
+              amount: '9998624559',
             },
           },
         ],
@@ -8938,7 +8948,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 5250,
+              amount: '5250',
             },
           },
           {
@@ -8949,7 +8959,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9998619309,
+              amount: '9998619309',
             },
           },
         ],
@@ -8973,7 +8983,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 5260,
+              amount: '5260',
             },
           },
           {
@@ -8984,7 +8994,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9998614049,
+              amount: '9998614049',
             },
           },
         ],
@@ -9008,7 +9018,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 5270,
+              amount: '5270',
             },
           },
           {
@@ -9019,7 +9029,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9998608779,
+              amount: '9998608779',
             },
           },
         ],
@@ -9043,7 +9053,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 5280,
+              amount: '5280',
             },
           },
           {
@@ -9054,7 +9064,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9998603499,
+              amount: '9998603499',
             },
           },
         ],
@@ -9078,7 +9088,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 5290,
+              amount: '5290',
             },
           },
           {
@@ -9089,7 +9099,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9998598209,
+              amount: '9998598209',
             },
           },
         ],
@@ -9113,7 +9123,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 5300,
+              amount: '5300',
             },
           },
           {
@@ -9124,7 +9134,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9998592909,
+              amount: '9998592909',
             },
           },
         ],
@@ -9148,7 +9158,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 5310,
+              amount: '5310',
             },
           },
           {
@@ -9159,7 +9169,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9998587599,
+              amount: '9998587599',
             },
           },
         ],
@@ -9183,7 +9193,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 5320,
+              amount: '5320',
             },
           },
           {
@@ -9194,7 +9204,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9998582279,
+              amount: '9998582279',
             },
           },
         ],
@@ -9218,7 +9228,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 5330,
+              amount: '5330',
             },
           },
           {
@@ -9229,7 +9239,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9998576949,
+              amount: '9998576949',
             },
           },
         ],
@@ -9253,7 +9263,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 5340,
+              amount: '5340',
             },
           },
           {
@@ -9264,7 +9274,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9998571609,
+              amount: '9998571609',
             },
           },
         ],
@@ -9288,7 +9298,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 5350,
+              amount: '5350',
             },
           },
           {
@@ -9299,7 +9309,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9998566259,
+              amount: '9998566259',
             },
           },
         ],
@@ -9323,7 +9333,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 5360,
+              amount: '5360',
             },
           },
           {
@@ -9334,7 +9344,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9998560899,
+              amount: '9998560899',
             },
           },
         ],
@@ -9358,7 +9368,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 5370,
+              amount: '5370',
             },
           },
           {
@@ -9369,7 +9379,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9998555529,
+              amount: '9998555529',
             },
           },
         ],
@@ -9393,7 +9403,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 5380,
+              amount: '5380',
             },
           },
           {
@@ -9404,7 +9414,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9998550149,
+              amount: '9998550149',
             },
           },
         ],
@@ -9428,7 +9438,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 5390,
+              amount: '5390',
             },
           },
           {
@@ -9439,7 +9449,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9998544759,
+              amount: '9998544759',
             },
           },
         ],
@@ -9463,7 +9473,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 5400,
+              amount: '5400',
             },
           },
           {
@@ -9474,7 +9484,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9998539359,
+              amount: '9998539359',
             },
           },
         ],
@@ -9498,7 +9508,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 5410,
+              amount: '5410',
             },
           },
           {
@@ -9509,7 +9519,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9998533949,
+              amount: '9998533949',
             },
           },
         ],
@@ -9533,7 +9543,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 5420,
+              amount: '5420',
             },
           },
           {
@@ -9544,7 +9554,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9998528529,
+              amount: '9998528529',
             },
           },
         ],
@@ -9568,7 +9578,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 5430,
+              amount: '5430',
             },
           },
           {
@@ -9579,7 +9589,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9998523099,
+              amount: '9998523099',
             },
           },
         ],
@@ -9603,7 +9613,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 5440,
+              amount: '5440',
             },
           },
           {
@@ -9614,7 +9624,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9998517659,
+              amount: '9998517659',
             },
           },
         ],
@@ -9638,7 +9648,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 5450,
+              amount: '5450',
             },
           },
           {
@@ -9649,7 +9659,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9998512209,
+              amount: '9998512209',
             },
           },
         ],
@@ -9673,7 +9683,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 5460,
+              amount: '5460',
             },
           },
           {
@@ -9684,7 +9694,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9998506749,
+              amount: '9998506749',
             },
           },
         ],
@@ -9708,7 +9718,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 5470,
+              amount: '5470',
             },
           },
           {
@@ -9719,7 +9729,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9998501279,
+              amount: '9998501279',
             },
           },
         ],
@@ -9743,7 +9753,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 5480,
+              amount: '5480',
             },
           },
           {
@@ -9754,7 +9764,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9998495799,
+              amount: '9998495799',
             },
           },
         ],
@@ -9778,7 +9788,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 5490,
+              amount: '5490',
             },
           },
           {
@@ -9789,7 +9799,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9998490309,
+              amount: '9998490309',
             },
           },
         ],
@@ -9813,7 +9823,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 5500,
+              amount: '5500',
             },
           },
           {
@@ -9824,7 +9834,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9998484809,
+              amount: '9998484809',
             },
           },
         ],
@@ -9848,7 +9858,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 5510,
+              amount: '5510',
             },
           },
           {
@@ -9859,7 +9869,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9998479299,
+              amount: '9998479299',
             },
           },
         ],
@@ -9883,7 +9893,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 5520,
+              amount: '5520',
             },
           },
           {
@@ -9894,7 +9904,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9998473779,
+              amount: '9998473779',
             },
           },
         ],
@@ -9918,7 +9928,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 5530,
+              amount: '5530',
             },
           },
           {
@@ -9929,7 +9939,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9998468249,
+              amount: '9998468249',
             },
           },
         ],
@@ -9953,7 +9963,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 5540,
+              amount: '5540',
             },
           },
           {
@@ -9964,7 +9974,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9998462709,
+              amount: '9998462709',
             },
           },
         ],
@@ -9988,7 +9998,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 5550,
+              amount: '5550',
             },
           },
           {
@@ -9999,7 +10009,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9998457159,
+              amount: '9998457159',
             },
           },
         ],
@@ -10023,7 +10033,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 5560,
+              amount: '5560',
             },
           },
           {
@@ -10034,7 +10044,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9998451599,
+              amount: '9998451599',
             },
           },
         ],
@@ -10058,7 +10068,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 5570,
+              amount: '5570',
             },
           },
           {
@@ -10069,7 +10079,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9998446029,
+              amount: '9998446029',
             },
           },
         ],
@@ -10093,7 +10103,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 5580,
+              amount: '5580',
             },
           },
           {
@@ -10104,7 +10114,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9998440449,
+              amount: '9998440449',
             },
           },
         ],
@@ -10128,7 +10138,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 5590,
+              amount: '5590',
             },
           },
           {
@@ -10139,7 +10149,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9998434859,
+              amount: '9998434859',
             },
           },
         ],
@@ -10163,7 +10173,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 5600,
+              amount: '5600',
             },
           },
           {
@@ -10174,7 +10184,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9998429259,
+              amount: '9998429259',
             },
           },
         ],
@@ -10198,7 +10208,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 5610,
+              amount: '5610',
             },
           },
           {
@@ -10209,7 +10219,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9998423649,
+              amount: '9998423649',
             },
           },
         ],
@@ -10233,7 +10243,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 5620,
+              amount: '5620',
             },
           },
           {
@@ -10244,7 +10254,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9998418029,
+              amount: '9998418029',
             },
           },
         ],
@@ -10268,7 +10278,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 3370,
+              amount: '3370',
             },
           },
           {
@@ -10279,7 +10289,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9999330530,
+              amount: '9999330530',
             },
           },
         ],
@@ -10303,7 +10313,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 3380,
+              amount: '3380',
             },
           },
           {
@@ -10314,7 +10324,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9999327150,
+              amount: '9999327150',
             },
           },
         ],
@@ -10338,7 +10348,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 3390,
+              amount: '3390',
             },
           },
           {
@@ -10349,7 +10359,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9999323760,
+              amount: '9999323760',
             },
           },
         ],
@@ -10373,7 +10383,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 3400,
+              amount: '3400',
             },
           },
           {
@@ -10384,7 +10394,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9999320360,
+              amount: '9999320360',
             },
           },
         ],
@@ -10408,7 +10418,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 3410,
+              amount: '3410',
             },
           },
           {
@@ -10419,7 +10429,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9999316950,
+              amount: '9999316950',
             },
           },
         ],
@@ -10443,7 +10453,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 3420,
+              amount: '3420',
             },
           },
           {
@@ -10454,7 +10464,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9999313530,
+              amount: '9999313530',
             },
           },
         ],
@@ -10478,7 +10488,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 3430,
+              amount: '3430',
             },
           },
           {
@@ -10489,7 +10499,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9999310100,
+              amount: '9999310100',
             },
           },
         ],
@@ -10513,7 +10523,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 3440,
+              amount: '3440',
             },
           },
           {
@@ -10524,7 +10534,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9999306660,
+              amount: '9999306660',
             },
           },
         ],
@@ -10548,7 +10558,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 3450,
+              amount: '3450',
             },
           },
           {
@@ -10559,7 +10569,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9999303210,
+              amount: '9999303210',
             },
           },
         ],
@@ -10583,7 +10593,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 3460,
+              amount: '3460',
             },
           },
           {
@@ -10594,7 +10604,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9999299750,
+              amount: '9999299750',
             },
           },
         ],
@@ -10618,7 +10628,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 3470,
+              amount: '3470',
             },
           },
           {
@@ -10629,7 +10639,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9999296280,
+              amount: '9999296280',
             },
           },
         ],
@@ -10653,7 +10663,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 3480,
+              amount: '3480',
             },
           },
           {
@@ -10664,7 +10674,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9999292800,
+              amount: '9999292800',
             },
           },
         ],
@@ -10688,7 +10698,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 3490,
+              amount: '3490',
             },
           },
           {
@@ -10699,7 +10709,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9999289310,
+              amount: '9999289310',
             },
           },
         ],
@@ -10723,7 +10733,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 3500,
+              amount: '3500',
             },
           },
           {
@@ -10734,7 +10744,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9999285810,
+              amount: '9999285810',
             },
           },
         ],
@@ -10758,7 +10768,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 3510,
+              amount: '3510',
             },
           },
           {
@@ -10769,7 +10779,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9999282300,
+              amount: '9999282300',
             },
           },
         ],
@@ -10793,7 +10803,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 3520,
+              amount: '3520',
             },
           },
           {
@@ -10804,7 +10814,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9999278780,
+              amount: '9999278780',
             },
           },
         ],
@@ -10828,7 +10838,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 3530,
+              amount: '3530',
             },
           },
           {
@@ -10839,7 +10849,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9999275250,
+              amount: '9999275250',
             },
           },
         ],
@@ -10863,7 +10873,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 3540,
+              amount: '3540',
             },
           },
           {
@@ -10874,7 +10884,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9999271710,
+              amount: '9999271710',
             },
           },
         ],
@@ -10898,7 +10908,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 3550,
+              amount: '3550',
             },
           },
           {
@@ -10909,7 +10919,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9999268160,
+              amount: '9999268160',
             },
           },
         ],
@@ -10933,7 +10943,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 3560,
+              amount: '3560',
             },
           },
           {
@@ -10944,7 +10954,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9999264600,
+              amount: '9999264600',
             },
           },
         ],
@@ -10968,7 +10978,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 3570,
+              amount: '3570',
             },
           },
           {
@@ -10979,7 +10989,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9999261030,
+              amount: '9999261030',
             },
           },
         ],
@@ -11003,7 +11013,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 3580,
+              amount: '3580',
             },
           },
           {
@@ -11014,7 +11024,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9999257450,
+              amount: '9999257450',
             },
           },
         ],
@@ -11038,7 +11048,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 3590,
+              amount: '3590',
             },
           },
           {
@@ -11049,7 +11059,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9999253860,
+              amount: '9999253860',
             },
           },
         ],
@@ -11073,7 +11083,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 3600,
+              amount: '3600',
             },
           },
           {
@@ -11084,7 +11094,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9999250260,
+              amount: '9999250260',
             },
           },
         ],
@@ -11108,7 +11118,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 3610,
+              amount: '3610',
             },
           },
           {
@@ -11119,7 +11129,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9999246650,
+              amount: '9999246650',
             },
           },
         ],
@@ -11143,7 +11153,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 3620,
+              amount: '3620',
             },
           },
           {
@@ -11154,7 +11164,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9999243030,
+              amount: '9999243030',
             },
           },
         ],
@@ -11178,7 +11188,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 3630,
+              amount: '3630',
             },
           },
           {
@@ -11189,7 +11199,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9999239400,
+              amount: '9999239400',
             },
           },
         ],
@@ -11213,7 +11223,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 3640,
+              amount: '3640',
             },
           },
           {
@@ -11224,7 +11234,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9999235760,
+              amount: '9999235760',
             },
           },
         ],
@@ -11248,7 +11258,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 3650,
+              amount: '3650',
             },
           },
           {
@@ -11259,7 +11269,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9999232110,
+              amount: '9999232110',
             },
           },
         ],
@@ -11283,7 +11293,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 3660,
+              amount: '3660',
             },
           },
           {
@@ -11294,7 +11304,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9999228450,
+              amount: '9999228450',
             },
           },
         ],
@@ -11318,7 +11328,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 3670,
+              amount: '3670',
             },
           },
           {
@@ -11329,7 +11339,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9999224780,
+              amount: '9999224780',
             },
           },
         ],
@@ -11353,7 +11363,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 3680,
+              amount: '3680',
             },
           },
           {
@@ -11364,7 +11374,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9999221100,
+              amount: '9999221100',
             },
           },
         ],
@@ -11388,7 +11398,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 3690,
+              amount: '3690',
             },
           },
           {
@@ -11399,7 +11409,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9999217410,
+              amount: '9999217410',
             },
           },
         ],
@@ -11423,7 +11433,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 3700,
+              amount: '3700',
             },
           },
           {
@@ -11434,7 +11444,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9999213710,
+              amount: '9999213710',
             },
           },
         ],
@@ -11458,7 +11468,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 3710,
+              amount: '3710',
             },
           },
           {
@@ -11469,7 +11479,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9999210000,
+              amount: '9999210000',
             },
           },
         ],
@@ -11493,7 +11503,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 3720,
+              amount: '3720',
             },
           },
           {
@@ -11504,7 +11514,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9999206280,
+              amount: '9999206280',
             },
           },
         ],
@@ -11528,7 +11538,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 3730,
+              amount: '3730',
             },
           },
           {
@@ -11539,7 +11549,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9999202550,
+              amount: '9999202550',
             },
           },
         ],
@@ -11563,7 +11573,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 3740,
+              amount: '3740',
             },
           },
           {
@@ -11574,7 +11584,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9999198810,
+              amount: '9999198810',
             },
           },
         ],
@@ -11598,7 +11608,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 3750,
+              amount: '3750',
             },
           },
           {
@@ -11609,7 +11619,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9999195060,
+              amount: '9999195060',
             },
           },
         ],
@@ -11633,7 +11643,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 3760,
+              amount: '3760',
             },
           },
           {
@@ -11644,7 +11654,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9999191300,
+              amount: '9999191300',
             },
           },
         ],
@@ -11668,7 +11678,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 3770,
+              amount: '3770',
             },
           },
           {
@@ -11679,7 +11689,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9999187530,
+              amount: '9999187530',
             },
           },
         ],
@@ -11703,7 +11713,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 3780,
+              amount: '3780',
             },
           },
           {
@@ -11714,7 +11724,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9999183750,
+              amount: '9999183750',
             },
           },
         ],
@@ -11738,7 +11748,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 3790,
+              amount: '3790',
             },
           },
           {
@@ -11749,7 +11759,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9999179960,
+              amount: '9999179960',
             },
           },
         ],
@@ -11773,7 +11783,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 3800,
+              amount: '3800',
             },
           },
           {
@@ -11784,7 +11794,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9999176160,
+              amount: '9999176160',
             },
           },
         ],
@@ -11808,7 +11818,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 5630,
+              amount: '5630',
             },
           },
           {
@@ -11819,7 +11829,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9998412399,
+              amount: '9998412399',
             },
           },
         ],
@@ -11843,7 +11853,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 5640,
+              amount: '5640',
             },
           },
           {
@@ -11854,7 +11864,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9998406759,
+              amount: '9998406759',
             },
           },
         ],
@@ -11878,7 +11888,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 5650,
+              amount: '5650',
             },
           },
           {
@@ -11889,7 +11899,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9998401109,
+              amount: '9998401109',
             },
           },
         ],
@@ -11913,7 +11923,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 5660,
+              amount: '5660',
             },
           },
           {
@@ -11924,7 +11934,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9998395449,
+              amount: '9998395449',
             },
           },
         ],
@@ -11948,7 +11958,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 5670,
+              amount: '5670',
             },
           },
           {
@@ -11959,7 +11969,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9998389779,
+              amount: '9998389779',
             },
           },
         ],
@@ -11983,7 +11993,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 5680,
+              amount: '5680',
             },
           },
           {
@@ -11994,7 +12004,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9998384099,
+              amount: '9998384099',
             },
           },
         ],
@@ -12018,7 +12028,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 5690,
+              amount: '5690',
             },
           },
           {
@@ -12029,7 +12039,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9998378409,
+              amount: '9998378409',
             },
           },
         ],
@@ -12053,7 +12063,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 5700,
+              amount: '5700',
             },
           },
           {
@@ -12064,7 +12074,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9998372709,
+              amount: '9998372709',
             },
           },
         ],
@@ -12088,7 +12098,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 5710,
+              amount: '5710',
             },
           },
           {
@@ -12099,7 +12109,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9998366999,
+              amount: '9998366999',
             },
           },
         ],
@@ -12123,7 +12133,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 5720,
+              amount: '5720',
             },
           },
           {
@@ -12134,7 +12144,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9998361279,
+              amount: '9998361279',
             },
           },
         ],
@@ -12158,7 +12168,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 5730,
+              amount: '5730',
             },
           },
           {
@@ -12169,7 +12179,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9998355549,
+              amount: '9998355549',
             },
           },
         ],
@@ -12193,7 +12203,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 5740,
+              amount: '5740',
             },
           },
           {
@@ -12204,7 +12214,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9998349809,
+              amount: '9998349809',
             },
           },
         ],
@@ -12228,7 +12238,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 5750,
+              amount: '5750',
             },
           },
           {
@@ -12239,7 +12249,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9998344059,
+              amount: '9998344059',
             },
           },
         ],
@@ -12263,7 +12273,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 5760,
+              amount: '5760',
             },
           },
           {
@@ -12274,7 +12284,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9998338299,
+              amount: '9998338299',
             },
           },
         ],
@@ -12298,7 +12308,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 5770,
+              amount: '5770',
             },
           },
           {
@@ -12309,7 +12319,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9998332529,
+              amount: '9998332529',
             },
           },
         ],
@@ -12333,7 +12343,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 5780,
+              amount: '5780',
             },
           },
           {
@@ -12344,7 +12354,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9998326749,
+              amount: '9998326749',
             },
           },
         ],
@@ -12368,7 +12378,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 5790,
+              amount: '5790',
             },
           },
           {
@@ -12379,7 +12389,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9998320959,
+              amount: '9998320959',
             },
           },
         ],
@@ -12403,7 +12413,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 5800,
+              amount: '5800',
             },
           },
           {
@@ -12414,7 +12424,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9998315159,
+              amount: '9998315159',
             },
           },
         ],
@@ -12438,7 +12448,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 5810,
+              amount: '5810',
             },
           },
           {
@@ -12449,7 +12459,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9998309349,
+              amount: '9998309349',
             },
           },
         ],
@@ -12473,7 +12483,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 5820,
+              amount: '5820',
             },
           },
           {
@@ -12484,7 +12494,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9998303529,
+              amount: '9998303529',
             },
           },
         ],
@@ -12508,7 +12518,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 5830,
+              amount: '5830',
             },
           },
           {
@@ -12519,7 +12529,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9998297699,
+              amount: '9998297699',
             },
           },
         ],
@@ -12543,7 +12553,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 5840,
+              amount: '5840',
             },
           },
           {
@@ -12554,7 +12564,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9998291859,
+              amount: '9998291859',
             },
           },
         ],
@@ -12578,7 +12588,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 5850,
+              amount: '5850',
             },
           },
           {
@@ -12589,7 +12599,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9998286009,
+              amount: '9998286009',
             },
           },
         ],
@@ -12613,7 +12623,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 5860,
+              amount: '5860',
             },
           },
           {
@@ -12624,7 +12634,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9998280149,
+              amount: '9998280149',
             },
           },
         ],
@@ -12648,7 +12658,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 5870,
+              amount: '5870',
             },
           },
           {
@@ -12659,7 +12669,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9998274279,
+              amount: '9998274279',
             },
           },
         ],
@@ -12683,7 +12693,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 5880,
+              amount: '5880',
             },
           },
           {
@@ -12694,7 +12704,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9998268399,
+              amount: '9998268399',
             },
           },
         ],
@@ -12718,7 +12728,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 5890,
+              amount: '5890',
             },
           },
           {
@@ -12729,7 +12739,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9998262509,
+              amount: '9998262509',
             },
           },
         ],
@@ -12753,7 +12763,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 5900,
+              amount: '5900',
             },
           },
           {
@@ -12764,7 +12774,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9998256609,
+              amount: '9998256609',
             },
           },
         ],
@@ -12788,7 +12798,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 5910,
+              amount: '5910',
             },
           },
           {
@@ -12799,7 +12809,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9998250699,
+              amount: '9998250699',
             },
           },
         ],
@@ -12823,7 +12833,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 5920,
+              amount: '5920',
             },
           },
           {
@@ -12834,7 +12844,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9998244779,
+              amount: '9998244779',
             },
           },
         ],
@@ -12858,7 +12868,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 5930,
+              amount: '5930',
             },
           },
           {
@@ -12869,7 +12879,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9998238849,
+              amount: '9998238849',
             },
           },
         ],
@@ -12893,7 +12903,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 5940,
+              amount: '5940',
             },
           },
           {
@@ -12904,7 +12914,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9998232909,
+              amount: '9998232909',
             },
           },
         ],
@@ -12928,7 +12938,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 5950,
+              amount: '5950',
             },
           },
           {
@@ -12939,7 +12949,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9998226959,
+              amount: '9998226959',
             },
           },
         ],
@@ -12963,7 +12973,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 5960,
+              amount: '5960',
             },
           },
           {
@@ -12974,7 +12984,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9998220999,
+              amount: '9998220999',
             },
           },
         ],
@@ -12998,7 +13008,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 5970,
+              amount: '5970',
             },
           },
           {
@@ -13009,7 +13019,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9998215029,
+              amount: '9998215029',
             },
           },
         ],
@@ -13033,7 +13043,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 5980,
+              amount: '5980',
             },
           },
           {
@@ -13044,7 +13054,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9998209049,
+              amount: '9998209049',
             },
           },
         ],
@@ -13068,7 +13078,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 5990,
+              amount: '5990',
             },
           },
           {
@@ -13079,7 +13089,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9998203059,
+              amount: '9998203059',
             },
           },
         ],
@@ -13103,7 +13113,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 6000,
+              amount: '6000',
             },
           },
           {
@@ -13114,7 +13124,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9998197059,
+              amount: '9998197059',
             },
           },
         ],
@@ -13138,7 +13148,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 6010,
+              amount: '6010',
             },
           },
           {
@@ -13149,7 +13159,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9998191049,
+              amount: '9998191049',
             },
           },
         ],
@@ -13173,7 +13183,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 6020,
+              amount: '6020',
             },
           },
           {
@@ -13184,7 +13194,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9998185029,
+              amount: '9998185029',
             },
           },
         ],
@@ -13208,7 +13218,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 6030,
+              amount: '6030',
             },
           },
           {
@@ -13219,7 +13229,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9998178999,
+              amount: '9998178999',
             },
           },
         ],
@@ -13243,7 +13253,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 6040,
+              amount: '6040',
             },
           },
           {
@@ -13254,7 +13264,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9998172959,
+              amount: '9998172959',
             },
           },
         ],
@@ -13278,7 +13288,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 6050,
+              amount: '6050',
             },
           },
           {
@@ -13289,7 +13299,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9998166909,
+              amount: '9998166909',
             },
           },
         ],
@@ -13313,7 +13323,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 6060,
+              amount: '6060',
             },
           },
           {
@@ -13324,7 +13334,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9998160849,
+              amount: '9998160849',
             },
           },
         ],
@@ -13348,7 +13358,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 6070,
+              amount: '6070',
             },
           },
           {
@@ -13359,7 +13369,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9998154779,
+              amount: '9998154779',
             },
           },
         ],
@@ -13383,7 +13393,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 6080,
+              amount: '6080',
             },
           },
           {
@@ -13394,7 +13404,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9998148699,
+              amount: '9998148699',
             },
           },
         ],
@@ -13418,7 +13428,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 6090,
+              amount: '6090',
             },
           },
           {
@@ -13429,7 +13439,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9998142609,
+              amount: '9998142609',
             },
           },
         ],
@@ -13453,7 +13463,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 6100,
+              amount: '6100',
             },
           },
           {
@@ -13464,7 +13474,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9998136509,
+              amount: '9998136509',
             },
           },
         ],
@@ -13488,7 +13498,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 6110,
+              amount: '6110',
             },
           },
           {
@@ -13499,7 +13509,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9998130399,
+              amount: '9998130399',
             },
           },
         ],
@@ -13523,7 +13533,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 6120,
+              amount: '6120',
             },
           },
           {
@@ -13534,7 +13544,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9998124279,
+              amount: '9998124279',
             },
           },
         ],
@@ -13558,7 +13568,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 6130,
+              amount: '6130',
             },
           },
           {
@@ -13569,7 +13579,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9998118149,
+              amount: '9998118149',
             },
           },
         ],
@@ -13593,7 +13603,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 6140,
+              amount: '6140',
             },
           },
           {
@@ -13604,7 +13614,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9998112009,
+              amount: '9998112009',
             },
           },
         ],
@@ -13628,7 +13638,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 6150,
+              amount: '6150',
             },
           },
           {
@@ -13639,7 +13649,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9998105859,
+              amount: '9998105859',
             },
           },
         ],
@@ -13663,7 +13673,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 6160,
+              amount: '6160',
             },
           },
           {
@@ -13674,7 +13684,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9998099699,
+              amount: '9998099699',
             },
           },
         ],
@@ -13698,7 +13708,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 6170,
+              amount: '6170',
             },
           },
           {
@@ -13709,7 +13719,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9998093529,
+              amount: '9998093529',
             },
           },
         ],
@@ -13733,7 +13743,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 6180,
+              amount: '6180',
             },
           },
           {
@@ -13744,7 +13754,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9998087349,
+              amount: '9998087349',
             },
           },
         ],
@@ -13768,7 +13778,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 6190,
+              amount: '6190',
             },
           },
           {
@@ -13779,7 +13789,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9998081159,
+              amount: '9998081159',
             },
           },
         ],
@@ -13803,7 +13813,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 6200,
+              amount: '6200',
             },
           },
           {
@@ -13814,7 +13824,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9998074959,
+              amount: '9998074959',
             },
           },
         ],
@@ -13838,7 +13848,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 6210,
+              amount: '6210',
             },
           },
           {
@@ -13849,7 +13859,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9998068749,
+              amount: '9998068749',
             },
           },
         ],
@@ -13873,7 +13883,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 6220,
+              amount: '6220',
             },
           },
           {
@@ -13884,7 +13894,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9998062529,
+              amount: '9998062529',
             },
           },
         ],
@@ -13908,7 +13918,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 6230,
+              amount: '6230',
             },
           },
           {
@@ -13919,7 +13929,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9998056299,
+              amount: '9998056299',
             },
           },
         ],
@@ -13943,7 +13953,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 6240,
+              amount: '6240',
             },
           },
           {
@@ -13954,7 +13964,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9998050059,
+              amount: '9998050059',
             },
           },
         ],
@@ -13978,7 +13988,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 6250,
+              amount: '6250',
             },
           },
           {
@@ -13989,7 +13999,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9998043809,
+              amount: '9998043809',
             },
           },
         ],
@@ -14013,7 +14023,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 6260,
+              amount: '6260',
             },
           },
           {
@@ -14024,7 +14034,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9998037549,
+              amount: '9998037549',
             },
           },
         ],
@@ -14048,7 +14058,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 6270,
+              amount: '6270',
             },
           },
           {
@@ -14059,7 +14069,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9998031279,
+              amount: '9998031279',
             },
           },
         ],
@@ -14083,7 +14093,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 6280,
+              amount: '6280',
             },
           },
           {
@@ -14094,7 +14104,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9998024999,
+              amount: '9998024999',
             },
           },
         ],
@@ -14118,7 +14128,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 6290,
+              amount: '6290',
             },
           },
           {
@@ -14129,7 +14139,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9998018709,
+              amount: '9998018709',
             },
           },
         ],
@@ -14153,7 +14163,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 6300,
+              amount: '6300',
             },
           },
           {
@@ -14164,7 +14174,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9998012409,
+              amount: '9998012409',
             },
           },
         ],
@@ -14188,7 +14198,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 6310,
+              amount: '6310',
             },
           },
           {
@@ -14199,7 +14209,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9998006099,
+              amount: '9998006099',
             },
           },
         ],
@@ -14223,7 +14233,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 6320,
+              amount: '6320',
             },
           },
           {
@@ -14234,7 +14244,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9997999779,
+              amount: '9997999779',
             },
           },
         ],
@@ -14258,7 +14268,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 6330,
+              amount: '6330',
             },
           },
           {
@@ -14269,7 +14279,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9997993449,
+              amount: '9997993449',
             },
           },
         ],
@@ -14293,7 +14303,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 6340,
+              amount: '6340',
             },
           },
           {
@@ -14304,7 +14314,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9997987109,
+              amount: '9997987109',
             },
           },
         ],
@@ -14328,7 +14338,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 6350,
+              amount: '6350',
             },
           },
           {
@@ -14339,7 +14349,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9997980759,
+              amount: '9997980759',
             },
           },
         ],
@@ -14363,7 +14373,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 6360,
+              amount: '6360',
             },
           },
           {
@@ -14374,7 +14384,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9997974399,
+              amount: '9997974399',
             },
           },
         ],
@@ -14398,7 +14408,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 6370,
+              amount: '6370',
             },
           },
           {
@@ -14409,7 +14419,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9997968029,
+              amount: '9997968029',
             },
           },
         ],
@@ -14433,7 +14443,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 6380,
+              amount: '6380',
             },
           },
           {
@@ -14444,7 +14454,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9997961649,
+              amount: '9997961649',
             },
           },
         ],
@@ -14468,7 +14478,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 6390,
+              amount: '6390',
             },
           },
           {
@@ -14479,7 +14489,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9997955259,
+              amount: '9997955259',
             },
           },
         ],
@@ -14503,7 +14513,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 6400,
+              amount: '6400',
             },
           },
           {
@@ -14514,7 +14524,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9997948859,
+              amount: '9997948859',
             },
           },
         ],
@@ -14538,7 +14548,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 6410,
+              amount: '6410',
             },
           },
           {
@@ -14549,7 +14559,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9997942449,
+              amount: '9997942449',
             },
           },
         ],
@@ -14573,7 +14583,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 6420,
+              amount: '6420',
             },
           },
           {
@@ -14584,7 +14594,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9997936029,
+              amount: '9997936029',
             },
           },
         ],
@@ -14608,7 +14618,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 6430,
+              amount: '6430',
             },
           },
           {
@@ -14619,7 +14629,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9997929599,
+              amount: '9997929599',
             },
           },
         ],
@@ -14643,7 +14653,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 6440,
+              amount: '6440',
             },
           },
           {
@@ -14654,7 +14664,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9997923159,
+              amount: '9997923159',
             },
           },
         ],
@@ -14678,7 +14688,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 6450,
+              amount: '6450',
             },
           },
           {
@@ -14689,7 +14699,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9997916709,
+              amount: '9997916709',
             },
           },
         ],
@@ -14713,7 +14723,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 6460,
+              amount: '6460',
             },
           },
           {
@@ -14724,7 +14734,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9997910249,
+              amount: '9997910249',
             },
           },
         ],
@@ -14748,7 +14758,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 6470,
+              amount: '6470',
             },
           },
           {
@@ -14759,7 +14769,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9997903779,
+              amount: '9997903779',
             },
           },
         ],
@@ -14783,7 +14793,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 6480,
+              amount: '6480',
             },
           },
           {
@@ -14794,7 +14804,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9997897299,
+              amount: '9997897299',
             },
           },
         ],
@@ -14818,7 +14828,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 6490,
+              amount: '6490',
             },
           },
           {
@@ -14829,7 +14839,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9997890809,
+              amount: '9997890809',
             },
           },
         ],
@@ -14853,7 +14863,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 6500,
+              amount: '6500',
             },
           },
           {
@@ -14864,7 +14874,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9997884309,
+              amount: '9997884309',
             },
           },
         ],
@@ -14888,7 +14898,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 6510,
+              amount: '6510',
             },
           },
           {
@@ -14899,7 +14909,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9997877799,
+              amount: '9997877799',
             },
           },
         ],
@@ -14923,7 +14933,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 6520,
+              amount: '6520',
             },
           },
           {
@@ -14934,7 +14944,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9997871279,
+              amount: '9997871279',
             },
           },
         ],
@@ -14958,7 +14968,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 6530,
+              amount: '6530',
             },
           },
           {
@@ -14969,7 +14979,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9997864749,
+              amount: '9997864749',
             },
           },
         ],
@@ -14993,7 +15003,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 6540,
+              amount: '6540',
             },
           },
           {
@@ -15004,7 +15014,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9997858209,
+              amount: '9997858209',
             },
           },
         ],
@@ -15028,7 +15038,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 6550,
+              amount: '6550',
             },
           },
           {
@@ -15039,7 +15049,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9997851659,
+              amount: '9997851659',
             },
           },
         ],
@@ -15063,7 +15073,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 6560,
+              amount: '6560',
             },
           },
           {
@@ -15074,7 +15084,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9997845099,
+              amount: '9997845099',
             },
           },
         ],
@@ -15098,7 +15108,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 6570,
+              amount: '6570',
             },
           },
           {
@@ -15109,7 +15119,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9997838529,
+              amount: '9997838529',
             },
           },
         ],
@@ -15133,7 +15143,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 6580,
+              amount: '6580',
             },
           },
           {
@@ -15144,7 +15154,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9997831949,
+              amount: '9997831949',
             },
           },
         ],
@@ -15168,7 +15178,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 6590,
+              amount: '6590',
             },
           },
           {
@@ -15179,7 +15189,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9997825359,
+              amount: '9997825359',
             },
           },
         ],
@@ -15203,7 +15213,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 6600,
+              amount: '6600',
             },
           },
           {
@@ -15214,7 +15224,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9997818759,
+              amount: '9997818759',
             },
           },
         ],
@@ -15238,7 +15248,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 6610,
+              amount: '6610',
             },
           },
           {
@@ -15249,7 +15259,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9997812149,
+              amount: '9997812149',
             },
           },
         ],
@@ -15273,7 +15283,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 6620,
+              amount: '6620',
             },
           },
           {
@@ -15284,7 +15294,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9997805529,
+              amount: '9997805529',
             },
           },
         ],
@@ -15308,7 +15318,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 6630,
+              amount: '6630',
             },
           },
           {
@@ -15319,7 +15329,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9997798899,
+              amount: '9997798899',
             },
           },
         ],
@@ -15343,7 +15353,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 6640,
+              amount: '6640',
             },
           },
           {
@@ -15354,7 +15364,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9997792259,
+              amount: '9997792259',
             },
           },
         ],
@@ -15378,7 +15388,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 6650,
+              amount: '6650',
             },
           },
           {
@@ -15389,7 +15399,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9997785609,
+              amount: '9997785609',
             },
           },
         ],
@@ -15413,7 +15423,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 6660,
+              amount: '6660',
             },
           },
           {
@@ -15424,7 +15434,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9997778949,
+              amount: '9997778949',
             },
           },
         ],
@@ -15448,7 +15458,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 6670,
+              amount: '6670',
             },
           },
           {
@@ -15459,7 +15469,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9997772279,
+              amount: '9997772279',
             },
           },
         ],
@@ -15483,7 +15493,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 6680,
+              amount: '6680',
             },
           },
           {
@@ -15494,7 +15504,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9997765599,
+              amount: '9997765599',
             },
           },
         ],
@@ -15518,7 +15528,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 6690,
+              amount: '6690',
             },
           },
           {
@@ -15529,7 +15539,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9997758909,
+              amount: '9997758909',
             },
           },
         ],
@@ -15553,7 +15563,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 6700,
+              amount: '6700',
             },
           },
           {
@@ -15564,7 +15574,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9997752209,
+              amount: '9997752209',
             },
           },
         ],
@@ -15588,7 +15598,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 6710,
+              amount: '6710',
             },
           },
           {
@@ -15599,7 +15609,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9997745499,
+              amount: '9997745499',
             },
           },
         ],
@@ -15623,7 +15633,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 6720,
+              amount: '6720',
             },
           },
           {
@@ -15634,7 +15644,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9997738779,
+              amount: '9997738779',
             },
           },
         ],
@@ -15658,7 +15668,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 6730,
+              amount: '6730',
             },
           },
           {
@@ -15669,7 +15679,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9997732049,
+              amount: '9997732049',
             },
           },
         ],
@@ -15693,7 +15703,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 6740,
+              amount: '6740',
             },
           },
           {
@@ -15704,7 +15714,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9997725309,
+              amount: '9997725309',
             },
           },
         ],
@@ -15728,7 +15738,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 6750,
+              amount: '6750',
             },
           },
           {
@@ -15739,7 +15749,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9997718559,
+              amount: '9997718559',
             },
           },
         ],
@@ -15763,7 +15773,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 6760,
+              amount: '6760',
             },
           },
           {
@@ -15774,7 +15784,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9997711799,
+              amount: '9997711799',
             },
           },
         ],
@@ -15798,7 +15808,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 6770,
+              amount: '6770',
             },
           },
           {
@@ -15809,7 +15819,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9997705029,
+              amount: '9997705029',
             },
           },
         ],
@@ -15833,7 +15843,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 6780,
+              amount: '6780',
             },
           },
           {
@@ -15844,7 +15854,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9997698249,
+              amount: '9997698249',
             },
           },
         ],
@@ -15868,7 +15878,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 6790,
+              amount: '6790',
             },
           },
           {
@@ -15879,7 +15889,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9997691459,
+              amount: '9997691459',
             },
           },
         ],
@@ -15903,7 +15913,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 6800,
+              amount: '6800',
             },
           },
           {
@@ -15914,7 +15924,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9997684659,
+              amount: '9997684659',
             },
           },
         ],
@@ -15938,7 +15948,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 6810,
+              amount: '6810',
             },
           },
           {
@@ -15949,7 +15959,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9997677849,
+              amount: '9997677849',
             },
           },
         ],
@@ -15973,7 +15983,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 6820,
+              amount: '6820',
             },
           },
           {
@@ -15984,7 +15994,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9997671029,
+              amount: '9997671029',
             },
           },
         ],
@@ -16008,7 +16018,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 6830,
+              amount: '6830',
             },
           },
           {
@@ -16019,7 +16029,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9997664199,
+              amount: '9997664199',
             },
           },
         ],
@@ -16043,7 +16053,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 6840,
+              amount: '6840',
             },
           },
           {
@@ -16054,7 +16064,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9997657359,
+              amount: '9997657359',
             },
           },
         ],
@@ -16078,7 +16088,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 6850,
+              amount: '6850',
             },
           },
           {
@@ -16089,7 +16099,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9997650509,
+              amount: '9997650509',
             },
           },
         ],
@@ -16113,7 +16123,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 6860,
+              amount: '6860',
             },
           },
           {
@@ -16124,7 +16134,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9997643649,
+              amount: '9997643649',
             },
           },
         ],
@@ -16148,7 +16158,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 6870,
+              amount: '6870',
             },
           },
           {
@@ -16159,7 +16169,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9997636779,
+              amount: '9997636779',
             },
           },
         ],
@@ -16183,7 +16193,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 6880,
+              amount: '6880',
             },
           },
           {
@@ -16194,7 +16204,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9997629899,
+              amount: '9997629899',
             },
           },
         ],
@@ -16218,7 +16228,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 6890,
+              amount: '6890',
             },
           },
           {
@@ -16229,7 +16239,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9997623009,
+              amount: '9997623009',
             },
           },
         ],
@@ -16253,7 +16263,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 6900,
+              amount: '6900',
             },
           },
           {
@@ -16264,7 +16274,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9997616109,
+              amount: '9997616109',
             },
           },
         ],
@@ -16288,7 +16298,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 6910,
+              amount: '6910',
             },
           },
           {
@@ -16299,7 +16309,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9997609199,
+              amount: '9997609199',
             },
           },
         ],
@@ -16323,7 +16333,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 6920,
+              amount: '6920',
             },
           },
           {
@@ -16334,7 +16344,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9997602279,
+              amount: '9997602279',
             },
           },
         ],
@@ -16358,7 +16368,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 6930,
+              amount: '6930',
             },
           },
           {
@@ -16369,7 +16379,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9997595349,
+              amount: '9997595349',
             },
           },
         ],
@@ -16393,7 +16403,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 6940,
+              amount: '6940',
             },
           },
           {
@@ -16404,7 +16414,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9997588409,
+              amount: '9997588409',
             },
           },
         ],
@@ -16428,7 +16438,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 6950,
+              amount: '6950',
             },
           },
           {
@@ -16439,7 +16449,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9997581459,
+              amount: '9997581459',
             },
           },
         ],
@@ -16463,7 +16473,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 6960,
+              amount: '6960',
             },
           },
           {
@@ -16474,7 +16484,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9997574499,
+              amount: '9997574499',
             },
           },
         ],
@@ -16498,7 +16508,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 6970,
+              amount: '6970',
             },
           },
           {
@@ -16509,7 +16519,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9997567529,
+              amount: '9997567529',
             },
           },
         ],
@@ -16533,7 +16543,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 6980,
+              amount: '6980',
             },
           },
           {
@@ -16544,7 +16554,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9997560549,
+              amount: '9997560549',
             },
           },
         ],
@@ -16568,7 +16578,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 6990,
+              amount: '6990',
             },
           },
           {
@@ -16579,7 +16589,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9997553559,
+              amount: '9997553559',
             },
           },
         ],
@@ -16603,7 +16613,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 7000,
+              amount: '7000',
             },
           },
           {
@@ -16614,7 +16624,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9997546559,
+              amount: '9997546559',
             },
           },
         ],
@@ -16638,7 +16648,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 7010,
+              amount: '7010',
             },
           },
           {
@@ -16649,7 +16659,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9997539549,
+              amount: '9997539549',
             },
           },
         ],
@@ -16673,7 +16683,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 7020,
+              amount: '7020',
             },
           },
           {
@@ -16684,7 +16694,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9997532529,
+              amount: '9997532529',
             },
           },
         ],
@@ -16708,7 +16718,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 7030,
+              amount: '7030',
             },
           },
           {
@@ -16719,7 +16729,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9997525499,
+              amount: '9997525499',
             },
           },
         ],
@@ -16743,7 +16753,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 7040,
+              amount: '7040',
             },
           },
           {
@@ -16754,7 +16764,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9997518459,
+              amount: '9997518459',
             },
           },
         ],
@@ -16778,7 +16788,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 7050,
+              amount: '7050',
             },
           },
           {
@@ -16789,7 +16799,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9997511409,
+              amount: '9997511409',
             },
           },
         ],
@@ -16813,7 +16823,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 7060,
+              amount: '7060',
             },
           },
           {
@@ -16824,7 +16834,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000007b31e4c2c06d4fa1b8a85088beff324bfd4c023b82ef86e0f535bce08e7d4bd8',
-              amount: 9997504349,
+              amount: '9997504349',
             },
           },
         ],
@@ -16848,7 +16858,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 3810,
+              amount: '3810',
             },
           },
           {
@@ -16859,7 +16869,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9999172350,
+              amount: '9999172350',
             },
           },
         ],
@@ -16883,7 +16893,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 3820,
+              amount: '3820',
             },
           },
           {
@@ -16894,7 +16904,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9999168530,
+              amount: '9999168530',
             },
           },
         ],
@@ -16918,7 +16928,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 3830,
+              amount: '3830',
             },
           },
           {
@@ -16929,7 +16939,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9999164700,
+              amount: '9999164700',
             },
           },
         ],
@@ -16953,7 +16963,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 3840,
+              amount: '3840',
             },
           },
           {
@@ -16964,7 +16974,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9999160860,
+              amount: '9999160860',
             },
           },
         ],
@@ -16988,7 +16998,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 3850,
+              amount: '3850',
             },
           },
           {
@@ -16999,7 +17009,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9999157010,
+              amount: '9999157010',
             },
           },
         ],
@@ -17023,7 +17033,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 3860,
+              amount: '3860',
             },
           },
           {
@@ -17034,7 +17044,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9999153150,
+              amount: '9999153150',
             },
           },
         ],
@@ -17058,7 +17068,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 3870,
+              amount: '3870',
             },
           },
           {
@@ -17069,7 +17079,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9999149280,
+              amount: '9999149280',
             },
           },
         ],
@@ -17093,7 +17103,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 3880,
+              amount: '3880',
             },
           },
           {
@@ -17104,7 +17114,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9999145400,
+              amount: '9999145400',
             },
           },
         ],
@@ -17128,7 +17138,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 3890,
+              amount: '3890',
             },
           },
           {
@@ -17139,7 +17149,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9999141510,
+              amount: '9999141510',
             },
           },
         ],
@@ -17163,7 +17173,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 3900,
+              amount: '3900',
             },
           },
           {
@@ -17174,7 +17184,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9999137610,
+              amount: '9999137610',
             },
           },
         ],
@@ -17198,7 +17208,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 3910,
+              amount: '3910',
             },
           },
           {
@@ -17209,7 +17219,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9999133700,
+              amount: '9999133700',
             },
           },
         ],
@@ -17233,7 +17243,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 3920,
+              amount: '3920',
             },
           },
           {
@@ -17244,7 +17254,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9999129780,
+              amount: '9999129780',
             },
           },
         ],
@@ -17268,7 +17278,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 3930,
+              amount: '3930',
             },
           },
           {
@@ -17279,7 +17289,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9999125850,
+              amount: '9999125850',
             },
           },
         ],
@@ -17303,7 +17313,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 3940,
+              amount: '3940',
             },
           },
           {
@@ -17314,7 +17324,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9999121910,
+              amount: '9999121910',
             },
           },
         ],
@@ -17338,7 +17348,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 3950,
+              amount: '3950',
             },
           },
           {
@@ -17349,7 +17359,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9999117960,
+              amount: '9999117960',
             },
           },
         ],
@@ -17373,7 +17383,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 3960,
+              amount: '3960',
             },
           },
           {
@@ -17384,7 +17394,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9999114000,
+              amount: '9999114000',
             },
           },
         ],
@@ -17408,7 +17418,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 3970,
+              amount: '3970',
             },
           },
           {
@@ -17419,7 +17429,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9999110030,
+              amount: '9999110030',
             },
           },
         ],
@@ -17443,7 +17453,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 3980,
+              amount: '3980',
             },
           },
           {
@@ -17454,7 +17464,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9999106050,
+              amount: '9999106050',
             },
           },
         ],
@@ -17478,7 +17488,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 3990,
+              amount: '3990',
             },
           },
           {
@@ -17489,7 +17499,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9999102060,
+              amount: '9999102060',
             },
           },
         ],
@@ -17513,7 +17523,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 4000,
+              amount: '4000',
             },
           },
           {
@@ -17524,7 +17534,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9999098060,
+              amount: '9999098060',
             },
           },
         ],
@@ -17548,7 +17558,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 4010,
+              amount: '4010',
             },
           },
           {
@@ -17559,7 +17569,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9999094050,
+              amount: '9999094050',
             },
           },
         ],
@@ -17583,7 +17593,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 4020,
+              amount: '4020',
             },
           },
           {
@@ -17594,7 +17604,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9999090030,
+              amount: '9999090030',
             },
           },
         ],
@@ -17618,7 +17628,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 4030,
+              amount: '4030',
             },
           },
           {
@@ -17629,7 +17639,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9999086000,
+              amount: '9999086000',
             },
           },
         ],
@@ -17653,7 +17663,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 4040,
+              amount: '4040',
             },
           },
           {
@@ -17664,7 +17674,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9999081960,
+              amount: '9999081960',
             },
           },
         ],
@@ -17688,7 +17698,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 4050,
+              amount: '4050',
             },
           },
           {
@@ -17699,7 +17709,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9999077910,
+              amount: '9999077910',
             },
           },
         ],
@@ -17723,7 +17733,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 4060,
+              amount: '4060',
             },
           },
           {
@@ -17734,7 +17744,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9999073850,
+              amount: '9999073850',
             },
           },
         ],
@@ -17758,7 +17768,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 4070,
+              amount: '4070',
             },
           },
           {
@@ -17769,7 +17779,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9999069780,
+              amount: '9999069780',
             },
           },
         ],
@@ -17793,7 +17803,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 4080,
+              amount: '4080',
             },
           },
           {
@@ -17804,7 +17814,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9999065700,
+              amount: '9999065700',
             },
           },
         ],
@@ -17828,7 +17838,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 4090,
+              amount: '4090',
             },
           },
           {
@@ -17839,7 +17849,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9999061610,
+              amount: '9999061610',
             },
           },
         ],
@@ -17863,7 +17873,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 4100,
+              amount: '4100',
             },
           },
           {
@@ -17874,7 +17884,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9999057510,
+              amount: '9999057510',
             },
           },
         ],
@@ -17898,7 +17908,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 4110,
+              amount: '4110',
             },
           },
           {
@@ -17909,7 +17919,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9999053400,
+              amount: '9999053400',
             },
           },
         ],
@@ -17933,7 +17943,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 4120,
+              amount: '4120',
             },
           },
           {
@@ -17944,7 +17954,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9999049280,
+              amount: '9999049280',
             },
           },
         ],
@@ -17968,7 +17978,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 4130,
+              amount: '4130',
             },
           },
           {
@@ -17979,7 +17989,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9999045150,
+              amount: '9999045150',
             },
           },
         ],
@@ -18003,7 +18013,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 4140,
+              amount: '4140',
             },
           },
           {
@@ -18014,7 +18024,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9999041010,
+              amount: '9999041010',
             },
           },
         ],
@@ -18038,7 +18048,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 4150,
+              amount: '4150',
             },
           },
           {
@@ -18049,7 +18059,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9999036860,
+              amount: '9999036860',
             },
           },
         ],
@@ -18073,7 +18083,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 4160,
+              amount: '4160',
             },
           },
           {
@@ -18084,7 +18094,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9999032700,
+              amount: '9999032700',
             },
           },
         ],
@@ -18108,7 +18118,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 4170,
+              amount: '4170',
             },
           },
           {
@@ -18119,7 +18129,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9999028530,
+              amount: '9999028530',
             },
           },
         ],
@@ -18143,7 +18153,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 4180,
+              amount: '4180',
             },
           },
           {
@@ -18154,7 +18164,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9999024350,
+              amount: '9999024350',
             },
           },
         ],
@@ -18178,7 +18188,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 4190,
+              amount: '4190',
             },
           },
           {
@@ -18189,7 +18199,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9999020160,
+              amount: '9999020160',
             },
           },
         ],
@@ -18213,7 +18223,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 4200,
+              amount: '4200',
             },
           },
           {
@@ -18224,7 +18234,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9999015960,
+              amount: '9999015960',
             },
           },
         ],
@@ -18248,7 +18258,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 4210,
+              amount: '4210',
             },
           },
           {
@@ -18259,7 +18269,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9999011750,
+              amount: '9999011750',
             },
           },
         ],
@@ -18283,7 +18293,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 4220,
+              amount: '4220',
             },
           },
           {
@@ -18294,7 +18304,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9999007530,
+              amount: '9999007530',
             },
           },
         ],
@@ -18318,7 +18328,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 4230,
+              amount: '4230',
             },
           },
           {
@@ -18329,7 +18339,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9999003300,
+              amount: '9999003300',
             },
           },
         ],
@@ -18353,7 +18363,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 4240,
+              amount: '4240',
             },
           },
           {
@@ -18364,7 +18374,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9998999060,
+              amount: '9998999060',
             },
           },
         ],
@@ -18388,7 +18398,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 4250,
+              amount: '4250',
             },
           },
           {
@@ -18399,7 +18409,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9998994810,
+              amount: '9998994810',
             },
           },
         ],
@@ -18423,7 +18433,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 4260,
+              amount: '4260',
             },
           },
           {
@@ -18434,7 +18444,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9998990550,
+              amount: '9998990550',
             },
           },
         ],
@@ -18458,7 +18468,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 4270,
+              amount: '4270',
             },
           },
           {
@@ -18469,7 +18479,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9998986280,
+              amount: '9998986280',
             },
           },
         ],
@@ -18493,7 +18503,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 4280,
+              amount: '4280',
             },
           },
           {
@@ -18504,7 +18514,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9998982000,
+              amount: '9998982000',
             },
           },
         ],
@@ -18528,7 +18538,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 4290,
+              amount: '4290',
             },
           },
           {
@@ -18539,7 +18549,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9998977710,
+              amount: '9998977710',
             },
           },
         ],
@@ -18563,7 +18573,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 4300,
+              amount: '4300',
             },
           },
           {
@@ -18574,7 +18584,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9998973410,
+              amount: '9998973410',
             },
           },
         ],
@@ -18598,7 +18608,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 4310,
+              amount: '4310',
             },
           },
           {
@@ -18609,7 +18619,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9998969100,
+              amount: '9998969100',
             },
           },
         ],
@@ -18633,7 +18643,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 4320,
+              amount: '4320',
             },
           },
           {
@@ -18644,7 +18654,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9998964780,
+              amount: '9998964780',
             },
           },
         ],
@@ -18668,7 +18678,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 4330,
+              amount: '4330',
             },
           },
           {
@@ -18679,7 +18689,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9998960450,
+              amount: '9998960450',
             },
           },
         ],
@@ -18703,7 +18713,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 4340,
+              amount: '4340',
             },
           },
           {
@@ -18714,7 +18724,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9998956110,
+              amount: '9998956110',
             },
           },
         ],
@@ -18738,7 +18748,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 4350,
+              amount: '4350',
             },
           },
           {
@@ -18749,7 +18759,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9998951760,
+              amount: '9998951760',
             },
           },
         ],
@@ -18773,7 +18783,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 4360,
+              amount: '4360',
             },
           },
           {
@@ -18784,7 +18794,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9998947400,
+              amount: '9998947400',
             },
           },
         ],
@@ -18808,7 +18818,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 4370,
+              amount: '4370',
             },
           },
           {
@@ -18819,7 +18829,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9998943030,
+              amount: '9998943030',
             },
           },
         ],
@@ -18843,7 +18853,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 4380,
+              amount: '4380',
             },
           },
           {
@@ -18854,7 +18864,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9998938650,
+              amount: '9998938650',
             },
           },
         ],
@@ -18878,7 +18888,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 4390,
+              amount: '4390',
             },
           },
           {
@@ -18889,7 +18899,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9998934260,
+              amount: '9998934260',
             },
           },
         ],
@@ -18913,7 +18923,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 4400,
+              amount: '4400',
             },
           },
           {
@@ -18924,7 +18934,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9998929860,
+              amount: '9998929860',
             },
           },
         ],
@@ -18948,7 +18958,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 4410,
+              amount: '4410',
             },
           },
           {
@@ -18959,7 +18969,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9998925450,
+              amount: '9998925450',
             },
           },
         ],
@@ -18983,7 +18993,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 4420,
+              amount: '4420',
             },
           },
           {
@@ -18994,7 +19004,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9998921030,
+              amount: '9998921030',
             },
           },
         ],
@@ -19018,7 +19028,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 4430,
+              amount: '4430',
             },
           },
           {
@@ -19029,7 +19039,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9998916600,
+              amount: '9998916600',
             },
           },
         ],
@@ -19053,7 +19063,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 4440,
+              amount: '4440',
             },
           },
           {
@@ -19064,7 +19074,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9998912160,
+              amount: '9998912160',
             },
           },
         ],
@@ -19088,7 +19098,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 4450,
+              amount: '4450',
             },
           },
           {
@@ -19099,7 +19109,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9998907710,
+              amount: '9998907710',
             },
           },
         ],
@@ -19123,7 +19133,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 4460,
+              amount: '4460',
             },
           },
           {
@@ -19134,7 +19144,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9998903250,
+              amount: '9998903250',
             },
           },
         ],
@@ -19158,7 +19168,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 4470,
+              amount: '4470',
             },
           },
           {
@@ -19169,7 +19179,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9998898780,
+              amount: '9998898780',
             },
           },
         ],
@@ -19193,7 +19203,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 4480,
+              amount: '4480',
             },
           },
           {
@@ -19204,7 +19214,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9998894300,
+              amount: '9998894300',
             },
           },
         ],
@@ -19228,7 +19238,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 4490,
+              amount: '4490',
             },
           },
           {
@@ -19239,7 +19249,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9998889810,
+              amount: '9998889810',
             },
           },
         ],
@@ -19263,7 +19273,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 4500,
+              amount: '4500',
             },
           },
           {
@@ -19274,7 +19284,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9998885310,
+              amount: '9998885310',
             },
           },
         ],
@@ -19298,7 +19308,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 3950,
+              amount: '3950',
             },
           },
           {
@@ -19309,7 +19319,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9994212970,
+              amount: '9994212970',
             },
           },
         ],
@@ -19333,7 +19343,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 3960,
+              amount: '3960',
             },
           },
           {
@@ -19344,7 +19354,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9994209010,
+              amount: '9994209010',
             },
           },
         ],
@@ -19368,7 +19378,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 3970,
+              amount: '3970',
             },
           },
           {
@@ -19379,7 +19389,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9994205040,
+              amount: '9994205040',
             },
           },
         ],
@@ -19403,7 +19413,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 3980,
+              amount: '3980',
             },
           },
           {
@@ -19414,7 +19424,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9994201060,
+              amount: '9994201060',
             },
           },
         ],
@@ -19438,7 +19448,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 3990,
+              amount: '3990',
             },
           },
           {
@@ -19449,7 +19459,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9994197070,
+              amount: '9994197070',
             },
           },
         ],
@@ -19473,7 +19483,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 4000,
+              amount: '4000',
             },
           },
           {
@@ -19484,7 +19494,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9994193070,
+              amount: '9994193070',
             },
           },
         ],
@@ -19508,7 +19518,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 4010,
+              amount: '4010',
             },
           },
           {
@@ -19519,7 +19529,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9994189060,
+              amount: '9994189060',
             },
           },
         ],
@@ -19543,7 +19553,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 4020,
+              amount: '4020',
             },
           },
           {
@@ -19554,7 +19564,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9994185040,
+              amount: '9994185040',
             },
           },
         ],
@@ -19578,7 +19588,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 4030,
+              amount: '4030',
             },
           },
           {
@@ -19589,7 +19599,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9994181010,
+              amount: '9994181010',
             },
           },
         ],
@@ -19613,7 +19623,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 4040,
+              amount: '4040',
             },
           },
           {
@@ -19624,7 +19634,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9994176970,
+              amount: '9994176970',
             },
           },
         ],
@@ -19648,7 +19658,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 4050,
+              amount: '4050',
             },
           },
           {
@@ -19659,7 +19669,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9994172920,
+              amount: '9994172920',
             },
           },
         ],
@@ -19683,7 +19693,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 4060,
+              amount: '4060',
             },
           },
           {
@@ -19694,7 +19704,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9994168860,
+              amount: '9994168860',
             },
           },
         ],
@@ -19718,7 +19728,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 4070,
+              amount: '4070',
             },
           },
           {
@@ -19729,7 +19739,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9994164790,
+              amount: '9994164790',
             },
           },
         ],
@@ -19753,7 +19763,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 4080,
+              amount: '4080',
             },
           },
           {
@@ -19764,7 +19774,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9994160710,
+              amount: '9994160710',
             },
           },
         ],
@@ -19788,7 +19798,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 4090,
+              amount: '4090',
             },
           },
           {
@@ -19799,7 +19809,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9994156620,
+              amount: '9994156620',
             },
           },
         ],
@@ -19823,7 +19833,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 4100,
+              amount: '4100',
             },
           },
           {
@@ -19834,7 +19844,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9994152520,
+              amount: '9994152520',
             },
           },
         ],
@@ -19858,7 +19868,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 4110,
+              amount: '4110',
             },
           },
           {
@@ -19869,7 +19879,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9994148410,
+              amount: '9994148410',
             },
           },
         ],
@@ -19893,7 +19903,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 4120,
+              amount: '4120',
             },
           },
           {
@@ -19904,7 +19914,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9994144290,
+              amount: '9994144290',
             },
           },
         ],
@@ -19928,7 +19938,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 4130,
+              amount: '4130',
             },
           },
           {
@@ -19939,7 +19949,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9994140160,
+              amount: '9994140160',
             },
           },
         ],
@@ -19963,7 +19973,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 4140,
+              amount: '4140',
             },
           },
           {
@@ -19974,7 +19984,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9994136020,
+              amount: '9994136020',
             },
           },
         ],
@@ -19998,7 +20008,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 4150,
+              amount: '4150',
             },
           },
           {
@@ -20009,7 +20019,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9994131870,
+              amount: '9994131870',
             },
           },
         ],
@@ -20033,7 +20043,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 4160,
+              amount: '4160',
             },
           },
           {
@@ -20044,7 +20054,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9994127710,
+              amount: '9994127710',
             },
           },
         ],
@@ -20068,7 +20078,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 4170,
+              amount: '4170',
             },
           },
           {
@@ -20079,7 +20089,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9994123540,
+              amount: '9994123540',
             },
           },
         ],
@@ -20103,7 +20113,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 4180,
+              amount: '4180',
             },
           },
           {
@@ -20114,7 +20124,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9994119360,
+              amount: '9994119360',
             },
           },
         ],
@@ -20138,7 +20148,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 4190,
+              amount: '4190',
             },
           },
           {
@@ -20149,7 +20159,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9994115170,
+              amount: '9994115170',
             },
           },
         ],
@@ -20173,7 +20183,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 4200,
+              amount: '4200',
             },
           },
           {
@@ -20184,7 +20194,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9994110970,
+              amount: '9994110970',
             },
           },
         ],
@@ -20208,7 +20218,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 4210,
+              amount: '4210',
             },
           },
           {
@@ -20219,7 +20229,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9994106760,
+              amount: '9994106760',
             },
           },
         ],
@@ -20243,7 +20253,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 4220,
+              amount: '4220',
             },
           },
           {
@@ -20254,7 +20264,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9994102540,
+              amount: '9994102540',
             },
           },
         ],
@@ -20278,7 +20288,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 4230,
+              amount: '4230',
             },
           },
           {
@@ -20289,7 +20299,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9994098310,
+              amount: '9994098310',
             },
           },
         ],
@@ -20313,7 +20323,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 4240,
+              amount: '4240',
             },
           },
           {
@@ -20324,7 +20334,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9994094070,
+              amount: '9994094070',
             },
           },
         ],
@@ -20348,7 +20358,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 4250,
+              amount: '4250',
             },
           },
           {
@@ -20359,7 +20369,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9994089820,
+              amount: '9994089820',
             },
           },
         ],
@@ -20383,7 +20393,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 4260,
+              amount: '4260',
             },
           },
           {
@@ -20394,7 +20404,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9994085560,
+              amount: '9994085560',
             },
           },
         ],
@@ -20418,7 +20428,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 4270,
+              amount: '4270',
             },
           },
           {
@@ -20429,7 +20439,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9994081290,
+              amount: '9994081290',
             },
           },
         ],
@@ -20453,7 +20463,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 4280,
+              amount: '4280',
             },
           },
           {
@@ -20464,7 +20474,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9994077010,
+              amount: '9994077010',
             },
           },
         ],
@@ -20488,7 +20498,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 4290,
+              amount: '4290',
             },
           },
           {
@@ -20499,7 +20509,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9994072720,
+              amount: '9994072720',
             },
           },
         ],
@@ -20523,7 +20533,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 4300,
+              amount: '4300',
             },
           },
           {
@@ -20534,7 +20544,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9994068420,
+              amount: '9994068420',
             },
           },
         ],
@@ -20558,7 +20568,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 4310,
+              amount: '4310',
             },
           },
           {
@@ -20569,7 +20579,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9994064110,
+              amount: '9994064110',
             },
           },
         ],
@@ -20593,7 +20603,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 4320,
+              amount: '4320',
             },
           },
           {
@@ -20604,7 +20614,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9994059790,
+              amount: '9994059790',
             },
           },
         ],
@@ -20628,7 +20638,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 4330,
+              amount: '4330',
             },
           },
           {
@@ -20639,7 +20649,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9994055460,
+              amount: '9994055460',
             },
           },
         ],
@@ -20663,7 +20673,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 4340,
+              amount: '4340',
             },
           },
           {
@@ -20674,7 +20684,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9994051120,
+              amount: '9994051120',
             },
           },
         ],
@@ -20698,7 +20708,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 4350,
+              amount: '4350',
             },
           },
           {
@@ -20709,7 +20719,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9994046770,
+              amount: '9994046770',
             },
           },
         ],
@@ -20733,7 +20743,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 4360,
+              amount: '4360',
             },
           },
           {
@@ -20744,7 +20754,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9994042410,
+              amount: '9994042410',
             },
           },
         ],
@@ -20768,7 +20778,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 4370,
+              amount: '4370',
             },
           },
           {
@@ -20779,7 +20789,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9994038040,
+              amount: '9994038040',
             },
           },
         ],
@@ -20803,7 +20813,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 4380,
+              amount: '4380',
             },
           },
           {
@@ -20814,7 +20824,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9994033660,
+              amount: '9994033660',
             },
           },
         ],
@@ -20838,7 +20848,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 4390,
+              amount: '4390',
             },
           },
           {
@@ -20849,7 +20859,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9994029270,
+              amount: '9994029270',
             },
           },
         ],
@@ -20873,7 +20883,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 4400,
+              amount: '4400',
             },
           },
           {
@@ -20884,7 +20894,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9994024870,
+              amount: '9994024870',
             },
           },
         ],
@@ -20908,7 +20918,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 4410,
+              amount: '4410',
             },
           },
           {
@@ -20919,7 +20929,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9994020460,
+              amount: '9994020460',
             },
           },
         ],
@@ -20943,7 +20953,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 4420,
+              amount: '4420',
             },
           },
           {
@@ -20954,7 +20964,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9994016040,
+              amount: '9994016040',
             },
           },
         ],
@@ -20978,7 +20988,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 4430,
+              amount: '4430',
             },
           },
           {
@@ -20989,7 +20999,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9994011610,
+              amount: '9994011610',
             },
           },
         ],
@@ -21013,7 +21023,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 4440,
+              amount: '4440',
             },
           },
           {
@@ -21024,7 +21034,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9994007170,
+              amount: '9994007170',
             },
           },
         ],
@@ -21048,7 +21058,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 4450,
+              amount: '4450',
             },
           },
           {
@@ -21059,7 +21069,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9994002720,
+              amount: '9994002720',
             },
           },
         ],
@@ -21083,7 +21093,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 4460,
+              amount: '4460',
             },
           },
           {
@@ -21094,7 +21104,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9993998260,
+              amount: '9993998260',
             },
           },
         ],
@@ -21118,7 +21128,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 4470,
+              amount: '4470',
             },
           },
           {
@@ -21129,7 +21139,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9993993790,
+              amount: '9993993790',
             },
           },
         ],
@@ -21153,7 +21163,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 4480,
+              amount: '4480',
             },
           },
           {
@@ -21164,7 +21174,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9993989310,
+              amount: '9993989310',
             },
           },
         ],
@@ -21188,7 +21198,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 4490,
+              amount: '4490',
             },
           },
           {
@@ -21199,7 +21209,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9993984820,
+              amount: '9993984820',
             },
           },
         ],
@@ -21223,7 +21233,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 4500,
+              amount: '4500',
             },
           },
           {
@@ -21234,7 +21244,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9993980320,
+              amount: '9993980320',
             },
           },
         ],
@@ -21258,7 +21268,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 4510,
+              amount: '4510',
             },
           },
           {
@@ -21269,7 +21279,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9993975810,
+              amount: '9993975810',
             },
           },
         ],
@@ -21293,7 +21303,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 4520,
+              amount: '4520',
             },
           },
           {
@@ -21304,7 +21314,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9993971290,
+              amount: '9993971290',
             },
           },
         ],
@@ -21328,7 +21338,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 4530,
+              amount: '4530',
             },
           },
           {
@@ -21339,7 +21349,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9993966760,
+              amount: '9993966760',
             },
           },
         ],
@@ -21363,7 +21373,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 4540,
+              amount: '4540',
             },
           },
           {
@@ -21374,7 +21384,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9993962220,
+              amount: '9993962220',
             },
           },
         ],
@@ -21398,7 +21408,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 4550,
+              amount: '4550',
             },
           },
           {
@@ -21409,7 +21419,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9993957670,
+              amount: '9993957670',
             },
           },
         ],
@@ -21433,7 +21443,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 4560,
+              amount: '4560',
             },
           },
           {
@@ -21444,7 +21454,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9993953110,
+              amount: '9993953110',
             },
           },
         ],
@@ -21468,7 +21478,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 4570,
+              amount: '4570',
             },
           },
           {
@@ -21479,7 +21489,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9993948540,
+              amount: '9993948540',
             },
           },
         ],
@@ -21503,7 +21513,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 4580,
+              amount: '4580',
             },
           },
           {
@@ -21514,7 +21524,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9993943960,
+              amount: '9993943960',
             },
           },
         ],
@@ -21538,7 +21548,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 4590,
+              amount: '4590',
             },
           },
           {
@@ -21549,7 +21559,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9993939370,
+              amount: '9993939370',
             },
           },
         ],
@@ -21573,7 +21583,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 4600,
+              amount: '4600',
             },
           },
           {
@@ -21584,7 +21594,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9993934770,
+              amount: '9993934770',
             },
           },
         ],
@@ -21608,7 +21618,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 4610,
+              amount: '4610',
             },
           },
           {
@@ -21619,7 +21629,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9993930160,
+              amount: '9993930160',
             },
           },
         ],
@@ -21643,7 +21653,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 4620,
+              amount: '4620',
             },
           },
           {
@@ -21654,7 +21664,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9993925540,
+              amount: '9993925540',
             },
           },
         ],
@@ -21678,7 +21688,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 4630,
+              amount: '4630',
             },
           },
           {
@@ -21689,7 +21699,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9993920910,
+              amount: '9993920910',
             },
           },
         ],
@@ -21713,7 +21723,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 4640,
+              amount: '4640',
             },
           },
           {
@@ -21724,7 +21734,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9993916270,
+              amount: '9993916270',
             },
           },
         ],
@@ -21748,7 +21758,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 4650,
+              amount: '4650',
             },
           },
           {
@@ -21759,7 +21769,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9993911620,
+              amount: '9993911620',
             },
           },
         ],
@@ -21783,7 +21793,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 4660,
+              amount: '4660',
             },
           },
           {
@@ -21794,7 +21804,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9993906960,
+              amount: '9993906960',
             },
           },
         ],
@@ -21818,7 +21828,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 4670,
+              amount: '4670',
             },
           },
           {
@@ -21829,7 +21839,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9993902290,
+              amount: '9993902290',
             },
           },
         ],
@@ -21853,7 +21863,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 4680,
+              amount: '4680',
             },
           },
           {
@@ -21864,7 +21874,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9993897610,
+              amount: '9993897610',
             },
           },
         ],
@@ -21888,7 +21898,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 4690,
+              amount: '4690',
             },
           },
           {
@@ -21899,7 +21909,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9993892920,
+              amount: '9993892920',
             },
           },
         ],
@@ -21923,7 +21933,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 4700,
+              amount: '4700',
             },
           },
           {
@@ -21934,7 +21944,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9993888220,
+              amount: '9993888220',
             },
           },
         ],
@@ -21958,7 +21968,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 4710,
+              amount: '4710',
             },
           },
           {
@@ -21969,7 +21979,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9993883510,
+              amount: '9993883510',
             },
           },
         ],
@@ -21993,7 +22003,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 4720,
+              amount: '4720',
             },
           },
           {
@@ -22004,7 +22014,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9993878790,
+              amount: '9993878790',
             },
           },
         ],
@@ -22028,7 +22038,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 4730,
+              amount: '4730',
             },
           },
           {
@@ -22039,7 +22049,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9993874060,
+              amount: '9993874060',
             },
           },
         ],
@@ -22063,7 +22073,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 4740,
+              amount: '4740',
             },
           },
           {
@@ -22074,7 +22084,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9993869320,
+              amount: '9993869320',
             },
           },
         ],
@@ -22098,7 +22108,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 4750,
+              amount: '4750',
             },
           },
           {
@@ -22109,7 +22119,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9993864570,
+              amount: '9993864570',
             },
           },
         ],
@@ -22133,7 +22143,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 4760,
+              amount: '4760',
             },
           },
           {
@@ -22144,7 +22154,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9993859810,
+              amount: '9993859810',
             },
           },
         ],
@@ -22168,7 +22178,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 4770,
+              amount: '4770',
             },
           },
           {
@@ -22179,7 +22189,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9993855040,
+              amount: '9993855040',
             },
           },
         ],
@@ -22203,7 +22213,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 4780,
+              amount: '4780',
             },
           },
           {
@@ -22214,7 +22224,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9993850260,
+              amount: '9993850260',
             },
           },
         ],
@@ -22238,7 +22248,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 4790,
+              amount: '4790',
             },
           },
           {
@@ -22249,7 +22259,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9993845470,
+              amount: '9993845470',
             },
           },
         ],
@@ -22273,7 +22283,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 4800,
+              amount: '4800',
             },
           },
           {
@@ -22284,7 +22294,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9993840670,
+              amount: '9993840670',
             },
           },
         ],
@@ -22308,7 +22318,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 4810,
+              amount: '4810',
             },
           },
           {
@@ -22319,7 +22329,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9993835860,
+              amount: '9993835860',
             },
           },
         ],
@@ -22343,7 +22353,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 4820,
+              amount: '4820',
             },
           },
           {
@@ -22354,7 +22364,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9993831040,
+              amount: '9993831040',
             },
           },
         ],
@@ -22378,7 +22388,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 4830,
+              amount: '4830',
             },
           },
           {
@@ -22389,7 +22399,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9993826210,
+              amount: '9993826210',
             },
           },
         ],
@@ -22413,7 +22423,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 4840,
+              amount: '4840',
             },
           },
           {
@@ -22424,7 +22434,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9993821370,
+              amount: '9993821370',
             },
           },
         ],
@@ -22448,7 +22458,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 4850,
+              amount: '4850',
             },
           },
           {
@@ -22459,7 +22469,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9993816520,
+              amount: '9993816520',
             },
           },
         ],
@@ -22483,7 +22493,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 4860,
+              amount: '4860',
             },
           },
           {
@@ -22494,7 +22504,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9993811660,
+              amount: '9993811660',
             },
           },
         ],
@@ -22518,7 +22528,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 4870,
+              amount: '4870',
             },
           },
           {
@@ -22529,7 +22539,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9993806790,
+              amount: '9993806790',
             },
           },
         ],
@@ -22553,7 +22563,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 4880,
+              amount: '4880',
             },
           },
           {
@@ -22564,7 +22574,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9993801910,
+              amount: '9993801910',
             },
           },
         ],
@@ -22588,7 +22598,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 4890,
+              amount: '4890',
             },
           },
           {
@@ -22599,7 +22609,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9993797020,
+              amount: '9993797020',
             },
           },
         ],
@@ -22623,7 +22633,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 4900,
+              amount: '4900',
             },
           },
           {
@@ -22634,7 +22644,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9993792120,
+              amount: '9993792120',
             },
           },
         ],
@@ -22658,7 +22668,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 4910,
+              amount: '4910',
             },
           },
           {
@@ -22669,7 +22679,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9993787210,
+              amount: '9993787210',
             },
           },
         ],
@@ -22693,7 +22703,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 4920,
+              amount: '4920',
             },
           },
           {
@@ -22704,7 +22714,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9993782290,
+              amount: '9993782290',
             },
           },
         ],
@@ -22728,7 +22738,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 4930,
+              amount: '4930',
             },
           },
           {
@@ -22739,7 +22749,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9993777360,
+              amount: '9993777360',
             },
           },
         ],
@@ -22763,7 +22773,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 4940,
+              amount: '4940',
             },
           },
           {
@@ -22774,7 +22784,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9993772420,
+              amount: '9993772420',
             },
           },
         ],
@@ -22798,7 +22808,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 4950,
+              amount: '4950',
             },
           },
           {
@@ -22809,7 +22819,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9993767470,
+              amount: '9993767470',
             },
           },
         ],
@@ -22833,7 +22843,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 4960,
+              amount: '4960',
             },
           },
           {
@@ -22844,7 +22854,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9993762510,
+              amount: '9993762510',
             },
           },
         ],
@@ -22868,7 +22878,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 4970,
+              amount: '4970',
             },
           },
           {
@@ -22879,7 +22889,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9993757540,
+              amount: '9993757540',
             },
           },
         ],
@@ -22903,7 +22913,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 4980,
+              amount: '4980',
             },
           },
           {
@@ -22914,7 +22924,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9993752560,
+              amount: '9993752560',
             },
           },
         ],
@@ -22938,7 +22948,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 4990,
+              amount: '4990',
             },
           },
           {
@@ -22949,7 +22959,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9993747570,
+              amount: '9993747570',
             },
           },
         ],
@@ -22973,7 +22983,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 5000,
+              amount: '5000',
             },
           },
           {
@@ -22984,7 +22994,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9993742570,
+              amount: '9993742570',
             },
           },
         ],
@@ -23008,7 +23018,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 5010,
+              amount: '5010',
             },
           },
           {
@@ -23019,7 +23029,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9993737560,
+              amount: '9993737560',
             },
           },
         ],
@@ -23043,7 +23053,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 5020,
+              amount: '5020',
             },
           },
           {
@@ -23054,7 +23064,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9993732540,
+              amount: '9993732540',
             },
           },
         ],
@@ -23078,7 +23088,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 5030,
+              amount: '5030',
             },
           },
           {
@@ -23089,7 +23099,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9993727510,
+              amount: '9993727510',
             },
           },
         ],
@@ -23113,7 +23123,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 5040,
+              amount: '5040',
             },
           },
           {
@@ -23124,7 +23134,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9993722470,
+              amount: '9993722470',
             },
           },
         ],
@@ -23148,7 +23158,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 5050,
+              amount: '5050',
             },
           },
           {
@@ -23159,7 +23169,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9993717420,
+              amount: '9993717420',
             },
           },
         ],
@@ -23183,7 +23193,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 5060,
+              amount: '5060',
             },
           },
           {
@@ -23194,7 +23204,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9993712360,
+              amount: '9993712360',
             },
           },
         ],
@@ -23218,7 +23228,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 5070,
+              amount: '5070',
             },
           },
           {
@@ -23229,7 +23239,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9993707290,
+              amount: '9993707290',
             },
           },
         ],
@@ -23253,7 +23263,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 5080,
+              amount: '5080',
             },
           },
           {
@@ -23264,7 +23274,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9993702210,
+              amount: '9993702210',
             },
           },
         ],
@@ -23288,7 +23298,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 5090,
+              amount: '5090',
             },
           },
           {
@@ -23299,7 +23309,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9993697120,
+              amount: '9993697120',
             },
           },
         ],
@@ -23323,7 +23333,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 5100,
+              amount: '5100',
             },
           },
           {
@@ -23334,7 +23344,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9993692020,
+              amount: '9993692020',
             },
           },
         ],
@@ -23358,7 +23368,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 5110,
+              amount: '5110',
             },
           },
           {
@@ -23369,7 +23379,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9993686910,
+              amount: '9993686910',
             },
           },
         ],
@@ -23393,7 +23403,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 5120,
+              amount: '5120',
             },
           },
           {
@@ -23404,7 +23414,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9993681790,
+              amount: '9993681790',
             },
           },
         ],
@@ -23428,7 +23438,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 5130,
+              amount: '5130',
             },
           },
           {
@@ -23439,7 +23449,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9993676660,
+              amount: '9993676660',
             },
           },
         ],
@@ -23463,7 +23473,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 5140,
+              amount: '5140',
             },
           },
           {
@@ -23474,7 +23484,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9993671520,
+              amount: '9993671520',
             },
           },
         ],
@@ -23498,7 +23508,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 5150,
+              amount: '5150',
             },
           },
           {
@@ -23509,7 +23519,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9993666370,
+              amount: '9993666370',
             },
           },
         ],
@@ -23533,7 +23543,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 5160,
+              amount: '5160',
             },
           },
           {
@@ -23544,7 +23554,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9993661210,
+              amount: '9993661210',
             },
           },
         ],
@@ -23568,7 +23578,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 5170,
+              amount: '5170',
             },
           },
           {
@@ -23579,7 +23589,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9993656040,
+              amount: '9993656040',
             },
           },
         ],
@@ -23603,7 +23613,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 5180,
+              amount: '5180',
             },
           },
           {
@@ -23614,7 +23624,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9993650860,
+              amount: '9993650860',
             },
           },
         ],
@@ -23638,7 +23648,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 5190,
+              amount: '5190',
             },
           },
           {
@@ -23649,7 +23659,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9993645670,
+              amount: '9993645670',
             },
           },
         ],
@@ -23673,7 +23683,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 5200,
+              amount: '5200',
             },
           },
           {
@@ -23684,7 +23694,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9993640470,
+              amount: '9993640470',
             },
           },
         ],
@@ -23708,7 +23718,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 5210,
+              amount: '5210',
             },
           },
           {
@@ -23719,7 +23729,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9993635260,
+              amount: '9993635260',
             },
           },
         ],
@@ -23743,7 +23753,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 5220,
+              amount: '5220',
             },
           },
           {
@@ -23754,7 +23764,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9993630040,
+              amount: '9993630040',
             },
           },
         ],
@@ -23778,7 +23788,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 5230,
+              amount: '5230',
             },
           },
           {
@@ -23789,7 +23799,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9993624810,
+              amount: '9993624810',
             },
           },
         ],
@@ -23813,7 +23823,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 5240,
+              amount: '5240',
             },
           },
           {
@@ -23824,7 +23834,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9993619570,
+              amount: '9993619570',
             },
           },
         ],
@@ -23848,7 +23858,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 5250,
+              amount: '5250',
             },
           },
           {
@@ -23859,7 +23869,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9993614320,
+              amount: '9993614320',
             },
           },
         ],
@@ -23883,7 +23893,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 5260,
+              amount: '5260',
             },
           },
           {
@@ -23894,7 +23904,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9993609060,
+              amount: '9993609060',
             },
           },
         ],
@@ -23918,7 +23928,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 5270,
+              amount: '5270',
             },
           },
           {
@@ -23929,7 +23939,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9993603790,
+              amount: '9993603790',
             },
           },
         ],
@@ -23953,7 +23963,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 5280,
+              amount: '5280',
             },
           },
           {
@@ -23964,7 +23974,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9993598510,
+              amount: '9993598510',
             },
           },
         ],
@@ -23988,7 +23998,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 5290,
+              amount: '5290',
             },
           },
           {
@@ -23999,7 +24009,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9993593220,
+              amount: '9993593220',
             },
           },
         ],
@@ -24023,7 +24033,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 5300,
+              amount: '5300',
             },
           },
           {
@@ -24034,7 +24044,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9993587920,
+              amount: '9993587920',
             },
           },
         ],
@@ -24058,7 +24068,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 5310,
+              amount: '5310',
             },
           },
           {
@@ -24069,7 +24079,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9993582610,
+              amount: '9993582610',
             },
           },
         ],
@@ -24093,7 +24103,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 5320,
+              amount: '5320',
             },
           },
           {
@@ -24104,7 +24114,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9993577290,
+              amount: '9993577290',
             },
           },
         ],
@@ -24128,7 +24138,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 5330,
+              amount: '5330',
             },
           },
           {
@@ -24139,7 +24149,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9993571960,
+              amount: '9993571960',
             },
           },
         ],
@@ -24163,7 +24173,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 5340,
+              amount: '5340',
             },
           },
           {
@@ -24174,7 +24184,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9993566620,
+              amount: '9993566620',
             },
           },
         ],
@@ -24198,7 +24208,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 5350,
+              amount: '5350',
             },
           },
           {
@@ -24209,7 +24219,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9993561270,
+              amount: '9993561270',
             },
           },
         ],
@@ -24233,7 +24243,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 5360,
+              amount: '5360',
             },
           },
           {
@@ -24244,7 +24254,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9993555910,
+              amount: '9993555910',
             },
           },
         ],
@@ -24268,7 +24278,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 5370,
+              amount: '5370',
             },
           },
           {
@@ -24279,7 +24289,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9993550540,
+              amount: '9993550540',
             },
           },
         ],
@@ -24303,7 +24313,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 5380,
+              amount: '5380',
             },
           },
           {
@@ -24314,7 +24324,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9993545160,
+              amount: '9993545160',
             },
           },
         ],
@@ -24338,7 +24348,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 5390,
+              amount: '5390',
             },
           },
           {
@@ -24349,7 +24359,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9993539770,
+              amount: '9993539770',
             },
           },
         ],
@@ -24373,7 +24383,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 5400,
+              amount: '5400',
             },
           },
           {
@@ -24384,7 +24394,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9993534370,
+              amount: '9993534370',
             },
           },
         ],
@@ -24408,7 +24418,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 5410,
+              amount: '5410',
             },
           },
           {
@@ -24419,7 +24429,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9993528960,
+              amount: '9993528960',
             },
           },
         ],
@@ -24443,7 +24453,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 5420,
+              amount: '5420',
             },
           },
           {
@@ -24454,7 +24464,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9993523540,
+              amount: '9993523540',
             },
           },
         ],
@@ -24478,7 +24488,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 5430,
+              amount: '5430',
             },
           },
           {
@@ -24489,7 +24499,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9993518110,
+              amount: '9993518110',
             },
           },
         ],
@@ -24513,7 +24523,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 5440,
+              amount: '5440',
             },
           },
           {
@@ -24524,7 +24534,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9993512670,
+              amount: '9993512670',
             },
           },
         ],
@@ -24548,7 +24558,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 5450,
+              amount: '5450',
             },
           },
           {
@@ -24559,7 +24569,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9993507220,
+              amount: '9993507220',
             },
           },
         ],
@@ -24583,7 +24593,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 5460,
+              amount: '5460',
             },
           },
           {
@@ -24594,7 +24604,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9993501760,
+              amount: '9993501760',
             },
           },
         ],
@@ -24618,7 +24628,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 5470,
+              amount: '5470',
             },
           },
           {
@@ -24629,7 +24639,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9993496290,
+              amount: '9993496290',
             },
           },
         ],
@@ -24653,7 +24663,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 5480,
+              amount: '5480',
             },
           },
           {
@@ -24664,7 +24674,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9993490810,
+              amount: '9993490810',
             },
           },
         ],
@@ -24688,7 +24698,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 5490,
+              amount: '5490',
             },
           },
           {
@@ -24699,7 +24709,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9993485320,
+              amount: '9993485320',
             },
           },
         ],
@@ -24723,7 +24733,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 5500,
+              amount: '5500',
             },
           },
           {
@@ -24734,7 +24744,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9993479820,
+              amount: '9993479820',
             },
           },
         ],
@@ -24758,7 +24768,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 5510,
+              amount: '5510',
             },
           },
           {
@@ -24769,7 +24779,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9993474310,
+              amount: '9993474310',
             },
           },
         ],
@@ -24793,7 +24803,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 5520,
+              amount: '5520',
             },
           },
           {
@@ -24804,7 +24814,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9993468790,
+              amount: '9993468790',
             },
           },
         ],
@@ -24828,7 +24838,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 5530,
+              amount: '5530',
             },
           },
           {
@@ -24839,7 +24849,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9993463260,
+              amount: '9993463260',
             },
           },
         ],
@@ -24863,7 +24873,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 5540,
+              amount: '5540',
             },
           },
           {
@@ -24874,7 +24884,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9993457720,
+              amount: '9993457720',
             },
           },
         ],
@@ -24898,7 +24908,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 5550,
+              amount: '5550',
             },
           },
           {
@@ -24909,7 +24919,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9993452170,
+              amount: '9993452170',
             },
           },
         ],
@@ -24933,7 +24943,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 5560,
+              amount: '5560',
             },
           },
           {
@@ -24944,7 +24954,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9993446610,
+              amount: '9993446610',
             },
           },
         ],
@@ -24968,7 +24978,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 5570,
+              amount: '5570',
             },
           },
           {
@@ -24979,7 +24989,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9993441040,
+              amount: '9993441040',
             },
           },
         ],
@@ -25003,7 +25013,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 5580,
+              amount: '5580',
             },
           },
           {
@@ -25014,7 +25024,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9993435460,
+              amount: '9993435460',
             },
           },
         ],
@@ -25038,7 +25048,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 5590,
+              amount: '5590',
             },
           },
           {
@@ -25049,7 +25059,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9993429870,
+              amount: '9993429870',
             },
           },
         ],
@@ -25073,7 +25083,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 5600,
+              amount: '5600',
             },
           },
           {
@@ -25084,7 +25094,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9993424270,
+              amount: '9993424270',
             },
           },
         ],
@@ -25108,7 +25118,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 5610,
+              amount: '5610',
             },
           },
           {
@@ -25119,7 +25129,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9993418660,
+              amount: '9993418660',
             },
           },
         ],
@@ -25143,7 +25153,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 5620,
+              amount: '5620',
             },
           },
           {
@@ -25154,7 +25164,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9993413040,
+              amount: '9993413040',
             },
           },
         ],
@@ -25178,7 +25188,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 5630,
+              amount: '5630',
             },
           },
           {
@@ -25189,7 +25199,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9993407410,
+              amount: '9993407410',
             },
           },
         ],
@@ -25213,7 +25223,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 5640,
+              amount: '5640',
             },
           },
           {
@@ -25224,7 +25234,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9993401770,
+              amount: '9993401770',
             },
           },
         ],
@@ -25248,7 +25258,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 5650,
+              amount: '5650',
             },
           },
           {
@@ -25259,7 +25269,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9993396120,
+              amount: '9993396120',
             },
           },
         ],
@@ -25283,7 +25293,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 5660,
+              amount: '5660',
             },
           },
           {
@@ -25294,7 +25304,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9993390460,
+              amount: '9993390460',
             },
           },
         ],
@@ -25318,7 +25328,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 5670,
+              amount: '5670',
             },
           },
           {
@@ -25329,7 +25339,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9993384790,
+              amount: '9993384790',
             },
           },
         ],
@@ -25353,7 +25363,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 5680,
+              amount: '5680',
             },
           },
           {
@@ -25364,7 +25374,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9993379110,
+              amount: '9993379110',
             },
           },
         ],
@@ -25388,7 +25398,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 5690,
+              amount: '5690',
             },
           },
           {
@@ -25399,7 +25409,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9993373420,
+              amount: '9993373420',
             },
           },
         ],
@@ -25423,7 +25433,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 5700,
+              amount: '5700',
             },
           },
           {
@@ -25434,7 +25444,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9993367720,
+              amount: '9993367720',
             },
           },
         ],
@@ -25458,7 +25468,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 5710,
+              amount: '5710',
             },
           },
           {
@@ -25469,7 +25479,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9993362010,
+              amount: '9993362010',
             },
           },
         ],
@@ -25493,7 +25503,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 5720,
+              amount: '5720',
             },
           },
           {
@@ -25504,7 +25514,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9993356290,
+              amount: '9993356290',
             },
           },
         ],
@@ -25528,7 +25538,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 5730,
+              amount: '5730',
             },
           },
           {
@@ -25539,7 +25549,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9993350560,
+              amount: '9993350560',
             },
           },
         ],
@@ -25563,7 +25573,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 5740,
+              amount: '5740',
             },
           },
           {
@@ -25574,7 +25584,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9993344820,
+              amount: '9993344820',
             },
           },
         ],
@@ -25598,7 +25608,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 5750,
+              amount: '5750',
             },
           },
           {
@@ -25609,7 +25619,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9993339070,
+              amount: '9993339070',
             },
           },
         ],
@@ -25633,7 +25643,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 5760,
+              amount: '5760',
             },
           },
           {
@@ -25644,7 +25654,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9993333310,
+              amount: '9993333310',
             },
           },
         ],
@@ -25668,7 +25678,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 5770,
+              amount: '5770',
             },
           },
           {
@@ -25679,7 +25689,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9993327540,
+              amount: '9993327540',
             },
           },
         ],
@@ -25703,7 +25713,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 5780,
+              amount: '5780',
             },
           },
           {
@@ -25714,7 +25724,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9993321760,
+              amount: '9993321760',
             },
           },
         ],
@@ -25738,7 +25748,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 5790,
+              amount: '5790',
             },
           },
           {
@@ -25749,7 +25759,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9993315970,
+              amount: '9993315970',
             },
           },
         ],
@@ -25773,7 +25783,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 5800,
+              amount: '5800',
             },
           },
           {
@@ -25784,7 +25794,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9993310170,
+              amount: '9993310170',
             },
           },
         ],
@@ -25808,7 +25818,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 5810,
+              amount: '5810',
             },
           },
           {
@@ -25819,7 +25829,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9993304360,
+              amount: '9993304360',
             },
           },
         ],
@@ -25843,7 +25853,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 5820,
+              amount: '5820',
             },
           },
           {
@@ -25854,7 +25864,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9993298540,
+              amount: '9993298540',
             },
           },
         ],
@@ -25878,7 +25888,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 5830,
+              amount: '5830',
             },
           },
           {
@@ -25889,7 +25899,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9993292710,
+              amount: '9993292710',
             },
           },
         ],
@@ -25913,7 +25923,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 5840,
+              amount: '5840',
             },
           },
           {
@@ -25924,7 +25934,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9993286870,
+              amount: '9993286870',
             },
           },
         ],
@@ -25948,7 +25958,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 5850,
+              amount: '5850',
             },
           },
           {
@@ -25959,7 +25969,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9993281020,
+              amount: '9993281020',
             },
           },
         ],
@@ -25983,7 +25993,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 5860,
+              amount: '5860',
             },
           },
           {
@@ -25994,7 +26004,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9993275160,
+              amount: '9993275160',
             },
           },
         ],
@@ -26018,7 +26028,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 5870,
+              amount: '5870',
             },
           },
           {
@@ -26029,7 +26039,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9993269290,
+              amount: '9993269290',
             },
           },
         ],
@@ -26053,7 +26063,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 5880,
+              amount: '5880',
             },
           },
           {
@@ -26064,7 +26074,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9993263410,
+              amount: '9993263410',
             },
           },
         ],
@@ -26088,7 +26098,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 5890,
+              amount: '5890',
             },
           },
           {
@@ -26099,7 +26109,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9993257520,
+              amount: '9993257520',
             },
           },
         ],
@@ -26123,7 +26133,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 5900,
+              amount: '5900',
             },
           },
           {
@@ -26134,7 +26144,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9993251620,
+              amount: '9993251620',
             },
           },
         ],
@@ -26158,7 +26168,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 5910,
+              amount: '5910',
             },
           },
           {
@@ -26169,7 +26179,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9993245710,
+              amount: '9993245710',
             },
           },
         ],
@@ -26193,7 +26203,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 5920,
+              amount: '5920',
             },
           },
           {
@@ -26204,7 +26214,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9993239790,
+              amount: '9993239790',
             },
           },
         ],
@@ -26228,7 +26238,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 5930,
+              amount: '5930',
             },
           },
           {
@@ -26239,7 +26249,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9993233860,
+              amount: '9993233860',
             },
           },
         ],
@@ -26263,7 +26273,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 5940,
+              amount: '5940',
             },
           },
           {
@@ -26274,7 +26284,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9993227920,
+              amount: '9993227920',
             },
           },
         ],
@@ -26298,7 +26308,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 5950,
+              amount: '5950',
             },
           },
           {
@@ -26309,7 +26319,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9993221970,
+              amount: '9993221970',
             },
           },
         ],
@@ -26333,7 +26343,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 5960,
+              amount: '5960',
             },
           },
           {
@@ -26344,7 +26354,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9993216010,
+              amount: '9993216010',
             },
           },
         ],
@@ -26368,7 +26378,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 5970,
+              amount: '5970',
             },
           },
           {
@@ -26379,7 +26389,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9993210040,
+              amount: '9993210040',
             },
           },
         ],
@@ -26403,7 +26413,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 5980,
+              amount: '5980',
             },
           },
           {
@@ -26414,7 +26424,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9993204060,
+              amount: '9993204060',
             },
           },
         ],
@@ -26438,7 +26448,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 5990,
+              amount: '5990',
             },
           },
           {
@@ -26449,7 +26459,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9993198070,
+              amount: '9993198070',
             },
           },
         ],
@@ -26473,7 +26483,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 6000,
+              amount: '6000',
             },
           },
           {
@@ -26484,7 +26494,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9993192070,
+              amount: '9993192070',
             },
           },
         ],
@@ -26508,7 +26518,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 6010,
+              amount: '6010',
             },
           },
           {
@@ -26519,7 +26529,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9993186060,
+              amount: '9993186060',
             },
           },
         ],
@@ -26543,7 +26553,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 6020,
+              amount: '6020',
             },
           },
           {
@@ -26554,7 +26564,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9993180040,
+              amount: '9993180040',
             },
           },
         ],
@@ -26578,7 +26588,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 6030,
+              amount: '6030',
             },
           },
           {
@@ -26589,7 +26599,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9993174010,
+              amount: '9993174010',
             },
           },
         ],
@@ -26613,7 +26623,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 6040,
+              amount: '6040',
             },
           },
           {
@@ -26624,7 +26634,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9993167970,
+              amount: '9993167970',
             },
           },
         ],
@@ -26648,7 +26658,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 6050,
+              amount: '6050',
             },
           },
           {
@@ -26659,7 +26669,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9993161920,
+              amount: '9993161920',
             },
           },
         ],
@@ -26683,7 +26693,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 6060,
+              amount: '6060',
             },
           },
           {
@@ -26694,7 +26704,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9993155860,
+              amount: '9993155860',
             },
           },
         ],
@@ -26718,7 +26728,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 6070,
+              amount: '6070',
             },
           },
           {
@@ -26729,7 +26739,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9993149790,
+              amount: '9993149790',
             },
           },
         ],
@@ -26753,7 +26763,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 6080,
+              amount: '6080',
             },
           },
           {
@@ -26764,7 +26774,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9993143710,
+              amount: '9993143710',
             },
           },
         ],
@@ -26788,7 +26798,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 6090,
+              amount: '6090',
             },
           },
           {
@@ -26799,7 +26809,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9993137620,
+              amount: '9993137620',
             },
           },
         ],
@@ -26823,7 +26833,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 6100,
+              amount: '6100',
             },
           },
           {
@@ -26834,7 +26844,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9993131520,
+              amount: '9993131520',
             },
           },
         ],
@@ -26858,7 +26868,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 6110,
+              amount: '6110',
             },
           },
           {
@@ -26869,7 +26879,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9993125410,
+              amount: '9993125410',
             },
           },
         ],
@@ -26893,7 +26903,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 6120,
+              amount: '6120',
             },
           },
           {
@@ -26904,7 +26914,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9993119290,
+              amount: '9993119290',
             },
           },
         ],
@@ -26928,7 +26938,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 6130,
+              amount: '6130',
             },
           },
           {
@@ -26939,7 +26949,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9993113160,
+              amount: '9993113160',
             },
           },
         ],
@@ -26963,7 +26973,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 6140,
+              amount: '6140',
             },
           },
           {
@@ -26974,7 +26984,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9993107020,
+              amount: '9993107020',
             },
           },
         ],
@@ -26998,7 +27008,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 6150,
+              amount: '6150',
             },
           },
           {
@@ -27009,7 +27019,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9993100870,
+              amount: '9993100870',
             },
           },
         ],
@@ -27033,7 +27043,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 6160,
+              amount: '6160',
             },
           },
           {
@@ -27044,7 +27054,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9993094710,
+              amount: '9993094710',
             },
           },
         ],
@@ -27068,7 +27078,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 6170,
+              amount: '6170',
             },
           },
           {
@@ -27079,7 +27089,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9993088540,
+              amount: '9993088540',
             },
           },
         ],
@@ -27103,7 +27113,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 6180,
+              amount: '6180',
             },
           },
           {
@@ -27114,7 +27124,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9993082360,
+              amount: '9993082360',
             },
           },
         ],
@@ -27138,7 +27148,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 6190,
+              amount: '6190',
             },
           },
           {
@@ -27149,7 +27159,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9993076170,
+              amount: '9993076170',
             },
           },
         ],
@@ -27173,7 +27183,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 6200,
+              amount: '6200',
             },
           },
           {
@@ -27184,7 +27194,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9993069970,
+              amount: '9993069970',
             },
           },
         ],
@@ -27208,7 +27218,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 6210,
+              amount: '6210',
             },
           },
           {
@@ -27219,7 +27229,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9993063760,
+              amount: '9993063760',
             },
           },
         ],
@@ -27243,7 +27253,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 6220,
+              amount: '6220',
             },
           },
           {
@@ -27254,7 +27264,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9993057540,
+              amount: '9993057540',
             },
           },
         ],
@@ -27278,7 +27288,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 6230,
+              amount: '6230',
             },
           },
           {
@@ -27289,7 +27299,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9993051310,
+              amount: '9993051310',
             },
           },
         ],
@@ -27313,7 +27323,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 6240,
+              amount: '6240',
             },
           },
           {
@@ -27324,7 +27334,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9993045070,
+              amount: '9993045070',
             },
           },
         ],
@@ -27348,7 +27358,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 6250,
+              amount: '6250',
             },
           },
           {
@@ -27359,7 +27369,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9993038820,
+              amount: '9993038820',
             },
           },
         ],
@@ -27383,7 +27393,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 6260,
+              amount: '6260',
             },
           },
           {
@@ -27394,7 +27404,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9993032560,
+              amount: '9993032560',
             },
           },
         ],
@@ -27418,7 +27428,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 6270,
+              amount: '6270',
             },
           },
           {
@@ -27429,7 +27439,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9993026290,
+              amount: '9993026290',
             },
           },
         ],
@@ -27453,7 +27463,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 6280,
+              amount: '6280',
             },
           },
           {
@@ -27464,7 +27474,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9993020010,
+              amount: '9993020010',
             },
           },
         ],
@@ -27488,7 +27498,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 6290,
+              amount: '6290',
             },
           },
           {
@@ -27499,7 +27509,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9993013720,
+              amount: '9993013720',
             },
           },
         ],
@@ -27523,7 +27533,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 6300,
+              amount: '6300',
             },
           },
           {
@@ -27534,7 +27544,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9993007420,
+              amount: '9993007420',
             },
           },
         ],
@@ -27558,7 +27568,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 6310,
+              amount: '6310',
             },
           },
           {
@@ -27569,7 +27579,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9993001110,
+              amount: '9993001110',
             },
           },
         ],
@@ -27593,7 +27603,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 6320,
+              amount: '6320',
             },
           },
           {
@@ -27604,7 +27614,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9992994790,
+              amount: '9992994790',
             },
           },
         ],
@@ -27628,7 +27638,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 6330,
+              amount: '6330',
             },
           },
           {
@@ -27639,7 +27649,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9992988460,
+              amount: '9992988460',
             },
           },
         ],
@@ -27663,7 +27673,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 6340,
+              amount: '6340',
             },
           },
           {
@@ -27674,7 +27684,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9992982120,
+              amount: '9992982120',
             },
           },
         ],
@@ -27698,7 +27708,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 6350,
+              amount: '6350',
             },
           },
           {
@@ -27709,7 +27719,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9992975770,
+              amount: '9992975770',
             },
           },
         ],
@@ -27733,7 +27743,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 6360,
+              amount: '6360',
             },
           },
           {
@@ -27744,7 +27754,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9992969410,
+              amount: '9992969410',
             },
           },
         ],
@@ -27768,7 +27778,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 6370,
+              amount: '6370',
             },
           },
           {
@@ -27779,7 +27789,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9992963040,
+              amount: '9992963040',
             },
           },
         ],
@@ -27803,7 +27813,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 6380,
+              amount: '6380',
             },
           },
           {
@@ -27814,7 +27824,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9992956660,
+              amount: '9992956660',
             },
           },
         ],
@@ -27838,7 +27848,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 6390,
+              amount: '6390',
             },
           },
           {
@@ -27849,7 +27859,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9992950270,
+              amount: '9992950270',
             },
           },
         ],
@@ -27873,7 +27883,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 6400,
+              amount: '6400',
             },
           },
           {
@@ -27884,7 +27894,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9992943870,
+              amount: '9992943870',
             },
           },
         ],
@@ -27908,7 +27918,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 6410,
+              amount: '6410',
             },
           },
           {
@@ -27919,7 +27929,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9992937460,
+              amount: '9992937460',
             },
           },
         ],
@@ -27943,7 +27953,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 6420,
+              amount: '6420',
             },
           },
           {
@@ -27954,7 +27964,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9992931040,
+              amount: '9992931040',
             },
           },
         ],
@@ -27978,7 +27988,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 6430,
+              amount: '6430',
             },
           },
           {
@@ -27989,7 +27999,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9992924610,
+              amount: '9992924610',
             },
           },
         ],
@@ -28013,7 +28023,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 6440,
+              amount: '6440',
             },
           },
           {
@@ -28024,7 +28034,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9992918170,
+              amount: '9992918170',
             },
           },
         ],
@@ -28048,7 +28058,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 6450,
+              amount: '6450',
             },
           },
           {
@@ -28059,7 +28069,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9992911720,
+              amount: '9992911720',
             },
           },
         ],
@@ -28083,7 +28093,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 6460,
+              amount: '6460',
             },
           },
           {
@@ -28094,7 +28104,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9992905260,
+              amount: '9992905260',
             },
           },
         ],
@@ -28118,7 +28128,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 6470,
+              amount: '6470',
             },
           },
           {
@@ -28129,7 +28139,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9992898790,
+              amount: '9992898790',
             },
           },
         ],
@@ -28153,7 +28163,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 6480,
+              amount: '6480',
             },
           },
           {
@@ -28164,7 +28174,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9992892310,
+              amount: '9992892310',
             },
           },
         ],
@@ -28188,7 +28198,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 6490,
+              amount: '6490',
             },
           },
           {
@@ -28199,7 +28209,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9992885820,
+              amount: '9992885820',
             },
           },
         ],
@@ -28223,7 +28233,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 6500,
+              amount: '6500',
             },
           },
           {
@@ -28234,7 +28244,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9992879320,
+              amount: '9992879320',
             },
           },
         ],
@@ -28258,7 +28268,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 6510,
+              amount: '6510',
             },
           },
           {
@@ -28269,7 +28279,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9992872810,
+              amount: '9992872810',
             },
           },
         ],
@@ -28293,7 +28303,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 6520,
+              amount: '6520',
             },
           },
           {
@@ -28304,7 +28314,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9992866290,
+              amount: '9992866290',
             },
           },
         ],
@@ -28328,7 +28338,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 6530,
+              amount: '6530',
             },
           },
           {
@@ -28339,7 +28349,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9992859760,
+              amount: '9992859760',
             },
           },
         ],
@@ -28363,7 +28373,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 6540,
+              amount: '6540',
             },
           },
           {
@@ -28374,7 +28384,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9992853220,
+              amount: '9992853220',
             },
           },
         ],
@@ -28398,7 +28408,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 4510,
+              amount: '4510',
             },
           },
           {
@@ -28409,7 +28419,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9998880800,
+              amount: '9998880800',
             },
           },
         ],
@@ -28433,7 +28443,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 4520,
+              amount: '4520',
             },
           },
           {
@@ -28444,7 +28454,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9998876280,
+              amount: '9998876280',
             },
           },
         ],
@@ -28468,7 +28478,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 4530,
+              amount: '4530',
             },
           },
           {
@@ -28479,7 +28489,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9998871750,
+              amount: '9998871750',
             },
           },
         ],
@@ -28503,7 +28513,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 4540,
+              amount: '4540',
             },
           },
           {
@@ -28514,7 +28524,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9998867210,
+              amount: '9998867210',
             },
           },
         ],
@@ -28538,7 +28548,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 4550,
+              amount: '4550',
             },
           },
           {
@@ -28549,7 +28559,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9998862660,
+              amount: '9998862660',
             },
           },
         ],
@@ -28573,7 +28583,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 4560,
+              amount: '4560',
             },
           },
           {
@@ -28584,7 +28594,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9998858100,
+              amount: '9998858100',
             },
           },
         ],
@@ -28608,7 +28618,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 4570,
+              amount: '4570',
             },
           },
           {
@@ -28619,7 +28629,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9998853530,
+              amount: '9998853530',
             },
           },
         ],
@@ -28643,7 +28653,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 4580,
+              amount: '4580',
             },
           },
           {
@@ -28654,7 +28664,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9998848950,
+              amount: '9998848950',
             },
           },
         ],
@@ -28678,7 +28688,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 4590,
+              amount: '4590',
             },
           },
           {
@@ -28689,7 +28699,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9998844360,
+              amount: '9998844360',
             },
           },
         ],
@@ -28713,7 +28723,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 4600,
+              amount: '4600',
             },
           },
           {
@@ -28724,7 +28734,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9998839760,
+              amount: '9998839760',
             },
           },
         ],
@@ -28748,7 +28758,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 4610,
+              amount: '4610',
             },
           },
           {
@@ -28759,7 +28769,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9998835150,
+              amount: '9998835150',
             },
           },
         ],
@@ -28783,7 +28793,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 4620,
+              amount: '4620',
             },
           },
           {
@@ -28794,7 +28804,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9998830530,
+              amount: '9998830530',
             },
           },
         ],
@@ -28818,7 +28828,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 4630,
+              amount: '4630',
             },
           },
           {
@@ -28829,7 +28839,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9998825900,
+              amount: '9998825900',
             },
           },
         ],
@@ -28853,7 +28863,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 4640,
+              amount: '4640',
             },
           },
           {
@@ -28864,7 +28874,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9998821260,
+              amount: '9998821260',
             },
           },
         ],
@@ -28888,7 +28898,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 4650,
+              amount: '4650',
             },
           },
           {
@@ -28899,7 +28909,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9998816610,
+              amount: '9998816610',
             },
           },
         ],
@@ -28923,7 +28933,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 4660,
+              amount: '4660',
             },
           },
           {
@@ -28934,7 +28944,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9998811950,
+              amount: '9998811950',
             },
           },
         ],
@@ -28958,7 +28968,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 4670,
+              amount: '4670',
             },
           },
           {
@@ -28969,7 +28979,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9998807280,
+              amount: '9998807280',
             },
           },
         ],
@@ -28993,7 +29003,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 4680,
+              amount: '4680',
             },
           },
           {
@@ -29004,7 +29014,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9998802600,
+              amount: '9998802600',
             },
           },
         ],
@@ -29028,7 +29038,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 4690,
+              amount: '4690',
             },
           },
           {
@@ -29039,7 +29049,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9998797910,
+              amount: '9998797910',
             },
           },
         ],
@@ -29063,7 +29073,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 4700,
+              amount: '4700',
             },
           },
           {
@@ -29074,7 +29084,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9998793210,
+              amount: '9998793210',
             },
           },
         ],
@@ -29098,7 +29108,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 4710,
+              amount: '4710',
             },
           },
           {
@@ -29109,7 +29119,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9998788500,
+              amount: '9998788500',
             },
           },
         ],
@@ -29133,7 +29143,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 4720,
+              amount: '4720',
             },
           },
           {
@@ -29144,7 +29154,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9998783780,
+              amount: '9998783780',
             },
           },
         ],
@@ -29168,7 +29178,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 4730,
+              amount: '4730',
             },
           },
           {
@@ -29179,7 +29189,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9998779050,
+              amount: '9998779050',
             },
           },
         ],
@@ -29203,7 +29213,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 4740,
+              amount: '4740',
             },
           },
           {
@@ -29214,7 +29224,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9998774310,
+              amount: '9998774310',
             },
           },
         ],
@@ -29238,7 +29248,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 4750,
+              amount: '4750',
             },
           },
           {
@@ -29249,7 +29259,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9998769560,
+              amount: '9998769560',
             },
           },
         ],
@@ -29273,7 +29283,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 4760,
+              amount: '4760',
             },
           },
           {
@@ -29284,7 +29294,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9998764800,
+              amount: '9998764800',
             },
           },
         ],
@@ -29308,7 +29318,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 4770,
+              amount: '4770',
             },
           },
           {
@@ -29319,7 +29329,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9998760030,
+              amount: '9998760030',
             },
           },
         ],
@@ -29343,7 +29353,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 4780,
+              amount: '4780',
             },
           },
           {
@@ -29354,7 +29364,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9998755250,
+              amount: '9998755250',
             },
           },
         ],
@@ -29378,7 +29388,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 4790,
+              amount: '4790',
             },
           },
           {
@@ -29389,7 +29399,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9998750460,
+              amount: '9998750460',
             },
           },
         ],
@@ -29413,7 +29423,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 4800,
+              amount: '4800',
             },
           },
           {
@@ -29424,7 +29434,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9998745660,
+              amount: '9998745660',
             },
           },
         ],
@@ -29448,7 +29458,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 4810,
+              amount: '4810',
             },
           },
           {
@@ -29459,7 +29469,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9998740850,
+              amount: '9998740850',
             },
           },
         ],
@@ -29483,7 +29493,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 4820,
+              amount: '4820',
             },
           },
           {
@@ -29494,7 +29504,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9998736030,
+              amount: '9998736030',
             },
           },
         ],
@@ -29518,7 +29528,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 4830,
+              amount: '4830',
             },
           },
           {
@@ -29529,7 +29539,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9998731200,
+              amount: '9998731200',
             },
           },
         ],
@@ -29553,7 +29563,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 4840,
+              amount: '4840',
             },
           },
           {
@@ -29564,7 +29574,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9998726360,
+              amount: '9998726360',
             },
           },
         ],
@@ -29588,7 +29598,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 4850,
+              amount: '4850',
             },
           },
           {
@@ -29599,7 +29609,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9998721510,
+              amount: '9998721510',
             },
           },
         ],
@@ -29623,7 +29633,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 4860,
+              amount: '4860',
             },
           },
           {
@@ -29634,7 +29644,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9998716650,
+              amount: '9998716650',
             },
           },
         ],
@@ -29658,7 +29668,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 4870,
+              amount: '4870',
             },
           },
           {
@@ -29669,7 +29679,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9998711780,
+              amount: '9998711780',
             },
           },
         ],
@@ -29693,7 +29703,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 4880,
+              amount: '4880',
             },
           },
           {
@@ -29704,7 +29714,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9998706900,
+              amount: '9998706900',
             },
           },
         ],
@@ -29728,7 +29738,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 4890,
+              amount: '4890',
             },
           },
           {
@@ -29739,7 +29749,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9998702010,
+              amount: '9998702010',
             },
           },
         ],
@@ -29763,7 +29773,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 4900,
+              amount: '4900',
             },
           },
           {
@@ -29774,7 +29784,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9998697110,
+              amount: '9998697110',
             },
           },
         ],
@@ -29798,7 +29808,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 4910,
+              amount: '4910',
             },
           },
           {
@@ -29809,7 +29819,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9998692200,
+              amount: '9998692200',
             },
           },
         ],
@@ -29833,7 +29843,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 4920,
+              amount: '4920',
             },
           },
           {
@@ -29844,7 +29854,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9998687280,
+              amount: '9998687280',
             },
           },
         ],
@@ -29868,7 +29878,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 4930,
+              amount: '4930',
             },
           },
           {
@@ -29879,7 +29889,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9998682350,
+              amount: '9998682350',
             },
           },
         ],
@@ -29903,7 +29913,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 4940,
+              amount: '4940',
             },
           },
           {
@@ -29914,7 +29924,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9998677410,
+              amount: '9998677410',
             },
           },
         ],
@@ -29938,7 +29948,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 4950,
+              amount: '4950',
             },
           },
           {
@@ -29949,7 +29959,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9998672460,
+              amount: '9998672460',
             },
           },
         ],
@@ -29973,7 +29983,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 4960,
+              amount: '4960',
             },
           },
           {
@@ -29984,7 +29994,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9998667500,
+              amount: '9998667500',
             },
           },
         ],
@@ -30008,7 +30018,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 4970,
+              amount: '4970',
             },
           },
           {
@@ -30019,7 +30029,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9998662530,
+              amount: '9998662530',
             },
           },
         ],
@@ -30043,7 +30053,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 4980,
+              amount: '4980',
             },
           },
           {
@@ -30054,7 +30064,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9998657550,
+              amount: '9998657550',
             },
           },
         ],
@@ -30078,7 +30088,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 4990,
+              amount: '4990',
             },
           },
           {
@@ -30089,7 +30099,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9998652560,
+              amount: '9998652560',
             },
           },
         ],
@@ -30113,7 +30123,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 5000,
+              amount: '5000',
             },
           },
           {
@@ -30124,7 +30134,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9998647560,
+              amount: '9998647560',
             },
           },
         ],
@@ -30148,7 +30158,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 5010,
+              amount: '5010',
             },
           },
           {
@@ -30159,7 +30169,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9998642550,
+              amount: '9998642550',
             },
           },
         ],
@@ -30183,7 +30193,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 5020,
+              amount: '5020',
             },
           },
           {
@@ -30194,7 +30204,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9998637530,
+              amount: '9998637530',
             },
           },
         ],
@@ -30218,7 +30228,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 5030,
+              amount: '5030',
             },
           },
           {
@@ -30229,7 +30239,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9998632500,
+              amount: '9998632500',
             },
           },
         ],
@@ -30253,7 +30263,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 5040,
+              amount: '5040',
             },
           },
           {
@@ -30264,7 +30274,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9998627460,
+              amount: '9998627460',
             },
           },
         ],
@@ -30288,7 +30298,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 5050,
+              amount: '5050',
             },
           },
           {
@@ -30299,7 +30309,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9998622410,
+              amount: '9998622410',
             },
           },
         ],
@@ -30323,7 +30333,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 5060,
+              amount: '5060',
             },
           },
           {
@@ -30334,7 +30344,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9998617350,
+              amount: '9998617350',
             },
           },
         ],
@@ -30358,7 +30368,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 5070,
+              amount: '5070',
             },
           },
           {
@@ -30369,7 +30379,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9998612280,
+              amount: '9998612280',
             },
           },
         ],
@@ -30393,7 +30403,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 5080,
+              amount: '5080',
             },
           },
           {
@@ -30404,7 +30414,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9998607200,
+              amount: '9998607200',
             },
           },
         ],
@@ -30428,7 +30438,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 5090,
+              amount: '5090',
             },
           },
           {
@@ -30439,7 +30449,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9998602110,
+              amount: '9998602110',
             },
           },
         ],
@@ -30463,7 +30473,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 5100,
+              amount: '5100',
             },
           },
           {
@@ -30474,7 +30484,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9998597010,
+              amount: '9998597010',
             },
           },
         ],
@@ -30498,7 +30508,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 5110,
+              amount: '5110',
             },
           },
           {
@@ -30509,7 +30519,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9998591900,
+              amount: '9998591900',
             },
           },
         ],
@@ -30533,7 +30543,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 5120,
+              amount: '5120',
             },
           },
           {
@@ -30544,7 +30554,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9998586780,
+              amount: '9998586780',
             },
           },
         ],
@@ -30568,7 +30578,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 5130,
+              amount: '5130',
             },
           },
           {
@@ -30579,7 +30589,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9998581650,
+              amount: '9998581650',
             },
           },
         ],
@@ -30603,7 +30613,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 5140,
+              amount: '5140',
             },
           },
           {
@@ -30614,7 +30624,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9998576510,
+              amount: '9998576510',
             },
           },
         ],
@@ -30638,7 +30648,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 5150,
+              amount: '5150',
             },
           },
           {
@@ -30649,7 +30659,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9998571360,
+              amount: '9998571360',
             },
           },
         ],
@@ -30673,7 +30683,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 5160,
+              amount: '5160',
             },
           },
           {
@@ -30684,7 +30694,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9998566200,
+              amount: '9998566200',
             },
           },
         ],
@@ -30708,7 +30718,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 5170,
+              amount: '5170',
             },
           },
           {
@@ -30719,7 +30729,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9998561030,
+              amount: '9998561030',
             },
           },
         ],
@@ -30743,7 +30753,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 5180,
+              amount: '5180',
             },
           },
           {
@@ -30754,7 +30764,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9998555850,
+              amount: '9998555850',
             },
           },
         ],
@@ -30778,7 +30788,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 5190,
+              amount: '5190',
             },
           },
           {
@@ -30789,7 +30799,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9998550660,
+              amount: '9998550660',
             },
           },
         ],
@@ -30813,7 +30823,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 5200,
+              amount: '5200',
             },
           },
           {
@@ -30824,7 +30834,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9998545460,
+              amount: '9998545460',
             },
           },
         ],
@@ -30848,7 +30858,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 5210,
+              amount: '5210',
             },
           },
           {
@@ -30859,7 +30869,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9998540250,
+              amount: '9998540250',
             },
           },
         ],
@@ -30883,7 +30893,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 5220,
+              amount: '5220',
             },
           },
           {
@@ -30894,7 +30904,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9998535030,
+              amount: '9998535030',
             },
           },
         ],
@@ -30918,7 +30928,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 5230,
+              amount: '5230',
             },
           },
           {
@@ -30929,7 +30939,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9998529800,
+              amount: '9998529800',
             },
           },
         ],
@@ -30953,7 +30963,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 5240,
+              amount: '5240',
             },
           },
           {
@@ -30964,7 +30974,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9998524560,
+              amount: '9998524560',
             },
           },
         ],
@@ -30988,7 +30998,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 5250,
+              amount: '5250',
             },
           },
           {
@@ -30999,7 +31009,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9998519310,
+              amount: '9998519310',
             },
           },
         ],
@@ -31023,7 +31033,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 5260,
+              amount: '5260',
             },
           },
           {
@@ -31034,7 +31044,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9998514050,
+              amount: '9998514050',
             },
           },
         ],
@@ -31058,7 +31068,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 5270,
+              amount: '5270',
             },
           },
           {
@@ -31069,7 +31079,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9998508780,
+              amount: '9998508780',
             },
           },
         ],
@@ -31093,7 +31103,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 5280,
+              amount: '5280',
             },
           },
           {
@@ -31104,7 +31114,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9998503500,
+              amount: '9998503500',
             },
           },
         ],
@@ -31128,7 +31138,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 5290,
+              amount: '5290',
             },
           },
           {
@@ -31139,7 +31149,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9998498210,
+              amount: '9998498210',
             },
           },
         ],
@@ -31163,7 +31173,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 5300,
+              amount: '5300',
             },
           },
           {
@@ -31174,7 +31184,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9998492910,
+              amount: '9998492910',
             },
           },
         ],
@@ -31198,7 +31208,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 5310,
+              amount: '5310',
             },
           },
           {
@@ -31209,7 +31219,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9998487600,
+              amount: '9998487600',
             },
           },
         ],
@@ -31233,7 +31243,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 5320,
+              amount: '5320',
             },
           },
           {
@@ -31244,7 +31254,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9998482280,
+              amount: '9998482280',
             },
           },
         ],
@@ -31268,7 +31278,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 5330,
+              amount: '5330',
             },
           },
           {
@@ -31279,7 +31289,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9998476950,
+              amount: '9998476950',
             },
           },
         ],
@@ -31303,7 +31313,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 5340,
+              amount: '5340',
             },
           },
           {
@@ -31314,7 +31324,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9998471610,
+              amount: '9998471610',
             },
           },
         ],
@@ -31338,7 +31348,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 5350,
+              amount: '5350',
             },
           },
           {
@@ -31349,7 +31359,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9998466260,
+              amount: '9998466260',
             },
           },
         ],
@@ -31373,7 +31383,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 5360,
+              amount: '5360',
             },
           },
           {
@@ -31384,7 +31394,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9998460900,
+              amount: '9998460900',
             },
           },
         ],
@@ -31408,7 +31418,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 5370,
+              amount: '5370',
             },
           },
           {
@@ -31419,7 +31429,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9998455530,
+              amount: '9998455530',
             },
           },
         ],
@@ -31443,7 +31453,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 5380,
+              amount: '5380',
             },
           },
           {
@@ -31454,7 +31464,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9998450150,
+              amount: '9998450150',
             },
           },
         ],
@@ -31478,7 +31488,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 5390,
+              amount: '5390',
             },
           },
           {
@@ -31489,7 +31499,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9998444760,
+              amount: '9998444760',
             },
           },
         ],
@@ -31513,7 +31523,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 5400,
+              amount: '5400',
             },
           },
           {
@@ -31524,7 +31534,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9998439360,
+              amount: '9998439360',
             },
           },
         ],
@@ -31548,7 +31558,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 5410,
+              amount: '5410',
             },
           },
           {
@@ -31559,7 +31569,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9998433950,
+              amount: '9998433950',
             },
           },
         ],
@@ -31583,7 +31593,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 5420,
+              amount: '5420',
             },
           },
           {
@@ -31594,7 +31604,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9998428530,
+              amount: '9998428530',
             },
           },
         ],
@@ -31618,7 +31628,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 5430,
+              amount: '5430',
             },
           },
           {
@@ -31629,7 +31639,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9998423100,
+              amount: '9998423100',
             },
           },
         ],
@@ -31653,7 +31663,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 5440,
+              amount: '5440',
             },
           },
           {
@@ -31664,7 +31674,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9998417660,
+              amount: '9998417660',
             },
           },
         ],
@@ -31688,7 +31698,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 5450,
+              amount: '5450',
             },
           },
           {
@@ -31699,7 +31709,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9998412210,
+              amount: '9998412210',
             },
           },
         ],
@@ -31723,7 +31733,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 5460,
+              amount: '5460',
             },
           },
           {
@@ -31734,7 +31744,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9998406750,
+              amount: '9998406750',
             },
           },
         ],
@@ -31758,7 +31768,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 5470,
+              amount: '5470',
             },
           },
           {
@@ -31769,7 +31779,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9998401280,
+              amount: '9998401280',
             },
           },
         ],
@@ -31793,7 +31803,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 5480,
+              amount: '5480',
             },
           },
           {
@@ -31804,7 +31814,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9998395800,
+              amount: '9998395800',
             },
           },
         ],
@@ -31828,7 +31838,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 5490,
+              amount: '5490',
             },
           },
           {
@@ -31839,7 +31849,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9998390310,
+              amount: '9998390310',
             },
           },
         ],
@@ -31863,7 +31873,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 5500,
+              amount: '5500',
             },
           },
           {
@@ -31874,7 +31884,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9998384810,
+              amount: '9998384810',
             },
           },
         ],
@@ -31898,7 +31908,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 5510,
+              amount: '5510',
             },
           },
           {
@@ -31909,7 +31919,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9998379300,
+              amount: '9998379300',
             },
           },
         ],
@@ -31933,7 +31943,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 5520,
+              amount: '5520',
             },
           },
           {
@@ -31944,7 +31954,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9998373780,
+              amount: '9998373780',
             },
           },
         ],
@@ -31968,7 +31978,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 5530,
+              amount: '5530',
             },
           },
           {
@@ -31979,7 +31989,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9998368250,
+              amount: '9998368250',
             },
           },
         ],
@@ -32003,7 +32013,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 5540,
+              amount: '5540',
             },
           },
           {
@@ -32014,7 +32024,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9998362710,
+              amount: '9998362710',
             },
           },
         ],
@@ -32038,7 +32048,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 5550,
+              amount: '5550',
             },
           },
           {
@@ -32049,7 +32059,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9998357160,
+              amount: '9998357160',
             },
           },
         ],
@@ -32073,7 +32083,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 5560,
+              amount: '5560',
             },
           },
           {
@@ -32084,7 +32094,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9998351600,
+              amount: '9998351600',
             },
           },
         ],
@@ -32108,7 +32118,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 5570,
+              amount: '5570',
             },
           },
           {
@@ -32119,7 +32129,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9998346030,
+              amount: '9998346030',
             },
           },
         ],
@@ -32143,7 +32153,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 5580,
+              amount: '5580',
             },
           },
           {
@@ -32154,7 +32164,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9998340450,
+              amount: '9998340450',
             },
           },
         ],
@@ -32178,7 +32188,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 5590,
+              amount: '5590',
             },
           },
           {
@@ -32189,7 +32199,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9998334860,
+              amount: '9998334860',
             },
           },
         ],
@@ -32213,7 +32223,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 5600,
+              amount: '5600',
             },
           },
           {
@@ -32224,7 +32234,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9998329260,
+              amount: '9998329260',
             },
           },
         ],
@@ -32248,7 +32258,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 5610,
+              amount: '5610',
             },
           },
           {
@@ -32259,7 +32269,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9998323650,
+              amount: '9998323650',
             },
           },
         ],
@@ -32283,7 +32293,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 5620,
+              amount: '5620',
             },
           },
           {
@@ -32294,7 +32304,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9998318030,
+              amount: '9998318030',
             },
           },
         ],
@@ -32318,7 +32328,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 5630,
+              amount: '5630',
             },
           },
           {
@@ -32329,7 +32339,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9998312400,
+              amount: '9998312400',
             },
           },
         ],
@@ -32353,7 +32363,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 5640,
+              amount: '5640',
             },
           },
           {
@@ -32364,7 +32374,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9998306760,
+              amount: '9998306760',
             },
           },
         ],
@@ -32388,7 +32398,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 5650,
+              amount: '5650',
             },
           },
           {
@@ -32399,7 +32409,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9998301110,
+              amount: '9998301110',
             },
           },
         ],
@@ -32423,7 +32433,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 5660,
+              amount: '5660',
             },
           },
           {
@@ -32434,7 +32444,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9998295450,
+              amount: '9998295450',
             },
           },
         ],
@@ -32458,7 +32468,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 5670,
+              amount: '5670',
             },
           },
           {
@@ -32469,7 +32479,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9998289780,
+              amount: '9998289780',
             },
           },
         ],
@@ -32493,7 +32503,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 5680,
+              amount: '5680',
             },
           },
           {
@@ -32504,7 +32514,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9998284100,
+              amount: '9998284100',
             },
           },
         ],
@@ -32528,7 +32538,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 5690,
+              amount: '5690',
             },
           },
           {
@@ -32539,7 +32549,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9998278410,
+              amount: '9998278410',
             },
           },
         ],
@@ -32563,7 +32573,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 5700,
+              amount: '5700',
             },
           },
           {
@@ -32574,7 +32584,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9998272710,
+              amount: '9998272710',
             },
           },
         ],
@@ -32598,7 +32608,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 5710,
+              amount: '5710',
             },
           },
           {
@@ -32609,7 +32619,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9998267000,
+              amount: '9998267000',
             },
           },
         ],
@@ -32633,7 +32643,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 5720,
+              amount: '5720',
             },
           },
           {
@@ -32644,7 +32654,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9998261280,
+              amount: '9998261280',
             },
           },
         ],
@@ -32668,7 +32678,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 5730,
+              amount: '5730',
             },
           },
           {
@@ -32679,7 +32689,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9998255550,
+              amount: '9998255550',
             },
           },
         ],
@@ -32703,7 +32713,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 5740,
+              amount: '5740',
             },
           },
           {
@@ -32714,7 +32724,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9998249810,
+              amount: '9998249810',
             },
           },
         ],
@@ -32738,7 +32748,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 5750,
+              amount: '5750',
             },
           },
           {
@@ -32749,7 +32759,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9998244060,
+              amount: '9998244060',
             },
           },
         ],
@@ -32773,7 +32783,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 5760,
+              amount: '5760',
             },
           },
           {
@@ -32784,7 +32794,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9998238300,
+              amount: '9998238300',
             },
           },
         ],
@@ -32808,7 +32818,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 5770,
+              amount: '5770',
             },
           },
           {
@@ -32819,7 +32829,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9998232530,
+              amount: '9998232530',
             },
           },
         ],
@@ -32843,7 +32853,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 5780,
+              amount: '5780',
             },
           },
           {
@@ -32854,7 +32864,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9998226750,
+              amount: '9998226750',
             },
           },
         ],
@@ -32878,7 +32888,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 5790,
+              amount: '5790',
             },
           },
           {
@@ -32889,7 +32899,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9998220960,
+              amount: '9998220960',
             },
           },
         ],
@@ -32913,7 +32923,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 5800,
+              amount: '5800',
             },
           },
           {
@@ -32924,7 +32934,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9998215160,
+              amount: '9998215160',
             },
           },
         ],
@@ -32948,7 +32958,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 5810,
+              amount: '5810',
             },
           },
           {
@@ -32959,7 +32969,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9998209350,
+              amount: '9998209350',
             },
           },
         ],
@@ -32983,7 +32993,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 5820,
+              amount: '5820',
             },
           },
           {
@@ -32994,7 +33004,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9998203530,
+              amount: '9998203530',
             },
           },
         ],
@@ -33018,7 +33028,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 5830,
+              amount: '5830',
             },
           },
           {
@@ -33029,7 +33039,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9998197700,
+              amount: '9998197700',
             },
           },
         ],
@@ -33053,7 +33063,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 5840,
+              amount: '5840',
             },
           },
           {
@@ -33064,7 +33074,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9998191860,
+              amount: '9998191860',
             },
           },
         ],
@@ -33088,7 +33098,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 5850,
+              amount: '5850',
             },
           },
           {
@@ -33099,7 +33109,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9998186010,
+              amount: '9998186010',
             },
           },
         ],
@@ -33123,7 +33133,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 5860,
+              amount: '5860',
             },
           },
           {
@@ -33134,7 +33144,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9998180150,
+              amount: '9998180150',
             },
           },
         ],
@@ -33158,7 +33168,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 5870,
+              amount: '5870',
             },
           },
           {
@@ -33169,7 +33179,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9998174280,
+              amount: '9998174280',
             },
           },
         ],
@@ -33193,7 +33203,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 5880,
+              amount: '5880',
             },
           },
           {
@@ -33204,7 +33214,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9998168400,
+              amount: '9998168400',
             },
           },
         ],
@@ -33228,7 +33238,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 5890,
+              amount: '5890',
             },
           },
           {
@@ -33239,7 +33249,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9998162510,
+              amount: '9998162510',
             },
           },
         ],
@@ -33263,7 +33273,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 5900,
+              amount: '5900',
             },
           },
           {
@@ -33274,7 +33284,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9998156610,
+              amount: '9998156610',
             },
           },
         ],
@@ -33298,7 +33308,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 5910,
+              amount: '5910',
             },
           },
           {
@@ -33309,7 +33319,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9998150700,
+              amount: '9998150700',
             },
           },
         ],
@@ -33333,7 +33343,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 5920,
+              amount: '5920',
             },
           },
           {
@@ -33344,7 +33354,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9998144780,
+              amount: '9998144780',
             },
           },
         ],
@@ -33368,7 +33378,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 5930,
+              amount: '5930',
             },
           },
           {
@@ -33379,7 +33389,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9998138850,
+              amount: '9998138850',
             },
           },
         ],
@@ -33403,7 +33413,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 5940,
+              amount: '5940',
             },
           },
           {
@@ -33414,7 +33424,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9998132910,
+              amount: '9998132910',
             },
           },
         ],
@@ -33438,7 +33448,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 5950,
+              amount: '5950',
             },
           },
           {
@@ -33449,7 +33459,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9998126960,
+              amount: '9998126960',
             },
           },
         ],
@@ -33473,7 +33483,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 5960,
+              amount: '5960',
             },
           },
           {
@@ -33484,7 +33494,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9998121000,
+              amount: '9998121000',
             },
           },
         ],
@@ -33508,7 +33518,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 5970,
+              amount: '5970',
             },
           },
           {
@@ -33519,7 +33529,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9998115030,
+              amount: '9998115030',
             },
           },
         ],
@@ -33543,7 +33553,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 5980,
+              amount: '5980',
             },
           },
           {
@@ -33554,7 +33564,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9998109050,
+              amount: '9998109050',
             },
           },
         ],
@@ -33578,7 +33588,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 5990,
+              amount: '5990',
             },
           },
           {
@@ -33589,7 +33599,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9998103060,
+              amount: '9998103060',
             },
           },
         ],
@@ -33613,7 +33623,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 6000,
+              amount: '6000',
             },
           },
           {
@@ -33624,7 +33634,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9998097060,
+              amount: '9998097060',
             },
           },
         ],
@@ -33648,7 +33658,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 6010,
+              amount: '6010',
             },
           },
           {
@@ -33659,7 +33669,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9998091050,
+              amount: '9998091050',
             },
           },
         ],
@@ -33683,7 +33693,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 6020,
+              amount: '6020',
             },
           },
           {
@@ -33694,7 +33704,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9998085030,
+              amount: '9998085030',
             },
           },
         ],
@@ -33718,7 +33728,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 6030,
+              amount: '6030',
             },
           },
           {
@@ -33729,7 +33739,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9998079000,
+              amount: '9998079000',
             },
           },
         ],
@@ -33753,7 +33763,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 6040,
+              amount: '6040',
             },
           },
           {
@@ -33764,7 +33774,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9998072960,
+              amount: '9998072960',
             },
           },
         ],
@@ -33788,7 +33798,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 6050,
+              amount: '6050',
             },
           },
           {
@@ -33799,7 +33809,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9998066910,
+              amount: '9998066910',
             },
           },
         ],
@@ -33823,7 +33833,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 6060,
+              amount: '6060',
             },
           },
           {
@@ -33834,7 +33844,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9998060850,
+              amount: '9998060850',
             },
           },
         ],
@@ -33858,7 +33868,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 6070,
+              amount: '6070',
             },
           },
           {
@@ -33869,7 +33879,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9998054780,
+              amount: '9998054780',
             },
           },
         ],
@@ -33893,7 +33903,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 6080,
+              amount: '6080',
             },
           },
           {
@@ -33904,7 +33914,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9998048700,
+              amount: '9998048700',
             },
           },
         ],
@@ -33928,7 +33938,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 6090,
+              amount: '6090',
             },
           },
           {
@@ -33939,7 +33949,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9998042610,
+              amount: '9998042610',
             },
           },
         ],
@@ -33963,7 +33973,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 6100,
+              amount: '6100',
             },
           },
           {
@@ -33974,7 +33984,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9998036510,
+              amount: '9998036510',
             },
           },
         ],
@@ -33998,7 +34008,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 6110,
+              amount: '6110',
             },
           },
           {
@@ -34009,7 +34019,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9998030400,
+              amount: '9998030400',
             },
           },
         ],
@@ -34033,7 +34043,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 6120,
+              amount: '6120',
             },
           },
           {
@@ -34044,7 +34054,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9998024280,
+              amount: '9998024280',
             },
           },
         ],
@@ -34068,7 +34078,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 6130,
+              amount: '6130',
             },
           },
           {
@@ -34079,7 +34089,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9998018150,
+              amount: '9998018150',
             },
           },
         ],
@@ -34103,7 +34113,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 6140,
+              amount: '6140',
             },
           },
           {
@@ -34114,7 +34124,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9998012010,
+              amount: '9998012010',
             },
           },
         ],
@@ -34138,7 +34148,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 6150,
+              amount: '6150',
             },
           },
           {
@@ -34149,7 +34159,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9998005860,
+              amount: '9998005860',
             },
           },
         ],
@@ -34173,7 +34183,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 6160,
+              amount: '6160',
             },
           },
           {
@@ -34184,7 +34194,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9997999700,
+              amount: '9997999700',
             },
           },
         ],
@@ -34208,7 +34218,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 6170,
+              amount: '6170',
             },
           },
           {
@@ -34219,7 +34229,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9997993530,
+              amount: '9997993530',
             },
           },
         ],
@@ -34243,7 +34253,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 6180,
+              amount: '6180',
             },
           },
           {
@@ -34254,7 +34264,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9997987350,
+              amount: '9997987350',
             },
           },
         ],
@@ -34278,7 +34288,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 6190,
+              amount: '6190',
             },
           },
           {
@@ -34289,7 +34299,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9997981160,
+              amount: '9997981160',
             },
           },
         ],
@@ -34313,7 +34323,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 6200,
+              amount: '6200',
             },
           },
           {
@@ -34324,7 +34334,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9997974960,
+              amount: '9997974960',
             },
           },
         ],
@@ -34348,7 +34358,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 6210,
+              amount: '6210',
             },
           },
           {
@@ -34359,7 +34369,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9997968750,
+              amount: '9997968750',
             },
           },
         ],
@@ -34383,7 +34393,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 6220,
+              amount: '6220',
             },
           },
           {
@@ -34394,7 +34404,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9997962530,
+              amount: '9997962530',
             },
           },
         ],
@@ -34418,7 +34428,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 6230,
+              amount: '6230',
             },
           },
           {
@@ -34429,7 +34439,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9997956300,
+              amount: '9997956300',
             },
           },
         ],
@@ -34453,7 +34463,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 6240,
+              amount: '6240',
             },
           },
           {
@@ -34464,7 +34474,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9997950060,
+              amount: '9997950060',
             },
           },
         ],
@@ -34488,7 +34498,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 6250,
+              amount: '6250',
             },
           },
           {
@@ -34499,7 +34509,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9997943810,
+              amount: '9997943810',
             },
           },
         ],
@@ -34523,7 +34533,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 6260,
+              amount: '6260',
             },
           },
           {
@@ -34534,7 +34544,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9997937550,
+              amount: '9997937550',
             },
           },
         ],
@@ -34558,7 +34568,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 6270,
+              amount: '6270',
             },
           },
           {
@@ -34569,7 +34579,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9997931280,
+              amount: '9997931280',
             },
           },
         ],
@@ -34593,7 +34603,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 6280,
+              amount: '6280',
             },
           },
           {
@@ -34604,7 +34614,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9997925000,
+              amount: '9997925000',
             },
           },
         ],
@@ -34628,7 +34638,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 6290,
+              amount: '6290',
             },
           },
           {
@@ -34639,7 +34649,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9997918710,
+              amount: '9997918710',
             },
           },
         ],
@@ -34663,7 +34673,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 6300,
+              amount: '6300',
             },
           },
           {
@@ -34674,7 +34684,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9997912410,
+              amount: '9997912410',
             },
           },
         ],
@@ -34698,7 +34708,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 6310,
+              amount: '6310',
             },
           },
           {
@@ -34709,7 +34719,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9997906100,
+              amount: '9997906100',
             },
           },
         ],
@@ -34733,7 +34743,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 6320,
+              amount: '6320',
             },
           },
           {
@@ -34744,7 +34754,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9997899780,
+              amount: '9997899780',
             },
           },
         ],
@@ -34768,7 +34778,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 6330,
+              amount: '6330',
             },
           },
           {
@@ -34779,7 +34789,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9997893450,
+              amount: '9997893450',
             },
           },
         ],
@@ -34803,7 +34813,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 6340,
+              amount: '6340',
             },
           },
           {
@@ -34814,7 +34824,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9997887110,
+              amount: '9997887110',
             },
           },
         ],
@@ -34838,7 +34848,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 6350,
+              amount: '6350',
             },
           },
           {
@@ -34849,7 +34859,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9997880760,
+              amount: '9997880760',
             },
           },
         ],
@@ -34873,7 +34883,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 6360,
+              amount: '6360',
             },
           },
           {
@@ -34884,7 +34894,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9997874400,
+              amount: '9997874400',
             },
           },
         ],
@@ -34908,7 +34918,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 6370,
+              amount: '6370',
             },
           },
           {
@@ -34919,7 +34929,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9997868030,
+              amount: '9997868030',
             },
           },
         ],
@@ -34943,7 +34953,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 6380,
+              amount: '6380',
             },
           },
           {
@@ -34954,7 +34964,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9997861650,
+              amount: '9997861650',
             },
           },
         ],
@@ -34978,7 +34988,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 6390,
+              amount: '6390',
             },
           },
           {
@@ -34989,7 +34999,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9997855260,
+              amount: '9997855260',
             },
           },
         ],
@@ -35013,7 +35023,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 6400,
+              amount: '6400',
             },
           },
           {
@@ -35024,7 +35034,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9997848860,
+              amount: '9997848860',
             },
           },
         ],
@@ -35048,7 +35058,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 6410,
+              amount: '6410',
             },
           },
           {
@@ -35059,7 +35069,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9997842450,
+              amount: '9997842450',
             },
           },
         ],
@@ -35083,7 +35093,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 6420,
+              amount: '6420',
             },
           },
           {
@@ -35094,7 +35104,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9997836030,
+              amount: '9997836030',
             },
           },
         ],
@@ -35118,7 +35128,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 6430,
+              amount: '6430',
             },
           },
           {
@@ -35129,7 +35139,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9997829600,
+              amount: '9997829600',
             },
           },
         ],
@@ -35153,7 +35163,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 6440,
+              amount: '6440',
             },
           },
           {
@@ -35164,7 +35174,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9997823160,
+              amount: '9997823160',
             },
           },
         ],
@@ -35188,7 +35198,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 6450,
+              amount: '6450',
             },
           },
           {
@@ -35199,7 +35209,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9997816710,
+              amount: '9997816710',
             },
           },
         ],
@@ -35223,7 +35233,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 6460,
+              amount: '6460',
             },
           },
           {
@@ -35234,7 +35244,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9997810250,
+              amount: '9997810250',
             },
           },
         ],
@@ -35258,7 +35268,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 6470,
+              amount: '6470',
             },
           },
           {
@@ -35269,7 +35279,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9997803780,
+              amount: '9997803780',
             },
           },
         ],
@@ -35293,7 +35303,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 6480,
+              amount: '6480',
             },
           },
           {
@@ -35304,7 +35314,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9997797300,
+              amount: '9997797300',
             },
           },
         ],
@@ -35328,7 +35338,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 6490,
+              amount: '6490',
             },
           },
           {
@@ -35339,7 +35349,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9997790810,
+              amount: '9997790810',
             },
           },
         ],
@@ -35363,7 +35373,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 6500,
+              amount: '6500',
             },
           },
           {
@@ -35374,7 +35384,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9997784310,
+              amount: '9997784310',
             },
           },
         ],
@@ -35398,7 +35408,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 6510,
+              amount: '6510',
             },
           },
           {
@@ -35409,7 +35419,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9997777800,
+              amount: '9997777800',
             },
           },
         ],
@@ -35433,7 +35443,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 6520,
+              amount: '6520',
             },
           },
           {
@@ -35444,7 +35454,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9997771280,
+              amount: '9997771280',
             },
           },
         ],
@@ -35468,7 +35478,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 6530,
+              amount: '6530',
             },
           },
           {
@@ -35479,7 +35489,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9997764750,
+              amount: '9997764750',
             },
           },
         ],
@@ -35503,7 +35513,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 6540,
+              amount: '6540',
             },
           },
           {
@@ -35514,7 +35524,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9997758210,
+              amount: '9997758210',
             },
           },
         ],
@@ -35538,7 +35548,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 6550,
+              amount: '6550',
             },
           },
           {
@@ -35549,7 +35559,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9997751660,
+              amount: '9997751660',
             },
           },
         ],
@@ -35573,7 +35583,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 6560,
+              amount: '6560',
             },
           },
           {
@@ -35584,7 +35594,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9997745100,
+              amount: '9997745100',
             },
           },
         ],
@@ -35608,7 +35618,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 6570,
+              amount: '6570',
             },
           },
           {
@@ -35619,7 +35629,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9997738530,
+              amount: '9997738530',
             },
           },
         ],
@@ -35643,7 +35653,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 6580,
+              amount: '6580',
             },
           },
           {
@@ -35654,7 +35664,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9997731950,
+              amount: '9997731950',
             },
           },
         ],
@@ -35678,7 +35688,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 6590,
+              amount: '6590',
             },
           },
           {
@@ -35689,7 +35699,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9997725360,
+              amount: '9997725360',
             },
           },
         ],
@@ -35713,7 +35723,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 6600,
+              amount: '6600',
             },
           },
           {
@@ -35724,7 +35734,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9997718760,
+              amount: '9997718760',
             },
           },
         ],
@@ -35748,7 +35758,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 6610,
+              amount: '6610',
             },
           },
           {
@@ -35759,7 +35769,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9997712150,
+              amount: '9997712150',
             },
           },
         ],
@@ -35783,7 +35793,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 6620,
+              amount: '6620',
             },
           },
           {
@@ -35794,7 +35804,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9997705530,
+              amount: '9997705530',
             },
           },
         ],
@@ -35818,7 +35828,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 6630,
+              amount: '6630',
             },
           },
           {
@@ -35829,7 +35839,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9997698900,
+              amount: '9997698900',
             },
           },
         ],
@@ -35853,7 +35863,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 6640,
+              amount: '6640',
             },
           },
           {
@@ -35864,7 +35874,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9997692260,
+              amount: '9997692260',
             },
           },
         ],
@@ -35888,7 +35898,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 6650,
+              amount: '6650',
             },
           },
           {
@@ -35899,7 +35909,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9997685610,
+              amount: '9997685610',
             },
           },
         ],
@@ -35923,7 +35933,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 6660,
+              amount: '6660',
             },
           },
           {
@@ -35934,7 +35944,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9997678950,
+              amount: '9997678950',
             },
           },
         ],
@@ -35958,7 +35968,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 6670,
+              amount: '6670',
             },
           },
           {
@@ -35969,7 +35979,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9997672280,
+              amount: '9997672280',
             },
           },
         ],
@@ -35993,7 +36003,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 6680,
+              amount: '6680',
             },
           },
           {
@@ -36004,7 +36014,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9997665600,
+              amount: '9997665600',
             },
           },
         ],
@@ -36028,7 +36038,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 6690,
+              amount: '6690',
             },
           },
           {
@@ -36039,7 +36049,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9997658910,
+              amount: '9997658910',
             },
           },
         ],
@@ -36063,7 +36073,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 6700,
+              amount: '6700',
             },
           },
           {
@@ -36074,7 +36084,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9997652210,
+              amount: '9997652210',
             },
           },
         ],
@@ -36098,7 +36108,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 6710,
+              amount: '6710',
             },
           },
           {
@@ -36109,7 +36119,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9997645500,
+              amount: '9997645500',
             },
           },
         ],
@@ -36133,7 +36143,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 6720,
+              amount: '6720',
             },
           },
           {
@@ -36144,7 +36154,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9997638780,
+              amount: '9997638780',
             },
           },
         ],
@@ -36168,7 +36178,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 6730,
+              amount: '6730',
             },
           },
           {
@@ -36179,7 +36189,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9997632050,
+              amount: '9997632050',
             },
           },
         ],
@@ -36203,7 +36213,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 6740,
+              amount: '6740',
             },
           },
           {
@@ -36214,7 +36224,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9997625310,
+              amount: '9997625310',
             },
           },
         ],
@@ -36238,7 +36248,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 6750,
+              amount: '6750',
             },
           },
           {
@@ -36249,7 +36259,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9997618560,
+              amount: '9997618560',
             },
           },
         ],
@@ -36273,7 +36283,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 6760,
+              amount: '6760',
             },
           },
           {
@@ -36284,7 +36294,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9997611800,
+              amount: '9997611800',
             },
           },
         ],
@@ -36308,7 +36318,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 6770,
+              amount: '6770',
             },
           },
           {
@@ -36319,7 +36329,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9997605030,
+              amount: '9997605030',
             },
           },
         ],
@@ -36343,7 +36353,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 6780,
+              amount: '6780',
             },
           },
           {
@@ -36354,7 +36364,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9997598250,
+              amount: '9997598250',
             },
           },
         ],
@@ -36378,7 +36388,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 6790,
+              amount: '6790',
             },
           },
           {
@@ -36389,7 +36399,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9997591460,
+              amount: '9997591460',
             },
           },
         ],
@@ -36413,7 +36423,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 6800,
+              amount: '6800',
             },
           },
           {
@@ -36424,7 +36434,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9997584660,
+              amount: '9997584660',
             },
           },
         ],
@@ -36448,7 +36458,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 6810,
+              amount: '6810',
             },
           },
           {
@@ -36459,7 +36469,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9997577850,
+              amount: '9997577850',
             },
           },
         ],
@@ -36483,7 +36493,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 6820,
+              amount: '6820',
             },
           },
           {
@@ -36494,7 +36504,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9997571030,
+              amount: '9997571030',
             },
           },
         ],
@@ -36518,7 +36528,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 6830,
+              amount: '6830',
             },
           },
           {
@@ -36529,7 +36539,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9997564200,
+              amount: '9997564200',
             },
           },
         ],
@@ -36553,7 +36563,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 6840,
+              amount: '6840',
             },
           },
           {
@@ -36564,7 +36574,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9997557360,
+              amount: '9997557360',
             },
           },
         ],
@@ -36588,7 +36598,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 6850,
+              amount: '6850',
             },
           },
           {
@@ -36599,7 +36609,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9997550510,
+              amount: '9997550510',
             },
           },
         ],
@@ -36623,7 +36633,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 6860,
+              amount: '6860',
             },
           },
           {
@@ -36634,7 +36644,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9997543650,
+              amount: '9997543650',
             },
           },
         ],
@@ -36658,7 +36668,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 6870,
+              amount: '6870',
             },
           },
           {
@@ -36669,7 +36679,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '000000006202101d8ab965042b9eb32680a27724fd6c9b2553092ee503518bc5f655c79e',
-              amount: 9997536780,
+              amount: '9997536780',
             },
           },
         ],
@@ -36693,7 +36703,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 6550,
+              amount: '6550',
             },
           },
           {
@@ -36704,7 +36714,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9992846670,
+              amount: '9992846670',
             },
           },
         ],
@@ -36728,7 +36738,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 6560,
+              amount: '6560',
             },
           },
           {
@@ -36739,7 +36749,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9992840110,
+              amount: '9992840110',
             },
           },
         ],
@@ -36763,7 +36773,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 6570,
+              amount: '6570',
             },
           },
           {
@@ -36774,7 +36784,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9992833540,
+              amount: '9992833540',
             },
           },
         ],
@@ -36798,7 +36808,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 6580,
+              amount: '6580',
             },
           },
           {
@@ -36809,7 +36819,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9992826960,
+              amount: '9992826960',
             },
           },
         ],
@@ -36833,7 +36843,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 6590,
+              amount: '6590',
             },
           },
           {
@@ -36844,7 +36854,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9992820370,
+              amount: '9992820370',
             },
           },
         ],
@@ -36868,7 +36878,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 6600,
+              amount: '6600',
             },
           },
           {
@@ -36879,7 +36889,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9992813770,
+              amount: '9992813770',
             },
           },
         ],
@@ -36903,7 +36913,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 6610,
+              amount: '6610',
             },
           },
           {
@@ -36914,7 +36924,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9992807160,
+              amount: '9992807160',
             },
           },
         ],
@@ -36938,7 +36948,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 6620,
+              amount: '6620',
             },
           },
           {
@@ -36949,7 +36959,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9992800540,
+              amount: '9992800540',
             },
           },
         ],
@@ -36973,7 +36983,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 6630,
+              amount: '6630',
             },
           },
           {
@@ -36984,7 +36994,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9992793910,
+              amount: '9992793910',
             },
           },
         ],
@@ -37008,7 +37018,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 6640,
+              amount: '6640',
             },
           },
           {
@@ -37019,7 +37029,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9992787270,
+              amount: '9992787270',
             },
           },
         ],
@@ -37043,7 +37053,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 6650,
+              amount: '6650',
             },
           },
           {
@@ -37054,7 +37064,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9992780620,
+              amount: '9992780620',
             },
           },
         ],
@@ -37078,7 +37088,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 6660,
+              amount: '6660',
             },
           },
           {
@@ -37089,7 +37099,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9992773960,
+              amount: '9992773960',
             },
           },
         ],
@@ -37113,7 +37123,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 6670,
+              amount: '6670',
             },
           },
           {
@@ -37124,7 +37134,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9992767290,
+              amount: '9992767290',
             },
           },
         ],
@@ -37148,7 +37158,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 6680,
+              amount: '6680',
             },
           },
           {
@@ -37159,7 +37169,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9992760610,
+              amount: '9992760610',
             },
           },
         ],
@@ -37183,7 +37193,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 6690,
+              amount: '6690',
             },
           },
           {
@@ -37194,7 +37204,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9992753920,
+              amount: '9992753920',
             },
           },
         ],
@@ -37218,7 +37228,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 6700,
+              amount: '6700',
             },
           },
           {
@@ -37229,7 +37239,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9992747220,
+              amount: '9992747220',
             },
           },
         ],
@@ -37253,7 +37263,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 6710,
+              amount: '6710',
             },
           },
           {
@@ -37264,7 +37274,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9992740510,
+              amount: '9992740510',
             },
           },
         ],
@@ -37288,7 +37298,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 6720,
+              amount: '6720',
             },
           },
           {
@@ -37299,7 +37309,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9992733790,
+              amount: '9992733790',
             },
           },
         ],
@@ -37323,7 +37333,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 6730,
+              amount: '6730',
             },
           },
           {
@@ -37334,7 +37344,7 @@ module.exports = function({blockNumber = 1, falsyBlock, falsyTransaction, falsyI
             },
             spend: {
               asset: '0000000054bfbf3c9791e8f020cb13f6b1d62d5a57b1b59c6c62c31070399dec1b51217e',
-              amount: 9992727060,
+              amount: '9992727060',
             },
           },
         ],

@@ -74,9 +74,9 @@ class BlocksAdder {
 
       if (latestBlockNumberToAdd > latestBlockNumberInDB) {
         await this.setSyncingStatus({ syncing: 'syncing' });
-
+        
         this.dbTransaction = await db.sequelize.transaction();
-
+        
         const nodeBlocks = await this.networkHelper.getSerializedBlocksFromNode({
           blockNumber: latestBlockNumberToAdd,
           take: latestBlockNumberToAdd - latestBlockNumberInDB,
