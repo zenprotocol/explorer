@@ -11,7 +11,7 @@ const TRY_REFETCH_EVERY = 20 * 60 * 1000; // 20 minutes
  * Get a name by contract ID
  * @param {string} id
  *
- * @returns {string}
+ * @returns {{name: string, shortName: string}}
  */
 module.exports = function get(id) {
   if (!data) {

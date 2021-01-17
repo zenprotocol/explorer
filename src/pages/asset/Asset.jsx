@@ -7,6 +7,7 @@ import { Helmet } from 'react-helmet';
 import RouterUtils from '../../lib/RouterUtils';
 import TextUtils from '../../lib/TextUtils';
 import AssetUtils from '../../lib/AssetUtils';
+import ObjectUtils from '../../lib/ObjectUtils';
 import Loading from '../../components/Loading';
 import HashLink from '../../components/HashLink';
 import ItemNotFound from '../../components/ItemNotFound';
@@ -68,6 +69,7 @@ class AssetPage extends Component {
 
     const is404 = this.assetStore.asset.status === 404;
     const assetName = AssetUtils.getAssetNameFromCode(this.assetProp);
+    const contractName = ObjectUtils.getSafeProp(this.assetStore, 'asset.contract.metadata.shortName');
 
     return (
       <Page className="Asset">
@@ -76,7 +78,7 @@ class AssetPage extends Component {
         </Helmet>
         <section>
           <PageTitle
-            title="Asset"
+            title={`Asset${contractName ? ' of ' + contractName : ''}`}
             subtitle={
               <HashLink hash={assetName} value={this.assetProp} truncate={false} copy={true} />
             }
@@ -110,12 +112,20 @@ class AssetPage extends Component {
             </thead>
             <tbody>
               {!AssetUtils.isZP(asset.asset) && (
+                <>
                 <tr>
                   <td>CONTRACT ID</td>
                   <td>
                     <HashLink hash={contract.id} url={`/contracts/${contract.address}`} />
                   </td>
                 </tr>
+                <tr>
+                  <td>SUBTYPE</td>
+                  <td>
+                    <HashLink hash={asset.subType} />
+                  </td>
+                </tr>
+                </>
               )}
               <tr>
                 <td>TOKENS OUTSTANDING</td>

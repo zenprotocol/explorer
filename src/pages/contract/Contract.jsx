@@ -83,7 +83,7 @@ class ContractPage extends Component {
                   <HashLink hash={this.addressProp} truncate={false} copy={true} />
                 </div>
                 <div>
-                  <strong>ID</strong>: <HashLink hash={id} truncate={false} />
+                  <strong>ID</strong>: {id && <HashLink hash={id} truncate={false} />}
                 </div>
               </div>
             }

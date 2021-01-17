@@ -25,18 +25,16 @@ class AssetsTable extends Component {
         ),
       },
       {
+        Header: 'Contract',
+        accessor: 'contract',
+        Cell: ({ value }) => value.id ? (
+          <HashLink truncate={false} hash={value.metadata.shortName} value={value.id} url={`/contracts/${value.address}`} />
+        ) : null,
+      },
+      {
         Header: 'tokens outstanding',
         accessor: 'outstanding',
-        Cell: (data) => AssetUtils.getAmountString(data.original.asset, data.value),
-      },
-      {
-        Header: 'total issued',
-        accessor: 'issued',
-        Cell: (data) => AssetUtils.getAmountString(data.original.asset, data.value),
-      },
-      {
-        Header: 'destroyed',
-        accessor: 'destroyed',
+        minWidth: 150,
         Cell: (data) => AssetUtils.getAmountString(data.original.asset, data.value),
       },
       {

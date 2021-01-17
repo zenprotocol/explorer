@@ -1,6 +1,6 @@
 'use strict';
 
-const { Address, PublicKey, ContractId, Block } = require('@zen/zenjs');
+const { Address, PublicKey, ContractId, Block, Asset } = require('@zen/zenjs');
 
 const LOCK_VALUE_KEY_OPTIONS = ['hash', 'pkHash', 'id', 'data'];
 
@@ -38,6 +38,10 @@ class BlockchainParser {
 
   getContractVersion(contractId) {
     return ContractId.fromString(contractId).version;
+  }
+
+  getAssetSubType(assetId) {
+    return new Asset(assetId).getSubType();
   }
 
   deserializeBlock(serialized) {
