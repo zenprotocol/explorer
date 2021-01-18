@@ -15,7 +15,7 @@ export default class HashLink extends Component {
       copied: false,
     };
 
-    this.copyDiv = React.createRef();
+    this.copyRef = React.createRef();
 
     this.copyToClipboard = this.copyToClipboard.bind(this);
     this.setCopied = this.setCopied.bind(this);
@@ -32,16 +32,17 @@ export default class HashLink extends Component {
       <Link to={url}>{truncatedHash}</Link>
     );
     const valueToCopy = value ? value : hash;
+    const isTruncated = truncatedHash !== valueToCopy;
 
     const anchorCopy = (
       <div
-        ref={this.copyDiv}
+        ref={this.copyRef}
         className="copy"
         onMouseLeave={() => {
           this.setCopied(false);
         }}
-        data-balloon={this.state.copied ? 'Copied to clipboard' : 'Copy'}
-        data-balloon-pos={this.getTooltipPosition()}
+        aria-label={this.state.copied ? 'Copied to clipboard' : 'Copy'}
+        data-balloon-pos={this.getTooltipPositionCopy()}
       >
         <button
           onClick={() => {
@@ -56,19 +57,21 @@ export default class HashLink extends Component {
     );
 
     return (
-      <div
-        className={classNames('HashLink break-word', { copyable: copy })}
-        title={copy ? valueToCopy : ''}
-      >
-        {anchorHash}
+      <div className={classNames('HashLink break-word', { copyable: copy })}>
+        <span
+          className="hash-wrapper"
+          title={copy && isTruncated ? valueToCopy : ''}
+        >
+          {anchorHash}
+        </span>
         {copy && valueToCopy ? anchorCopy : null}
       </div>
     );
   }
 
-  getTooltipPosition() {
-    if (this.copyDiv.current) {
-      if (Math.abs(window.innerWidth - this.copyDiv.current.getBoundingClientRect().left) < 150) {
+  getTooltipPositionCopy() {
+    if (this.copyRef.current) {
+      if (Math.abs(window.innerWidth - this.copyRef.current.getBoundingClientRect().left) < 150) {
         return 'up-right';
       }
     }

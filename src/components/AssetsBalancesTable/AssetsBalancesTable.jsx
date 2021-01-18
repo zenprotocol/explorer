@@ -18,15 +18,17 @@ export default function AssetsBalancesTable({ title, balance = [] }) {
                 {title}
               </th>
             </tr>
-            <tr>
-              <th scope="col">ASSET</th>
-              <th scope="col">AMOUNT</th>
-            </tr>
           </thead>
         </table>
       </div>
       <div className="BodyTableContainer">
         <table className="table table-zen">
+          <thead>
+            <tr>
+              <th scope="col">ASSET</th>
+              <th scope="col">AMOUNT</th>
+            </tr>
+          </thead>
           <tbody>
             {_balance.map((assetBalance, index) => (
               <tr key={index}>

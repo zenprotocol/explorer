@@ -5,9 +5,12 @@
   &.copyable {
     padding-right: 30px;
   }
+  .hash-wrapper {
+    display: inline-block;
+  }
   .copy {
     display: block;
-    position: absolute;
+    position: absolute !important;
     top: -3px;
     right: 0;
     z-index: 1001;
