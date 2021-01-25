@@ -4,6 +4,6 @@ services:
     build:
       context: ./zen-node
       dockerfile: Dockerfile
-    command: zen-node --api *:5050 --addressdb --data-path "/home/ubuntu/zen-data"
+    command: zen-node --test --api *:5050 --addressdb --data-path "/home/ubuntu/zen-data"
     ports: 
       - 5050:5050
