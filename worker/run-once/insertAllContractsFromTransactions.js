@@ -3,6 +3,7 @@
  * If the contract already exists - update it
  */
 const contractsDAL = require('../../server/components/api/contracts/contractsDAL');
+const txsDAL = require('../../server/components/api/txs/txsDAL');
 const BlocksAdder = require('../jobs/blocks/BlocksAdder');
 const NetworkHelper = require('../lib/NetworkHelper');
 const logger = require('../lib/logger')('contracts');
@@ -23,17 +24,22 @@ const run = async () => {
       transactionIndex++
     ) {
       const transactionHash = transactionHashes[transactionIndex];
-      contractsCount += await blocksAdder.addContract({ nodeBlock, transactionHash });
+      const dbTx = await txsDAL.findByHash(transactionHash);
+      contractsCount += await blocksAdder.addContract({
+        nodeBlock,
+        nodeTx: nodeBlock.transactions[transactionHash],
+        tx: dbTx,
+      });
     }
   }
   return contractsCount;
 };
 
 run()
-  .then(contractsCount => {
+  .then((contractsCount) => {
     logger.info(`Finished adding contracts. Added ${contractsCount} contracts.`);
   })
-  .catch(err => {
+  .catch((err) => {
     logger.error(`An Error has occurred: ${err.message}`);
   })
   .then(() => {

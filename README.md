@@ -45,6 +45,11 @@ In order to have some blockchain data in the development environment you should 
    2. let it work (long operation)
 - **Option 2** - copy the db from staging   
    1. Follow the steps in [Heroku to local](#heroku-to-local)
+
+## Worker
+The worker layer is responsible for fetching new blocks from a node and mapping them to the database.  
+for further info visit [the worker docs](./worker/README.md)
+
 ## General Docker commands:
 1. `docker-compose logs` - Watch logs from the containers - https://docs.docker.com/compose/reference/logs/
 1. `docker-compose up` - start the server
@@ -57,8 +62,6 @@ For example -
 5. `docker rm $(docker ps -a -q -f status=exited)` - remove all exited containers
 6. `docker images` - list all images
 7. `docker rmi $(docker images -q)` - remove all images
-
-
 
 ## Sequelize (ORM)
 we use sequelize to talk to the database  
