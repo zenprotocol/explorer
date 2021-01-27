@@ -60,7 +60,7 @@ PieChart.propTypes = {
 
 PieChart.defaultProps = {
   xAxisType: 'datetime',
-  tooltipHeaderFormat: '<span style="font-size: 10px">{point.key}</span><br/>',
+  tooltipHeaderFormat: '<span style="font-size: 10px;"><strong>{point.key}</strong></span><br/>',
   tooltipPointFormat:
     '<span style="color:{point.color}">\u25CF</span> {series.name}: <b>{point.y}</b><br/>',
 };

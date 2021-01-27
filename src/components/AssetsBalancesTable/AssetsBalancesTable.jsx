@@ -39,7 +39,7 @@ export default function AssetsBalancesTable({ title, balance = [] }) {
                     url={`/assets/${assetBalance.asset}`}
                   />
                 </td>
-                <td>{AssetUtils.getAmountString(assetBalance.asset, assetBalance.total)}</td>
+                <td>{AssetUtils.getAmountDivided(assetBalance.total)}</td>
               </tr>
             ))}
           </tbody>

@@ -77,7 +77,7 @@ function SummaryNomination({
           <ThresholdRow threshold={threshold} thresholdPercentage={thresholdPercentage} />
           <tr>
             <td>TOTAL ZP VOTED</td>
-            <td>{AssetUtils.getAmountString('00', zpParticipatedNomination)}</td>
+            <td>{AssetUtils.getAmountDivided(zpParticipatedNomination)}</td>
           </tr>
           <tr>
             <td>TOTAL NOMINEES</td>
@@ -117,7 +117,7 @@ function SummaryAllocation({
           <UnconfirmedRow currentBlock={currentBlock} coinbaseMaturity={coinbaseMaturity} />
           <tr>
             <td>TOTAL ZP VOTED</td>
-            <td>{AssetUtils.getAmountString('00', zpParticipatedAllocation)}</td>
+            <td>{AssetUtils.getAmountDivided(zpParticipatedAllocation)}</td>
           </tr>
           <tr>
             <td>CGP ALLOCATION</td>
@@ -179,11 +179,11 @@ class SummaryPayout extends React.Component {
             <UnconfirmedRow {...this.props} />
             <tr>
               <td>TOTAL ZP VOTED</td>
-              <td>{AssetUtils.getAmountString('00', zpParticipatedPayout)}</td>
+              <td>{AssetUtils.getAmountDivided(zpParticipatedPayout)}</td>
             </tr>
             <tr>
               <td>ZP VOTED FOR WINNER</td>
-              <td>{AssetUtils.getAmountString('00', winnerPayout.amount)}</td>
+              <td>{AssetUtils.getAmountDivided(winnerPayout.amount)}</td>
             </tr>
             <tr>
               <td>PAYOUT WINNER BALLOT</td>
@@ -203,7 +203,7 @@ class SummaryPayout extends React.Component {
             <tr>
               <td>PAYOUT WINNER SPENDS</td>
               <td>
-                {!!spendsZP && AssetUtils.getAmountString('00', spendsZP.amount)}
+                {!!spendsZP && AssetUtils.getAmountDivided(spendsZP.amount)}
                 {!!spendsZP && spendsRestAmount > 0 && ' + '}
                 {spendsRestAmount > 0 &&
                   `${spendsRestAmount} ${spendsRestAmount > 1 ? 'Assets' : 'Asset'}`}
@@ -225,7 +225,7 @@ class SummaryPayout extends React.Component {
                       url={`/assets/${spend.asset}`}
                     />
                   </td>
-                  <td>{AssetUtils.getAmountString(spend.asset, spend.amount)}</td>
+                  <td>{AssetUtils.getAmountDivided(spend.amount)}</td>
                 </tr>
               ))}
           </tbody>

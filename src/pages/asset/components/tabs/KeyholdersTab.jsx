@@ -11,7 +11,7 @@ import TextUtils from '../../../../lib/TextUtils';
 
 class KeyholdersTab extends React.Component {
   getTableColumns() {
-    const { uiStore, assetStore } = this.props.rootStore;
+    const { assetStore } = this.props.rootStore;
     const totalIssued = Number(assetStore.asset.issued || 0);
     return [
       {
@@ -28,7 +28,7 @@ class KeyholdersTab extends React.Component {
         Header: 'QUANTITY',
         accessor: 'balance',
         Cell: (data) =>
-          AssetUtils.getAmountString(uiStore.state.assetKeyholdersTable.asset, data.value),
+          AssetUtils.getAmountDivided(data.value),
       },
       {
         Header: '%',

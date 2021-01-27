@@ -15,7 +15,6 @@ const PrivateConfigs = {
   distributionMap: {
     type: 'pie',
     xAxisType: 'linear',
-    tooltipHeaderFormat: '<span style="font-size: 10px;"><strong>{point.key}</strong></span><br/>',
     dataLabelsFormatter: function () {
       return this.point.x <= 20 || this.point.x === 100
         ? TextUtils.truncateHash(this.point.name)
@@ -42,7 +41,6 @@ const ChartConfigs = {
   zpRichList: Object.assign({}, PrivateConfigs.distributionMap, {
     title: 'ZP Rich List',
     seriesTitle: 'ZP Amount',
-    tooltipValueSuffix: ' ZP',
   }),
   assetDistributionMap: Object.assign({}, PrivateConfigs.distributionMap, {
     title: 'Unique keyholder distribution',

@@ -127,7 +127,7 @@ class InfoPage extends Component {
             <InfoBox
               className="cgp-balance"
               title="CGP Balance"
-              content={`${AssetUtils.getAmountString(cgpZpBalance.asset, cgpZpBalance.amount)}`}
+              content={`${AssetUtils.getAmountDivided(cgpZpBalance.amount)} ZP`}
               iconClass="fal fa-coins fa-fw"
             />
             <InfoBox

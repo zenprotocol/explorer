@@ -21,7 +21,7 @@ class TransactionAssetLoader extends Component {
     }
     return transactions[index].assets.map((asset, index) => (
       <TransactionAsset
-        key={asset}
+        key={asset.asset}
         transactionAsset={asset}
         asset={asset.asset}
         showHeader={index === 0}

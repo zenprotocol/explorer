@@ -4,7 +4,7 @@ import AssetUtils from '../../../lib/AssetUtils';
 
 export default function ThresholdRow({ thresholdPercentage, threshold, inOneColumn }) {
   const title = `THRESHOLD (${thresholdPercentage}% of total ZP issuance at snapshot)`;
-  const data = AssetUtils.getAmountString('00', threshold);
+  const data = AssetUtils.getAmountDivided(threshold);
 
   return (
     <tr>

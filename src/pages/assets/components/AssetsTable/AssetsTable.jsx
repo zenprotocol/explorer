@@ -35,7 +35,7 @@ class AssetsTable extends Component {
         Header: 'tokens outstanding',
         accessor: 'outstanding',
         minWidth: 150,
-        Cell: (data) => AssetUtils.getAmountString(data.original.asset, data.value),
+        Cell: (data) => AssetUtils.getAmountDivided(data.value),
       },
       {
         Header: 'unique addresses',

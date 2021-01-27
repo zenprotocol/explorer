@@ -63,7 +63,7 @@ function SummaryNomination({
           <ThresholdRow threshold={threshold} thresholdPercentage={thresholdPercentage} />
           <tr>
             <td>TOTAL ZP VOTED</td>
-            <td>{AssetUtils.getAmountString('00', zpParticipatedNomination)}</td>
+            <td>{AssetUtils.getAmountDivided(zpParticipatedNomination)}</td>
           </tr>
           <tr>
             <td>TOTAL NOMINEES</td>
@@ -110,7 +110,7 @@ function SummaryVoting({
         <tbody>
           <tr>
             <td>TOTAL ZP VOTED FOR ALLOCATION</td>
-            <td>{AssetUtils.getAmountString('00', zpParticipatedAllocation)}</td>
+            <td>{AssetUtils.getAmountDivided(zpParticipatedAllocation)}</td>
           </tr>
           <tr>
             <td>ALLOCATION BOUNCE</td>
@@ -177,7 +177,7 @@ class SummaryParticipants extends React.Component {
           <tbody>
             <tr>
               <td>TOTAL ZP VOTED FOR CGP PAYOUT</td>
-              <td>{AssetUtils.getAmountString('00', zpParticipatedPayout)}</td>
+              <td>{AssetUtils.getAmountDivided(zpParticipatedPayout)}</td>
             </tr>
             <tr className="inner-header">
               <td>PAYOUT BALLOT</td>
@@ -188,7 +188,7 @@ class SummaryParticipants extends React.Component {
                 <td>
                   <HashLink hash={nominee.ballot} />
                 </td>
-                <td>{AssetUtils.getAmountString('00', nominee.amount)}</td>
+                <td>{AssetUtils.getAmountDivided(nominee.amount)}</td>
               </tr>
             ))}
             {rest.length > 0 && (
@@ -209,7 +209,7 @@ class SummaryParticipants extends React.Component {
                   <td>
                     <HashLink hash={nominee.ballot} />
                   </td>
-                  <td>{AssetUtils.getAmountString('00', nominee.amount)}</td>
+                  <td>{AssetUtils.getAmountDivided(nominee.amount)}</td>
                 </tr>
               ))}
           </tbody>

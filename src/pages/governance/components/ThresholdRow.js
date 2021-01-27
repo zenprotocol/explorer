@@ -4,7 +4,7 @@ import AssetUtils from '../../../lib/AssetUtils';
 
 export default function ThresholdRow({ threshold, inOneColumn }) {
   const title = 'THRESHOLD';
-  const data = AssetUtils.getAmountString('00', threshold);
+  const data = AssetUtils.getAmountDivided(threshold);
 
   return (
     <tr>

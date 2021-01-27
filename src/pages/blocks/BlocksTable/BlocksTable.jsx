@@ -18,7 +18,7 @@ class BlocksTable extends Component {
         Header: 'Timestamp',
         accessor: 'timestamp',
         minWidth: config.ui.table.minCellWidthDate,
-        Cell: function(data) {
+        Cell: function (data) {
           return TextUtils.getDateStringFromTimestamp(data.value);
         },
       },
@@ -58,26 +58,25 @@ class BlocksTable extends Component {
         Header: 'Fees',
         accessor: '',
         minWidth: config.ui.table.minCellWidth,
-        Cell: data =>
-          AssetUtils.getAmountString(
-            '00',
+        Cell: (data) =>
+          `${AssetUtils.getAmountDivided(
             new Decimal(data.original.coinbaseAmount)
               .plus(data.original.allocationAmount)
               .minus(data.original.reward)
               .toFixed(8)
-          ),
+          )} ZP`,
       },
       // {
       //   Header: 'Allocation',
       //   accessor: 'allocationAmount',
       //   minWidth: config.ui.table.minCellWidth,
-      //   Cell: ({ value }) => AssetUtils.getAmountString('00', value),
+      //   Cell: ({ value }) => AssetUtils.getAmountDivided(value),
       // },
       {
         Header: 'Reward',
         accessor: 'reward',
         minWidth: config.ui.table.minCellWidth,
-        Cell: ({ value }) => AssetUtils.getAmountString('00', value),
+        Cell: ({ value }) => `${AssetUtils.getAmountDivided(value)} ZP`,
       },
     ];
   }

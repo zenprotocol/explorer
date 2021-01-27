@@ -8,7 +8,7 @@ import HashLink from '../../../../components/HashLink';
 export default function getSubComponent(type) {
   if (type === 'allocation') return null;
 
-  return row => {
+  return (row) => {
     const { spends } = row.original.content;
     return (
       <div className="spends">
@@ -32,7 +32,7 @@ export default function getSubComponent(type) {
               Header: 'AMOUNT',
               accessor: 'amount',
               minWidth: config.ui.table.minCellWidth,
-              Cell: data => `${AssetUtils.getAmountString(data.original.asset, data.value)}`,
+              Cell: (data) => `${AssetUtils.getAmountDivided(data.value)}`,
             },
           ]}
           defaultPageSize={spends.length}

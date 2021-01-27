@@ -161,7 +161,6 @@ class TransactionAsset extends Component {
   }
 
   getTableColumns({ showAsset } = {}) {
-    const { asset } = this.props;
     return [
       ...(showAsset
         ? [
@@ -241,7 +240,7 @@ class TransactionAsset extends Component {
         Cell: ({ value, original }) => {
           return typeof value !== 'undefined' ? (
             <div className={classNames('amount rounded', { total: original.isTotal })}>
-              {AssetUtils.getAmountString(asset, Number(value))}
+              {AssetUtils.getAmountDivided(Number(value))}
             </div>
           ) : (
             ''

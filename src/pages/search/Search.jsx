@@ -210,10 +210,10 @@ class SearchResultsPage extends Component {
                   },
                   {
                     accessor: 'amount',
-                    cell: (data, row) =>
+                    cell: (data) =>
                       this.getHighlightedSearchResult(
                         search,
-                        AssetUtils.getAmountString(row.asset, data),
+                        AssetUtils.getAmountDivided(data),
                         true
                       ),
                   },

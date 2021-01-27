@@ -43,7 +43,7 @@ function SummaryContestant({
             <ThresholdRow threshold={threshold} />
             <tr>
               <td>TOTAL ZP VOTED</td>
-              <td>{AssetUtils.getAmountString('00', zpParticipated)}</td>
+              <td>{AssetUtils.getAmountDivided(zpParticipated)}</td>
             </tr>
             {hasWinner ? (
               <tr>
@@ -87,13 +87,13 @@ function SummaryCandidate(props) {
             <UnconfirmedRow {...props} />
             <tr>
               <td>TOTAL ZP VOTED</td>
-              <td>{AssetUtils.getAmountString('00', zpParticipated)}</td>
+              <td>{AssetUtils.getAmountDivided(zpParticipated)}</td>
             </tr>
             {hasWinner ? (
               <>
                 <tr>
                   <td>ZP VOTED FOR WINNER</td>
-                  <td>{AssetUtils.getAmountString('00', winner.amount)}</td>
+                  <td>{AssetUtils.getAmountDivided(winner.amount)}</td>
                 </tr>
                 <tr>
                   <td>WINNER COMMIT</td>

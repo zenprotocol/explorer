@@ -75,17 +75,17 @@ const columns = [
   {
     Header: 'TOKENS OUTSTANDING',
     accessor: 'outstanding',
-    Cell: (data) => AssetUtils.getAmountString(data.original.asset, data.value),
+    Cell: (data) => AssetUtils.getAmountDivided(data.value),
   },
   {
     Header: 'TOTAL ISSUED',
     accessor: 'issued',
-    Cell: (data) => AssetUtils.getAmountString(data.original.asset, data.value),
+    Cell: (data) => AssetUtils.getAmountDivided(data.value),
   },
   {
     Header: 'DESTROYED',
     accessor: 'destroyed',
-    Cell: (data) => AssetUtils.getAmountString(data.original.asset, data.value),
+    Cell: (data) => AssetUtils.getAmountDivided(data.value),
   },
   {
     Header: 'UNIQUE ADDRESSES',

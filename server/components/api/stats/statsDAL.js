@@ -90,7 +90,7 @@ statsDAL.zpRichList = async function ({ totalZpK } = {}) {
           [Op.gt]: 0,
         },
       },
-      attributes: { include: [[sequelize.literal('balance / 100000000'), 'balanceZp']] },
+      attributes: { include: [[sequelize.literal('balance / 100000000.0'), 'balanceZp']] },
       order: [['balance', 'DESC']],
       limit: 100,
       offset: 0,

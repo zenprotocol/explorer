@@ -53,7 +53,7 @@ function SummaryContestant({ winner = [], zpParticipated = '0', threshold }) {
           <ThresholdRow threshold={threshold} />
           <tr>
             <td>TOTAL ZP VOTED</td>
-            <td>{AssetUtils.getAmountString('00', zpParticipated)}</td>
+            <td>{AssetUtils.getAmountDivided(zpParticipated)}</td>
           </tr>
           <tr>
             <td>TOTAL CONTESTANTS</td>
@@ -106,7 +106,7 @@ class SummaryCandidate extends React.Component {
             <tbody>
               <tr>
                 <td>TOTAL ZP VOTED</td>
-                <td>{AssetUtils.getAmountString('00', zpParticipated)}</td>
+                <td>{AssetUtils.getAmountDivided(zpParticipated)}</td>
               </tr>
               <tr>
                 <td>TOTAL CANDIDATES</td>
@@ -135,7 +135,7 @@ class SummaryCandidate extends React.Component {
                   <td>
                     <CommitLink commitId={candidate.commitId} />
                   </td>
-                  <td>{AssetUtils.getAmountString('00', candidate.amount)}</td>
+                  <td>{AssetUtils.getAmountDivided(candidate.amount)}</td>
                 </tr>
               ))}
               {rest.length > 0 && (
@@ -156,7 +156,7 @@ class SummaryCandidate extends React.Component {
                     <td>
                       <CommitLink commitId={candidate.commitId} />
                     </td>
-                    <td>{AssetUtils.getAmountString('00', candidate.amount)}</td>
+                    <td>{AssetUtils.getAmountDivided(candidate.amount)}</td>
                   </tr>
                 ))}
             </tbody>

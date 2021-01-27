@@ -291,7 +291,7 @@ function DuringVoteInfo({ currentBlock, relevantInterval }) {
         {relevantInterval.phase === 'Contestant' && (
           <InfoBox
             title="Threshold"
-            content={`${AssetUtils.getAmountString('00', relevantInterval.threshold)}`}
+            content={`${AssetUtils.getAmountDivided(relevantInterval.threshold)}`}
             iconClass="fal fa-coins fa-fw"
           />
         )}
@@ -326,7 +326,7 @@ function AfterVoteInfo({ relevantInterval }) {
         {relevantInterval.phase === 'Contestant' && (
           <InfoBox
             title="Threshold"
-            content={AssetUtils.getAmountString('00', relevantInterval.threshold)}
+            content={AssetUtils.getAmountDivided(relevantInterval.threshold)}
             iconClass="fal fa-coins fa-fw"
           />
         )}

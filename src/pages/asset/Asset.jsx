@@ -69,7 +69,10 @@ class AssetPage extends Component {
 
     const is404 = this.assetStore.asset.status === 404;
     const assetName = AssetUtils.getAssetNameFromCode(this.assetProp);
-    const contractName = ObjectUtils.getSafeProp(this.assetStore, 'asset.contract.metadata.shortName');
+    const contractName = ObjectUtils.getSafeProp(
+      this.assetStore,
+      'asset.contract.metadata.shortName'
+    );
 
     return (
       <Page className="Asset">
@@ -113,46 +116,31 @@ class AssetPage extends Component {
             <tbody>
               {!AssetUtils.isZP(asset.asset) && (
                 <>
-                <tr>
-                  <td>CONTRACT ID</td>
-                  <td>
-                    <HashLink hash={contract.id} url={`/contracts/${contract.address}`} />
-                  </td>
-                </tr>
-                <tr>
-                  <td>SUBTYPE</td>
-                  <td>
-                    <HashLink hash={asset.subType} />
-                  </td>
-                </tr>
+                  <tr>
+                    <td>CONTRACT ID</td>
+                    <td>
+                      <HashLink hash={contract.id} url={`/contracts/${contract.address}`} />
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>SUBTYPE</td>
+                    <td>
+                      <HashLink hash={asset.subType} />
+                    </td>
+                  </tr>
                 </>
               )}
               <tr>
                 <td>TOKENS OUTSTANDING</td>
-                <td>
-                  {AssetUtils.getAmountString(
-                    this.assetStore.asset.asset,
-                    this.assetStore.asset.outstanding
-                  )}
-                </td>
+                <td>{AssetUtils.getAmountDivided(this.assetStore.asset.outstanding)}</td>
               </tr>
               <tr>
                 <td>TOTAL ISSUED</td>
-                <td>
-                  {AssetUtils.getAmountString(
-                    this.assetStore.asset.asset,
-                    this.assetStore.asset.issued
-                  )}
-                </td>
+                <td>{AssetUtils.getAmountDivided(this.assetStore.asset.issued)}</td>
               </tr>
               <tr>
                 <td>DESTROYED</td>
-                <td>
-                  {AssetUtils.getAmountString(
-                    this.assetStore.asset.asset,
-                    this.assetStore.asset.destroyed
-                  )}
-                </td>
+                <td>{AssetUtils.getAmountDivided(this.assetStore.asset.destroyed)}</td>
               </tr>
               <tr>
                 <td>UNIQUE ADDRESSES</td>

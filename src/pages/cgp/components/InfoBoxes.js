@@ -137,7 +137,7 @@ function CgpBalanceInfoBox({ cgpBalance, addAtSnapshotText = false, contractAddr
   }
   const allAssetsString = cgpBalance.reduce((all, cur) => {
     const currentAsset = truncateHash(AssetUtils.getAssetNameFromCode(cur.asset));
-    const currentDisplay = `${currentAsset}: ${AssetUtils.getAmountString(cur.asset, cur.amount)}`;
+    const currentDisplay = `${currentAsset}: ${AssetUtils.getAmountDivided(cur.amount)}`;
     return !all ? currentDisplay : `${all}\n${currentDisplay}`;
   }, '');
   const extraAssetsCount = balanceHasZp ? cgpBalance.length - 1 : cgpBalance.length;
@@ -146,7 +146,7 @@ function CgpBalanceInfoBox({ cgpBalance, addAtSnapshotText = false, contractAddr
       title={addAtSnapshotText ? 'Funds in CGP at snapshot' : 'Current funds in CGP'}
       content={
         <div className="CgpBalanceInfoBox-content" title={allAssetsString}>
-          {AssetUtils.getAmountString(zpBalance.asset, zpBalance.amount)}
+          {AssetUtils.getAmountDivided(zpBalance.amount)} ZP
           {extraAssetsCount > 0 && (
             <div className="extra-asset-count">
               <Link to={`/contracts/${contractAddress}`}>+{extraAssetsCount}</Link>
