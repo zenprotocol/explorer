@@ -46,6 +46,12 @@ In order to have some blockchain data in the development environment you should 
 - **Option 2** - copy the db from staging   
    1. Follow the steps in [Heroku to local](#heroku-to-local)
 
+## Tests
+Running tests in development should be done from inside of the docker container, as the tests need all of the environment:
+```
+docker-compose exec web npm t
+```
+
 ## Worker
 The worker layer is responsible for fetching new blocks from a node and mapping them to the database.  
 for further info visit [the worker docs](./worker/README.md)
