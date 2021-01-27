@@ -82,6 +82,22 @@ function calcAddressAssetsPerTx({ inputs, outputs } = {}) {
     }
   }
 
+  /**
+   * take care of change:
+   * When a TX has address A in the inputs with amount N1 and address A in the outputs with amount N2, 
+   * it means that it sent N1-N2
+   */
+  addresses.forEach((assets) => {
+    const assetIds = Object.keys(assets);
+    assetIds.forEach((assetId) => {
+      const asset = assets[assetId];
+      if (asset.inputSum.gt(0) && asset.outputSum.gt(0)) {
+        asset.inputSum = asset.inputSum.minus(asset.outputSum);
+        asset.outputSum = new Decimal(0);
+      }
+    });
+  });
+
   return { addresses, assets };
 }
 
