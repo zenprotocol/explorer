@@ -1,4 +1,4 @@
-import React from 'react';
+import * as React from 'react';
 import PropTypes from 'prop-types';
 import ReactHighcharts from 'react-highcharts';
 import { mergeDeepRight } from 'ramda';
@@ -17,9 +17,6 @@ const titleStyle = {
 };
 
 const styleOptions = {
-  lang: {
-    thousandsSep: ',',
-  },
   chart: {
     height: '50%',
     backgroundColor: 'transparent',
@@ -84,6 +81,13 @@ const styleOptions = {
 };
 
 export default function Chart(props) {
+  React.useEffect(() => {
+    ReactHighcharts.Highcharts.setOptions({
+      lang: {
+        thousandsSep: ',',
+      },
+    });
+  }, []);
   return <ReactHighcharts config={mergeDeepRight(styleOptions, props.config)} />;
 }
 
