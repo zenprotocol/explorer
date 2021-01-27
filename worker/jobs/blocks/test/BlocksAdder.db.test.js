@@ -662,7 +662,7 @@ test('BlocksAdder.doJob()', async function (t) {
       );
       t.deepEqual(
         filterFields(zen11),
-        { asset: '00', inputSum: '5000000000', outputSum: '9900000000', balance: '4900000000' },
+        { asset: '00', inputSum: '100000000', outputSum: '5000000000', balance: '4900000000' },
         `${given}: zen11 should have the right amounts`
       );
       t.deepEqual(

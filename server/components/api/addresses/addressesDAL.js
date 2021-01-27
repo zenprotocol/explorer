@@ -39,8 +39,8 @@ addressesDAL.addressExists = function (address, options) {
 /**
  * Find all address/asset from the Addresses table
  * For ZP, return a row even if the balance is 0, for the rest, no
- * @param {string} address 
- * @param {Object} options 
+ * @param {string} address
+ * @param {Object} options
  */
 addressesDAL.findAllByAddress = function (address, options) {
   return this.findAll({
@@ -193,6 +193,162 @@ addressesDAL.snapshotAddressBalancesByBlock = async function ({
     transaction: dbTransaction,
   });
 };
+
+/**
+ * Calculates all up-to-current-block amounts (input_sum, output_sum, balance) for all addresses per asset
+ * taking care of change within a transaction
+ */
+addressesDAL.snapshotCurrentAmountsForAll = async function ({ dbTransaction = null } = {}) {
+  // sql includes comments, not using tags.oneLine
+  const sql = `
+  SELECT
+    bothsums_per_tx.address AS address,
+    bothsums_per_tx.asset AS asset,
+    SUM(bothsums_per_tx.input_sum) AS input_sum,
+    SUM(bothsums_per_tx.output_sum) AS output_sum,
+    (SUM(bothsums_per_tx.output_sum) - SUM(bothsums_per_tx.input_sum)) AS balance
+  FROM
+    ( 
+      -- combine inputs and outputs taking care of change in a TX
+      SELECT
+        COALESCE(osums.address, isums.address) AS address,
+        COALESCE(osums.asset, isums.asset) AS asset,
+        CASE WHEN isums.input_sum > 0 
+          THEN isums.input_sum - COALESCE(osums.output_sum, 0)
+          ELSE 0
+          END AS "input_sum",
+        CASE WHEN isums.input_sum > 0 
+          THEN 0
+          ELSE COALESCE(osums.output_sum, 0)
+          END AS "output_sum" 
+      FROM
+        ( 
+          -- outputs per TX
+          SELECT
+            o.asset,
+            o.address,
+            o."txId",
+            SUM(o.amount) AS output_sum
+          FROM "Outputs" o
+          WHERE o.address IS NOT NULL AND o.${LOCK_TYPE_FOR_BALANCE}
+          GROUP BY o.asset, o.address, o."txId"
+        ) AS osums
+        FULL OUTER JOIN
+        ( -- inputs per TX
+          SELECT
+            io.asset,
+            io.address,
+            i."txId",
+            SUM(io.amount) AS input_sum
+          FROM
+            "Outputs" io
+            INNER JOIN "Inputs" i ON i."outputId" = io.id
+          WHERE io.address IS NOT NULL AND io.${LOCK_TYPE_FOR_BALANCE}
+          GROUP BY io.asset, io.address, i."txId"
+        ) AS isums
+        ON osums.asset = isums.asset 
+          AND osums.address = isums.address 
+          AND osums."txId" = isums."txId"
+    ) AS bothsums_per_tx
+    GROUP BY bothsums_per_tx.address, bothsums_per_tx.asset;
+  `;
+
+  return sequelize.query(sql, {
+    type: sequelize.QueryTypes.SELECT,
+    transaction: dbTransaction,
+  });
+};
+
+addressesDAL.countTxsPerAddress = async function ({ dbTransaction } = {}) {
+  // sql includes comments, not using tags.oneLine
+  const sql = `
+  SELECT
+    ins_outs.address AS address,
+    COUNT(*) AS "txsCount"
+  FROM
+    ( 
+      -- combine inputs and outputs
+      SELECT
+        COALESCE(outs.address, ins.address) AS address,
+        COALESCE(outs."txId", ins."txId") AS "txId"
+      FROM
+        ( 
+          -- outputs per TX
+          SELECT
+            o.address,
+            o."txId"
+          FROM "Outputs" o
+          WHERE o.address IS NOT NULL AND o.${LOCK_TYPE_FOR_BALANCE}
+          GROUP BY o.address, o."txId"
+        ) AS outs
+        FULL OUTER JOIN
+        ( -- inputs per TX
+          SELECT
+            io.address,
+            i."txId"
+          FROM
+            "Outputs" io
+            INNER JOIN "Inputs" i ON i."outputId" = io.id
+          WHERE io.address IS NOT NULL AND io.${LOCK_TYPE_FOR_BALANCE}
+          GROUP BY io.address, i."txId"
+        ) AS ins
+        ON outs.address = ins.address 
+          AND outs."txId" = ins."txId"
+    ) AS ins_outs
+  GROUP BY ins_outs.address;
+  `;
+
+  return sequelize.query(sql, {
+    type: sequelize.QueryTypes.SELECT,
+    transaction: dbTransaction,
+  });
+};
+
+/**
+ * Calculate and inserts all unique address transactions from Inputs and Outputs
+ */
+addressesDAL.insertAllAddressTxs = async function ({ dbTransaction } = {}) {
+  // sql includes comments, not using tags.oneLine
+  const sql = `
+  INSERT INTO "AddressTxs"
+  SELECT
+    -- fields must be in the same order as defined in "AddressTxs"
+    COALESCE(osums."blockNumber", isums."blockNumber") AS "blockNumber",
+    COALESCE(osums."txId", isums."txId") AS "txId",
+    COALESCE(osums.address, isums.address) AS "address"
+  FROM
+    ( 
+      -- outputs per TX
+      SELECT
+        o.address,
+        o."txId",
+        o."blockNumber"
+      FROM "Outputs" o
+      WHERE o.address IS NOT NULL AND o."lockType" IN ('Coinbase','PK','Contract','Destroy')
+      GROUP BY o.address, o."txId", o."blockNumber"
+    ) AS osums
+    FULL OUTER JOIN
+    ( -- inputs per TX
+      SELECT
+        io.address,
+        i."txId",
+        i."blockNumber"
+      FROM
+        "Outputs" io
+        INNER JOIN "Inputs" i ON i."outputId" = io.id
+      WHERE io.address IS NOT NULL AND io."lockType" IN ('Coinbase','PK','Contract','Destroy')
+      GROUP BY io.address, i."txId", i."blockNumber"
+    ) AS isums
+    ON osums.address = isums.address 
+      AND osums."txId" = isums."txId";
+  `;
+
+  return sequelize.query(sql, {
+    type: db.Sequelize.QueryTypes.INSERT,
+    transaction: dbTransaction,
+  });
+};
+
 addressesDAL.keyholders = function ({ asset, limit, offset } = {}) {
   const where = {
     [Op.and]: {
@@ -206,6 +362,21 @@ addressesDAL.keyholders = function ({ asset, limit, offset } = {}) {
     this.count({ where }),
     this.findAll({ where, order: [['balance', 'DESC']], limit, offset }),
   ]).then(this.getItemsAndCountResult);
+};
+
+addressesDAL.countKeyholdersPerAsset = async function ({ dbTransaction } = {}) {
+  const sql = `
+  SELECT
+    asset, COUNT(address) as keyholders
+  FROM "Addresses"
+  WHERE balance > 0
+  GROUP BY asset;
+  `;
+
+  return sequelize.query(sql, {
+    type: sequelize.QueryTypes.SELECT,
+    transaction: dbTransaction,
+  });
 };
 
 module.exports = addressesDAL;

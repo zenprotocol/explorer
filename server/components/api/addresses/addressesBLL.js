@@ -2,16 +2,14 @@
 
 const { Decimal } = require('decimal.js');
 const addressesDAL = require('./addressesDAL');
-const addressTxsDAL = require('../address-txs/addressTxsDAL');
 const getChain = require('../../../lib/getChain');
 const BlockchainParser = require('../../../lib/BlockchainParser');
 
 module.exports = {
   findOne: async function ({ address } = {}) {
-    const [exists, assetAmounts, totalTxs, chain] = await Promise.all([
+    const [exists, assetAmounts, chain] = await Promise.all([
       addressesDAL.addressExists(address),
       addressesDAL.findAllByAddress(address),
-      addressTxsDAL.countByAddress(address),
       getChain(),
     ]);
 
@@ -22,7 +20,7 @@ module.exports = {
     return {
       address,
       pkHash: blockchainParser.getPkHashFromAddress(address),
-      totalTxs,
+      totalTxs: assetAmounts && assetAmounts.length ? assetAmounts[0].txsCount : 0,
       assetAmounts,
     };
   },

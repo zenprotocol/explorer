@@ -53,11 +53,7 @@ test('SnapshotTaker.doJob() (DB)', async function (t) {
         blockNumber: 1,
       },
     });
-    t.equal(
-      block1SnapshotCount,
-      2,
-      `${given}: should insert 2 rows to snapshots`
-    );
+    t.equal(block1SnapshotCount, 2, `${given}: should insert 2 rows to snapshots`);
 
     const theInterval = await repoVoteIntervalsDAL.findOne({ where: { interval: 1 } });
     t.equal(
@@ -123,12 +119,6 @@ test('SnapshotTaker.doJob() (DB)', async function (t) {
   await wrapTest('CGP: some snapshots already exist', async (given) => {
     const snapshotTaker = new SnapshotTaker({ chain: 'test' });
 
-    // add a snapshot for the 2nd interval but leave the 1st and 3rd empty
-    await snapshotsDAL.bulkCreate([
-      { blockNumber: 190, address: 'tzn1q123', amount: 50 * 100000000 },
-      { blockNumber: 190, address: 'tzn1q124', amount: 100 * 100000000 },
-    ]);
-
     await createDemoData({
       currentBlock: 300,
       addressAmounts: {
@@ -136,6 +126,12 @@ test('SnapshotTaker.doJob() (DB)', async function (t) {
         tzn1q124: 100 * 100000000,
       },
     });
+
+    // add a snapshot for the 2nd interval but leave the 1st and 3rd empty
+    await snapshotsDAL.bulkCreate([
+      { blockNumber: 190, address: 'tzn1q123', amount: 50 * 100000000 },
+      { blockNumber: 190, address: 'tzn1q124', amount: 100 * 100000000 },
+    ]);
 
     const result = await snapshotTaker.doJob();
     t.equal(result.cgp.length, 2, `${given}: should take only 2 CGP snapshots`);

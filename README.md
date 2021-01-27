@@ -56,6 +56,24 @@ docker-compose exec web npm t
 The worker layer is responsible for fetching new blocks from a node and mapping them to the database.  
 for further info visit [the worker docs](./worker/README.md)
 
+## Reset the database to a certain block number
+Sometimes it is needed to reset the state of the database to a specific block number in the past:  
+1. Reset the blocks and all related tables (run this against the database):  
+```
+DELETE FROM "Blocks" WHERE "blockNumber" > X;
+```
+2. Optionally delete data from `*PerDay` tables
+3. run the script to re-calculate all addresses/assets:  
+(run this in the server machine or in the web container)
+```
+node worker/run-once/recalcAddressesAssetsCurState.js
+```  
+4. When in need to re-calculate the contracts: (in web container)
+```
+node worker/run-once/insertAllContractsFromTransactions.js
+```
+5. now the database is in complete state for block X
+
 ## General Docker commands:
 1. `docker-compose logs` - Watch logs from the containers - https://docs.docker.com/compose/reference/logs/
 1. `docker-compose up` - start the server

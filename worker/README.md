@@ -55,3 +55,14 @@ Search the node for a block that contains a txHash
 
 7. `snapshotIntervals`  
 Take snapshots for all intervals that does not have a snapshot yet
+
+8. `recalcAddressesAssetsCurState`  
+Recalculates and updates the database with the current state of all addresses and assets.  
+Use this script when there is a miss-calculation in these tables or when wanting to reset the database to a certain block number  
+Updates data in the following database tables:
+   1. Addresses
+   2. AddressTxs
+   3. Assets
+   4. AssetTxs  
+
+   
