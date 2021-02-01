@@ -36,6 +36,15 @@ class BlockchainParser {
     return Address.decode(this.chain, address).hash;
   }
 
+  isAddressValid(address) {
+    try {
+      Address.decode(this.chain, address);
+      return true;
+    } catch (error) {
+      return false;
+    }
+  }
+
   getContractVersion(contractId) {
     return ContractId.fromString(contractId).version;
   }

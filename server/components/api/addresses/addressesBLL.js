@@ -13,9 +13,9 @@ module.exports = {
       getChain(),
     ]);
 
-    if (!exists) return null;
-
     const blockchainParser = new BlockchainParser(chain);
+
+    if (!exists && !blockchainParser.isAddressValid(address)) return null;
 
     return {
       address,
