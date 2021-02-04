@@ -70,15 +70,18 @@ class AddressPage extends Component {
 
   render() {
     const params = RouterUtils.getRouteParams(this.props);
-    let zpBalance = (this.addressStore.address.assetAmounts || []).find(
-      (x) => x.asset === '00'
-    ) || {
+    const assetAmounts = this.addressStore.address.assetAmounts;
+    let zpBalance = (assetAmounts || []).find((x) => x.asset === '00') || {
       balance: 0,
       received: 0,
       sent: 0,
     };
     const is404 = this.addressStore.address.status === 404;
     const renderContent = !is404 && this.addressStore.address.address;
+    const totalAssets =
+      !assetAmounts || (assetAmounts.length === 1 && assetAmounts[0].balance === '0')
+        ? 0
+        : assetAmounts.length;
 
     return (
       <Page className="Address">
@@ -122,11 +125,7 @@ class AddressPage extends Component {
                     </tr>
                     <tr>
                       <td>TOTAL ASSETS</td>
-                      <td>
-                        {this.addressStore.address.assetAmounts
-                          ? TextUtils.formatNumber(this.addressStore.address.assetAmounts.length)
-                          : '0'}
-                      </td>
+                      <td>{TextUtils.formatNumber(totalAssets)}</td>
                     </tr>
                     <tr>
                       <td>TOTAL TRANSACTIONS</td>
@@ -145,7 +144,7 @@ class AddressPage extends Component {
               </div>
               <div className="col-lg-6">
                 <AssetsBalancesTable
-                  balance={this.addressStore.address.assetAmounts.map((assetAmount) => ({
+                  balance={assetAmounts.map((assetAmount) => ({
                     asset: assetAmount.asset,
                     total: assetAmount.balance,
                   }))}
