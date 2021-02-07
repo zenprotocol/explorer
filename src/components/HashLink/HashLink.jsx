@@ -1,92 +1,82 @@
-import React, { Component } from 'react';
+import * as React from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { Link } from 'react-router-dom';
+import { Tooltip, useTooltip } from '../Tooltip';
 import ExternalLink from '../ExternalLink';
 import * as clipboard from 'clipboard-polyfill';
 import TextUtils from '../../lib/TextUtils';
 import './HashLink.scss';
 
-export default class HashLink extends Component {
-  constructor(props) {
-    super(props);
+export default function HashLink({ url, hash, copy, truncate, value, external, truncateFunc }) {
+  const [copied, setCopied] = React.useState(false);
+  const hashTooltip = useTooltip();
+  const copyTooltip = useTooltip();
 
-    this.state = {
-      copied: false,
-    };
+  const truncatedHash = truncate ? truncateFunc(hash) : hash;
+  const anchorHash = !url ? (
+    truncatedHash
+  ) : external ? (
+    <ExternalLink url={url}>{truncatedHash}</ExternalLink>
+  ) : (
+    <Link to={url}>{truncatedHash}</Link>
+  );
+  const valueToCopy = value ? value : hash;
+  const isTruncated = truncatedHash !== valueToCopy;
 
-    this.copyRef = React.createRef();
-
-    this.copyToClipboard = this.copyToClipboard.bind(this);
-    this.setCopied = this.setCopied.bind(this);
-  }
-
-  render() {
-    const { url, hash, copy, truncate, value, external, truncateFunc } = this.props;
-    const truncatedHash = truncate ? truncateFunc(hash) : hash;
-    const anchorHash = !url ? (
-      truncatedHash
-    ) : external ? (
-      <ExternalLink url={url}>{truncatedHash}</ExternalLink>
-    ) : (
-      <Link to={url}>{truncatedHash}</Link>
-    );
-    const valueToCopy = value ? value : hash;
-    const isTruncated = truncatedHash !== valueToCopy;
-
-    const anchorCopy = (
-      <div
-        ref={this.copyRef}
-        className="copy"
-        onMouseLeave={() => {
-          this.setCopied(false);
-        }}
-        aria-label={this.state.copied ? 'Copied to clipboard' : 'Copy'}
-        data-balloon-pos={this.getTooltipPositionCopy()}
-      >
-        <button
-          onClick={() => {
-            this.copyToClipboard(valueToCopy);
-          }}
-          title=""
-          className="btn"
-        >
-          <i className="fal fa-copy" />
-        </button>
-      </div>
-    );
-
-    return (
-      <div className={classNames('HashLink break-word', { copyable: copy })}>
-        <span
-          className="hash-wrapper"
-          title={copy && isTruncated ? valueToCopy : ''}
-        >
-          {anchorHash}
-        </span>
-        {copy && valueToCopy ? anchorCopy : null}
-      </div>
-    );
-  }
-
-  getTooltipPositionCopy() {
-    if (this.copyRef.current) {
-      if (Math.abs(window.innerWidth - this.copyRef.current.getBoundingClientRect().left) < 150) {
-        return 'up-right';
-      }
-    }
-    return 'up-left';
-  }
-
-  copyToClipboard(str) {
+  function copyToClipboard(str) {
     clipboard.writeText(str).then(() => {
-      this.setCopied(true);
+      setCopied(true);
     });
   }
 
-  setCopied(copied) {
-    this.setState({ copied });
-  }
+  // fix position of copied tooltip after text update
+  const updateCopyTT = copyTooltip.update;
+  React.useEffect(() => {
+    if (copied) {
+      updateCopyTT();
+    }
+  }, [copied, updateCopyTT]);
+
+  const anchorCopy = (
+    <div
+      ref={copyTooltip.ref}
+      className="copy"
+      onMouseEnter={copyTooltip.showAndUpdate}
+      onMouseLeave={() => {
+        setCopied(false);
+        copyTooltip.hide();
+      }}
+    >
+      <button
+        onClick={() => {
+          copyToClipboard(valueToCopy);
+        }}
+        title=""
+        className="btn"
+      >
+        <i className="fal fa-copy" />
+      </button>
+      {copyTooltip.visible ? (
+        <Tooltip {...copyTooltip.tooltipProps}>{copied ? 'Copied to clipboard' : 'Copy'}</Tooltip>
+      ) : null}
+    </div>
+  );
+
+  return (
+    <div className={classNames('HashLink break-word', { copyable: copy })}>
+      <span
+        className="hash-wrapper"
+        ref={hashTooltip.ref}
+        onMouseEnter={hashTooltip.showAndUpdate}
+        onMouseLeave={hashTooltip.hide}
+      >
+        {anchorHash}
+        {copy && isTruncated && <Tooltip {...hashTooltip.tooltipProps}>{valueToCopy}</Tooltip>}
+      </span>
+      {copy && valueToCopy ? anchorCopy : null}
+    </div>
+  );
 }
 
 HashLink.propTypes = {

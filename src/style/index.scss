@@ -1,25 +1,3 @@
 @import 'bootstrap';
-
-$balloon-bg: fade-out(#303030, .1);
-@import '../../node_modules/balloon-css/src/balloon.scss';
 @import 'general';
 @import 'monokai-sublime';
-
-// override balloon css
-[aria-label] {
-  &[data-balloon-pos] {
-    position: relative; // alt. absolute or fixed
-
-    // Fixing iOS Safari event issue.
-    // More info at: https://goo.gl/w8JF4W
-    cursor: pointer;
-
-    &:after {
-      z-index: 1010;
-    }
-    
-    &:before {
-      z-index: 1010;
-    }
-  }
-}

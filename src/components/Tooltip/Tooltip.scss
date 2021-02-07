@@ -1,0 +1,49 @@
+@import 'src/style/variables';
+$SIZE: 8px;
+$HALF_SIZE: 4px;
+$MINUS_HALF_SIZE: -4px;
+
+.Tooltip {
+  border-radius: 6px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+  z-index: 10000;
+  display: none;
+  padding: $content-padding-x;
+  font-size: $font-size-sm;
+  font-weight: 300;
+  color: $white;
+  background-color: $dark;
+  word-wrap: break-word;
+  white-space: normal;
+  max-width: 360px;
+  line-height: 0.875rem;
+
+  &[data-show='true'] {
+    display: block;
+  }
+
+  .TooltipArrow {
+    &::before {
+      content: '';
+      position: absolute;
+      width: $SIZE;
+      height: $SIZE;
+      z-index: -1;
+      background-color: $dark;
+      transform: rotate(45deg);
+    }
+  }
+
+  &[data-popper-placement^='top'] > .TooltipArrow {
+    bottom: $HALF_SIZE;
+  }
+  &[data-popper-placement^='bottom'] > .TooltipArrow {
+    top: $MINUS_HALF_SIZE;
+  }
+  &[data-popper-placement^='left'] > .TooltipArrow {
+    right: $HALF_SIZE;
+  }
+  &[data-popper-placement^='right'] > .TooltipArrow {
+    left: $MINUS_HALF_SIZE;
+  }
+}
