@@ -4,6 +4,7 @@ import { observer, inject } from 'mobx-react';
 import { Link } from 'react-router-dom';
 import config from '../../../lib/Config';
 import TextUtils from '../../../lib/TextUtils';
+import ObjectUtils from '../../../lib/ObjectUtils';
 import HashLink from '../../../components/HashLink';
 import { ItemsTable } from '../../../components/ItemsTable';
 import PageTitle from '../../../components/PageTitle';
@@ -15,7 +16,14 @@ class BlockContractsTable extends Component {
         Header: 'Name',
         accessor: 'id',
         minWidth: config.ui.table.minCellWidth,
-        Cell: data => <HashLink url={`/contracts/${data.original.address}`} hash={data.value} />,
+        Cell: (data) => (
+          <HashLink
+            url={`/contracts/${data.original.address}`}
+            hash={ObjectUtils.getSafeProp(data, 'original.metadata.shortName')}
+            value={data.value}
+            truncate={false}
+          />
+        ),
       },
       {
         Header: 'Address',
@@ -24,10 +32,10 @@ class BlockContractsTable extends Component {
         Cell: ({ value }) => <HashLink url={`/contracts/${value}`} hash={value} />,
       },
       {
-        Header: 'Status',
+        Header: 'Active until',
         accessor: 'expiryBlock',
         sortable: true,
-        Cell: ({ value }) => (value ? `Active until block ${value}` : 'Inactive'),
+        Cell: ({ value }) => (value ? TextUtils.formatNumber(value) : 'Inactive'),
       },
       {
         Header: 'Txs',
