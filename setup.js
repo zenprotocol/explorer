@@ -4,7 +4,7 @@ const fs = require('fs');
 const path = require('path');
 const readline = require('readline');
 const EOL = require('os').EOL;
-const rootDir = path.join(__dirname, '..');
+const rootDir = __dirname;
 
 const readlineAsync = ReadLineAsync();
 

@@ -20,7 +20,7 @@
     "docker:logs": "docker-compose -f docker-compose.yml -f docker-compose.optional.yml logs -f --tail=20",
     "presetup": "npm install",
     "setup": "npm-run-all -s setup:script client:build docker:up:all setup:db docker:stop",
-    "setup:script": "node build_scripts/setup.js",
+    "setup:script": "node setup.js",
     "setup:db": "docker-compose exec web npm run setup:docker:db",
     "setup:docker:db": "npm run setup:docker:db:test && npm run setup:docker:db:development",
     "setup:docker:db:test": "cross-env NODE_ENV=test npx sequelize db:create && cross-env NODE_ENV=test npx sequelize db:migrate",
