@@ -2,6 +2,39 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [4.1.0](https://github.com/zenprotocol/explorer/compare/v4.0.2...v4.1.0) (2021-02-15)
+
+
+### Features
+
+* calc assets & addresses cur state ([3f4a92e](https://github.com/zenprotocol/explorer/commit/3f4a92e11b910cbd28b7dca620942cc3a14bb789))
+* show all asset amounts in divided unit ([3774bd3](https://github.com/zenprotocol/explorer/commit/3774bd3933ac3ffb206fd50773b3f068fb3b1291))
+* show comma as thousand separator in chart tooltips ([789d691](https://github.com/zenprotocol/explorer/commit/789d691318993298d20c5e322eb3a053ebae90d6))
+* show contract name ([2cf6d46](https://github.com/zenprotocol/explorer/commit/2cf6d46adc3142057fb135ef049882cd914c97f1))
+* show contract name in asset pages ([9734985](https://github.com/zenprotocol/explorer/commit/9734985d28198c0cc3f819f84a864384d0681d33))
+* show empty addresses ([c5c662c](https://github.com/zenprotocol/explorer/commit/c5c662c33d1a886d9f41ca376217268228b84aab))
+* take care of change in address balance calc ([14c4228](https://github.com/zenprotocol/explorer/commit/14c4228d8b94a972e918f6fc17725d43c1dd9ef3))
+* **governance:** add a prev interval route ([e59c22c](https://github.com/zenprotocol/explorer/commit/e59c22cef12f4875fbe63037c0a42b429df96098))
+* **governance:** change route to current-next-or-prev ([bf76a69](https://github.com/zenprotocol/explorer/commit/bf76a691c3ef387bcc68691e143ae1c86f3e08a3))
+* **governance:** change valid vote range ([bac21c2](https://github.com/zenprotocol/explorer/commit/bac21c2ffebb945a12938bcf41d7f313ce18ebaa))
+* **governance:** show if result is above threshold ([e7537ed](https://github.com/zenprotocol/explorer/commit/e7537ed8c882b4aa9dc0f8543ff523e106df9c63))
+* truncate commits to 1st 7 chars ([44ef8a1](https://github.com/zenprotocol/explorer/commit/44ef8a156a37fea90d00c46e4f27ee41981bc68d))
+* **governance:** find interval by interval and phase ([d776cc8](https://github.com/zenprotocol/explorer/commit/d776cc878316d7db189bce33ce04f687792217d3))
+* truncate hashes more meaningfully ([2b6a66b](https://github.com/zenprotocol/explorer/commit/2b6a66b0ea74ea0f75538f1773e1f3cf2f23e176))
+
+
+### Bug Fixes
+
+* add missing infoStore in tx page ([799da95](https://github.com/zenprotocol/explorer/commit/799da9517fd3491ce254557986e79c9634ccd2b4))
+* make sure threshold has a value ([e5a7a19](https://github.com/zenprotocol/explorer/commit/e5a7a193ef6633feb7cde24f81bfdcb7b4593bb5))
+* **governance:** get right winner ([0c78c38](https://github.com/zenprotocol/explorer/commit/0c78c38a940bd2746ce9426ae387856cdbdc53cf))
+* **governance:** show on-going candidate amount ([5c03de5](https://github.com/zenprotocol/explorer/commit/5c03de5ac30785cdaf4ec912fc80769b60eb0383))
+* handle truncation of all zeros hash ([20d8fb6](https://github.com/zenprotocol/explorer/commit/20d8fb64e2813e07dfb643177cb7b7b164e56f67))
+* load new address txs when change address ([abf137f](https://github.com/zenprotocol/explorer/commit/abf137fbb9d9a05bf864310f0046203cce5e3adc))
+* pass commit id to commit link ([35da49f](https://github.com/zenprotocol/explorer/commit/35da49ffdaf460595294fd7aca21f9950708df93))
+* relace history when redirect on exact search ([28fde1c](https://github.com/zenprotocol/explorer/commit/28fde1cc3ed6013dd4a39906456cf229bd2ffaa0))
+* show dropdown above copy buttons ([1a6a24e](https://github.com/zenprotocol/explorer/commit/1a6a24e657f8822099028a764102c283ae36b547))
+
 ### [4.0.2](https://github.com/zenprotocol/explorer/compare/v4.0.1...v4.0.2) (2020-11-17)
 
 
