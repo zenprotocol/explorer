@@ -9,6 +9,8 @@ import TextUtils from '../../lib/TextUtils';
 import Loading from '../Loading';
 import LineChart from './LineChart.jsx';
 import PieChart from './PieChart.jsx';
+import Button from '../buttons/Button';
+import ButtonToolbar from '../buttons/ButtonToolbar';
 import './ChartLoader.scss';
 
 const PrivateConfigs = {
@@ -112,39 +114,52 @@ class ChartLoader extends Component {
 
     this.state = {
       loading: false,
-      isFirstLoad: true,
+      chartInterval: '1 year',
       data: [],
+      cache: {}, // cache results per interval
     };
 
     this.handleChartClick = this.handleChartClick.bind(this);
   }
 
   componentDidMount() {
-    this.fetchChartData();
+    this.fetchChartData(this.state.chartInterval);
     this.reloadOnBlocksCountChange();
   }
 
-  fetchChartData() {
+  fetchChartData(chartInterval) {
     const { externalChartData } = this.props;
     if (externalChartData) {
       return;
     }
     const chartConfig = this.getChartConfig();
     if (chartConfig) {
-      this.setState((state) => ({ loading: state.isFirstLoad }));
-      this.currentPromise = Service.stats.charts(chartConfig.name, chartConfig.params);
-      this.currentPromise
-        .then((response) => {
-          if (response.success) {
-            this.setState({ data: response.data });
-          }
-          this.setState({ loading: false, isFirstLoad: false });
-        })
-        .catch((err) => {
-          if (!Service.utils.isCancel(err)) {
-            this.setState({ loading: false, isFirstLoad: false });
-          }
+      this.setState({ chartInterval });
+      if (this.state.cache[chartInterval]) {
+        this.setState((state) => ({ data: state.cache[chartInterval] }));
+        this.setState({ loading: false });
+      } else {
+        this.setState({ loading: true, data: [] });
+        this.currentPromise = Service.stats.charts(chartConfig.name, {
+          ...chartConfig.params,
+          chartInterval,
         });
+        this.currentPromise
+          .then((response) => {
+            if (response.success) {
+              this.setState((state) => ({
+                data: response.data,
+                cache: { ...this.state.cache, [chartInterval]: response.data },
+              }));
+            }
+            this.setState({ loading: false });
+          })
+          .catch((err) => {
+            if (!Service.utils.isCancel(err)) {
+              this.setState({ loading: false });
+            }
+          });
+      }
     }
   }
 
@@ -159,7 +174,7 @@ class ChartLoader extends Component {
     // autorun was reacting to unknown properties, use reaction instead
     this.forceDisposer = reaction(
       () => this.props.rootStore.blockStore.blocksCount,
-      () => this.fetchChartData()
+      () => this.fetchChartData(this.state.chartInterval)
     );
   }
   stopReload() {
@@ -190,9 +205,6 @@ class ChartLoader extends Component {
     if (!chartConfig) {
       return null;
     }
-    if (this.chartLoading) {
-      return <Loading />;
-    }
 
     let componentType = null;
     switch (chartConfig.type) {
@@ -204,6 +216,7 @@ class ChartLoader extends Component {
         componentType = LineChart;
         break;
     }
+    const showRangeControls = chartConfig.type !== 'pie';
 
     const title = titleLinkTo ? (
       <Link to={titleLinkTo}>{chartConfig.title}</Link>
@@ -213,12 +226,53 @@ class ChartLoader extends Component {
     const clickable = !!titleLinkTo;
 
     return (
-      <div className={classNames('Chart', { clickable })} onClick={this.handleChartClick}>
-        {showTitle && <div className="title display-4 text-white border-dark">{title}</div>}
-        {React.createElement(componentType, {
-          data: Mappers[chartName](this.chartItems),
-          ...chartConfig,
-        })}
+      <div className="Chart">
+        <div className={classNames('Chart', { clickable })} onClick={this.handleChartClick}>
+          {showTitle && <div className="title display-4 text-white border-dark">{title}</div>}
+          <div className="chart-wrapper">
+            {this.chartLoading && <Loading className="loading-above" />}
+            {React.createElement(componentType, {
+              data: Mappers[chartName](this.chartItems),
+              ...chartConfig,
+            })}
+          </div>
+        </div>
+        {showRangeControls && (
+          <ButtonToolbar className="d-flex justify-content-end">
+            <Button
+              size="sm"
+              type="dark-2"
+              disabled={this.state.chartInterval === '1 week'}
+              onClick={() => this.fetchChartData('1 week')}
+            >
+              Week
+            </Button>
+            <Button
+              size="sm"
+              type="dark-2"
+              disabled={this.state.chartInterval === '6 months'}
+              onClick={() => this.fetchChartData('6 months')}
+            >
+              Semester
+            </Button>
+            <Button
+              size="sm"
+              type="dark-2"
+              disabled={this.state.chartInterval === '1 year'}
+              onClick={() => this.fetchChartData('1 year')}
+            >
+              Year
+            </Button>
+            <Button
+              size="sm"
+              type="dark-2"
+              disabled={this.state.chartInterval === '100 years'}
+              onClick={() => this.fetchChartData('100 years')}
+            >
+              All
+            </Button>
+          </ButtonToolbar>
+        )}
       </div>
     );
   }

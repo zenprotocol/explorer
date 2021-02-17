@@ -1,6 +1,17 @@
 @import 'src/style/variables';
 .Chart {
   background-color: $gray-900;
+  
+  .chart-wrapper {
+    position: relative;
+
+    .loading-above {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+  }
 
   &.clickable {
     cursor: pointer;
