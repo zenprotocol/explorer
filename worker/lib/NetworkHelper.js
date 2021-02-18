@@ -58,9 +58,9 @@ class NetworkHelper {
     return release ? release.tag_name : 'v0.9';
   }
 
-  async getZenWalletLatestTag() {
-    const release = await Service.zen.getWalletLatestRelease();
-    return release ? release.tag_name : 'v0.9';
+  async getDesktopWalletVersion() {
+    const release = await Service.zen.getDesktopWalletVersion();
+    return release ? 'v' + release : 'v0.2';
   }
 }
 module.exports = NetworkHelper;

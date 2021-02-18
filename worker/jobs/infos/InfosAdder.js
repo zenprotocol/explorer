@@ -13,9 +13,8 @@ class InfosAdder {
       const promises = [];
       promises.push(this.updateSoftwareVersions());
 
-      await Promise.all(promises);
+      return await Promise.all(promises);
     } catch (error) {
-      console.log(error);
       throw new QueueError(error);
     }
   }
@@ -23,7 +22,7 @@ class InfosAdder {
   async updateSoftwareVersions() {
     const [nodeVersion, walletVersion] = await Promise.all([
       this.networkHelper.getZenNodeLatestTag(),
-      this.networkHelper.getZenWalletLatestTag(),
+      this.networkHelper.getDesktopWalletVersion(),
     ]);
 
     const infos = [
@@ -38,6 +37,7 @@ class InfosAdder {
     ];
 
     await createOrUpdateInfos(infos);
+    return infos;
   }
 }
 

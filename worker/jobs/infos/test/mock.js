@@ -3,7 +3,7 @@ module.exports = {
     networkHelper.getZenNodeLatestTag = async function() {
       return 'v0.9.123';
     };
-    networkHelper.getZenWalletLatestTag = async function() {
+    networkHelper.getDesktopWalletVersion = async function() {
       return 'v0.9.456';
     };
     networkHelper.getBlockchainInfo = async function() {

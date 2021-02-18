@@ -95,12 +95,12 @@ module.exports = {
         return response.data;
       });
     },
-    async getWalletLatestRelease() {
+    async getDesktopWalletVersion() {
       return sendHttpRequest({
-        url: 'https://api.github.com/repos/zenprotocol/zenwallet/releases/latest',
+        url: 'https://zen-distributables.s3-eu-west-1.amazonaws.com/version.json',
         method: 'get',
       }).then((response) => {
-        return response.data;
+        return response.data['wallet-version'];
       });
     },
   },

@@ -23,7 +23,7 @@ updateGeneralInfosQueue.on('active', function (job) {
 });
 
 updateGeneralInfosQueue.on('completed', function (job, result) {
-  logger.info(`A job has been completed. ID=${job.id} result=${result}`);
+  logger.info(`A job has been completed. ID=${job.id} result=${JSON.stringify(result, null, 2)}`);
 });
 
 updateGeneralInfosQueue.on('failed', function (job, error) {
