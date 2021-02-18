@@ -10,6 +10,7 @@ import TextUtils from '../../../../lib/TextUtils';
 import { TabPanel } from '../../../../components/tabs';
 import { ItemsTable } from '../../../../components/ItemsTable';
 import HashLink from '../../../../components/HashLink';
+import { TransactionAssetLoader } from '../../../../components/Transactions';
 
 class TransactionsTab extends React.Component {
   get tableDataSetter() {
@@ -55,6 +56,14 @@ class TransactionsTab extends React.Component {
               Total of {TextUtils.formatNumber(addressStore.addressTxsCount)} transactions found
             </div>
           }
+          SubComponent={(row) => {
+            return (
+              <TransactionAssetLoader
+                transactions={addressStore.addressTxs}
+                index={row.index}
+              />
+            );
+          }}
         />
       </TabPanel>
     );

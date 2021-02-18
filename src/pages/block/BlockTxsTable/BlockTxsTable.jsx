@@ -60,7 +60,6 @@ class BlockTxsTable extends Component {
             <TransactionAssetLoader
               transactions={this.blockStore.blockTxs}
               index={row.index}
-              timestamp={row.original.timestamp}
             />
           );
         }}
