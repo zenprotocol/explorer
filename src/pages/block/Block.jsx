@@ -4,8 +4,10 @@ import { Link } from 'react-router-dom';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import { Helmet } from 'react-helmet';
+import { Decimal } from 'decimal.js';
 import RouterUtils from '../../lib/RouterUtils';
 import TextUtils from '../../lib/TextUtils';
+import AssetUtils from '../../lib/AssetUtils';
 import BlockTxsTable from './BlockTxsTable';
 import BlockContractsTable from './BlockContractsTable';
 import Loading from '../../components/Loading';
@@ -195,9 +197,7 @@ class BlockPage extends Component {
               </tr>
               <tr>
                 <td>CONFIRMATIONS</td>
-                <td className="no-text-transform">
-                  {TextUtils.formatNumber(confirmations)}
-                </td>
+                <td className="no-text-transform">{TextUtils.formatNumber(confirmations)}</td>
               </tr>
               <tr>
                 <td>PARENT</td>
@@ -208,6 +208,20 @@ class BlockPage extends Component {
                       hash={block.parent}
                     />
                   </div>
+                </td>
+              </tr>
+              <tr>
+                <td>CGP ALLOCATION</td>
+                <td className="no-text-transform">
+                  {AssetUtils.getAmountDivided(block.allocationAmount)} ZP
+                </td>
+              </tr>
+              <tr>
+                <td>MINER ALLOCATION</td>
+                <td className="no-text-transform">
+                  {AssetUtils.getAmountDivided(
+                    new Decimal(block.reward || '5000000000').minus(block.allocationAmount || 0)
+                  )} ZP
                 </td>
               </tr>
             </tbody>
