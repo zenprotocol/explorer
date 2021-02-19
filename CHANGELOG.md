@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [4.2.0](https://github.com/zenprotocol/explorer/compare/v4.1.0...v4.2.0) (2021-02-19)
+
+
+### Features
+
+* change charts date range ([eb72af5](https://github.com/zenprotocol/explorer/commit/eb72af5f8251c73a7fd86f0c2f9766874249bec1))
+* show cgp allocation in block page ([7827752](https://github.com/zenprotocol/explorer/commit/78277527087488e5ae69273b3b6096e677d45132))
+* show tx content in contract txs tab ([662f1d9](https://github.com/zenprotocol/explorer/commit/662f1d973948a511a33319d01a064baaf1b87833))
+
 ## [4.1.0](https://github.com/zenprotocol/explorer/compare/v4.0.2...v4.1.0) (2021-02-15)
 
 
