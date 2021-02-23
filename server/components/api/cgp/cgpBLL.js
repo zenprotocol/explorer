@@ -145,7 +145,7 @@ module.exports = {
         };
       });
       // sort by the amount
-      participatingNominees.sort((a, b) => new Decimal(a.amount).minus(b.amount).toNumber());
+      participatingNominees.sort((a, b) => new Decimal(a.amount || 0).minus(b.amount || 0).toNumber());
 
       return {
         ...relevant,
