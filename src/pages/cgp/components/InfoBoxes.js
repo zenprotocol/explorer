@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import TextUtils from '../../../lib/TextUtils';
 import AssetUtils from '../../../lib/AssetUtils';
 import percentageToZP from '../../../lib/rewardPercentageToZP';
+import calcTimeRemaining from '../../../lib/calcTimeRemaining';
 import InfoBox from '../../../components/InfoBox';
 import getPhaseBlocks from '../modules/getPhaseBlocks';
 import getPhaseName from '../modules/getPhaseName';
@@ -31,6 +32,7 @@ InfoBoxes.propTypes = {
 function BeforeVoteInfo({ currentBlock, snapshot, tally, phase, ...props }) {
   const phaseBlocks = getPhaseBlocks({ phase, snapshot, tally });
   const blocksToStart = phaseBlocks.snapshot - currentBlock;
+  const timeRemaining = calcTimeRemaining(blocksToStart);
   const phaseName = getPhaseName(phase);
   const voteBeginsMessage = `${phaseName} phase begins in ${formatNumber(blocksToStart)} ${
     blocksToStart > 1 ? 'blocks' : 'block'
@@ -54,7 +56,7 @@ function BeforeVoteInfo({ currentBlock, snapshot, tally, phase, ...props }) {
       </div>
       <div className="row">
         <div className="col border border-dark text-center before-snapshot-message">
-          {voteBeginsMessage}
+          {voteBeginsMessage}, ~ {timeRemaining}
         </div>
       </div>
     </div>

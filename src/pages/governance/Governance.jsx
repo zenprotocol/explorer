@@ -15,6 +15,7 @@ import { Tabs, TabHead, TabBody, Tab } from '../../components/tabs';
 import VotesTab from './components/tabs/Votes';
 import ResultsTab from './components/tabs/Results';
 import RouterUtils from '../../lib/RouterUtils';
+import calcTimeRemaining from '../../lib/calcTimeRemaining';
 import ItemNotFound from '../../components/ItemNotFound';
 import Loading from '../../components/Loading';
 import Dropdown from '../../components/Dropdown';
@@ -240,6 +241,7 @@ class GovernancePage extends React.Component {
 
 function BeforeVoteInfo({ currentBlock, relevantInterval }) {
   const blocksToStart = relevantInterval.beginBlock - currentBlock;
+  const timeRemaining = calcTimeRemaining(blocksToStart);
 
   return (
     <div className="container">
@@ -263,7 +265,7 @@ function BeforeVoteInfo({ currentBlock, relevantInterval }) {
       <div className="row">
         <div className="col border border-dark text-center before-snapshot-message">
           VOTE BEGINS IN {TextUtils.formatNumber(blocksToStart)}{' '}
-          {blocksToStart > 1 ? 'BLOCKS' : 'BLOCK'}
+          {blocksToStart > 1 ? 'BLOCKS' : 'BLOCK'}, ~ {timeRemaining}
         </div>
       </div>
     </div>
