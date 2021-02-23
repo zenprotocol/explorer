@@ -1,6 +1,7 @@
 import React from 'react';
 import { observer, inject } from 'mobx-react';
 import { reaction } from 'mobx';
+import { Decimal } from 'decimal.js';
 import config from '../../../../lib/Config';
 import WithSetIdsOnUiStore from '../../../../components/hoc/WithSetIdsOnUiStore';
 import AssetUtils from '../../../../lib/AssetUtils';
@@ -27,14 +28,19 @@ class KeyholdersTab extends React.Component {
       {
         Header: 'QUANTITY',
         accessor: 'balance',
-        Cell: (data) =>
-          AssetUtils.getAmountDivided(data.value),
+        Cell: (data) => AssetUtils.getAmountDivided(data.value),
       },
       {
         Header: '%',
         accessor: 'balance',
         Cell: ({ value }) => {
-          return (totalIssued ? (Number(value) / totalIssued) * 100 : 0) + '%';
+          const maxDecimal = 15;
+          const d = new Decimal(value || 0).div(totalIssued || 1).times(100);
+          const lessThanDecimalPlaces = new Decimal(d.toFixed(maxDecimal)).isZero();
+          const final = lessThanDecimalPlaces
+            ? '< 0.000000000000001'
+            : d.toFixed(Math.min(d.decimalPlaces(), maxDecimal));
+          return (totalIssued ? final : 0) + '%';
         },
       },
     ];
