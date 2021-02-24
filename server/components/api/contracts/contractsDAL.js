@@ -21,7 +21,7 @@ const orderMap = {
     asc: `${nullsOrderMap.asc}`,
     desc: `${nullsOrderMap.desc}`,
   },
-  lastActivationBlockNumber: nullsOrderMap,
+  lastActivationBlock: nullsOrderMap,
 };
 
 /**

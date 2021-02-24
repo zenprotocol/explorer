@@ -52,7 +52,7 @@ class BlockContractsTable extends Component {
       },
       {
         Header: 'Activation',
-        accessor: 'lastActivationBlockNumber',
+        accessor: 'lastActivationBlock',
         sortable: true,
         hideOnMobile: true,
         Cell: ({ value }) => <Link to={`/blocks/${value}`}>{value}</Link>,
