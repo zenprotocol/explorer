@@ -41,13 +41,16 @@ class AssetsTable extends Component {
         Header: 'unique addresses',
         accessor: 'keyholders',
         sortable: true,
+        minWidth: Config.ui.table.minCellWidth,
         Cell: (data) => TextUtils.formatNumber(data.value),
+        hideOnMobile: true,
       },
       {
         Header: 'txs',
         accessor: 'txsCount',
         sortable: true,
         Cell: (data) => TextUtils.formatNumber(data.value),
+        hideOnMobile: true,
       },
     ];
   }
