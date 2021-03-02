@@ -8,9 +8,11 @@ const BlockchainParser = require('../../../lib/BlockchainParser');
 const getChain = require('../../../lib/getChain');
 
 module.exports = {
-  findAll: async function ({ page = 0, pageSize = 10 } = {}) {
+  findAll: async function ({ page = 0, pageSize = 10, sorted } = {}) {
     const bcParser = new BlockchainParser(await getChain());
-    const query = createQueryObject({ page, pageSize, sorted: [{ id: 'keyholders', desc: true }] });
+    const sortBy =
+        sorted && sorted != '[]' ? JSON.parse(sorted) : [{ id: 'keyholders', desc: true }];
+    const query = createQueryObject({ page, pageSize, sorted: sortBy});
     return await Promise.all([assetsDAL.count(), assetsDAL.findAll(query)])
       .then(([count, items]) => {
         return [

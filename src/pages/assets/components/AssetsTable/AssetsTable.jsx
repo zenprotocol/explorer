@@ -40,11 +40,13 @@ class AssetsTable extends Component {
       {
         Header: 'unique addresses',
         accessor: 'keyholders',
+        sortable: true,
         Cell: (data) => TextUtils.formatNumber(data.value),
       },
       {
         Header: 'txs',
         accessor: 'txsCount',
+        sortable: true,
         Cell: (data) => TextUtils.formatNumber(data.value),
       },
     ];

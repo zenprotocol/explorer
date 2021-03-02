@@ -7,8 +7,8 @@ const assetsBLL = require('./assetsBLL');
 
 module.exports = {
   index: async function(req, res) {
-    const { page, pageSize } = req.query;
-    const assets = await assetsBLL.findAll({ page, pageSize });
+    const { page, pageSize, sorted } = req.query;
+    const assets = await assetsBLL.findAll({ page, pageSize, sorted });
     res.status(httpStatus.OK).json(jsonResponse.create(httpStatus.OK, assets));
   },
   show: async function(req, res) {

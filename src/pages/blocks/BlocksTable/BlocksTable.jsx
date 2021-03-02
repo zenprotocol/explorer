@@ -18,6 +18,7 @@ class BlocksTable extends Component {
         Header: 'Timestamp',
         accessor: 'timestamp',
         minWidth: config.ui.table.minCellWidthDate,
+        sortable: true,
         Cell: function (data) {
           return TextUtils.getDateStringFromTimestamp(data.value);
         },
@@ -26,6 +27,7 @@ class BlocksTable extends Component {
         Header: 'Block',
         accessor: 'blockNumber',
         minWidth: 110,
+        sortable: true,
         Cell: ({ value }) => <Link to={`/blocks/${value}`}>{TextUtils.formatNumber(value)}</Link>,
       },
       {
@@ -52,6 +54,7 @@ class BlocksTable extends Component {
       {
         Header: 'Txs',
         accessor: 'txsCount',
+        sortable: true,
         Cell: ({ value }) => TextUtils.formatNumber(value),
       },
       {
@@ -123,6 +126,8 @@ class BlocksTable extends Component {
         tableDataSetter={this.tableDataSetter}
         dataTable={uiStore.state.blocksTable}
         topContent={<PageTitle title="Blocks" margin={false} />}
+        defaultSorted={[{ id: 'blockNumber', desc: true }]}
+        defaultSortDesc={true}
       />
     );
   }

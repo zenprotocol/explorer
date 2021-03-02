@@ -20,6 +20,7 @@ export default function UIStore(rootStore, initialState = {}) {
       force: 1,
       pageSize: defaultValues.get('blocksTable.pageSize'),
       curPage: defaultValues.get('blocksTable.curPage'),
+      sorted: defaultValues.get('blocksTable.sorted'),
     },
 
     blockTxTable: {
@@ -69,6 +70,7 @@ export default function UIStore(rootStore, initialState = {}) {
       force: 1,
       pageSize: defaultValues.get('assetsTable.pageSize'),
       curPage: defaultValues.get('assetsTable.curPage'),
+      sorted: defaultValues.get('assetsTable.sorted'),
     },
 
     assetTxsTable: {
@@ -304,6 +306,7 @@ export default function UIStore(rootStore, initialState = {}) {
         blockStore.fetchBlocks({
           page: state.blocksTable.curPage,
           pageSize: state.blocksTable.pageSize,
+          sorted: JSON.stringify(state.blocksTable.sorted),
         });
       }
     });
@@ -376,6 +379,7 @@ export default function UIStore(rootStore, initialState = {}) {
         assetStore.loadAssets({
           page: state.assetsTable.curPage,
           pageSize: state.assetsTable.pageSize,
+          sorted: JSON.stringify(state.assetsTable.sorted),
         });
       }
     });
