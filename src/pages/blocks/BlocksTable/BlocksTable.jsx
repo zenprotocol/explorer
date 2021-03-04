@@ -63,10 +63,7 @@ class BlocksTable extends Component {
         minWidth: config.ui.table.minCellWidth,
         Cell: (data) =>
           `${AssetUtils.getAmountDivided(
-            new Decimal(data.original.coinbaseAmount)
-              .plus(data.original.allocationAmount)
-              .minus(data.original.reward)
-              .toFixed(8)
+              this.dataFees(data)
           )} ZP`,
       },
       // {
@@ -87,6 +84,14 @@ class BlocksTable extends Component {
   get tableDataSetter() {
     const { uiStore } = this.props.rootStore;
     return uiStore.setBlocksTableData.bind(uiStore);
+  }
+  
+  dataFees(data) {
+    const total = new Decimal(data.original.coinbaseAmount)
+        .plus(data.original.allocationAmount)
+        .minus(data.original.reward)
+        .toFixed(8);
+    return data.original.blockNumber > 1 ? total : '0';
   }
 
   forceBlocksReload() {
