@@ -62,13 +62,14 @@ AssetsTab.propTypes = {
 const columns = [
   {
     Header: 'ASSET',
-    accessor: 'asset',
+    accessor: '',
     minWidth: config.ui.table.minCellWidth,
     Cell: ({ value }) => (
       <HashLink
-        hash={AssetUtils.getAssetNameFromCode(value)}
-        value={value}
-        url={`/assets/${value}`}
+        hash={value.metadata ? value.metadata.shortName : AssetUtils.getAssetNameFromCode(value.dataValues.asset)}
+        value={value.dataValues.asset}
+        url={`/assets/${value.dataValues.asset}`}
+        truncate={!value.metadata}
       />
     ),
   },
