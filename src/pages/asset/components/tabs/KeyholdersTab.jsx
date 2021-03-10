@@ -7,8 +7,8 @@ import WithSetIdsOnUiStore from '../../../../components/hoc/WithSetIdsOnUiStore'
 import AssetUtils from '../../../../lib/AssetUtils';
 import { TabPanel } from '../../../../components/tabs';
 import { ItemsTable } from '../../../../components/ItemsTable';
-import HashLink from '../../../../components/HashLink';
 import TextUtils from '../../../../lib/TextUtils';
+import AddressLink from '../../../../components/AddressLink';
 
 class KeyholdersTab extends React.Component {
   getTableColumns() {
@@ -23,7 +23,13 @@ class KeyholdersTab extends React.Component {
         Header: 'ADDRESS',
         accessor: 'address',
         minWidth: config.ui.table.minCellWidth,
-        Cell: (data) => <HashLink url={`/address/${data.value}`} hash={data.value} />,
+        Cell: (data) =>
+            <AddressLink
+              address={data.value}
+              active={data.original.isOutputActive}
+              hash={data.value}
+            />
+          ,
       },
       {
         Header: 'QUANTITY',
