@@ -145,6 +145,7 @@ class AddressPage extends Component {
               <div className="col-lg-6">
                 <AssetsBalancesTable
                   balance={assetAmounts.map((assetAmount) => ({
+                    metadata: assetAmount.metadata,
                     asset: assetAmount.asset,
                     total: assetAmount.balance,
                   }))}

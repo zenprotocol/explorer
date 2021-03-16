@@ -3,6 +3,7 @@
 const assetsDAL = require('./assetsDAL');
 const contractsDAL = require('../contracts/contractsDAL');
 const createQueryObject = require('../../../lib/createQueryObject');
+const getAssetName = require('../../../lib/getAssetName');
 const getContractName = require('../../../lib/getContractName');
 const BlockchainParser = require('../../../lib/BlockchainParser');
 const getChain = require('../../../lib/getChain');
@@ -25,10 +26,11 @@ module.exports = {
             } catch (error) {}
             return {
               ...item.toJSON(),
+              metadata: getAssetMetaData(item.asset),
               contract: {
                 id: contractId,
                 address,
-                metadata: getMetaData(contractId),
+                metadata: getContractMetaData(contractId),
               },
             };
           }),
@@ -56,8 +58,9 @@ module.exports = {
           subType: getSubType(asset, chain),
         },
         {
+          metadata: getAssetMetaData(asset),
           contract: Object.assign({}, contract && { id: contract.id, address: contract.address }, {
-            metadata: getMetaData(contractId),
+            metadata: getContractMetaData(contractId),
           }),
         }
       );
@@ -78,8 +81,12 @@ function getContractId(assetId) {
   return assetId === '00' ? '' : assetId.substring(0, 72);
 }
 
-function getMetaData(id) {
+function getContractMetaData(id) {
   return !id || id === '00' ? { name: '', shortName: '' } : getContractName(id);
+}
+
+function getAssetMetaData(asset) {
+  return !asset || asset === '00' ? { name: 'ZP', shortName: 'ZP' } : getAssetName(asset);
 }
 
 function getSubType(assetId, chain) {

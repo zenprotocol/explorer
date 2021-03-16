@@ -3,6 +3,7 @@
 const contractsDAL = require('./contractsDAL');
 const createQueryObject = require('../../../lib/createQueryObject');
 const getContractName = require('../../../lib/getContractName');
+const getAssetName = require('../../../lib/getAssetName');
 
 module.exports = {
   findAll: async function ({ page = 0, pageSize = 10, sorted, blockNumber } = {}) {
@@ -38,7 +39,12 @@ module.exports = {
     const contract = await contractsDAL.findByAddress(address);
     if (contract) {
       const query = createQueryObject({ page, pageSize, sorted: [] });
-      return await contractsDAL.findAllOutstandingAssets(contract.id, query);
+      const result = await contractsDAL.findAllOutstandingAssets(contract.id, query);
+      return {
+        count: result.count,
+        items: result.items.map(addMetaDataToAssets),
+      };
+      
     } else {
       return [];
     }
@@ -60,4 +66,8 @@ module.exports = {
 
 function addMetaDataToContract(contract) {
   return { ...contract, metadata: getContractName(contract.id) };
+}
+
+function addMetaDataToAssets(asset) {
+  return { ...asset, metadata: getAssetName(asset.asset) };
 }

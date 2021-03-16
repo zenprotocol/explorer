@@ -1,5 +1,5 @@
 const { Decimal } = require('decimal.js');
-
+const getAssetName = require('../../../lib/getAssetName');
 /**
  * Get an array with each asset in the tx, each containing inputs and outputs arrays
  */
@@ -17,6 +17,7 @@ function groupInputsOutputsByAsset(tx, address) {
       if (!assets[input.asset]) {
         assets[input.asset] = getEmptyAsset();
       }
+      assets[input.asset].metadata = getAssetName(input.asset);
       if (!addedInputAddresses.includes(input.address)) {
         assets[input.asset].inputs.push(input);
         if (input.address) {
@@ -63,6 +64,7 @@ function getEmptyAsset() {
     addressTotal: 0,
     inputs: [],
     outputs: [],
+    metadata: '',
   };
 }
 
@@ -87,6 +89,7 @@ function getFilteredAssetsArray(transaction, assets, address) {
         addressTotal: assets[asset].addressTotal,
         inputs: assets[asset].inputs,
         outputs: assets[asset].outputs,
+        metadata: assets[asset].metadata || ''
       });
     }
 

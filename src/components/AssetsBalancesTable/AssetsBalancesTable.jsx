@@ -34,9 +34,10 @@ export default function AssetsBalancesTable({ title, balance = [] }) {
               <tr key={index}>
                 <td>
                   <HashLink
-                    hash={AssetUtils.getAssetNameFromCode(assetBalance.asset)}
+                    hash={assetBalance.metadata ? assetBalance.metadata.shortName : AssetUtils.getAssetNameFromCode(assetBalance.asset)}
                     value={assetBalance.asset}
                     url={`/assets/${assetBalance.asset}`}
+                    truncate={!assetBalance.metadata}
                   />
                 </td>
                 <td>{AssetUtils.getAmountDivided(assetBalance.total)}</td>

@@ -4,6 +4,7 @@ const { Decimal } = require('decimal.js');
 const addressesDAL = require('./addressesDAL');
 const getChain = require('../../../lib/getChain');
 const BlockchainParser = require('../../../lib/BlockchainParser');
+const getAssetName = require('../../../lib/getAssetName');
 
 module.exports = {
   findOne: async function ({ address } = {}) {
@@ -21,7 +22,7 @@ module.exports = {
       address,
       pkHash: blockchainParser.getPkHashFromAddress(address),
       totalTxs: assetAmounts && assetAmounts.length ? assetAmounts[0].txsCount : 0,
-      assetAmounts,
+      assetAmounts: assetAmounts.map(addMetaDataToAssets),
     };
   },
   findAllAssets: async function ({ address } = {}) {
@@ -43,3 +44,7 @@ module.exports = {
     return null;
   },
 };
+
+function addMetaDataToAssets(asset) {
+  return { ...asset.dataValues, metadata: getAssetName(asset.dataValues.asset) };
+}
