@@ -13,6 +13,7 @@ const {
   getAllocationBallotContent,
   getPayoutBallotContent,
 } = require('./modules/getBallotContent');
+const getAssetName = require('../../../lib/getAssetName');
 const { addBallotContentToResults } = require('./modules/addBallotContentToResults');
 const calculateWinnerAllocation = require('./modules/calculateWinnerAllocation');
 const calculateWinnerPayout = require('./modules/calculateWinnerPayout');
@@ -120,7 +121,13 @@ module.exports = {
 
       const winnerAllocation = calculateWinnerAllocation(resultsAllocation);
       const winnerPayout = calculateWinnerPayout(resultsPayout.slice(0, 2));
-
+      //add asset name to winner
+      if (!!winnerPayout && !!winnerPayout.content ) winnerPayout.content.spends = (winnerPayout && winnerPayout.content.spends || []).map((data) => {
+        return {
+          ...data,
+          metadata: getAssetName(data.asset),
+        }
+      });
       // add the cgp fund ballot if does not exist
       const cgpFundPayoutBallot = config.get('CGP_FUND_PAYOUT_BALLOT');
       if (

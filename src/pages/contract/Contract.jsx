@@ -153,6 +153,7 @@ class ContractPage extends Component {
         <div className="col-lg-6">
           <AssetsBalancesTable
             balance={(address.assetAmounts || []).map((assetAmount) => ({
+              metadata: assetAmount.metadata,
               asset: assetAmount.asset,
               total: assetAmount.balance,
             }))}

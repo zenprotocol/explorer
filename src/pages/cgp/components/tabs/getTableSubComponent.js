@@ -18,13 +18,14 @@ export default function getSubComponent(type) {
           columns={[
             {
               Header: 'ASSET',
-              accessor: 'asset',
+              accessor: '',
               minWidth: config.ui.table.minCellWidth,
-              Cell: ({ value }) => (
+              Cell: ( {value} ) => (
                 <HashLink
-                  hash={AssetUtils.getAssetNameFromCode(value)}
-                  value={value}
-                  url={`/assets/${value}`}
+                  hash={value.metadata ? value.metadata.shortName : AssetUtils.getAssetNameFromCode(value.asset)}
+                  //hash={AssetUtils.getAssetNameFromCode(value)}
+                  value={value.asset}
+                  url={`/assets/${value.asset}`}
                 />
               ),
             },

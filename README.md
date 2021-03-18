@@ -109,6 +109,7 @@ in the docker web container, run `npx sequelize` to see all cli options.
   - **governance__afterTallyBlocks** - How many blocks after tally to show the vote results 
   - **GENESIS_TOTAL_ZP** - the amount of zp in the genesis block (in ZP, not Kalapas)
   - **CONTRACT_NAMING_JSON**
+  - **ASSET_NAMING_JSON**
   - **REACT_APP_PROD_ENV** - staging/production
   - **APP_NAME** - the application name for better logs
 

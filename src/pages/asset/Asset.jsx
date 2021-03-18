@@ -68,11 +68,15 @@ class AssetPage extends Component {
     }
 
     const is404 = this.assetStore.asset.status === 404;
-    const assetName = AssetUtils.getAssetNameFromCode(this.assetProp);
+    const assetName = ObjectUtils.getSafeProp(
+      this.assetStore,
+      'asset.metadata.name'
+    );
     const contractName = ObjectUtils.getSafeProp(
       this.assetStore,
       'asset.contract.metadata.shortName'
     );
+    const id = this.assetStore.asset.asset;
 
     return (
       <Page className="Asset">
@@ -83,7 +87,16 @@ class AssetPage extends Component {
           <PageTitle
             title={`Asset${contractName ? ' of ' + contractName : ''}`}
             subtitle={
-              <HashLink hash={assetName} value={this.assetProp} truncate={false} copy={true} />
+              <div>
+                {assetName &&<div className="mb-1">
+                  <strong>Name</strong>:{' '}
+                  <HashLink hash={assetName} truncate={false} copy={true} />
+                </div>}
+                <div>
+                  <strong>ID:</strong> {id && <HashLink hash={id} truncate={false} />}
+                </div>
+              </div>
+              
             }
           />
           {is404 ? <ItemNotFound item="asset" /> : this.renderTopTables()}

@@ -92,6 +92,7 @@ class TransactionAsset extends Component {
       const output = i < outputs.length ? outputs[i] : {};
       rowsData.push({
         asset: i === 0 ? asset : '',
+        metadata: transactionAsset.metadata,
         input: input.data,
         isInputHash: input.isHash,
         isInputActive: input.isHash && input.data !== address,
@@ -167,7 +168,7 @@ class TransactionAsset extends Component {
             {
               Header: 'Asset',
               accessor: 'asset',
-              minWidth: config.ui.table.minCellWidth,
+              minWidth: config.ui.table.minCellWidth + 30,
               Cell: ({ value, original }) => {
                 if (typeof original.showMore !== 'undefined') {
                   return (
@@ -176,9 +177,10 @@ class TransactionAsset extends Component {
                 } else {
                   return value ? (
                     <HashLink
-                      hash={AssetUtils.getAssetNameFromCode(value)}
+                      hash={original.metadata ? original.metadata.shortName : AssetUtils.getAssetNameFromCode(value)}
                       value={value}
                       url={`/assets/${value}`}
+                      truncate={!original.metadata}
                     />
                   ) : null;
                 }

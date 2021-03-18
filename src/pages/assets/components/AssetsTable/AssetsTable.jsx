@@ -13,14 +13,15 @@ class AssetsTable extends Component {
   getTableColumns() {
     return [
       {
-        Header: 'Asset Identifier',
-        accessor: 'asset',
-        minWidth: Config.ui.table.minCellWidth,
+        Header: 'Asset',
+        accessor: '',
+        minWidth: 200,
         Cell: ({ value }) => (
           <HashLink
-            hash={AssetUtils.getAssetNameFromCode(value)}
-            value={value}
-            url={`/assets/${value}`}
+            hash={value.metadata ? value.metadata.shortName : AssetUtils.getAssetNameFromCode(value.asset)}
+            value={value.asset}
+            url={`/assets/${value.asset}`}
+            truncate={!value.metadata}
           />
         ),
       },

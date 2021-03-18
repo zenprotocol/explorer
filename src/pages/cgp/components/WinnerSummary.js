@@ -220,9 +220,10 @@ class SummaryPayout extends React.Component {
                 <tr key={index}>
                   <td>
                     <HashLink
-                      hash={AssetUtils.getAssetNameFromCode(spend.asset)}
+                      hash={spend.metadata ? spend.metadata.shortName : AssetUtils.getAssetNameFromCode(spend.asset)}
                       value={spend.asset}
                       url={`/assets/${spend.asset}`}
+                      truncate={!spend.metadata}
                     />
                   </td>
                   <td>{AssetUtils.getAmountDivided(spend.amount)}</td>

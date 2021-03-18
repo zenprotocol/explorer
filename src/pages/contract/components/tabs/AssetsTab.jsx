@@ -2,7 +2,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { observer, inject } from 'mobx-react';
 import { reaction } from 'mobx';
-import config from '../../../../lib/Config';
 import TextUtils from '../../../../lib/TextUtils';
 import AssetUtils from '../../../../lib/AssetUtils';
 import WithSetIdsOnUiStore from '../../../../components/hoc/WithSetIdsOnUiStore';
@@ -62,34 +61,36 @@ AssetsTab.propTypes = {
 const columns = [
   {
     Header: 'ASSET',
-    accessor: 'asset',
-    minWidth: config.ui.table.minCellWidth,
+    accessor: '',
+    minWidth: 200,
     Cell: ({ value }) => (
       <HashLink
-        hash={AssetUtils.getAssetNameFromCode(value)}
-        value={value}
-        url={`/assets/${value}`}
+        hash={value.metadata ? value.metadata.shortName : AssetUtils.getAssetNameFromCode(value.dataValues.asset)}
+        value={value.dataValues.asset}
+        url={`/assets/${value.dataValues.asset}`}
+        truncate={!value.metadata}
       />
     ),
   },
   {
     Header: 'TOKENS OUTSTANDING',
-    accessor: 'outstanding',
+    accessor: 'dataValues.outstanding',
     Cell: (data) => AssetUtils.getAmountDivided(data.value),
+    hideOnMobile: true,
   },
   {
     Header: 'TOTAL ISSUED',
-    accessor: 'issued',
+    accessor: 'dataValues.issued',
     Cell: (data) => AssetUtils.getAmountDivided(data.value),
   },
   {
     Header: 'DESTROYED',
-    accessor: 'destroyed',
+    accessor: 'dataValues.destroyed',
     Cell: (data) => AssetUtils.getAmountDivided(data.value),
   },
   {
     Header: 'UNIQUE ADDRESSES',
-    accessor: 'keyholders',
+    accessor: 'dataValues.keyholders',
     Cell: (data) => TextUtils.formatNumber(data.value),
   },
 ];
