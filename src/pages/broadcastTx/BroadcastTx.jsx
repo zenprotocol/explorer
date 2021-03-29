@@ -87,6 +87,7 @@ class BroadcastTx extends Component {
                 this.state.decodedTx.map((asset, assetIndex) => {
                   return (
                     <TransactionAsset
+                      showAsset
                       transactionAsset={asset}
                       asset={asset.asset}
                       key={assetIndex}
@@ -103,7 +104,6 @@ class BroadcastTx extends Component {
                     Your tx was broadcasted successfully - once it is included in a block you can
                     view it here -{' '}
                     <Link to={`/tx/${broadcastResponse}`} className="break-word">
-                      https://zp.io/tx/
                       {broadcastResponse}
                     </Link>
                   </SuccessMessage>

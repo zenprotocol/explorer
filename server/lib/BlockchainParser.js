@@ -94,6 +94,38 @@ class BlockchainParser {
     return { lockType, lockValue: lockKeyValue.value, address };
   }
 
+  getRawLockValuesFromOutput(output) {
+    let lockType = null;
+    let lockKeyValue = { key: null, value: null }; // contains hash/id/pkHash
+    let address = null;
+    if (output.lock && typeof output.lock !== 'object') {
+      // output lock is a primitive - just take it as it is
+      lockType = output.lock;
+    } else if (output.lock && Object.keys(output.lock).length) {
+      lockType = output.lock.constructor.name;
+      const lockKeys = Object.keys(output.lock);
+      if (lockKeys.length) {
+        // lockValue should be one of LOCK_VALUE_KEY_OPTIONS
+        lockKeyValue = lockKeys.reduce(
+          (cur, key) => (LOCK_VALUE_KEY_OPTIONS.includes(key) ? { key, value: output.lock[key] } : cur),
+          { key: null, value: null }
+        );
+        if (lockKeyValue.value) {
+          try {
+            // try to parse the address, make sure a contract address is parsed correctly
+            address =
+              lockKeyValue.key === 'id'
+                ? this.getAddressFromContractId(lockKeyValue.value)
+                : this.getPublicKeyHashAddress(lockKeyValue.value);
+          } catch (error) {
+            address = null;
+          }
+        }
+      }
+    }
+    return { lockType, lockValue: lockKeyValue.value, address };
+  }
+
   isMintInputValid(input) {
     const asset = input.mint.asset;
     const amount = input.mint.amount;

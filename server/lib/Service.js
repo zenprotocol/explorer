@@ -3,6 +3,7 @@
 const axios = require('axios');
 const Config = require('../config/Config');
 const NetworkError = require('./NetworkError');
+const getChain = require('./getChain');
 const request = axios.create({
   baseURL: Config.get('zp:node'),
   timeout: 30000,
@@ -105,9 +106,9 @@ module.exports = {
     },
   },
   wallet: {
-    async broadcastTx(tx) {
+    async broadcastTx(tx,url) {
       return sendHttpRequest({
-        url: 'https://remote-node.zp.io/api/publishtransaction',
+        url: `${url}blockchain/publishtransaction`,
         method: 'post',
         data: {
           tx,

@@ -7,6 +7,7 @@ const jsonResponse = require('../../../lib/jsonResponse');
 const HttpError = require('../../../lib/HttpError');
 const getTxAssets = require('./getTxAssets');
 const Service = require('../../../lib/Service');
+const getChain = require('../../../lib/getChain');
 const BlockchainParser = require('../../../lib/BlockchainParser');
 const txsBLL = require('./txsBLL');
 
@@ -53,7 +54,8 @@ module.exports = {
       throw new HttpError(httpStatus.BAD_REQUEST);
     }
 
-    const response = await Service.wallet.broadcastTx(tx);
+    const url = await getChain() === 'main' ? 'https://mainnet-nodes.zp.io/' : 'https://testnet-nodes.zp.io/';
+    const response = await Service.wallet.broadcastTx(tx,url);
     res.status(httpStatus.OK).json(jsonResponse.create(httpStatus.OK, response));
   },
   getFromRaw: async function (req, res) {
@@ -64,16 +66,16 @@ module.exports = {
 
     try {
       const tx = zen.Transaction.fromHex(hex);
-      const blockchainParser = new BlockchainParser();
+      const blockchainParser = new BlockchainParser(await getChain());
       const txCustom = {
         inputs: [],
         outputs: [],
       };
 
-      txCustom.outputs = tx.outputs.map((output, index) => {
-        const { lockType, lockValue, address } = blockchainParser.getLockValuesFromOutput(output);
+      txCustom.outputs = tx.outputs.outputs.map((output, index) => {
+        const { lockType, lockValue, address } = blockchainParser.getRawLockValuesFromOutput(output);
         const asset = output.spend.asset.asset;
-        const amount = output.spend.amount['0'];
+        const amount = output.spend.amount;
         return {
           id: index + 1, // fake id needed in UI
           lockType,
@@ -84,8 +86,8 @@ module.exports = {
         };
       });
 
-      for (let i = 0; i < tx.inputs.length; i++) {
-        const input = tx.inputs[i];
+      for (let i = 0; i < tx.inputs.inputs.length; i++) {
+        const input = tx.inputs.inputs[i];
         const outpoint = {
           txHash: input.input.txHash.hash,
           index: input.input.index,
