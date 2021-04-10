@@ -101,6 +101,7 @@ class ContractPage extends Component {
     }
     const contract = this.contractStore.contract;
     const address = this.addressStore.address;
+    const addressTxsCount = this.addressStore.addressTxsCount;
     if (!contract.id) {
       return null;
     }
@@ -135,7 +136,7 @@ class ContractPage extends Component {
               </tr>
               <tr>
                 <td>TRANSACTIONS</td>
-                <td>{TextUtils.formatNumber(address.totalTxs)}</td>
+                <td>{TextUtils.formatNumber(addressTxsCount)}</td>
               </tr>
               {contract.lastActivationBlock && (
                 <tr>
