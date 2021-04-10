@@ -25,6 +25,7 @@ const styleOptions = {
   },
   plotOptions: {
     series: {
+      turboThreshold: 0,
       dataLabels: {
         color: COLORS.text,
       },
