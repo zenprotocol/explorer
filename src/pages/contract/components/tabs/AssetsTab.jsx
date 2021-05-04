@@ -65,7 +65,7 @@ const columns = [
     minWidth: 200,
     Cell: ({ value }) => (
       <HashLink
-        hash={value.metadata ? value.metadata.shortName : AssetUtils.getAssetNameFromCode(value.dataValues.asset)}
+        hash={value.metadata ? value.metadata.name : AssetUtils.getAssetNameFromCode(value.dataValues.asset)}
         value={value.dataValues.asset}
         url={`/assets/${value.dataValues.asset}`}
         truncate={!value.metadata}
