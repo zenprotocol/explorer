@@ -151,18 +151,12 @@ contractsDAL.findAllOutstandingAssets = function (id, { limit = 10, offset = 0 }
         asset: {
           [Op.like]: `${id}%`,
         },
-        outstanding: {
-          [Op.gt]: 0,
-        },
       },
     }),
     assetsDAL.findAll({
       where: {
         asset: {
           [Op.like]: `${id}%`,
-        },
-        outstanding: {
-          [Op.gt]: 0,
         },
       },
       limit,
