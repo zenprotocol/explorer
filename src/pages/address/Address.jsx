@@ -97,10 +97,10 @@ class AddressPage extends Component {
                   <div className="mb-1">
                     <strong>Address</strong>: <HashLink hash={params.address} truncate={false} />
                   </div>
-                  <div>
+                  {this.addressStore.address.pkHash ? <div>
                     <strong>PkHash</strong>:{' '}
                     <HashLink hash={this.addressStore.address.pkHash || ''} truncate={false} />
-                  </div>
+                  </div> : null }
                 </div>
               </>
             }
