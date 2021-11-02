@@ -1,6 +1,6 @@
 {
   "name": "explorer",
-  "version": "4.2.0",
+  "version": "4.3.0",
   "description": "Zen Protocol block explorer",
   "main": "server/index.js",
   "scripts": {

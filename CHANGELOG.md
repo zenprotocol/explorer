@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [4.3.0](https://github.com/zenprotocol/explorer/compare/v4.2.0...v4.3.0) (2021-11-02)
+
+
+### Features
+
+* show time remaining until vote ([ec2a316](https://github.com/zenprotocol/explorer/commit/ec2a316f9dc6fc2cdd0fc29f9563a0cf8d1d94c0))
+
+
+### Bug Fixes
+
+* make sure decimal has a value ([cd97a19](https://github.com/zenprotocol/explorer/commit/cd97a19582b6b8b19ab63b3988094c8ad21ebb37))
+* remove fees in genesis blocks table ([9124ada](https://github.com/zenprotocol/explorer/commit/9124adad574df984b6b6783890487144267916ca))
+
 ## [4.2.0](https://github.com/zenprotocol/explorer/compare/v4.1.0...v4.2.0) (2021-02-19)
 
 
