@@ -4,6 +4,7 @@ import { reaction } from 'mobx';
 import { Route, Switch, Redirect } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { Helmet } from 'react-helmet';
+import { Address, ContractId, PublicKey } from '@zen/zenjs';
 import RouterUtils from '../../lib/RouterUtils';
 import TextUtils from '../../lib/TextUtils';
 import AssetUtils from '../../lib/AssetUtils';
@@ -16,6 +17,13 @@ import Page from '../../components/Page';
 import { ChartLoader } from '../../components/charts';
 import { Tabs, TabHead, TabBody, Tab } from '../../components/tabs';
 import { TransactionsTab, ChartTab, KeyholdersTab } from './components/tabs';
+import {
+  getPrice,
+  getRedeemableEODTimestamp, getRedeemableEODTimestampHigh,
+  getRedeemablePositionData,
+  getRedeemablePriceData,
+  getRedeemableTickerData
+} from './NamingUtils';
 
 class AssetPage extends Component {
   get assetStore() {
@@ -115,6 +123,26 @@ class AssetPage extends Component {
     if (!Object.keys(asset).length) {
       return null;
     }
+    const assetName = ObjectUtils.getSafeProp(
+      this.assetStore,
+      'asset.metadata.name'
+    );
+    const assetMisc = ObjectUtils.getSafeProp(
+      this.assetStore,
+      'asset.metadata.misc'
+    );
+    
+    const chain = ObjectUtils.getSafeProp(
+      this.props.rootStore.infoStore.infos,
+      'chain'
+    );
+    const start = assetName && getRedeemableEODTimestamp(assetName);
+    const ticker = assetName && getRedeemableTickerData(assetName);
+    const position = assetName && getRedeemablePositionData(assetName);
+    const price = assetName && getRedeemablePriceData(assetName);
+    const expiry = assetName && getRedeemableEODTimestampHigh(assetName);
+    const oracleAddress = assetName && PublicKey.fromString(assetMisc.oraclePK).toAddress(chain);
+    const oraclePK = assetName && assetMisc.oraclePK;
     return (
       <div className="row">
         <div className="col-lg-6">
@@ -162,7 +190,7 @@ class AssetPage extends Component {
             </tbody>
           </table>
         </div>
-        <div className="col-lg-6">
+        {!assetName && <div className="col-lg-6">
           <table className="table table-zen">
             <thead>
               <tr>
@@ -177,7 +205,60 @@ class AssetPage extends Component {
             externalChartData={this.assetStore.assetDistributionData.data}
             externalChartLoading={this.assetStore.assetDistributionData.loading}
           />
-        </div>
+        </div>}
+        {assetName && <div className="col-lg-6">
+          <table className="table table-zen" >
+            <thead>
+            <tr>
+              <th scope="col" colSpan="2">Asset Name Metadata</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+              <td>EVENT {expiry ? 'START' : ''}</td>
+              <td>{TextUtils.getDateStringFromTimestamp(start)}</td>
+            </tr>
+            {expiry ? <tr>
+              <td>EVENT END</td>
+              <td>{TextUtils.getDateStringFromTimestamp(expiry)}</td>
+            </tr> : null}
+            <tr>
+              <td>TICKER</td>
+              <td>{ticker}</td>
+            </tr>
+            <tr>
+              <td>POSITION</td>
+              <td>{position}</td>
+            </tr>
+            <tr>
+              <td>PRICE</td>
+              <td>$ {getPrice(price)}</td>
+            </tr>
+            <tr>
+              <td>COLLATERAL</td>
+              <td>{AssetUtils.getAssetNameFromCode(assetMisc.collateral)}</td>
+            </tr>
+            <tr>
+              <td>ORACLE SERVICE PROVIDER</td>
+              <td>
+                <HashLink hash={oracleAddress} url={`/address/${oracleAddress}`} />
+              </td>
+            </tr>
+            <tr>
+              <td>ORACLE PK</td>
+              <td>
+                <HashLink hash={oraclePK} />
+              </td>
+            </tr>
+            <tr>
+              <td>ORACLE CID</td>
+              <td>
+                <HashLink hash={assetMisc.oracleCID} url={`/contracts/${Address.getPublicKeyHashAddress(chain, ContractId.fromString(assetMisc.oracleCID))}`} />
+              </td>
+            </tr>
+            </tbody>
+          </table>
+        </div>}
       </div>
     );
   }
@@ -192,7 +273,7 @@ class AssetPage extends Component {
         <TabHead>
           <Tab id="txns">TRANSACTIONS</Tab>
           <Tab id="keyholders">KEYHOLDERS</Tab>
-          <Tab id="chart">CHART</Tab>
+          <Tab id="chart">DISTRIBUTION</Tab>
         </TabHead>
         <TabBody>
           <Switch>
